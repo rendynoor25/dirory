@@ -249,14 +249,33 @@ module Dirory
         }
       end
 
+      # Auth headers for the Edge Functions.
+      #
+      # Supabase now issues two key formats and they need different headers:
+      #
+      #   * New keys (`sb_publishable_...` / `sb_secret_...`) are plain strings,
+      #     NOT JWTs. They must go on `apikey` ONLY. If they are also sent as
+      #     `Authorization: Bearer`, Supabase tries to parse them as a JWT and
+      #     answers "Invalid JWT".
+      #   * Legacy keys (`eyJ...`) are JWTs and are accepted on both headers.
+      #
+      # So: always send `apikey`; add the Bearer header only for a legacy JWT.
+      # Detection is by prefix (`eyJ` = base64url of `{"`) rather than by trying
+      # one and retrying, which would double every request on failure.
       def self.request_headers
         headers = { 'Content-Type' => 'application/json' }
         key = api_key
         unless key.empty?
           headers['apikey'] = key
-          headers['Authorization'] = "Bearer #{key}"
+          headers['Authorization'] = "Bearer #{key}" if legacy_jwt_key?(key)
         end
         headers
+      end
+
+      # True for a legacy anon / service_role key (a JWT). False for the new
+      # `sb_publishable_*` and `sb_secret_*` formats.
+      def self.legacy_jwt_key?(key)
+        key.to_s.start_with?('eyJ')
       end
 
       # Sends up to BATCH_SIZE queued entries. Asynchronous: SketchUp is never

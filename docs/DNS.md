@@ -165,9 +165,13 @@ Set these on whichever host serves the app.
 | Name | Value | Notes |
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://ajlmncbzufagplbaaukv.supabase.co` | no trailing slash |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | *anon key* | safe in the browser |
-| `SUPABASE_SERVICE_ROLE_KEY` | *service-role key* | **server-only, never public** |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | *publishable key* (`sb_publishable_…`) | safe in the browser |
+| `SUPABASE_SERVICE_ROLE_KEY` | *secret key* (`sb_secret_…`) | **server-only, never public** |
 | `NEXT_PUBLIC_SITE_URL` | e.g. `https://admin.dirory.com` | used for auth redirects |
+
+The variable names keep the legacy wording (`ANON`, `SERVICE_ROLE`) so both older
+and newer projects work; the **values** are the new `sb_publishable_…` and
+`sb_secret_…` strings.
 
 ### After the domain resolves
 

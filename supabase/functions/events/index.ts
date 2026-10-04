@@ -19,7 +19,8 @@
 // Deploy: supabase functions deploy events --no-verify-jwt
 
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-import { corsHeaders, json } from "../_shared/cors.ts";
+import { corsHeaders, json, serviceHeaders } from "../_shared/cors.ts";
+import { resolveServiceKey } from "../_shared/keys.ts";
 
 const MAX_BATCH = 50;
 const MAX_BODY_BYTES = 512 * 1024; // 512 KB per batch
@@ -84,7 +85,7 @@ Deno.serve(async (req: Request) => {
 
   const supabase: SupabaseClient = createClient(
     Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    resolveServiceKey(),
     { auth: { persistSession: false } },
   );
 

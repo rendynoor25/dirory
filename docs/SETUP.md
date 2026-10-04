@@ -33,16 +33,31 @@ Everything can start on free tiers. Three facts shape the plan:
 
 ### 1.2 Grab your keys
 
-**Project Settings → API**. You need three values:
+**Supabase now issues two key formats. Use the new ones.**
 
-| Value | Goes into | Safe in the browser? |
+Project → **API Keys** (or **Project Settings → API**):
+
+| Supabase shows | Use it as | Safe in the browser? |
 |---|---|---|
 | Project URL | `NEXT_PUBLIC_SUPABASE_URL` | ✅ yes |
-| `anon` / publishable key | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ yes |
-| `service_role` key | server-side only | ❌ **never** |
+| **Publishable key** `sb_publishable_…` | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ yes, by design |
+| **Secret key** `sb_secret_…` | `SUPABASE_SERVICE_ROLE_KEY` | ❌ **server-only** |
 
-Click *Reveal* if the service-role key is hidden. Treat it like a root password —
-it bypasses Row Level Security entirely.
+The publishable key replaces the legacy `anon` key; the secret key replaces
+`service_role`. Legacy keys look like `eyJ…` (a JWT) and are deprecated at the
+end of 2026. The variable *names* in this project still say `ANON` and
+`SERVICE_ROLE` for compatibility, but either value works.
+
+**Treat the secret key like a database root password.** It bypasses Row Level
+Security entirely. If it ever reaches a browser, a public repo or a chat, revoke
+it immediately in API Keys and issue a new one.
+
+> **Migration note (handled in code).** New keys are plain strings, not JWTs, so
+> they must be sent on the `apikey` header **only**. Adding
+> `Authorization: Bearer` makes Supabase try to parse them as a JWT and fail with
+> `Invalid JWT`. The plugin and the Edge Functions detect the prefix and send the
+> Bearer header only for legacy `eyJ` keys.
+
 
 ### 1.3 Push the schema
 

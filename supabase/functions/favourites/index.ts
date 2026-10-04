@@ -22,6 +22,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders, json } from "../_shared/cors.ts";
+import { resolvePublishableKey } from "../_shared/keys.ts";
 
 const MAX_KEYS = 500; // the plugin caps "recent" at 60; allow headroom for stars
 
@@ -54,12 +55,17 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   // Forward the caller's token so RLS scopes every row to them.
+  //
+  // The caller's `Authorization: Bearer <jwt>` is a real user JWT, so it stays
+  // on that header. The publishable key identifies the project and goes on
+  // `apikey` — the @supabase/ssr client does this correctly for the new key
+  // format, so the key is resolved rather than read from a legacy name.
   const auth = req.headers.get("Authorization") ?? "";
   if (!auth.startsWith("Bearer ")) return json({ error: "missing token" }, 401);
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!,
+    resolvePublishableKey(),
     { global: { headers: { Authorization: auth } }, auth: { persistSession: false } },
   );
 

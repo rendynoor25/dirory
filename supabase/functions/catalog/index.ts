@@ -1,4 +1,5 @@
-import { json } from "../_shared/cors.ts";
+import { json, serviceHeaders } from "../_shared/cors.ts";
+import { resolveServiceKey } from "../_shared/keys.ts";
 
 /**
  * GET /catalog — approved catalogue for the plugin (PRD §10, M6).
@@ -23,8 +24,8 @@ Deno.serve(async (req: Request) => {
   const updatedSince = url.searchParams.get("updated_since");
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const headers = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` };
+  const serviceKey = resolveServiceKey();
+  const headers = serviceHeaders(serviceKey);
 
   const params = new URLSearchParams({
     select:
