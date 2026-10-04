@@ -31,6 +31,9 @@ declare
   adm uuid := '00000000-0000-0000-0000-0000000000c3';
   a_a uuid := '00000000-0000-0000-0000-0000000000e1';
   a_b uuid := '00000000-0000-0000-0000-0000000000e2';
+  a_b_pending uuid := '00000000-0000-0000-0000-0000000000e3';
+  a_b_draft   uuid := '00000000-0000-0000-0000-0000000000e4';
+  a_b_rejected uuid := '00000000-0000-0000-0000-0000000000e5';
   arch_a uuid := '00000000-0000-0000-0000-0000000000f1';
   arch_b uuid := '00000000-0000-0000-0000-0000000000f2';
   cnt  int;
@@ -56,20 +59,50 @@ begin
   on conflict do nothing;
 
   insert into public.assets (id, vendor_id, type, name, status) values
+    -- Published products. Every architect may browse these, and so may another
+    -- vendor: the catalogue is public by design.
     (a_a, v_a, 'model', 'A closet', 'approved'),
-    (a_b, v_b, 'model', 'B closet', 'approved')
+    (a_b, v_b, 'model', 'B closet', 'approved'),
+    -- Unreleased B products. These are the ones a competitor must never see.
+    (a_b_pending,  v_b, 'model', 'B unannounced closet', 'pending_review'),
+    (a_b_draft,    v_b, 'model', 'B draft closet', 'draft'),
+    (a_b_rejected, v_b, 'model', 'B rejected closet', 'rejected')
   on conflict (id) do nothing;
 
   -- =========================================================================
-  -- 1. Vendor A must not read Vendor B's assets
+  -- 1. Vendor A must not read Vendor B's UNPUBLISHED assets.
+  --
+  -- Not "zero rows": an approved product is public by design, because architects
+  -- browse every brand's published catalogue. The boundary that matters is the
+  -- unpublished state — a draft, an item in review, or a rejected product — and
+  -- the same rule applies to a vendor, an anonymous visitor and an architect.
   -- =========================================================================
   perform set_config('role', 'authenticated', true);
   perform set_config('request.jwt.claims', json_build_object('sub', u_a)::text, true);
 
-  select count(*) into cnt from public.assets where vendor_id = v_b;
+  select count(*) into cnt from public.assets
+   where vendor_id = v_b and status <> 'approved';
   if cnt <> 0 then
-    raise exception 'RLS FAIL: vendor A can read vendor B assets (% rows)', cnt;
+    raise exception 'RLS FAIL: vendor A can read % unpublished asset(s) of vendor B', cnt;
   end if;
+
+  -- Sanity: the public part really is visible, so the check above is meaningful
+  -- and not passing merely because the query returned nothing at all.
+  select count(*) into cnt from public.assets
+   where vendor_id = v_b and status = 'approved';
+  if cnt = 0 then
+    raise exception 'RLS TEST BROKEN: vendor A cannot read B approved assets either';
+  end if;
+
+  -- And Vendor B's own drafts must still be visible to Vendor B.
+  perform set_config('request.jwt.claims', json_build_object('sub', u_b)::text, true);
+  select count(*) into cnt from public.assets
+   where vendor_id = v_b and status <> 'approved';
+  if cnt = 0 then
+    raise exception 'RLS FAIL: vendor B cannot read its own unpublished assets';
+  end if;
+
+  perform set_config('request.jwt.claims', json_build_object('sub', u_a)::text, true);
 
   -- =========================================================================
   -- 2. Vendor A must not read search_misses
@@ -131,6 +164,13 @@ begin
   select count(*) into cnt from public.assets where status = 'approved';
   if cnt < 2 then
     raise exception 'RLS FAIL: anon cannot read approved assets (%)', cnt;
+  end if;
+
+  -- The same boundary as check 1: an anonymous visitor must not reach an
+  -- unpublished product, even though it can read the published catalogue.
+  select count(*) into cnt from public.assets where status <> 'approved';
+  if cnt <> 0 then
+    raise exception 'RLS FAIL: anon can read % unpublished asset(s)', cnt;
   end if;
 
   -- =========================================================================
@@ -266,7 +306,7 @@ begin
   -- cleanup
   perform set_config('role', 'postgres', true);
   delete from public.vendor_members where vendor_id in (v_a, v_b);
-  delete from public.assets where id in (a_a, a_b);
+  delete from public.assets where id in (a_a, a_b, a_b_pending, a_b_draft, a_b_rejected);
   delete from public.vendors where id in (v_a, v_b);
   delete from public.search_misses where query_norm = 'bathtub gold';
   delete from public.profiles where id in (u_a, u_b, adm);
