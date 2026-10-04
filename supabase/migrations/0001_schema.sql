@@ -1,8 +1,11 @@
--- Dirory — schema (PRD §9)
+-- Dirory - schema (PRD section 9)
 -- 0001_schema.sql : extensions, enums, tables, indexes.
--- Run order: 0001 (schema) → 0002 (RLS) → 0003 (functions) → 0004 (storage) → 0005 (seed).
+-- Run order: 0001 (schema) -> 0002 (RLS) -> 0003 (functions) -> 0004 (storage) -> 0005 (seed).
 
-create extension if not exists "uuid-ossp";
+-- gen_random_uuid() is built into Postgres 13+ (Supabase runs 15), so it needs
+-- no extension. This project ran `uuid-ossp` first and `uuid_generate_v4()`
+-- failed with "function does not exist" because the extension created on the
+-- line above is not visible to statements later in the same batch.
 create extension if not exists pgcrypto;
 
 -- ---------------------------------------------------------------------------
@@ -52,37 +55,10 @@ create table public.installs (
 );
 
 -- ---------------------------------------------------------------------------
--- Favourites (FR-A22, Q15)
---
--- v0.5.1 keeps favourites in the SketchUp settings, per computer: a list of
--- keys plus an automatic "Used before" list of the last 60 inserted or painted
--- items. From M6 they sync per account so they follow the user. This table is
--- the server side of that sync.
---
--- `legacy_key` is the local-library relative path the plugin sends today.
--- `asset_id` is filled in by the nightly link job once the cloud catalogue
--- exists (M6), at which point the plugin starts sending asset_id directly.
--- ---------------------------------------------------------------------------
-create table public.favourites (
-  id         uuid primary key default uuid_generate_v4(),
-  profile_id uuid not null references public.profiles(id) on delete cascade,
-  asset_id   uuid references public.assets(id) on delete cascade,
-  legacy_key text,
-  starred    boolean not null default true,  -- false = "Used before", true = ★
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  -- One row per (user, asset) once linked, or per (user, legacy path) before that.
-  unique (profile_id, asset_id),
-  unique (profile_id, legacy_key)
-);
-create index favourites_profile_idx on public.favourites (profile_id, starred, updated_at desc);
-create index favourites_asset_idx   on public.favourites (asset_id);
-
--- ---------------------------------------------------------------------------
 -- Vendors
 -- ---------------------------------------------------------------------------
 create table public.vendors (
-  id          uuid primary key default uuid_generate_v4(),
+  id          uuid primary key default gen_random_uuid(),
   name        text not null,
   brand_name  text not null,
   logo_url    text,
@@ -114,7 +90,7 @@ create table public.vendor_members (
 -- Taxonomy + catalogue
 -- ---------------------------------------------------------------------------
 create table public.categories (
-  id        uuid primary key default uuid_generate_v4(),
+  id        uuid primary key default gen_random_uuid(),
   type      category_type not null,
   name      text not null,
   parent_id uuid references public.categories(id) on delete set null,
@@ -123,7 +99,7 @@ create table public.categories (
 );
 
 create table public.assets (
-  id                 uuid primary key default uuid_generate_v4(),
+  id                 uuid primary key default gen_random_uuid(),
   vendor_id          uuid not null references public.vendors(id) on delete cascade,
   type               asset_type not null,
   category_id        uuid references public.categories(id) on delete set null,
@@ -150,8 +126,41 @@ create index assets_category_idx on public.assets (category_id);
 -- is a lookup index rather than a unique constraint.
 create index assets_legacy_key_idx on public.assets (legacy_key);
 
+-- ---------------------------------------------------------------------------
+-- Favourites (FR-A22, Q15)
+--
+-- Declared AFTER `assets`: the foreign key below requires the referenced table
+-- to exist first, and Postgres enforces that at CREATE TABLE time.
+--
+-- v0.5.1 keeps favourites in the SketchUp settings, per computer: a list of
+-- keys plus an automatic "Used before" list of the last 60 inserted or painted
+-- items. From M6 they sync per account so they follow the user. This table is
+-- the server side of that sync.
+--
+-- `legacy_key` is the local-library relative path the plugin sends today.
+-- `asset_id` is filled in by the nightly link job once the cloud catalogue
+-- exists (M6), at which point the plugin starts sending asset_id directly.
+-- ---------------------------------------------------------------------------
+create table public.favourites (
+  id         uuid primary key default gen_random_uuid(),
+  profile_id uuid not null references public.profiles(id) on delete cascade,
+  asset_id   uuid references public.assets(id) on delete cascade,
+  legacy_key text,
+  starred    boolean not null default true,  -- false = "Used before", true = starred.
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  -- One row per (user, asset) once linked, or per (user, legacy path) before that.
+  unique (profile_id, asset_id),
+  unique (profile_id, legacy_key)
+);
+create index favourites_profile_idx on public.favourites (profile_id, starred, updated_at desc);
+create index favourites_asset_idx   on public.favourites (asset_id);
+-- Several assets may legitimately share a legacy path (e.g. re-uploads), so this
+-- is a lookup index rather than a unique constraint.
+create index assets_legacy_key_idx on public.assets (legacy_key);
+
 create table public.asset_versions (
-  id             uuid primary key default uuid_generate_v4(),
+  id             uuid primary key default gen_random_uuid(),
   asset_id       uuid not null references public.assets(id) on delete cascade,
   version        int not null,
   file_path      text,           -- storage key in bucket "models"
@@ -172,7 +181,7 @@ alter table public.assets
 -- Billing
 -- ---------------------------------------------------------------------------
 create table public.plans (
-  id         uuid primary key default uuid_generate_v4(),
+  id         uuid primary key default gen_random_uuid(),
   name       text not null,
   price_idr  bigint not null default 0,
   period     plan_period not null default 'monthly',
@@ -182,7 +191,7 @@ create table public.plans (
 );
 
 create table public.subscriptions (
-  id                   uuid primary key default uuid_generate_v4(),
+  id                   uuid primary key default gen_random_uuid(),
   vendor_id            uuid not null references public.vendors(id) on delete cascade,
   plan_id              uuid references public.plans(id) on delete set null,
   status               subscription_status not null default 'trial',
@@ -193,7 +202,7 @@ create table public.subscriptions (
 create index subscriptions_vendor_idx on public.subscriptions (vendor_id);
 
 create table public.invoices (
-  id              uuid primary key default uuid_generate_v4(),
+  id              uuid primary key default gen_random_uuid(),
   vendor_id       uuid not null references public.vendors(id) on delete cascade,
   subscription_id uuid references public.subscriptions(id) on delete set null,
   amount_idr      bigint not null default 0,
@@ -220,7 +229,7 @@ create table public.ingest_log (
 );
 
 create table public.search_misses (
-  id         uuid primary key default uuid_generate_v4(),
+  id         uuid primary key default gen_random_uuid(),
   install_id uuid,
   profile_id uuid references public.profiles(id) on delete set null,
   query_norm text not null,
@@ -230,7 +239,7 @@ create table public.search_misses (
 create index search_misses_query_idx on public.search_misses (query_norm);
 
 create table public.missing_requests (
-  id                uuid primary key default uuid_generate_v4(),
+  id                uuid primary key default gen_random_uuid(),
   query_norm        text not null unique,
   miss_count        int not null default 0,
   distinct_installs int not null default 0,
@@ -243,9 +252,9 @@ create table public.missing_requests (
   resolved_asset_id uuid references public.assets(id) on delete set null
 );
 
--- Latest state per (install, model) — upserted on every snapshot (FR-A18).
+-- Latest state per (install, model) - upserted on every snapshot (FR-A18).
 create table public.usage_snapshots (
-  id         uuid primary key default uuid_generate_v4(),
+  id         uuid primary key default gen_random_uuid(),
   install_id uuid not null,
   profile_id uuid references public.profiles(id) on delete set null,
   model_id   text not null,
@@ -294,7 +303,7 @@ create table public.daily_asset_usage (
 create index daily_usage_vendor_idx on public.daily_asset_usage (vendor_id, day);
 
 create table public.quote_requests (
-  id           uuid primary key default uuid_generate_v4(),
+  id           uuid primary key default gen_random_uuid(),
   architect_id uuid references public.profiles(id) on delete set null,
   install_id   uuid,
   vendor_id    uuid not null references public.vendors(id) on delete cascade,
