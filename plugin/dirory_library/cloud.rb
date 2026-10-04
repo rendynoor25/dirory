@@ -28,7 +28,11 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.5.2'.freeze
+      PLUGIN_VERSION = '0.6.3'.freeze
+
+      # M6: cloud catalogue and signed asset cache live under ~/.dirory.
+      CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
+      SIGNED_URL_REFRESH_SECONDS = 3600
 
       # Leave empty until the backend exists; set it in
       # Extensions > Dirory > Connection Settings...
@@ -48,6 +52,33 @@ module Dirory
       @last_send = nil
       @last_error = nil
       @last_snapshot_at = nil
+      @inflight = []     # keeps in-flight HTTP requests alive (see new_request)
+
+      # --------------------------------------------------------------
+      # HTTP requests
+      #
+      # Sketchup::Http::Request is asynchronous: a local variable holding the
+      # request is garbage-collected the moment the calling method returns, so
+      # the response callback never fires ("Ruby never called back"). Every
+      # request must be kept reachable. This helper stores each one in
+      # @inflight and drops it when its callback completes.
+      #
+      # The official examples all keep the request in an instance variable for
+      # exactly this reason. This bit the M6 catalogue fetch — the panel opened,
+      # no response ever arrived, and it showed the "didn't hear back" message.
+      # --------------------------------------------------------------
+      def self.new_request(url, method = Sketchup::Http::GET)
+        request = Sketchup::Http::Request.new(url, method)
+        @inflight << request
+        @inflight.shift while @inflight.length > 20
+        request
+      end
+
+      def self.release_request(request)
+        @inflight.delete(request)
+      rescue StandardError
+        nil
+      end
 
       # --------------------------------------------------------------
       # Settings
@@ -104,10 +135,18 @@ module Dirory
       end
 
       # --------------------------------------------------------------
-      # Account (soft sign-in)
+      # Account — verified device-code login (M6 / FR-A4)
+      #
+      # The plugin no longer trusts a typed name + email. It starts a device
+      # login, opens the browser, polls until the architect approves, and stores
+      # the opaque token the server issues. `signed_in?` is still the single gate.
       # --------------------------------------------------------------
+      def self.plugin_token
+        read('plugin_token', '').to_s
+      end
+
       def self.signed_in?
-        !read('account_email', '').to_s.empty?
+        !plugin_token.empty?
       end
 
       def self.user
@@ -124,38 +163,170 @@ module Dirory
         u = user
         state = {
           'signedIn' => !u.nil?,
+          'cloudConfigured' => configured?,
           'name' => u ? u['name'] : '',
           'email' => u ? u['email'] : '',
           'phone' => u ? u['phone'] : '',
           'firm' => u ? u['firm'] : '',
           'shareUsage' => share_usage?,
-          'shareProject' => share_project?
+          'shareProject' => share_project?,
+          'devicePending' => !@pending_device.nil?,
+          'deviceStatus' => @poll_info.to_s,
+          'deviceUserCode' => @pending_device ? @pending_device['user_code'].to_s : '',
+          'verificationUrl' => @pending_device ? @pending_device['verification_url'].to_s : ''
         }
         state['error'] = error if error
         state
       end
 
-      # Returns nil on success or an error message.
-      def self.sign_in(data)
-        name = data['name'].to_s.strip
-        email = data['email'].to_s.strip.downcase
-        return 'Please enter your name.' if name.empty?
-        return 'Please enter a valid email address.' unless email =~ EMAIL_RE
+      # Kick off the browser sign-in. Returns an error message, or nil while the
+      # flow runs in the background. The panel shows the returned user code.
+      def self.sign_in_start(dialog)
+        return 'Set the server URL first (Extensions > Dirory > Connection Settings).' unless configured?
+        unless defined?(Sketchup::Http::Request)
+          return 'This SketchUp version has no Sketchup::Http (needs 2021+).'
+        end
+        @sign_in_dialog = dialog
+        @pending_device = { 'user_code' => '', 'verification_url' => '' }
 
-        write('account_name', name)
-        write('account_email', email)
-        write('account_phone', data['phone'].to_s.strip)
-        write('account_firm', data['firm'].to_s.strip)
-        enqueue('account', { 'action' => 'sign_in' }, replace_key: 'account')
-        @dirty.clear # re-send usage under the new identity
-        @last_hash.clear
+        request = new_request("#{api_base_url}/auth-device/start", Sketchup::Http::POST)
+        request.headers = base_headers
+        request.body = JSON.generate(
+          'install_id' => install_id,
+          'plugin_version' => PLUGIN_VERSION,
+          'platform' => (RUBY_PLATFORM =~ /mswin|mingw/i ? 'win' : 'mac')
+        )
+        request.start do |_req, response|
+          release_request(request)
+          safely do
+            code = response.status_code.to_i
+            body = (JSON.parse(response.body.to_s) rescue {})
+            if code >= 200 && code < 300 && body['device_code'] && body['user_code']
+              @pending_device = body
+              @poll_info = ''
+              open_sign_in_page
+              Dirory::Library.push_account
+              start_device_poll
+            else
+              @pending_device = nil
+              Dirory::Library.push_account("Could not start sign-in (HTTP #{code}). Please try again.")
+            end
+          end
+        end
         nil
       end
 
+      # The verification page is on our own site; "provider=google" lets it go
+      # straight to Google instead of showing a login choice.
+      def self.sign_in_url
+        return nil unless @pending_device
+        url = (@pending_device['verification_url_complete'] || @pending_device['verification_url']).to_s
+        return nil if url.empty?
+        url += (url.include?('?') ? '&' : '?') + 'provider=google' unless url.include?('provider=')
+        url
+      end
+
+      def self.open_sign_in_page
+        url = sign_in_url
+        UI.openURL(url) if url
+      end
+
+      def self.cancel_sign_in
+        @pending_device = nil
+        @poll_info = ''
+        stop_device_poll
+      end
+
+      def self.start_device_poll
+        stop_device_poll
+        @device_poll_ticks = 0
+        @device_poll_timer = UI.start_timer(5, true) do
+          safely { device_poll_tick }
+        end
+      end
+
+      def self.stop_device_poll
+        if @device_poll_timer
+          begin
+            UI.stop_timer(@device_poll_timer)
+          rescue StandardError
+            nil
+          end
+          @device_poll_timer = nil
+        end
+      end
+
+      def self.device_poll_tick
+        return unless @pending_device
+        @device_poll_ticks = @device_poll_ticks.to_i + 1
+        if @device_poll_ticks > 180 # 15 minutes at 5 s
+          @pending_device = nil
+          stop_device_poll
+          Dirory::Library.push_account('Sign-in timed out. Please try again.')
+          return
+        end
+        request = new_request("#{api_base_url}/auth-device/poll", Sketchup::Http::POST)
+        request.headers = base_headers
+        request.body = JSON.generate(
+          'device_code' => @pending_device['device_code'],
+          'install_id' => install_id,
+          'plugin_version' => PLUGIN_VERSION
+        )
+        request.start do |_req, response|
+          release_request(request)
+          safely { handle_device_poll(response) }
+        end
+      end
+
+      def self.handle_device_poll(response)
+        code = response.status_code.to_i
+        body = (JSON.parse(response.body.to_s) rescue {})
+        body = {} unless body.is_a?(Hash)
+        info = "HTTP #{code}#{body['status'] ? ' ' + body['status'].to_s : (body['error'] ? ' ' + body['error'].to_s : '')}"
+        puts "[Dirory] sign-in poll: #{info}"
+        if info != @poll_info
+          @poll_info = info
+          Dirory::Library.push_account if @pending_device
+        end
+        case body['status']
+        when 'approved'
+          write('plugin_token', body['token'].to_s)
+          u = body['user'] || {}
+          write('account_name', u['name'].to_s)
+          write('account_email', u['email'].to_s)
+          @pending_device = nil
+          stop_device_poll
+          # A verified identity means a fresh send: usage under the account and
+          # favourites that follow the user across computers (FR-A22).
+          @dirty.each_key { |guid| @dirty[guid] = true }
+          @last_hash.clear
+          sync_favourites_pull
+          Dirory::Library.push_account
+          Dirory::Library.signed_in_now
+        when 'expired', 'denied'
+          @pending_device = nil
+          stop_device_poll
+          Dirory::Library.push_account('Sign-in was not completed. Please try again.')
+        end
+      end
+
       def self.sign_out
-        enqueue('account', { 'action' => 'sign_out' }, replace_key: 'account')
-        flush
-        %w[account_name account_email account_phone account_firm].each { |k| write(k, '') }
+        token = plugin_token
+        result = nil
+        if !token.empty? && configured? && defined?(Sketchup::Http::Request)
+          request = new_request("#{api_base_url}/auth-device/revoke", Sketchup::Http::POST)
+          request.headers = request_headers
+          request.body = '{}'
+          request.start do |_req, _response|
+            release_request(request)
+            nil
+          end
+          result = true
+        end
+        @pending_device = nil
+        stop_device_poll
+        %w[plugin_token account_name account_email account_phone account_firm].each { |k| write(k, '') }
+        result
       end
 
       def self.set_share_usage(on)
@@ -175,7 +346,10 @@ module Dirory
       # Called by insert / paint / quote. Returns true when allowed; otherwise
       # asks the panel to show its sign-in form and returns false.
       def self.require_sign_in(dialog)
-        return true if signed_in?
+        # Without a server URL there is no account system to sign in to, so a
+        # local library stays usable (otherwise every card click is blocked by
+        # a sign-in that can never complete).
+        return true if !configured? || signed_in?
         if dialog
           dialog.execute_script('window.diroryNeedSignIn && window.diroryNeedSignIn();')
         else
@@ -262,12 +436,25 @@ module Dirory
       # So: always send `apikey`; add the Bearer header only for a legacy JWT.
       # Detection is by prefix (`eyJ` = base64url of `{"`) rather than by trying
       # one and retrying, which would double every request on failure.
-      def self.request_headers
+      # Apikey only; no bearer. Used for the unauthenticated device sign-in calls.
+      def self.base_headers
         headers = { 'Content-Type' => 'application/json' }
         key = api_key
-        unless key.empty?
-          headers['apikey'] = key
-          headers['Authorization'] = "Bearer #{key}" if legacy_jwt_key?(key)
+        headers['apikey'] = key unless key.empty?
+        headers
+      end
+
+      # Adds the plugin's own opaque token as Bearer when signed in. That token
+      # is what the M6 Edge Functions read; the apikey is still sent so Supabase
+      # knows which project the request belongs to. For legacy JWT anon keys the
+      # bearer is the key itself (M6 tokens always win).
+      def self.request_headers
+        headers = base_headers
+        token = plugin_token
+        if !token.empty?
+          headers['Authorization'] = "Bearer #{token}"
+        elsif legacy_jwt_key?(api_key)
+          headers['Authorization'] = "Bearer #{api_key}"
         end
         headers
       end
@@ -292,10 +479,11 @@ module Dirory
 
         @sending = true
         sent_ids = batch.map { |e| e['id'] }
-        request = Sketchup::Http::Request.new("#{api_base_url}/events", Sketchup::Http::POST)
+        request = new_request("#{api_base_url}/events", Sketchup::Http::POST)
         request.headers = request_headers
         request.body = JSON.generate(envelope(batch))
         request.start do |_req, response|
+          release_request(request)
           @sending = false
           code = response.status_code.to_i
           if code >= 200 && code < 300
@@ -401,38 +589,265 @@ module Dirory
       end
 
       # --------------------------------------------------------------
-      # Quote requests (sent alongside the existing WhatsApp hand-off)
+      # M6 cloud catalogue (FR-A7, FR-A10)
+      #
+      # The scan_library source is replaced by this fetch. The item hash shape is
+      # identical; the panel does not change. The last good response is cached on
+      # disk so a later launch works offline.
       # --------------------------------------------------------------
-      def self.record_quote(brands, report)
-        return unless share_usage?
-        items = []
-        report['models'].each do |r|
-          next unless brands.include?(r['brand']) && r['count'].to_i > 0
-          items << { 'type' => 'model', 'asset' => r['id'], 'name' => r['name'],
-                     'brand' => r['brand'], 'qty' => r['count'].to_i, 'area_m2' => 0.0 }
+      def self.catalog_cache_path
+        FileUtils.mkdir_p(CACHE_ROOT)
+        File.join(CACHE_ROOT, 'catalog.json')
+      end
+
+      def self.load_cached_catalog
+        path = catalog_cache_path
+        return nil unless File.file?(path)
+        JSON.parse(File.read(path, encoding: 'UTF-8'))
+      rescue StandardError
+        nil
+      end
+
+      def self.save_cached_catalog(data)
+        path = catalog_cache_path
+        tmp = "#{path}.tmp"
+        File.write(tmp, JSON.generate(data), encoding: 'UTF-8')
+        FileUtils.mv(tmp, path, force: true)
+      rescue StandardError => e
+        puts "[Dirory] could not cache the catalogue: #{e.message}"
+      end
+
+      # Fetch the cloud catalogue, then render it in the panel. Falls back to the
+      # cached copy, and finally to the local folder scan.
+      #
+      # The panel shows a "didn't hear back" message if Ruby never renders, so
+      # every path here MUST end in a render call. Errors are reported to the
+      # panel rather than swallowed by `safely` (which only logs).
+      def self.fetch_catalog
+        unless configured?
+          Dirory::Library.render_from_scan
+          return
         end
-        report['materials'].each do |r|
-          next unless brands.include?(r['brand']) && r['faces'].to_i > 0
-          items << { 'type' => 'material', 'asset' => r['id'], 'name' => r['name'],
-                     'brand' => r['brand'], 'qty' => 0, 'area_m2' => r['area_m2'].to_f }
+        unless defined?(Sketchup::Http::Request)
+          Dirory::Library.render_catalog(load_cached_catalog, 'This SketchUp cannot download the cloud catalogue.')
+          return
         end
-        return if items.empty?
-        model = Sketchup.active_model
-        enqueue('quote_request', {
-          'model_id' => model ? model.guid.to_s : '',
-          # A quote is a disclosure the user initiates, so the title travels when
-          # they have opted in - the same switch as the snapshot. A user who kept
-          # project sharing off does not leak the title merely by asking a price.
-          'project' => share_project? && model ? model.title.to_s : '',
-          'brands' => brands,
-          'items' => items
-        })
-        flush
+
+        begin
+          request = new_request("#{api_base_url}/catalog", Sketchup::Http::GET)
+          request.headers = request_headers
+          request.start do |_req, response|
+            release_request(request)
+            begin
+              code = response.status_code.to_i
+              if code >= 200 && code < 300
+                data = (JSON.parse(response.body.to_s) rescue nil)
+                if data && data['items']
+                  save_cached_catalog(data)
+                  Dirory::Library.render_catalog(data)
+                else
+                  Dirory::Library.render_catalog(load_cached_catalog, 'The catalogue response was not valid.')
+                end
+              else
+                Dirory::Library.render_catalog(load_cached_catalog, "Catalogue server answered HTTP #{code}")
+              end
+            rescue StandardError => e
+              # Never leave the panel waiting: show the error on the panel.
+              @last_error = "#{e.class}: #{e.message}"
+              Dirory::Library.render_catalog(load_cached_catalog, "Catalogue error: #{e.message}")
+            end
+          end
+        rescue StandardError => e
+          @last_error = "#{e.class}: #{e.message}"
+          Dirory::Library.render_catalog(
+            load_cached_catalog,
+            "Could not reach the server (#{e.message}). Showing cached/local items."
+          )
+        end
       end
 
       # --------------------------------------------------------------
-      # Change tracking, so a big model is only re-scanned after an edit
+      # M6 signed downloads (FR-A11)
+      #
+      # The private buckets cannot be read directly, so the plugin asks
+      # /download/<asset_id> for a short-lived URL, then caches the file under
+      # ~/.dirory/cache/<asset_id>/<version>/ and inserts/paints from there.
       # --------------------------------------------------------------
+      def self.cache_root
+        dir = File.join(CACHE_ROOT, 'cache')
+        FileUtils.mkdir_p(dir)
+        dir
+      end
+
+      def self.cached_asset_path(asset_id, version, file_name)
+        dir = File.join(cache_root, asset_id.to_s, version.to_s)
+        FileUtils.mkdir_p(dir)
+        File.join(dir, file_name.to_s)
+      end
+
+      def self.find_cached_asset(asset_id, version)
+        dir = File.join(cache_root, asset_id.to_s, version.to_s)
+        return nil unless Dir.exist?(dir)
+        Dir.glob(File.join(dir, '*')).find do |p|
+          next false unless File.file?(p)
+          if File.size(p) > 0
+            true
+          else
+            File.delete(p) rescue nil # an empty file is a failed download
+            false
+          end
+        end
+      end
+
+      # Yields (local_path, nil) when ready, or (nil, message) on failure.
+      def self.download_asset(data)
+        asset_id = data['asset_id'].to_s
+        version = (data['version'] || 1).to_i
+        unless configured? && signed_in? && defined?(Sketchup::Http::Request)
+          yield(nil, 'Sign in to Dirory and set the server URL before downloading.')
+          return
+        end
+        cached = find_cached_asset(asset_id, version)
+        if cached
+          yield(cached, nil)
+          return
+        end
+        request = new_request("#{api_base_url}/download/#{asset_id}", Sketchup::Http::GET)
+        request.headers = request_headers
+        request.start do |_req, response|
+          release_request(request)
+          begin
+            code = response.status_code.to_i
+            if code >= 200 && code < 300
+              meta = (JSON.parse(response.body.to_s) rescue nil)
+              if meta && meta['url'] && meta['file_name']
+                fetch_signed_file(meta, asset_id, version) { |path, err| yield(path, err) }
+              else
+                yield(nil, 'The server did not return a download link.')
+              end
+            elsif code == 401
+              yield(nil, 'Please sign in to Dirory to download this item.')
+            else
+              yield(nil, "Download server answered HTTP #{code}")
+            end
+          rescue StandardError => e
+            # Never swallow this: a silent failure leaves the click doing nothing.
+            @last_error = "#{e.class}: #{e.message}"
+            yield(nil, "Download failed: #{e.message}")
+          end
+        end
+      end
+
+      def self.fetch_signed_file(meta, asset_id, version)
+        file_name = File.basename(meta['file_name'].to_s)
+        dest = cached_asset_path(asset_id, version, file_name)
+        request = new_request(meta['url'].to_s, Sketchup::Http::GET)
+        request.start do |_req, response|
+          release_request(request)
+          begin
+            code = response.status_code.to_i
+            if code >= 200 && code < 300
+              body = response.body
+              if body.nil? || body.empty?
+                yield(nil, 'The downloaded file was empty.')
+              else
+                File.binwrite(dest, body)
+                yield(dest, nil)
+              end
+            else
+              yield(nil, "File download answered HTTP #{code}")
+            end
+          rescue StandardError => e
+            yield(nil, "Could not save the file: #{e.message}")
+          end
+        end
+      rescue StandardError => e
+        yield(nil, e.message)
+      end
+
+      # --------------------------------------------------------------
+      # M6 favourites sync (FR-A22 / Q15)
+      # --------------------------------------------------------------
+      def self.sync_favourites_pull
+        return unless configured? && signed_in? && defined?(Sketchup::Http::Request)
+        request = new_request("#{api_base_url}/favourites", Sketchup::Http::GET)
+        request.headers = request_headers
+        request.start do |_req, response|
+          release_request(request)
+          safely do
+            if response.status_code.to_i == 200
+              data = (JSON.parse(response.body.to_s) rescue {})
+              Dirory::Library.merge_server_favourites(data)
+            end
+          end
+        end
+      end
+
+      def self.push_favourites(favourites, recent)
+        return unless configured? && signed_in? && defined?(Sketchup::Http::Request)
+        request = new_request("#{api_base_url}/favourites", Sketchup::Http::POST)
+        request.headers = request_headers
+        request.body = JSON.generate('favourites' => favourites, 'recent' => recent)
+        request.start do |_req, _response|
+          release_request(request)
+          nil
+        end
+      rescue StandardError => e
+        puts "[Dirory] favourite sync failed: #{e.message}"
+      end
+
+      # --------------------------------------------------------------
+      # M6 server-side quote with consent (FR-A20)
+      # --------------------------------------------------------------
+      def self.post_quote(payload, report)
+        items = quote_items(payload, report)
+        return false if items.empty?
+        return false unless configured? && signed_in? && defined?(Sketchup::Http::Request)
+        request = new_request("#{api_base_url}/quotes", Sketchup::Http::POST)
+        request.headers = request_headers
+        request.body = JSON.generate(
+          'install_id' => install_id,
+          'project_name' => payload['project_name'].to_s,
+          'city' => payload['city'].to_s,
+          'timeline' => payload['timeline'].to_s,
+          'note' => payload['note'].to_s,
+          'phone_shared' => payload['phone_shared'] ? true : false,
+          'brands' => payload['brands'] || [],
+          'items' => items
+        )
+        request.start do |_req, response|
+          release_request(request)
+          safely do
+            ok = response.status_code.to_i >= 200 && response.status_code.to_i < 300
+            Dirory::Library.quote_result(ok, ok ? nil : "HTTP #{response.status_code}")
+          end
+        end
+        true
+      end
+
+      def self.quote_items(payload, report)
+        brands = Array(payload['brands']).map(&:to_s)
+        items = []
+        report['models'].each do |r|
+          next unless brands.include?(r['brand']) && r['count'].to_i > 0
+          items << { 'asset_id' => uuid_like?(r['id']), 'brand' => r['brand'], 'type' => 'model',
+                     'name' => r['name'], 'qty' => r['count'].to_i, 'area_m2' => 0.0 }
+        end
+        report['materials'].each do |r|
+          next unless brands.include?(r['brand']) && r['faces'].to_i > 0
+          items << { 'asset_id' => uuid_like?(r['id']), 'brand' => r['brand'], 'type' => 'material',
+                     'name' => r['name'], 'qty' => 0, 'area_m2' => r['area_m2'].to_f }
+        end
+        items
+      end
+
+      # An asset id is a UUID; a legacy local-library key is not.
+      def self.uuid_like?(value)
+        str = value.to_s
+        str =~ /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i ? str : nil
+      end
+
+
       def self.mark_dirty(model)
         @dirty[model.guid.to_s] = true
       rescue StandardError

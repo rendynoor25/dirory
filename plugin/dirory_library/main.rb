@@ -282,17 +282,37 @@ module Dirory
       list = favourite_keys
       list.include?(key) ? list.delete(key) : list.unshift(key)
       write_key_list('favourites', list)
+      # M6: keep the server copy in step so favourites follow the account (FR-A22).
+      Cloud.push_favourites(list, recent_keys)
     end
 
-    # Most recent first, no duplicates.
-    def self.remember_used(path)
-      key = relative_key(path)
+    # Most recent first, no duplicates. `key` is the cloud asset_id when known,
+    # otherwise the legacy local-library path.
+    def self.remember_used(path, key = nil)
+      key = key.to_s
+      key = relative_key(path) if key.empty?
       return if key.to_s.empty?
       list = [key] + (recent_keys - [key])
       write_key_list('recent', list.first(RECENT_LIMIT))
       push_favourites
+      Cloud.push_favourites(favourite_keys, list.first(RECENT_LIMIT))
     rescue StandardError => e
       puts "[Dirory] could not remember used item: #{e.message}"
+    end
+
+    # M6: merge the server's lists into the local ones (union, local order first),
+    # then push the merged result back so both sides agree.
+    def self.merge_server_favourites(data)
+      server_fav = Array(data['favourites']).map(&:to_s)
+      server_recent = Array(data['recent']).map(&:to_s)
+      fav = (favourite_keys + server_fav).uniq
+      recent = (recent_keys + server_recent).uniq.first(RECENT_LIMIT)
+      write_key_list('favourites', fav)
+      write_key_list('recent', recent)
+      push_favourites
+      Cloud.push_favourites(fav, recent)
+    rescue StandardError => e
+      puts "[Dirory] could not merge favourites: #{e.message}"
     end
 
     def self.favourites_state
@@ -392,7 +412,12 @@ module Dirory
 
     def self.tag_entity(entity, data, type)
       path = data['path'].to_s
-      entity.set_attribute(ATTR_DICT, 'id', relative_key(path))
+      asset_id = data['asset_id'].to_s
+      # FR-A12: cloud items are tagged by their UUID as well as the existing
+      # path-based id, so usage and favourites survive a cache move.
+      id = asset_id.empty? ? relative_key(path) : asset_id
+      entity.set_attribute(ATTR_DICT, 'id', id)
+      entity.set_attribute(ATTR_DICT, 'asset_id', asset_id) unless asset_id.empty?
       entity.set_attribute(ATTR_DICT, 'type', type)
       entity.set_attribute(ATTR_DICT, 'name', (data['name'] || File.basename(path, '.*')).to_s)
       entity.set_attribute(ATTR_DICT, 'category', data['category'].to_s)
@@ -404,7 +429,7 @@ module Dirory
       return nil unless dict && dict['id']
       {
         'id' => dict['id'].to_s,
-        'name' => (dict['type'] == 'material' ? File.basename(dict['id'].to_s, '.*') : (dict['name'] || dict['id'])).to_s,
+        'name' => (dict['name'].to_s.empty? ? File.basename(dict['id'].to_s, '.*') : dict['name']).to_s,
         'category' => dict['category'].to_s,
         'brand' => (dict['brand'].to_s.strip.empty? ? DIRORY_BRAND : dict['brand'].to_s)
       }
@@ -418,36 +443,127 @@ module Dirory
     def self.insert_model(payload)
       return unless Cloud.require_sign_in(@dialog)
       data = parse_payload(payload)
-      path = data['path']
-      return unless path && File.exist?(path)
+      resolve_asset_path(data) do |path, error|
+        if error
+          # UI calls must run on the main thread, not inside the HTTP callback.
+          run_on_main_thread { UI.messagebox(error) }
+        else
+          # place_component starts an interactive tool. Starting it inside an
+          # async HTTP callback silently does nothing — the cursor never picks
+          # up the component. Hop back to the main thread first.
+          run_on_main_thread { insert_model_file(data, path) }
+        end
+      end
+    end
+
+    # Run a block on the next main-thread tick. UI.start_timer(0.01, false) is
+    # the documented way to leave a callback (HTTP, HTML dialog) and rejoin the
+    # SketchUp main thread, where tool activation, send_action and
+    # place_component actually take effect.
+    #
+    # Why this matters (both are known SketchUp quirks):
+    #   * `Sketchup.send_action('selectPaintTool:')` called directly from an
+    #     HtmlDialog callback frequently does NOT activate the Paint tool.
+    #   * `model.place_component` "queues the action until Ruby relinquishes
+    #     control to the GUI", so it must run after the callback returns.
+    # The forum workaround for both is a timer, plus `Sketchup.focus` to make
+    # sure the 3D view has focus when the tool activates.
+    def self.run_on_main_thread(&block)
+      UI.start_timer(0.1, false) do
+        begin
+          begin
+            Sketchup.focus
+          rescue StandardError
+            nil
+          end
+          block.call
+        rescue StandardError => e
+          # An exception inside a timer is otherwise swallowed and the click
+          # looks like it did nothing. Always log it and tell the user.
+          puts "[Dirory] #{e.class}: #{e.message}"
+          puts e.backtrace.first(6).join("\n") if e.backtrace
+          UI.messagebox("Dirory could not finish that action:\n#{e.class}: #{e.message}")
+        end
+      end
+    rescue StandardError
+      # If the timer cannot be scheduled, fall back to running inline.
+      block.call
+    end
+
+    # A card may be a local file (legacy folder library) or a cloud asset that
+    # must be downloaded to the cache first (FR-A11). Yields (path, nil) or
+    # (nil, message). The yield may happen later (async HTTP), so callers must
+    # not assume they are still on the main thread.
+    def self.resolve_asset_path(data)
+      path = data['path'].to_s
+      if !path.empty? && File.exist?(path)
+        yield(path, nil)
+        return
+      end
+      if Cloud.uuid_like?(data['asset_id'])
+        Sketchup.set_status_text('Dirory: downloading the file…', SB_PROMPT)
+        Cloud.download_asset(data) do |local, error|
+          if local
+            data['path'] = local
+            yield(local, nil)
+          else
+            yield(nil, error || 'The file could not be downloaded.')
+          end
+        end
+      else
+        yield(nil, 'This item is not available on this computer. Click ⟳ to refresh the catalogue.')
+      end
+    end
+
+    def self.insert_model_file(data, path)
       unless File.extname(path).downcase == '.skp'
         UI.messagebox("This card does not point to a SketchUp model (.skp):\n#{path}")
         return
       end
+      unless File.file?(path) && File.size(path) > 0
+        UI.messagebox("This model file is missing or empty:\n#{path}")
+        return
+      end
 
       model = Sketchup.active_model
+      started = false
       begin
         Sketchup.set_status_text('Dirory: loading SketchUp model…', SB_PROMPT)
         comp_def = nil
-        model.start_operation('Load Dirory Model', true)
         begin
+          model.start_operation('Load Dirory Model', true)
+          started = true
           comp_def = with_loading_cursor { model.definitions.load(path) }
           tag_entity(comp_def, data, 'model') if comp_def
           model.commit_operation
+          started = false
         rescue StandardError
-          model.abort_operation
+          model.abort_operation if started
+          started = false
           raise
         end
         unless comp_def
           UI.messagebox("SketchUp could not load this model:\n#{path}")
+          Sketchup.set_status_text('')
           return
         end
-        remember_used(path)
+        remember_used(path, data['asset_id'])
+
+        # Hand the keyboard/mouse back to the 3D view, otherwise the placement
+        # tool starts but the model never follows the cursor while the Dirory
+        # panel still has focus.
+        begin
+          Sketchup.focus
+        rescue StandardError
+          nil
+        end
+        Sketchup.set_status_text('Dirory: click in the model to place it. Press Esc to cancel.', SB_PROMPT)
         model.place_component(comp_def)
       rescue StandardError => e
-        UI.messagebox("Couldn't start placing model:\n#{e.message}")
-      ensure
+        model.abort_operation if started
+        puts "[Dirory] insert_model_file failed: #{e.class}: #{e.message}"
         Sketchup.set_status_text('')
+        UI.messagebox("Couldn't load this model:\n#{e.class}: #{e.message}")
       end
     end
 
@@ -472,9 +588,31 @@ module Dirory
 
     # ------------------------------------------------------------------
     # A click-to-paint tool: stays active so the user can click several
-    # faces in a row, like SketchUp's native Paint Bucket tool.
+    # faces in a row, like SketchUp's native Paint Bucket tool. It is only the
+    # fallback for when SketchUp refuses to switch to its own Paint Bucket.
+    #
+    # v0.6.1 fixes:
+    #  * shows a paint-bucket pointer (onSetCursor) so it is obvious the tool
+    #    is active;
+    #  * paints the side of the face you actually click (front OR back) - a
+    #    plane drawn on the ground usually shows its back side from above, and
+    #    painting the hidden front side looked like "nothing happened";
+    #  * looks through edges under the pointer to the face behind them;
+    #  * reports errors instead of silently aborting.
     # ------------------------------------------------------------------
     class MaterialPaintTool
+      CURSOR_HOT_X = 4
+      CURSOR_HOT_Y = 27
+
+      def self.cursor_id
+        return @cursor_id if @cursor_id
+        file = File.join(PLUGIN_ROOT, 'ui', 'paint_cursor.png')
+        @cursor_id = File.file?(file) ? UI.create_cursor(file, CURSOR_HOT_X, CURSOR_HOT_Y).to_i : 0
+      rescue StandardError => e
+        puts "[Dirory] could not create the paint cursor: #{e.message}"
+        @cursor_id = 0
+      end
+
       def initialize(material)
         @material = material
         @face = nil
@@ -485,27 +623,64 @@ module Dirory
         update_status
       end
 
-      def resume(_view)
+      def resume(view)
         update_status
+        view.invalidate
+      end
+
+      def deactivate(view)
+        view.invalidate
       end
 
       def update_status
         Sketchup.set_status_text("Click a surface to paint it with \"#{@material.display_name}\". Press Esc to stop.", SB_PROMPT)
       end
 
-      def onMouseMove(_flags, x, y, view)
-        picker = view.pick_helper
-        picker.do_pick(x, y)
-        path = picker.path_at(0) rescue nil
-        @face = path && path.reverse.find { |entity| entity.is_a?(Sketchup::Face) }
-        @transform = nil
-        if @face && path
-          begin
-            @transform = Sketchup::InstancePath.new(path).transformation
+      def onSetCursor
+        id = self.class.cursor_id
+        return false unless id && id > 0
+        UI.set_cursor(id)
+        true
+      rescue StandardError
+        false
+      end
+
+      # Returns [face, transformation] for the first face under the pointer.
+      # Edges that sit on top of the face are skipped, not treated as a miss.
+      def pick_face(view, x, y)
+        ph = view.pick_helper
+        ph.do_pick(x, y)
+        ph.count.times do |index|
+          path = ph.path_at(index)
+          next unless path
+          face = path.reverse.find { |entity| entity.is_a?(Sketchup::Face) }
+          next unless face && face.valid?
+          transform = begin
+            ph.transformation_at(index)
           rescue StandardError
-            @transform = Geom::Transformation.new
+            nil
           end
+          return [face, transform || Geom::Transformation.new]
         end
+        face = ph.picked_face
+        return [face, Geom::Transformation.new] if face && face.valid?
+        [nil, nil]
+      rescue StandardError
+        [nil, nil]
+      end
+
+      # True when the camera is looking at the back of the face.
+      def back_side?(view, x, y, face, transform)
+        ray = view.pickray(x, y)
+        direction = ray[1]
+        normal = face.normal.transform(transform)
+        normal.dot(direction) > 0
+      rescue StandardError
+        false
+      end
+
+      def onMouseMove(_flags, x, y, view)
+        @face, @transform = pick_face(view, x, y)
         view.invalidate
       end
 
@@ -537,29 +712,32 @@ module Dirory
       end
 
       def onLButtonDown(_flags, x, y, view)
-        ph = view.pick_helper
-        ph.do_pick(x, y)
-        path = ph.path_at(0) rescue nil
-        ent = path && path.reverse.find { |entity| entity.is_a?(Sketchup::Face) }
-        return unless ent && ent.valid?
+        face, transform = pick_face(view, x, y)
+        unless face
+          Sketchup.set_status_text('Dirory: no surface under the pointer. Click on a face to paint it.', SB_PROMPT)
+          return
+        end
 
+        back = back_side?(view, x, y, face, transform)
         model = view.model
         model.start_operation('Apply Dirory Material', true)
         begin
-          ent.material = @material
+          if back
+            face.back_material = @material
+          else
+            face.material = @material
+          end
           model.commit_operation
-          view.invalidate
-        rescue StandardError
+        rescue StandardError => e
           model.abort_operation
+          puts "[Dirory] paint failed: #{e.class}: #{e.message}"
+          UI.messagebox("Dirory could not paint this surface:\n#{e.message}")
         end
+        view.invalidate
       end
 
       def onCancel(_reason, view)
         view.model.select_tool(nil)
-      end
-
-      def onKeyDown(key, _repeat, _flags, _view)
-        Sketchup.active_model.select_tool(nil) if key == 27
       end
     end
 
@@ -583,11 +761,21 @@ module Dirory
       (w > 0 && h > 0) ? [w, h] : nil
     end
 
+    # FR-A13: prefer the server's tile_size_cm, fall back to the filename.
+    def self.tile_size_for(data, path)
+      server = data['tile_size_cm']
+      if server.is_a?(Array) && server.length >= 2 &&
+         server[0].to_f > 0 && server[1].to_f > 0
+        return [server[0].to_f, server[1].to_f]
+      end
+      tile_size_cm(path)
+    end
+
     # only_if_distorted: for a material that already exists, only touch it when
     # its proportions are wrong, so a size the user changed by hand (same
     # proportions) is left alone.
-    def self.fit_tile_size(material, path, only_if_distorted = false)
-      size = tile_size_cm(path)
+    def self.fit_tile_size(material, path, only_if_distorted = false, size = nil)
+      size ||= tile_size_cm(path)
       tex = material.texture
       return unless size && tex
       w = (size[0] * 10.0 + GROUT_MM).mm
@@ -612,15 +800,15 @@ module Dirory
     # CURRENT material, then switch to SketchUp's own Paint Bucket tool — so
     # it behaves exactly like picking a material in the Materials window.
     # ------------------------------------------------------------------
-    def self.material_for(model, path)
-      key = relative_key(path)
+    def self.material_for(model, path, key = nil, size = nil)
+      key = relative_key(path) if key.to_s.empty?
       base = File.basename(path, File.extname(path))
 
-      # 1) A material Dirory already created for this same file.
+      # 1) A material Dirory already created for this same asset/file.
       model.materials.each do |m|
         dict = m.attribute_dictionary(ATTR_DICT)
-        if dict && dict['id'] == key
-          fit_tile_size(m, path, true)
+        if dict && (dict['id'] == key || (dict['asset_id'] && dict['asset_id'] == key))
+          fit_tile_size(m, path, true, size)
           return m
         end
       end
@@ -629,7 +817,7 @@ module Dirory
       legacy = model.materials[base]
       if legacy && legacy.attribute_dictionary(ATTR_DICT).nil? && legacy.texture &&
          File.basename(legacy.texture.filename.to_s).casecmp?(File.basename(path))
-        fit_tile_size(legacy, path, true)
+        fit_tile_size(legacy, path, true, size)
         return legacy
       end
 
@@ -638,29 +826,64 @@ module Dirory
       name = legacy ? model.materials.unique_name(base) : base
       material = model.materials.add(name)
       material.texture = path
-      fit_tile_size(material, path)
+      fit_tile_size(material, path, false, size)
       material
     end
 
+    # True when SketchUp's own Paint Bucket is the active tool.
+    def self.paint_tool_active?(model)
+      model.tools.active_tool_name.to_s =~ /paint/i ? true : false
+    rescue StandardError
+      false
+    end
+
+    # Make `material` current and switch to SketchUp's own Paint Bucket (real
+    # bucket pointer, Alt to sample, Ctrl/Shift fill modes). If SketchUp does
+    # not actually switch - send_action is unreliable when triggered from a
+    # dialog - a moment later we check and fall back to Dirory's own paint
+    # tool, which always activates and shows a paint-bucket pointer.
     def self.activate_paint_bucket(model, material)
       model.materials.current = material
-      ok =
+
+      begin
         if RUBY_PLATFORM =~ /mswin|mingw/i
-          Sketchup.send_action(21074)               # Paint Bucket (Windows)
+          Sketchup.send_action(21074)
         else
-          Sketchup.send_action('selectPaintTool:')  # Paint Bucket (macOS)
+          Sketchup.send_action('selectPaintTool:')
         end
-      # Fallback: if SketchUp refuses the native action, use Dirory's own tool.
-      model.select_tool(MaterialPaintTool.new(material)) unless ok
-    rescue StandardError
-      model.select_tool(MaterialPaintTool.new(material))
+      rescue StandardError => e
+        puts "[Dirory] could not select the native Paint Bucket: #{e.message}"
+      end
+
+      UI.start_timer(0.25, false) do
+        begin
+          active = Sketchup.active_model
+          unless paint_tool_active?(active)
+            active.materials.current = material
+            active.select_tool(MaterialPaintTool.new(material))
+          end
+        rescue StandardError => e
+          puts "[Dirory] could not select the paint tool: #{e.class}: #{e.message}"
+          UI.messagebox("Dirory could not activate the paint tool:\n#{e.message}")
+        end
+      end
     end
 
     def self.apply_material(payload)
       return unless Cloud.require_sign_in(@dialog)
       data = parse_payload(payload)
-      path = data['path']
-      return unless path && File.exist?(path)
+      resolve_asset_path(data) do |path, error|
+        if error
+          run_on_main_thread { UI.messagebox(error) }
+        else
+          # activate_paint_bucket / select_tool also must run on the main
+          # thread; inside an HTTP callback the tool never becomes active.
+          run_on_main_thread { apply_material_file(data, path) }
+        end
+      end
+    end
+
+    def self.apply_material_file(data, path)
       unless IMAGE_EXTENSIONS.include?(File.extname(path).downcase)
         UI.messagebox("This card does not point to a supported material image:\n#{path}")
         return
@@ -671,11 +894,13 @@ module Dirory
       begin
         model.start_operation('Load Dirory Material', true)
         started = true
-        material = material_for(model, path)
+        key = data['asset_id'].to_s.empty? ? nil : data['asset_id'].to_s
+        size = tile_size_for(data, path)
+        material = material_for(model, path, key, size)
         tag_entity(material, data, 'material')
         model.commit_operation
         started = false
-        remember_used(path)
+        remember_used(path, data['asset_id'])
         activate_paint_bucket(model, material)
       rescue StandardError => e
         begin
@@ -801,6 +1026,16 @@ module Dirory
       "https://wa.me/#{QUOTE_WHATSAPP_NUMBER}?text=#{text}"
     end
 
+    # FR-A20 (M6): the quote is created server-side with a consent form. The
+    # panel collects the details and calls back here; WhatsApp stays optional.
+    def self.quote_result(ok, error = nil)
+      return unless @dialog
+      @dialog.execute_script("window.diroryQuoteResult(#{ { ok: ok, error: error }.to_json });")
+    rescue StandardError
+      nil
+    end
+
+    # payload: brands + consent fields from the panel.
     def self.request_quote(payload)
       return unless Cloud.require_sign_in(@dialog)
       data = parse_payload(payload)
@@ -812,12 +1047,17 @@ module Dirory
         return
       end
       report = usage_report
-      message = quote_message(report, brands)
-      unless message
-        UI.messagebox('Nothing from the selected brand(s) is used in this model yet.')
-        return
+      data['brands'] = brands
+
+      # Server-side quote with the architect's consent form (M6). Falls back to
+      # the WhatsApp hand-off alone when not signed in to the cloud.
+      posted = Cloud.post_quote(data, report)
+      if posted
+        UI.messagebox('Your quote request was sent to the brand(s). You can also continue in WhatsApp.')
       end
-      Cloud.record_quote(brands, report)
+
+      message = quote_message(report, brands)
+      return unless message
       url = whatsapp_url(message)
       # Very long lists can exceed what browsers accept in a link; fall back
       # to a per-brand summary in that case.
@@ -885,7 +1125,7 @@ module Dirory
         @dialog.set_file(panel_path)
 
         @dialog.add_action_callback('ready')  { |_ctx| send_library }
-        @dialog.add_action_callback('rescan') { |_ctx| send_library }
+        @dialog.add_action_callback('rescan') { |_ctx| Cloud.fetch_catalog }
 
         @dialog.add_action_callback('insertModel') { |_ctx, payload| insert_model(payload) }
         @dialog.add_action_callback('applyMaterial') { |_ctx, payload| apply_material(payload) }
@@ -907,9 +1147,14 @@ module Dirory
         @dialog.add_action_callback('chooseFolder') { |_ctx| defer_folder_picker }
 
         # Account and cloud
-        @dialog.add_action_callback('signIn') do |_ctx, payload|
-          error = Cloud.sign_in(parse_payload(payload))
+        @dialog.add_action_callback('signIn') do |_ctx, _payload|
+          error = Cloud.sign_in_start(@dialog)
           push_account(error)
+        end
+        @dialog.add_action_callback('openSignInPage') { |_ctx| Cloud.open_sign_in_page }
+        @dialog.add_action_callback('cancelSignIn') do |_ctx|
+          Cloud.cancel_sign_in
+          push_account
         end
         @dialog.add_action_callback('signOut') do |_ctx|
           Cloud.sign_out
@@ -944,24 +1189,67 @@ module Dirory
 
     def self.send_library
       return unless @dialog
-      begin
-        items = scan_library.map do |item|
-          copy = item.dup
-          copy['thumbnail_url'] = file_url(copy['thumbnail']) if copy['thumbnail']
-          copy
-        end
-        data = {
-          path: library_path,
-          items: items,
-          account: Cloud.account_state,
-          favourites: favourite_keys,
-          recent: recent_keys,
-          brand_logos: brand_logos
-        }
-        @dialog.execute_script("window.diroryRender(#{data.to_json});")
-      rescue StandardError => e
-        @dialog.execute_script("window.diroryError && window.diroryError(#{e.message.to_json});")
+      # M6: prefer the cloud catalogue; fall back to the local folder when the
+      # server is not configured (the app stays usable offline / pre-M6).
+      if Cloud.configured?
+        Cloud.fetch_catalog
+      else
+        render_from_scan
       end
+    end
+
+    # Render a catalogue payload (cloud or cached) in the panel.
+    def self.render_catalog(data, note = nil)
+      return unless @dialog
+      data ||= { 'items' => [], 'brand_logos' => {} }
+      payload = JSON.parse(JSON.generate(data)) # deep copy we can mutate
+      payload['items'] = Array(payload['items']).map do |item|
+        copy = item.dup
+        # Cloud thumbnails arrive as signed URLs; local ones as file paths.
+        copy['thumbnail_url'] ||= file_url(copy['thumbnail']) if copy['thumbnail']
+        copy
+      end
+      push_render_payload(payload, note)
+    rescue StandardError => e
+      @dialog.execute_script("window.diroryError && window.diroryError(#{e.message.to_json});")
+    end
+
+    # Legacy/local path: scan the folder (the pre-M6 behaviour).
+    def self.render_from_scan
+      items = scan_library.map do |item|
+        copy = item.dup
+        copy['thumbnail_url'] = file_url(copy['thumbnail']) if copy['thumbnail']
+        copy
+      end
+      push_render_payload(
+        { 'items' => items, 'brand_logos' => brand_logos },
+        nil,
+        library_path
+      )
+    rescue StandardError => e
+      @dialog.execute_script("window.diroryError && window.diroryError(#{e.message.to_json});")
+    end
+
+    def self.push_render_payload(payload, note = nil, path_label = nil)
+      return unless @dialog
+      data = {
+        path: path_label || (Cloud.configured? ? "Dirory cloud" : library_path),
+        items: payload['items'] || [],
+        account: Cloud.account_state,
+        favourites: favourite_keys,
+        recent: recent_keys,
+        brand_logos: payload['brand_logos'] || {},
+        note: note
+      }
+      @dialog.execute_script("window.diroryRender(#{data.to_json});")
+    end
+
+    # Called by Cloud once the device sign-in completes: re-render so cloud
+    # fields (signed thumbnails, favourites) appear.
+    def self.signed_in_now
+      send_library if @dialog && @dialog.visible?
+    rescue StandardError => e
+      puts "[Dirory] post sign-in refresh failed: #{e.message}"
     end
 
     def self.push_account(error = nil)

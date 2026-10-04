@@ -13,10 +13,17 @@
     "db:lint": "node scripts/lint-migrations.mjs",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
-    "fn:deploy": "supabase functions deploy events --no-verify-jwt",
+    "fn:deploy": "supabase functions deploy events auth-device catalog download quotes favourites --no-verify-jwt",
+    "fn:check": "npx --yes deno check --no-lock supabase/functions/events/index.ts supabase/functions/auth-device/index.ts supabase/functions/catalog/index.ts supabase/functions/download/index.ts supabase/functions/quotes/index.ts supabase/functions/favourites/index.ts",
+    "rb:check": "node scripts/check-ruby.mjs",
+    "rbz:build": "powershell -ExecutionPolicy Bypass -File scripts/build-rbz.ps1",
+    "db:check": "node scripts/check-supabase.mjs",
     "library:upload": "node scripts/upload-library.mjs"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@ruby/prism": "^1.9.0"
   }
 }

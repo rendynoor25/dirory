@@ -80,20 +80,38 @@ This creates every table, all RLS policies, the RPCs, the two **private** storag
 buckets (`models`, `materials`) and the seed data, including the platform brand
 **Dirory** and four plans.
 
-### 1.4 Deploy the plugin ingest function
+### 1.4 Deploy the Edge Functions
 
 ```bash
 cd supabase
-supabase functions deploy events --no-verify-jwt
+supabase functions deploy events        --no-verify-jwt
+supabase functions deploy auth-device   --no-verify-jwt
+supabase functions deploy catalog       --no-verify-jwt
+supabase functions deploy download      --no-verify-jwt
+supabase functions deploy quotes        --no-verify-jwt
+supabase functions deploy favourites    --no-verify-jwt
 ```
 
-`--no-verify-jwt` is required: the SketchUp plugin sends an anon key, not a user
-JWT. Security comes from input validation plus the service role inside the function.
+`--no-verify-jwt` is required: the SketchUp plugin sends an anon key (not a user
+JWT) and its own opaque device token. Security comes from input validation, the
+token lookup and the service role inside each function.
 
-Your endpoint is then:
+Your endpoints are then:
 
 ```
 https://<your-project-ref>.supabase.co/functions/v1/events
+https://<your-project-ref>.supabase.co/functions/v1/auth-device/{start,poll,revoke}
+https://<your-project-ref>.supabase.co/functions/v1/catalog
+https://<your-project-ref>.supabase.co/functions/v1/download/<asset_id>
+https://<your-project-ref>.supabase.co/functions/v1/quotes
+https://<your-project-ref>.supabase.co/functions/v1/favourites
+```
+
+`auth-device` reads `SITE_URL` (or `NEXT_PUBLIC_SITE_URL`) to build the browser
+approval link. Set it on the function if it differs from `https://dirory.id`:
+
+```bash
+supabase secrets set SITE_URL=https://dirory.id
 ```
 
 ### 1.5 Make yourself admin
@@ -207,11 +225,41 @@ breaks cookies.
 Also set `NEXT_PUBLIC_SITE_URL=https://dirory.com` in the hosting environment
 variables. Without the redirect entry, magic-link sign-in silently fails.
 
-Supabase currently reports email auth enabled and Google OAuth disabled. This
-app signs in by emailing a one-time link to a Gmail address; it does not use a
-Google OAuth button. Before allowing public signups, configure custom SMTP under
-Authentication → SMTP Settings; Supabase's built-in mail service is restricted
-and intended for testing, not reliable public delivery.
+### 3.5 Google sign-in (optional but recommended)
+
+The login page offers **Continue with Google** as the quickest path. It needs a
+Google OAuth client; until that is configured, the button returns an error and
+the email link still works.
+
+1. **Google Cloud Console** → <https://console.cloud.google.com> → create (or
+   pick) a project → **APIs & Services → OAuth consent screen** → External →
+   fill the app name and support email. Add the `.../auth/userinfo.email` and
+   `.../auth/userinfo.profile` scopes.
+2. **Credentials → Create credentials → OAuth client ID → Web application.**
+   Add **Authorised redirect URIs** (exactly these, one per environment):
+   ```
+   https://<your-project-ref>.supabase.co/auth/v1/callback
+   http://localhost:3000/auth/callback
+   ```
+   The first is Supabase's callback, not the app's — Google redirects to Supabase,
+   which then redirects to the app. Copy the **Client ID** and **Client secret**.
+3. **Supabase → Authentication → Providers → Google** → enable it, paste the
+   Client ID and secret, and save.
+4. In **Authentication → URL Configuration → Redirect URLs**, make sure
+   `https://dirory.com/auth/callback` (and the deploy preview) is listed.
+
+No code change is needed: `apps/web` already calls `signInWithOAuth({ provider:
+"google" })`, and `/auth/callback` exchanges the code.
+
+**SketchUp flow.** The plugin opens `/auth/device?code=…`. If the architect is
+already signed in (Google or email), the page approves the code automatically, so
+the plugin connects without a second click. Otherwise the page sends them to
+`/login` first and returns them to the approval afterwards.
+
+Before allowing public signups, configure custom SMTP under Authentication → SMTP
+Settings; Supabase's built-in mail service is restricted and intended for
+testing, not reliable public delivery.
+
 
 ---
 
@@ -350,8 +398,26 @@ parallel run is the quickest way to blow through the storage quota.
 
 Then point the plugin at Supabase: in SketchUp, **Extensions → Dirory → Connection
 Settings**, set the API base URL to
-`https://<your-project-ref>.supabase.co/functions/v1`. Watch **Cloud Status** to
-confirm the outbox drains.
+`https://<your-project-ref>.supabase.co/functions/v1` and paste your **publishable**
+key as the API key. Watch **Cloud Status** to confirm the outbox drains.
+
+### 5.7 Cloud browsing and download (M6)
+
+With the server URL set, the plugin switches from the local folder to the cloud:
+
+1. Click the 👤 account button → **Sign in with browser**. A browser opens at
+   `/auth/device`; sign in with your email link and approve the code shown in the
+   panel. The panel stores the opaque token the server issues.
+2. The catalogue now comes from `GET /catalog` (approved assets only). Signed
+   thumbnails load in the card grid. The last catalogue is cached in
+   `~/.dirory/catalog.json` so it still opens offline.
+3. Clicking a model or material calls `GET /download/<asset_id>`, which returns a
+   short-lived signed URL. The file is cached under
+   `~/.dirory/cache/<asset_id>/<version>/` and then inserted or painted as before.
+4. Favourites sync to the account, so they follow the user across computers.
+
+If the server URL is left empty the plugin stays on the local folder library — the
+pre-M6 behaviour — so nothing breaks for existing users.
 
 ---
 
@@ -384,16 +450,32 @@ Acceptance checks from PRD §13.3 that this repo satisfies:
   count; replaying the same batch changes nothing.
 - **M7** — vendor dashboard numbers come from the snapshot rollup; no project names.
 
-### 6.1 The test suite was not executed in this environment
+### 6.1 The suite now runs against the live project
 
-`rls_test.sql` was validated structurally only — Docker, WSL and `psql` are not
-available on the machine where this scaffold was written, so the suite **has not
-been run**. Run it against your Supabase project before trusting it. The suite
-runs inside a transaction that ends in `rollback`, so it leaves no data behind and
-is safe to paste into the SQL editor.
+`supabase test db` needs Docker, which is not installed on the dev machine. The
+suite is a single `do $$ … $$` block that ends in `rollback`, so it can be run
+directly against the remote database instead:
 
-It needs a `pgcrypto`/`uuid-ossp` extension and write access to `auth.users`,
-`public.*` and `storage.objects`, which the SQL editor's `postgres` role has.
+```bash
+npx supabase db query --linked --file supabase/tests/rls_test.sql
+```
+
+A clean run raises `Dirory RLS suite: ALL CHECKS PASSED`. (To see that notice
+through `db query`, which does not surface `RAISE NOTICE`, temporarily replace it
+with a `create temp table … select` marker — the result row carries the message.)
+
+**Status:** executed on 4 Oct 2026 against `ajlmncbzufagplbaaukv` (Singapore).
+Checks 1–10 pass, including the M6 device-auth checks. Two real defects were found
+and fixed during that run:
+
+- **Migration 0008.** The device-code SELECT policy in 0007 was `profile_id =
+  auth.uid()`. A pending code has `profile_id = NULL`, so the architect could not
+  see it and the approval UPDATE (whose `USING` sees only readable rows) matched
+  zero rows — silent sign-in failure. 0008 also allows reading a live pending code.
+- **Storage guard.** Check 8 inserted/deleted rows in `storage.objects` directly;
+  Supabase now refuses direct deletes (`storage.protect_delete()`). The check now
+  treats the fixture as optional and still exercises the read/delete *policies*.
+
 
 
 ---

@@ -84,8 +84,6 @@ window.diroryError = function (message) {
   diag.textContent = 'Error: ' + message;
 };
 
-document.getElementById('rescanBtn').addEventListener('click', () => sketchup.rescan());
-document.getElementById('folderBtn').addEventListener('click', () => sketchup.chooseFolder());
 document.getElementById('search').addEventListener('input', () => {
   render();
   scrollToTop();
@@ -123,7 +121,7 @@ document.getElementById('usageToggleAll').addEventListener('click', () => {
 });
 document.getElementById('quoteBtn').addEventListener('click', () => {
   if (quoteBrands.size === 0) return;
-  const send = () => sketchup.requestQuote(JSON.stringify({ brands: Array.from(quoteBrands) }));
+  const send = () => openQuote();
   if (!account.signedIn) {
     pendingAction = send;
     openAccount();
@@ -131,6 +129,56 @@ document.getElementById('quoteBtn').addEventListener('click', () => {
   }
   send();
 });
+
+/* ------------------------------------------------------------------ */
+/* Ask for a Quote — server-side, with a consent form (M6 / FR-A20)    */
+/* ------------------------------------------------------------------ */
+
+function openQuote() {
+  const brands = Array.from(quoteBrands);
+  byId('quoteBrands').textContent = brands.length
+    ? `Brands: ${brands.join(', ')}`
+    : 'Select at least one brand in the Usage tab.';
+  byId('quoteError').hidden = true;
+  byId('quoteModal').hidden = false;
+}
+
+function closeQuote() {
+  byId('quoteModal').hidden = true;
+}
+
+function submitQuote() {
+  if (quoteBrands.size === 0) return;
+  const brands = Array.from(quoteBrands);
+  byId('quoteSubmit').disabled = true;
+  sketchup.requestQuote(
+    JSON.stringify({
+      brands: brands,
+      project_name: byId('quoteProject').value,
+      city: byId('quoteCity').value,
+      timeline: byId('quoteTimeline').value,
+      note: byId('quoteNote').value,
+      phone_shared: byId('quotePhoneShared').checked
+    })
+  );
+}
+
+byId('quoteClose').addEventListener('click', closeQuote);
+byId('quoteModal').addEventListener('click', (e) => {
+  if (e.target === byId('quoteModal')) closeQuote();
+});
+byId('quoteSubmit').addEventListener('click', submitQuote);
+
+// Ruby reports whether the server-side quote was stored.
+window.diroryQuoteResult = function (result) {
+  byId('quoteSubmit').disabled = false;
+  if (result && result.ok) {
+    closeQuote();
+  } else if (result && result.error) {
+    byId('quoteError').textContent = result.error;
+    byId('quoteError').hidden = false;
+  }
+};
 
 document.querySelectorAll('.tab').forEach((tab) => {
   tab.addEventListener('click', () => {
@@ -337,7 +385,10 @@ function render() {
       const img = document.createElement('img');
       img.draggable = false;
       img.setAttribute('draggable', 'false');
-      img.src = item.thumbnail_url || ('file:///' + item.thumbnail.replace(/\\/g, '/'));
+      // M6: cloud items carry a signed thumbnail_url; local items a file path.
+      img.src =
+        item.thumbnail_url ||
+        (/^https?:/i.test(item.thumbnail) ? item.thumbnail : 'file:///' + item.thumbnail.replace(/\\/g, '/'));
       img.onerror = () => {
         img.remove();
         thumb.prepend(document.createTextNode(item.type === 'material' ? '🎨' : '📦'));
@@ -395,6 +446,9 @@ function render() {
       // Ruby needs the metadata too, so the Usage tab can group by category/brand.
       const payload = JSON.stringify({
         path: item.type === 'material' ? item.material_path : item.model_path,
+        asset_id: item.asset_id || '',
+        version: item.version || 1,
+        tile_size_cm: item.tile_size_cm || null,
         name: item.name,
         category: item.category || '',
         brand: item.brand || ''
@@ -406,7 +460,7 @@ function render() {
       }
     };
     const chooseCard = () => {
-      if (!account.signedIn) {
+      if (!account.signedIn && account.cloudConfigured !== false) {
         pendingAction = runCard;
         openAccount();
         return;
@@ -675,24 +729,43 @@ function byId(id) {
 function updateAccountButton() {
   const btn = byId('accountBtn');
   btn.classList.toggle('signed-in', !!account.signedIn);
-  btn.title = account.signedIn ? `Signed in as ${account.email}` : 'Sign in';
+  if (account.signedIn) {
+    // Show who is signed in: the name, or the part of the email before "@".
+    const label = (account.name || '').trim() || String(account.email || '').split('@')[0] || 'Account';
+    btn.textContent = label;
+    btn.title = `Signed in as ${account.name ? account.name + ' · ' : ''}${account.email || ''}`;
+  } else {
+    btn.textContent = '👤';
+    btn.title = 'Sign in';
+  }
 }
 
 function openAccount() {
   byId('signInView').hidden = !!account.signedIn;
   byId('accountView').hidden = !account.signedIn;
-  byId('acctName').value = account.name || '';
-  byId('acctEmail').value = account.email || '';
-  byId('acctPhone').value = account.phone || '';
-  byId('acctFirm').value = account.firm || '';
-  byId('acctWho').textContent = account.signedIn ? `${account.name} \u00B7 ${account.email}` : '';
+  byId('acctWho').textContent = account.signedIn ? `${account.name || ''}${account.name ? ' · ' : ''}${account.email}` : '';
   byId('shareUsage').checked = !!account.shareUsage;
   byId('shareProject').checked = !!account.shareProject;
   // The project-name switch is meaningless while anonymous reporting is off.
   byId('shareProject').disabled = !account.shareUsage;
   byId('acctError').hidden = true;
+  applyDeviceState();
   byId('accountModal').hidden = false;
-  if (!account.signedIn) byId('acctName').focus();
+}
+
+// M6: the sign-in is a browser device-code flow, so the panel shows the code
+// and waits rather than collecting a name/email locally.
+function applyDeviceState() {
+  const pending = !!account.devicePending;
+  byId('devicePending').hidden = !pending;
+  byId('deviceIdle').hidden = pending;
+  if (pending) {
+    byId('deviceCode').textContent = account.deviceUserCode || '————-————';
+    byId('deviceUrl').textContent = account.verificationUrl || '';
+    byId('deviceStatus').textContent = account.deviceStatus
+      ? 'Waiting for approval… (server: ' + account.deviceStatus + ')'
+      : 'Waiting for approval…';
+  }
 }
 
 function closeAccount(dropPending) {
@@ -701,14 +774,9 @@ function closeAccount(dropPending) {
 }
 
 function submitSignIn() {
-  sketchup.signIn(
-    JSON.stringify({
-      name: byId('acctName').value,
-      email: byId('acctEmail').value,
-      phone: byId('acctPhone').value,
-      firm: byId('acctFirm').value
-    })
-  );
+  // Google sign-in happens in the browser (Google does not allow it inside an
+  // embedded panel); the plugin only starts the flow and waits for approval.
+  sketchup.signIn(JSON.stringify({ provider: 'google' }));
 }
 
 byId('accountBtn').addEventListener('click', openAccount);
@@ -717,10 +785,10 @@ byId('accountModal').addEventListener('click', (e) => {
   if (e.target === byId('accountModal')) closeAccount(true);
 });
 byId('acctSubmit').addEventListener('click', submitSignIn);
-['acctName', 'acctEmail', 'acctPhone', 'acctFirm'].forEach((id) => {
-  byId(id).addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') submitSignIn();
-  });
+byId('acctReopen').addEventListener('click', () => sketchup.openSignInPage());
+byId('acctCancel').addEventListener('click', () => {
+  sketchup.cancelSignIn();
+  closeAccount(true);
 });
 byId('acctSignOut').addEventListener('click', () => sketchup.signOut());
 byId('shareUsage').addEventListener('change', (e) => {
@@ -750,13 +818,16 @@ window.diroryNeedSignIn = function () {
 // Ruby pushes the account state after sign-in, sign-out or a settings change.
 window.diroryAccount = function (state) {
   const was = !!account.signedIn;
+  const wasPending = !!account.devicePending;
   account = state;
   updateAccountButton();
   if (state.error) {
     byId('acctError').textContent = state.error;
     byId('acctError').hidden = false;
+    applyDeviceState();
     return;
   }
+  applyDeviceState();
   if (state.signedIn && !was) {
     closeAccount(false);
     if (pendingAction) {
@@ -766,6 +837,9 @@ window.diroryAccount = function (state) {
     }
   } else if (!state.signedIn && was) {
     closeAccount(true);
+  } else if (wasPending && !state.devicePending && !state.signedIn) {
+    byId('acctError').textContent = 'Sign-in was not completed. Please try again.';
+    byId('acctError').hidden = false;
   }
   render(); // the empty-search message depends on the share setting
 };

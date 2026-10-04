@@ -1,5 +1,113 @@
 # Changelog
 
+## 0.6.0 — M6: plugin cloud catalogue, verified login, downloads, quotes
+
+Adds the client side of the cloud (PRD M6, FR-A4/A7/A10/A11/A20/A22) and the
+backend it needs. The local-folder library still works when no server URL is set,
+so existing users are unaffected until they opt in.
+
+**Backend**
+- Migration `0007_plugin_auth.sql`: `plugin_device_codes` and `plugin_tokens`
+  (SHA-256 hashes at rest only). RLS locked down; the single approval policy can
+  only bind a live pending code to the caller's own profile.
+- `auth-device`: `POST /auth-device/{start,poll,revoke}` — device-code login.
+  `poll` returns `pending` until the browser approves, then issues an opaque token.
+- `download`: `GET /download/<asset_id>` — short-lived signed URL (≤ 10 min) for
+  the current approved version; only visible vendors or the Dirory samples.
+- `quotes`: `POST /quotes` — one `quote_requests` row per vendor with only that
+  vendor's items, plus the consent form (project, city, timeline, note, phone).
+  Samples are never quotable.
+- `catalog`: now also returns a signed `thumbnail_url` per item, because the
+  `models`/`materials` buckets are private.
+- `favourites`: accepts the plugin's opaque token instead of a user JWT.
+- `_shared/plugin-auth.ts`: token hashing, service client, identity resolution.
+
+**Web**
+- `/auth/device` page + action: the architect signs in and approves the code the
+  plugin shows.
+
+**Plugin v0.6.0 (`plugin/`, packaged to `dist/DiroryLibrary-0.6.0.rbz`)**
+- `cloud.rb`: verified device sign-in (`sign_in_start`/poll/`sign_out`), opaque
+  token in `request_headers`, `fetch_catalog` with a `~/.dirory` cache,
+  `download_asset` into `~/.dirory/cache/<asset_id>/<version>/`, favourites
+  pull/push, and `post_quote`.
+- `main.rb`: `send_library` renders the cloud catalogue and falls back to the
+  local scan; `insert_model`/`apply_material` download on demand (FR-A11); entities
+  are tagged with `asset_id` (FR-A12); tile size prefers the server value (FR-A13).
+- Panel: device-code sign-in UI, a quote consent modal, cloud thumbnail URLs.
+
+**Tooling**
+- `scripts/check-ruby.mjs` (`npm run rb:check`) now uses Ruby's own **Prism**
+  parser via `@ruby/prism` (WASM), so the plugin files are checked with the same
+  parser Ruby ships — no Ruby interpreter on the machine needed.
+- `npm run fn:check` typechecks every Edge Function; `npm run rbz:build` packages.
+- An earlier regex-based "checker" passed a `main.rb` with a duplicated `def` line
+  and a missing `end`, which made SketchUp reject the whole extension with
+  "unexpected end-of-input, expecting `end`". That is why the check is now a real
+  parse, and the packaged RBZ is re-parsed from the archive before shipping.
+
+**Verified**
+- `npm run build` clean, 26 routes (up from 25: `/auth/device`).
+- `npx tsc --noEmit` clean.
+- `deno check` clean on all six Edge Functions.
+- `node scripts/check-ruby.mjs` clean; every `Cloud.*` call resolves.
+- RBZ rebuilt and inspected: 9 entries, forward-slash names, loader at root.
+
+**Deployed and run against `ajlmncbzufagplbaaukv` (Singapore), 4 Oct 2026**
+- Migrations 0007 and 0008 applied; six Edge Functions deployed.
+- `auth-device/start` returns a device code and verification URL (HTTP 200).
+- `catalog` returns 200; `download`, `quotes` and `favourites` return 401 without
+  a token, as designed.
+- **The RLS suite ran for the first time** and passed all checks 1–10. It caught
+  two real defects:
+  1. The 0007 device-code SELECT policy hid the pending row, so approval could
+     never match a row — **fixed in migration 0008**.
+  2. Check 8 wrote to `storage.objects` directly, which Supabase now blocks
+     (`storage.protect_delete()`) — the test was wrong, not the policy; it now
+     skips the fixture when the guard is present.
+- **The library uploaded:** 1,307 assets (9 models, 1,298 materials) across 11
+  brands, 1,306 with thumbnails, 272 with tile sizes. `catalog` returns all 1,307.
+
+**Three plugin/upload bugs found by actually running things (all fixed)**
+1. **Ruby syntax error** — a duplicated `def self.defer_folder_picker` line left
+   `main.rb` missing an `end`, so SketchUp refused the whole extension
+   ("unexpected end-of-input"). My regex-based "checker" had passed it; the check
+   is now a real parse with Ruby's own Prism parser (`npm run rb:check`).
+2. **The panel never received the catalogue** — `Sketchup::Http::Request` is
+   asynchronous and a request held in a *local variable* is garbage-collected
+   when the method returns, so its callback never fires. All ten HTTP calls now
+   go through `Cloud.new_request`, which keeps in-flight requests reachable, and
+   catalogue errors are surfaced on the panel instead of being swallowed.
+3. **Only 1 of 1,307 assets was visible** — two causes: the uploader marked every
+   per-brand asset `pending_review` (the fix approves seed-library assets), and
+   `catalog` read a single PostgREST page capped at 1,000 rows (now paged).
+4. **Clicking a card did nothing** — no component followed the cursor and the
+   Paint tool never activated. Two known SketchUp quirks, both confirmed in the
+   API tracker/forums: `place_component` and `send_action('selectPaintTool:')`
+   do not take effect when invoked directly inside an HtmlDialog/HTTP callback.
+   Fixed by deferring the insert/paint to a main-thread timer
+   (`run_on_main_thread`, which also calls `Sketchup.focus`), and by preferring
+   Dirory's own `MaterialPaintTool` over the flaky native `send_action`.
+
+**Sign-in (added after the first test)**
+- "Continue with Google" on `/login`, alongside the email link.
+- `/auth/device` auto-approves a live code for an already-signed-in user, so a
+  returning user connects with no extra click.
+- **Requires you to enable the Google provider in Supabase** (Client ID/Secret
+  from Google Cloud); the email path works without it.
+
+
+**Still not verified**
+- No Ruby interpreter here, so the plugin was **not** executed. Load
+  `dist/DiroryLibrary-0.6.0.rbz` in SketchUp to run the M6 acceptance test
+  (sign in → browse cloud → insert a model and paint a material; a sample cannot
+  be quoted). This is the one remaining gate on Phase 1.
+- The `/auth/device` web page has not been exercised end-to-end in a browser
+  against the live project.
+- `SITE_URL` was set to `https://dirory.id`; change it if the web app is hosted
+  elsewhere.
+
+
 ## 0.5.0 — architect landing page, email signup, protected RBZ delivery
 
 - Created the public architect/designer landing page at `/`, using the supplied

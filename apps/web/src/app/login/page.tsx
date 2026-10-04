@@ -22,7 +22,7 @@ export default async function LoginPage({
         <p className="text-sm font-semibold uppercase tracking-widest text-brand-600">Dirory</p>
         <h1 className="mt-2 text-2xl font-semibold text-slate-900">Sign in</h1>
         <p className="mt-1 text-sm text-slate-600">
-          We email you a magic link. No password to remember.
+          Continue with Google, or use an email link. No password to remember.
         </p>
 
         <SignInForm next={next} error={params.error} />

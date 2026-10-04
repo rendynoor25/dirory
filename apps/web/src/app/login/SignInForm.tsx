@@ -6,15 +6,43 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 /**
  * Passwordless sign-in and first-time architect registration.
  *
+ * Two paths, both landing on `/auth/callback` with a `next` target:
+ *   * Google OAuth — one click, no inbox round-trip (the easy path).
+ *   * Email magic link — the fallback for people without Google.
+ *
  * Split out of `page.tsx` deliberately: a Next.js *client* component cannot be
  * `async`, and awaiting `searchParams` inside one makes React call hooks out of
- * order (React error #321, "Invalid hook call"). The page stays a server
- * component and passes the resolved values down as plain props.
+ * order (React error #321, "Invalid hook call").
  */
 export function SignInForm({ next, error }: { next: string; error?: string }) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error" | "google">("idle");
   const [message, setMessage] = useState("");
+
+  const callbackUrl = (target: string) =>
+    `${window.location.origin}/auth/callback?next=${encodeURIComponent(target)}`;
+
+  async function onGoogle() {
+    setStatus("google");
+    setMessage("");
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: callbackUrl(next) },
+      });
+      // On success the browser is redirected to Google; only errors return here.
+      if (oauthError) {
+        setStatus("error");
+        setMessage(
+          `${oauthError.message} — Google sign-in may not be enabled yet. Use the email link below.`,
+        );
+      }
+    } catch (err) {
+      setStatus("error");
+      setMessage(err instanceof Error ? err.message : "Could not start Google sign-in.");
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,7 +55,7 @@ export function SignInForm({ next, error }: { next: string; error?: string }) {
         email: email.trim().toLowerCase(),
         options: {
           shouldCreateUser: true,
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+          emailRedirectTo: callbackUrl(next),
         },
       });
 
@@ -52,7 +80,23 @@ export function SignInForm({ next, error }: { next: string; error?: string }) {
         <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>
       ) : null}
 
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
+      <button
+        type="button"
+        onClick={onGoogle}
+        disabled={status === "google"}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        <GoogleMark />
+        {status === "google" ? "Opening Google…" : "Continue with Google"}
+      </button>
+
+      <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
+        <span className="h-px flex-1 bg-slate-200" />
+        or use email
+        <span className="h-px flex-1 bg-slate-200" />
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="text-sm font-medium text-slate-700">
             Email address (Gmail works)
@@ -86,10 +130,22 @@ export function SignInForm({ next, error }: { next: string; error?: string }) {
         </p>
       ) : null}
       <p className="mt-3 text-xs leading-5 text-slate-500">
-        First time here? Sending a link creates your free architect account. By continuing, you
+        First time here? Signing in creates your free architect account. By continuing, you
         acknowledge our <a className="underline underline-offset-2" href="/privacy">Privacy Policy</a>.
-        This is an email sign-in link, not Google OAuth; no password is collected by Dirory.
+        No password is collected by Dirory.
       </p>
     </>
+  );
+}
+
+/** Google's official "G" mark, inline so there is no extra asset request. */
+function GoogleMark() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+      <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z" />
+      <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z" />
+      <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z" />
+      <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z" />
+    </svg>
   );
 }

@@ -7,7 +7,7 @@
 # entries one by one so the names use "/" as the ZIP specification requires.
 param(
   [string]$Source = (Join-Path $PSScriptRoot "..\plugin"),
-  [string]$Output = (Join-Path $PSScriptRoot "..\dist\DiroryLibrary-0.5.2.rbz")
+  [string]$Output = (Join-Path $PSScriptRoot "..\dist\DiroryLibrary-0.6.0.rbz")
 )
 
 Add-Type -AssemblyName System.IO.Compression

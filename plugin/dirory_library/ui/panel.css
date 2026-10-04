@@ -391,7 +391,17 @@ h1 {
 }
 
 /* ---------- Account button + sign-in modal ---------- */
-.toolbar button.signed-in { background: rgba(255, 255, 255, 0.38); }
+.toolbar button.signed-in {
+  background: rgba(255, 255, 255, 0.38);
+  width: auto;
+  max-width: 140px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .modal {
   position: fixed;
@@ -446,6 +456,36 @@ h1 {
   box-shadow: 0 0 0 2px rgba(96, 115, 179, 0.25);
 }
 .opt { color: #8a8a8e; }
+.modal-sub { margin: 8px 0 0; font-size: 10.5px; line-height: 1.5; color: #8a8a8e; word-break: break-all; }
+.modal-card textarea {
+  display: block;
+  width: 100%;
+  margin-top: 3px;
+  padding: 6px 8px;
+  border: 1px solid #d7d9e6;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+}
+.modal-card textarea:focus {
+  outline: none;
+  border-color: var(--brand-light);
+  box-shadow: 0 0 0 2px rgba(96, 115, 179, 0.25);
+}
+.share-row.inline { margin-top: 4px; }
+.device-code {
+  margin: 12px 0 6px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f1f3fb;
+  text-align: center;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #39509f;
+}
 .modal-error {
   margin-bottom: 8px;
   padding: 6px 8px;
@@ -623,3 +663,18 @@ h1 {
 .privacy-body li { margin-bottom: 2px; }
 .privacy-body strong { color: #3f3f46; }
 .privacy-body a { color: #4a5fff; }
+
+/* ---------- Continue with Google ---------- */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  font-weight: 600;
+}
+.google-btn:hover { background: #f7f8f8; }
+#devicePending .primary-btn, #devicePending .ghost-btn { width: 100%; margin-top: 8px; }

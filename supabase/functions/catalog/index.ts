@@ -1,3 +1,4 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { json, serviceHeaders } from "../_shared/cors.ts";
 import { resolveServiceKey } from "../_shared/keys.ts";
 
@@ -12,10 +13,16 @@ import { resolveServiceKey } from "../_shared/keys.ts";
  * That keeps the panel unchanged when the source switches from the local folder
  * to this endpoint (PRD §6.1 "swap the source, not the shape").
  *
+ * M6 addition: `models` / `materials` are private, so each item also carries a
+ * short-lived `thumbnail_url` (signed) for the card grid. The raw storage key
+ * stays in `thumbnail`. The asset file itself is not signed here — the plugin
+ * asks /download/<asset_id> when the architect clicks (FR-A11).
+ *
  * Auth: apikey / Bearer anon key (the plugin sends it from Connection Settings).
- * Only approved assets of vendors that are visible (platform brand, approved
- * vendor, or a subscription in trial/active/grace) are returned. Samples from
- * the "Dirory" platform brand are always included (FR-A8).
+ * Browsing is anonymous (FR-A1). Only approved assets of vendors that are
+ * visible (platform brand, approved vendor, or a subscription in
+ * trial/active/grace) are returned. Samples from the "Dirory" platform brand are
+ * always included (FR-A8).
  */
 Deno.serve(async (req: Request) => {
   if (req.method !== "GET") return json({ error: "method not allowed" }, 405);
@@ -27,20 +34,32 @@ Deno.serve(async (req: Request) => {
   const serviceKey = resolveServiceKey();
   const headers = serviceHeaders(serviceKey);
 
-  const params = new URLSearchParams({
-    select:
-      "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key," +
-      "categories(name)," +
-      "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path)," +
-      "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status)",
-    status: "eq.approved",
-    order: "updated_at.asc",
-  });
-  if (updatedSince) params.set("updated_at", `gt.${updatedSince}`);
+  // PostgREST caps a single response at `max_rows` (1,000 on Supabase), so a
+  // bigger catalogue must be paged or the tail is silently dropped. Page until a
+  // short page arrives.
+  const PAGE = 1000;
+  const rows: any[] = [];
+  for (let offset = 0; ; offset += PAGE) {
+    const params = new URLSearchParams({
+      select:
+        "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key," +
+        "categories(name)," +
+        "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path)," +
+        "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status)",
+      status: "eq.approved",
+      order: "updated_at.asc,id.asc",
+      limit: String(PAGE),
+      offset: String(offset),
+    });
+    if (updatedSince) params.set("updated_at", `gt.${updatedSince}`);
 
-  const res = await fetch(`${supabaseUrl}/rest/v1/assets?${params}`, { headers });
-  if (!res.ok) return json({ error: "catalog query failed" }, 502);
-  const rows = await res.json();
+    const res = await fetch(`${supabaseUrl}/rest/v1/assets?${params}`, { headers });
+    if (!res.ok) return json({ error: "catalog query failed" }, 502);
+    const page = await res.json();
+    rows.push(...page);
+    if (page.length < PAGE) break;
+    if (offset > 200000) break; // hard stop; no real catalogue is this large
+  }
 
   // FR-A9: only the platform brand and approved (subscription-visible) vendors.
   const visible = rows.filter(
@@ -48,8 +67,6 @@ Deno.serve(async (req: Request) => {
   );
 
   // FR-A24: the panel keys `brandLogos` by lower-cased brand name.
-  // Preference: the uploaded logo (logo_url / logo_path), then nothing — the
-  // panel draws a round initial when a brand has no logo.
   const brandLogos: Record<string, string> = {};
   for (const r of visible) {
     const brand = String(r.vendors?.brand_name ?? "Dirory");
@@ -59,9 +76,35 @@ Deno.serve(async (req: Request) => {
     if (logo) brandLogos[key] = logo;
   }
 
+  // Sign every distinct thumbnail in batches. The buckets are private, so the
+  // card grid cannot load a bare storage key.
+  const thumbPaths: string[] = Array.from(
+    new Set(
+      visible
+        .map((r: any) => {
+          const v = Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions;
+          return v?.thumbnail_path ? String(v.thumbnail_path) : null;
+        })
+        .filter((p: string | null): p is string => Boolean(p)),
+    ),
+  );
+  const signedThumbs = new Map<string, string>();
+  if (thumbPaths.length) {
+    const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+    const CHUNK = 100;
+    for (let i = 0; i < thumbPaths.length; i += CHUNK) {
+      const chunk = thumbPaths.slice(i, i + CHUNK);
+      const { data } = await admin.storage.from("materials").createSignedUrls(chunk, 3600);
+      for (const s of data ?? []) {
+        if (s?.path && s?.signedUrl) signedThumbs.set(s.path, s.signedUrl);
+      }
+    }
+  }
+
   const items = visible.map((r: any) => {
     const v = Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions;
     const brand = r.vendors?.brand_name ?? "Dirory";
+    const thumbKey = v?.thumbnail_path ?? null;
     return {
       // ---- shape preserved from scan_library (FR-A7) ----
       id: r.id,
@@ -71,7 +114,10 @@ Deno.serve(async (req: Request) => {
       brand,
       sample: Boolean(r.vendors?.is_platform),
       tags: r.tags ?? [],
-      thumbnail: v?.thumbnail_path ?? null,
+      thumbnail: thumbKey,
+      // M6: a displayable, short-lived URL for the card grid.
+      thumbnail_url: thumbKey ? signedThumbs.get(thumbKey) ?? null : null,
+      // The file is delivered by /download/<asset_id> on click, not here.
       model_path: r.type === "model" ? v?.file_path ?? null : null,
       material_path: r.type === "material" ? v?.file_path ?? null : null,
       // ---- new fields ----

@@ -8,6 +8,14 @@ export async function GET(request: Request) {
   // Do not turn the callback into an open redirect. Only accept local paths.
   const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/vendor";
 
+  // Google (or Supabase) can return a provider error instead of a code.
+  const providerError = url.searchParams.get("error_description") ?? url.searchParams.get("error");
+  if (providerError) {
+    return NextResponse.redirect(
+      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(providerError)}`, url.origin),
+    );
+  }
+
   if (!code) {
     return NextResponse.redirect(new URL("/login?error=Missing+code", url.origin));
   }
@@ -17,7 +25,7 @@ export async function GET(request: Request) {
 
   if (error) {
     return NextResponse.redirect(
-      new URL(`/login?error=${encodeURIComponent(error.message)}`, url.origin),
+      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(error.message)}`, url.origin),
     );
   }
 

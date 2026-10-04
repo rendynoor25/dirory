@@ -10,19 +10,17 @@
 // keyed by asset_id. The plugin sends that same key list, so this endpoint is a
 // drop-in: nothing in the panel changes.
 //
-// This endpoint is NOT used by v0.5.1 (which has no `favourite` event kind and
-// never calls it). It exists so M6 is a server-side no-op.
-//
-// Auth: the caller's own JWT (RLS applies and restricts rows to that profile).
+// Auth: the plugin's opaque token (Authorization: Bearer <token>), issued by
+// /auth-device. The token resolves to a profile_id here; every row is scoped to
+// that profile. (Before M6 this endpoint expected a Supabase user JWT.)
 //
 //   GET  /favourites           -> { favourites: [...], recent: [...] }
 //   POST /favourites           -> replace the list; body { favourites, recent }
 //
-// Deploy: supabase functions deploy favourites
+// Deploy: supabase functions deploy favourites --no-verify-jwt
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders, json } from "../_shared/cors.ts";
-import { resolvePublishableKey } from "../_shared/keys.ts";
+import { resolvePluginToken, serviceClient } from "../_shared/plugin-auth.ts";
 
 const MAX_KEYS = 500; // the plugin caps "recent" at 60; allow headroom for stars
 
@@ -54,41 +52,24 @@ function splitKeys(keys: string[]): { assetIds: string[]; legacy: string[] } {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
-  // Forward the caller's token so RLS scopes every row to them.
-  //
-  // The caller's `Authorization: Bearer <jwt>` is a real user JWT, so it stays
-  // on that header. The publishable key identifies the project and goes on
-  // `apikey` — the @supabase/ssr client does this correctly for the new key
-  // format, so the key is resolved rather than read from a legacy name.
-  const auth = req.headers.get("Authorization") ?? "";
-  if (!auth.startsWith("Bearer ")) return json({ error: "missing token" }, 401);
-
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    resolvePublishableKey(),
-    { global: { headers: { Authorization: auth } }, auth: { persistSession: false } },
-  );
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return json({ error: "invalid token" }, 401);
+  const identity = await resolvePluginToken(req.headers.get("Authorization")?.slice(7).trim() ?? null);
+  if (!identity) return json({ error: "sign in required" }, 401);
+  const profileId = identity.profileId;
+  const supabase = serviceClient();
 
   // ---------------------------------------------------------------- GET
   if (req.method === "GET") {
     const { data, error } = await supabase
       .from("favourites")
       .select("asset_id, legacy_key, starred, updated_at")
-      .eq("profile_id", user.id)
+      .eq("profile_id", profileId)
       .order("updated_at", { ascending: false });
-
     if (error) return json({ error: "read failed" }, 500);
 
     const rows = (data ?? []) as {
       asset_id: string | null;
       legacy_key: string | null;
       starred: boolean;
-      updated_at: string;
     }[];
     // Return the same two lists the panel already understands.
     const favourites = rows
@@ -118,20 +99,17 @@ Deno.serve(async (req: Request) => {
 
   // Replace semantics: the plugin always uploads its full, locally-authoritative
   // list, so deleting the user's rows first keeps the two sides identical.
-  const { error: delError } = await supabase
-    .from("favourites")
-    .delete()
-    .eq("profile_id", user.id);
+  const { error: delError } = await supabase.from("favourites").delete().eq("profile_id", profileId);
   if (delError) return json({ error: "replace failed" }, 500);
 
   const { assetIds: starIds, legacy: starLegacy } = splitKeys(starred);
   const { assetIds: recentIds, legacy: recentLegacy } = splitKeys(recent);
 
   const rows = [
-    ...starIds.map((id) => ({ profile_id: user.id, asset_id: id, legacy_key: null, starred: true })),
-    ...starLegacy.map((k) => ({ profile_id: user.id, asset_id: null, legacy_key: k, starred: true })),
-    ...recentIds.map((id) => ({ profile_id: user.id, asset_id: id, legacy_key: null, starred: false })),
-    ...recentLegacy.map((k) => ({ profile_id: user.id, asset_id: null, legacy_key: k, starred: false })),
+    ...starIds.map((id) => ({ profile_id: profileId, asset_id: id, legacy_key: null, starred: true })),
+    ...starLegacy.map((k) => ({ profile_id: profileId, asset_id: null, legacy_key: k, starred: true })),
+    ...recentIds.map((id) => ({ profile_id: profileId, asset_id: id, legacy_key: null, starred: false })),
+    ...recentLegacy.map((k) => ({ profile_id: profileId, asset_id: null, legacy_key: k, starred: false })),
   ];
 
   if (rows.length) {
