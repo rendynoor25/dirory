@@ -155,9 +155,6 @@ create table public.favourites (
 );
 create index favourites_profile_idx on public.favourites (profile_id, starred, updated_at desc);
 create index favourites_asset_idx   on public.favourites (asset_id);
--- Several assets may legitimately share a legacy path (e.g. re-uploads), so this
--- is a lookup index rather than a unique constraint.
-create index assets_legacy_key_idx on public.assets (legacy_key);
 
 create table public.asset_versions (
   id             uuid primary key default gen_random_uuid(),
