@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+# Dirory — repository ignore rules
+#
+# Two rules of thumb here:
+#   1. Never commit a real credential. `.env.example` is the only env file
+#      that belongs in git; everything else is per-machine.
+#   2. Commit things a user or teammate receives. The built plugin (`.rbz`)
+#      is a deliverable, so `dist/` is NOT ignored — see the note further down.
+# ---------------------------------------------------------------------------
+
+# node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# env — never commit real values
+.env
+.env.local
+.env*.local
+!.env.example
+
+# supabase local state
+supabase/.branches/
+supabase/.temp/
+
+# misc
+.DS_Store
+*.log
+
+# local type-check scaffolding
+.tmpcheck/
+
+# ---------------------------------------------------------------------------
+# Build output
+#
+# `next build` output is regenerated on every deploy, so it is ignored.
+# The plugin archive is NOT ignored: it is a shipped artefact (brief §105) and
+# users install it directly, so it must live in the repository.
+# ---------------------------------------------------------------------------
+apps/web/out/
+apps/web/.next/
+plugin/**/*.tmp
+
+# Explicitly keep the built extension.
+!dist/
+!dist/*.rbz

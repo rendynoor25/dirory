@@ -1,0 +1,21 @@
+{
+  "name": "dirory",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Dirory — multi-vendor SketchUp product library (Supabase + Next.js)",
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace apps/web",
+    "build": "npm run build --workspace apps/web",
+    "lint": "npm run lint --workspace apps/web",
+    "db:push": "supabase db push",
+    "db:reset": "supabase db reset",
+    "fn:deploy": "supabase functions deploy events --no-verify-jwt",
+    "library:upload": "node scripts/upload-library.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

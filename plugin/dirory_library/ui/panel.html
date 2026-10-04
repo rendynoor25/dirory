@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Dirory</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="logo_white.png" alt="">
+      <h1>Dirory</h1>
+    </div>
+    <div class="toolbar">
+      <button id="accountBtn" title="Sign in">👤</button>
+      <button id="rescanBtn" title="Rescan folder">⟳</button>
+      <button id="folderBtn" title="Choose library folder">📁</button>
+    </div>
+  </header>
+
+  <div id="path" class="path"></div>
+  <div id="diagnostic" class="diagnostic" hidden></div>
+
+  <!-- Stays pinned to the top while the product list scrolls underneath. -->
+  <div id="controls" class="controls">
+    <input id="search" type="text" list="searchSuggestions" placeholder="Search name, category or brand…">
+    <datalist id="searchSuggestions"></datalist>
+
+    <div id="tabs" class="tabs">
+      <button class="tab active" data-filter="all">All</button>
+      <button class="tab" data-filter="model">Models</button>
+      <button class="tab" data-filter="material">Materials</button>
+      <button class="tab" data-filter="favourite">★ Favourite</button>
+      <button class="tab tab-usage" data-filter="usage">Usage</button>
+    </div>
+
+    <div id="filters" class="filters">
+      <select id="categoryFilter" aria-label="Filter by category"></select>
+      <select id="brandFilter" aria-label="Filter by brand"></select>
+    </div>
+  </div>
+
+  <div id="brandBanner" class="brand-banner" hidden></div>
+
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" hidden>
+    No items found. Try another category or brand, or drop a <code>.skp</code> file
+    anywhere inside your library folder and click ⟳ to rescan.
+  </div>
+
+  <section id="usage" class="usage" hidden>
+    <div class="usage-toolbar">
+      <div class="usage-actions">
+        <button id="usageRefresh" class="ghost-btn">⟳ Refresh</button>
+        <button id="usageExport" class="ghost-btn">⭳ Export CSV</button>
+        <button id="usageSelectAll" class="ghost-btn">☑ Select all brands</button>
+        <button id="usageToggleAll" class="ghost-btn">▴ Collapse all</button>
+      </div>
+      <label class="usage-option">
+        <input type="checkbox" id="hideUnused"> Hide unused materials / models
+      </label>
+    </div>
+    <div id="usageTotals" class="usage-totals"></div>
+
+    <div id="brandGroups"></div>
+
+    <p class="usage-note">
+      Grouped by brand and counted from the open model, so it stays correct after undo or delete.
+      Only models and materials inserted with this version of Dirory are counted.
+      Free Dirory samples are listed but can't be quoted.
+    </p>
+  </section>
+
+  <div id="quoteBar" class="quote-bar" hidden>
+    <button id="quoteBtn" class="quote-btn" disabled>🛒 Ask for a Quote</button>
+  </div>
+
+  <p id="hint" class="hint">
+    📦 Click a model card, then click in the model to place it. ☆ Star a card to keep it in Favourite.
+    🎨 Click a material card — the Paint Bucket activates with that material, ready to click a surface.
+  </p>
+
+  <div id="accountModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="acctTitle">
+      <button id="accountClose" class="modal-close" aria-label="Close">×</button>
+
+      <div id="signInView">
+        <h2 id="acctTitle">Sign in to Dirory</h2>
+        <p class="modal-lead">
+          Browsing and search are free without an account. Sign in to insert models,
+          paint materials and ask for quotes.
+        </p>
+        <label>Name *<input id="acctName" type="text" autocomplete="name"></label>
+        <label>Email *<input id="acctEmail" type="email" autocomplete="email"></label>
+        <label>Phone <span class="opt">(optional)</span><input id="acctPhone" type="tel" autocomplete="tel"></label>
+        <label>Firm <span class="opt">(optional)</span><input id="acctFirm" type="text" autocomplete="organization"></label>
+        <div id="acctError" class="modal-error" hidden></div>
+        <button id="acctSubmit" class="primary-btn">Sign in</button>
+      </div>
+
+      <div id="accountView" hidden>
+        <h2>Your account</h2>
+        <p id="acctWho" class="modal-lead"></p>
+        <button id="acctSignOut" class="ghost-btn">Sign out</button>
+      </div>
+
+      <!-- v0.5.2 / UU 27/2022: two clearly-scoped consents, plus a plain-language
+           list of exactly what leaves the computer. -->
+      <div class="consent-block">
+        <h3 class="consent-title">What you share</h3>
+
+        <label class="share-row">
+          <input type="checkbox" id="shareUsage">
+          <span>
+            Share anonymous usage, and searches that find nothing
+            <small>
+              Sends the Dirory products used in your open model — product names,
+              categories, brands, quantities and painted area, never geometry or
+              files — every few minutes, and search terms that return no results.
+              These are not linked to your name.
+            </small>
+          </span>
+        </label>
+
+        <label class="share-row">
+          <input type="checkbox" id="shareProject">
+          <span>
+            Also send my project name
+            <small>
+              Off by default. When on, each usage report includes the title of your
+              SketchUp file — for example "House Rina" — which can identify a client
+              or a site. Nothing else changes when this is off.
+            </small>
+          </span>
+        </label>
+
+        <details class="privacy-details">
+          <summary>See exactly what is sent</summary>
+          <div class="privacy-body">
+            <p><strong>Sent when "Share anonymous usage" is on:</strong></p>
+            <ul>
+              <li>Product name, category and brand of each Dirory item in your file</li>
+              <li>Quantity placed (models) and painted area in m² (materials)</li>
+              <li>Totals for the file, and SketchUp's own id for the file</li>
+              <li>A random install id, the plugin and SketchUp versions, and Windows or macOS</li>
+              <li>Search terms that returned <em>no results at all</em></li>
+            </ul>
+            <p><strong>Never sent:</strong></p>
+            <ul>
+              <li>Model geometry, meshes, or the contents of your .skp file</li>
+              <li>File names, folder names or paths on your computer</li>
+              <li>Screenshots, thumbnails, or your undo history</li>
+            </ul>
+            <p>
+              <strong>Your contact details</strong> reach a brand only when you ask
+              that brand for a quote.
+            </p>
+            <p>
+              <a id="privacyLink" href="#">Read the full privacy policy</a>
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+</html>
