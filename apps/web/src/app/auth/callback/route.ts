@@ -4,7 +4,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next") ?? "/vendor";
+  const candidate = url.searchParams.get("next") ?? "/vendor";
+  // Do not turn the callback into an open redirect. Only accept local paths.
+  const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/vendor";
 
   if (!code) {
     return NextResponse.redirect(new URL("/login?error=Missing+code", url.origin));

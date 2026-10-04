@@ -93,6 +93,22 @@ nslookup admin.dirory.com
 Then Netlify → Domain management → **Verify DNS configuration**. Once it shows
 green, Netlify issues the TLS certificate automatically.
 
+### 3.4 Make the public landing page available at `dirory.com`
+
+The landing page is the app's `/` route. First add **`dirory.com`** as a domain
+alias in Netlify → Domain management. Netlify will display the exact apex
+records it requires. Then at Domainesia replace only the existing `A` record for
+host `@` (currently the old `172.104.187.4`) with the apex value Netlify shows.
+Netlify's common apex value is `75.2.60.5`, but follow your site's Domain
+management instructions if they show a different value.
+
+Keep these records untouched: `MX @`, `A mail`, SPF, DMARC and DKIM. They provide
+your Mailspace email. The existing `www CNAME -> dirory.com` can stay; after the
+apex points at Netlify, `www.dirory.com` follows it.
+
+Do not change nameservers. This changes only the website destination and
+preserves email.
+
 ---
 
 ## 4. Point `admin.dirory.com` at the Sumopod VPS instead
@@ -150,11 +166,14 @@ To make it automatic:
    **build** time, so they must exist before the build runs.
 5. **Deploys → Trigger deploy → Clear cache and deploy site.**
 
-### Or use the GitHub Actions workflow
+### GitHub Actions
 
-`.github/workflows/deploy-web.yml` in this repo builds and deploys on every push
-to `main`, given a `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` secret. Use this
-or Netlify's own git integration — not both, or you will deploy twice per push.
+`.github/workflows/deploy-web.yml` runs typecheck and build only. Netlify's own
+Git integration handles production deployment. It is currently blocked by
+Netlify's private-repository "Unrecognized Git contributor" restriction.
+Resolve it from the failed deploy's **Manage Git contributors** link by linking
+the GitHub account, or choose a paid plan. Keep this repository private: it
+contains the gated RBZ artifact.
 
 ---
 

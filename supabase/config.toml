@@ -32,3 +32,9 @@ enable_signup = true
 
 [functions.events]
 verify_jwt = false
+
+[functions.catalog]
+verify_jwt = false
+
+[functions.favourites]
+verify_jwt = false

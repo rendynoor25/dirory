@@ -98,13 +98,20 @@ https://<your-project-ref>.supabase.co/functions/v1/events
 
 ### 1.5 Make yourself admin
 
-Sign in once at `/login` with your email, then in **SQL Editor**:
+Push migration `0006_admin_bootstrap.sql`, then sign in once at `/login` with
+your Gmail/email. This is a passwordless email link sent to Gmail, not Google
+OAuth. A new address creates an architect profile; it does not automatically
+become an admin. In **SQL Editor**:
 
 ```sql
 update public.profiles
 set role = 'admin'
 where id = (select id from auth.users where email = 'you@example.com');
 ```
+
+Use the exact email you signed in with. Signed-in non-admin users cannot promote
+themselves; the trusted SQL Editor is the bootstrap path. Then sign out and back
+in, and visit `/admin`.
 
 ---
 
@@ -192,11 +199,19 @@ breaks cookies.
 
 **Authentication → URL Configuration**:
 
-- **Site URL**: `https://dirory.id`
-- **Redirect URLs**: add `https://dirory.id/auth/callback`
+- **Site URL**: `https://dirory.com`
+- **Redirect URLs**: add `https://dirory.com/auth/callback`,
+  `https://admin.dirory.com/auth/callback`, and the Netlify deploy URL's
+  `/auth/callback` while testing.
 
-Also set `NEXT_PUBLIC_SITE_URL=https://dirory.id` in the hosting environment
+Also set `NEXT_PUBLIC_SITE_URL=https://dirory.com` in the hosting environment
 variables. Without the redirect entry, magic-link sign-in silently fails.
+
+Supabase currently reports email auth enabled and Google OAuth disabled. This
+app signs in by emailing a one-time link to a Gmail address; it does not use a
+Google OAuth button. Before allowing public signups, configure custom SMTP under
+Authentication → SMTP Settings; Supabase's built-in mail service is restricted
+and intended for testing, not reliable public delivery.
 
 ---
 

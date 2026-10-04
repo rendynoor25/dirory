@@ -8,6 +8,11 @@ Multi-vendor 3D product library for Indonesian construction products, delivered 
 
 Source of truth: `docs/PRD.md` (PRD v1.2). Read it before changing scope.
 
+Public website: `/` is the architect/designer landing page. `/login` sends a
+passwordless email link (Gmail addresses work; this is email-link sign-in, not
+Google OAuth). A new email creates an architect account. `/download` and
+`/api/download/rbz` require a signed-in account.
+
 ## Documentation
 
 | File | Read when |

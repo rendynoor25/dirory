@@ -1,5 +1,68 @@
 # Changelog
 
+## 0.5.0 — architect landing page, email signup, protected RBZ delivery
+
+- Created the public architect/designer landing page at `/`, using the supplied
+  transparent Dirory mark in the header, product preview, favicon and Open Graph
+  metadata.
+- Fixed the `/login` React #321 crash by keeping Next.js 15 `searchParams`
+  resolution in a server component and moving hooks into `SignInForm`.
+- Passwordless email-link sign-in supports Gmail. Supabase creates an architect
+  profile on first sign-in; this is email OTP, not Google OAuth.
+- Added `/download` and `/api/download/rbz`: an authenticated profile gets
+  DiroryLibrary v0.5.2; unauthenticated requests are redirected to sign-in. The
+  RBZ is included in Next's server trace and is not under the public static path.
+- Added a public privacy-policy draft at `/privacy` and made callback `next`
+  redirects local-path-only.
+- Added migration `0006_admin_bootstrap.sql` to let the trusted SQL Editor
+  promote the founder while authenticated non-admin users remain unable to self-
+  promote. Extended the RLS suite to test the role trigger.
+- Netlify remains blocked by its private-repository "Unrecognized Git
+  contributor" limit. Source is ready, but this version will not be live until
+  Netlify accepts the commit and a production deployment succeeds.
+
+**Verified:** TypeScript strict check, Next.js production build (24 routes),
+local production smoke test (`/`, `/login`, `/download`, `/privacy` all HTTP 200;
+unauthenticated `/api/download/rbz` redirects to sign-in), and RBZ artifact is
+present in the route output trace.
+
+**Not verified:** Netlify production deployment, migration 0006 on Supabase, the
+full RLS suite, or public SMTP delivery. Supabase's built-in email sender may
+only deliver to project-team addresses; configure custom SMTP before inviting
+architects publicly.
+
+## 0.4.0 — public architect site and protected RBZ download
+
+- Replaced the scaffold homepage with a public landing page for architects and
+  designers, using the supplied Dirory mark as the header/hero brand, favicon
+  and Open Graph page thumbnail.
+- Split the broken async client login into a Next.js 15 server page and an
+  interactive client form. `searchParams` is awaited on the server, so React
+  hooks are no longer called after an `await` (the source of React error #321).
+- Login clearly supports Gmail via passwordless email link. On first use,
+  Supabase Auth creates an architect profile (`disable_signup=false`, email
+  provider enabled). This is email OTP, not Google OAuth.
+- Added `/download` and `/api/download/rbz`; unauthenticated requests go to
+  sign-in, authenticated users receive RBZ v0.5.2. The package is server-traced,
+  not placed in the public static directory.
+- Added a public privacy-policy draft page and safer local-only callback paths.
+- Added migration `0006_admin_bootstrap.sql`: the previous profile-role trigger
+  prevented the trusted SQL Editor from promoting the founder to admin because
+  it treated a null `auth.uid()` as a regular user. It still blocks authenticated
+  users from self-promoting.
+- Extended the RLS test with admin-fixture verification and tests for preventing
+  self-promotion while allowing a trusted bootstrap operation.
+
+**Verified:** strict TypeScript check and Next.js production build pass (24 app
+routes); RBZ appears in the download route's output trace; local production
+smoke test returned 200 for `/` and `/login`, and an unauthenticated download
+request redirected to `/login`.
+
+**Not verified:** Netlify has been blocking builds from GitHub with its
+"Unrecognized Git contributor" private-repository limit. This code is not live
+until that Netlify contributor/account issue is fixed and a deployment succeeds.
+The new migration and expanded RLS test have not yet been pushed/run on Supabase.
+
 ## 0.3.0 — privacy, consent (UU 27/2022) and v0.5.2
 
 Founder decisions this session: option C (policy now, consent UI as a separate

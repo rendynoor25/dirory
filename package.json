@@ -10,6 +10,7 @@
     "dev": "npm run dev --workspace apps/web",
     "build": "npm run build --workspace apps/web",
     "lint": "npm run lint --workspace apps/web",
+    "db:lint": "node scripts/lint-migrations.mjs",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
     "fn:deploy": "supabase functions deploy events --no-verify-jwt",

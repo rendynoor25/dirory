@@ -36,6 +36,7 @@ declare
   a_b_rejected uuid := '00000000-0000-0000-0000-0000000000e5';
   arch_a uuid := '00000000-0000-0000-0000-0000000000f1';
   arch_b uuid := '00000000-0000-0000-0000-0000000000f2';
+  fixture_role profile_role;
   cnt  int;
 begin
   -- Seed auth.users + profiles + vendors + members + assets as the postgres role.
@@ -107,8 +108,16 @@ begin
   -- =========================================================================
   -- 2. Vendor A must not read search_misses
   -- =========================================================================
+  -- Seed the row as the service role first. A vendor cannot write this table —
+  -- only the /events Edge Function does, using the service role — so inserting
+  -- while impersonating the vendor is refused by RLS, which is the point.
+  perform set_config('role', 'postgres', true);
   insert into public.search_misses (install_id, query_norm)
   values (gen_random_uuid(), 'bathtub gold');
+
+  -- Back to Vendor A to prove the read is blocked.
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims', json_build_object('sub', u_a)::text, true);
 
   select count(*) into cnt from public.search_misses;
   if cnt <> 0 then
@@ -144,7 +153,12 @@ begin
   -- =========================================================================
   -- 5. Admin sees everything
   -- =========================================================================
+  perform set_config('role', 'authenticated', true);
   perform set_config('request.jwt.claims', json_build_object('sub', adm)::text, true);
+  select role into strict fixture_role from public.profiles where id = adm;
+  if fixture_role <> 'admin' then
+    raise exception 'RLS TEST SETUP FAIL: admin fixture role was changed to %', fixture_role;
+  end if;
   select count(*) into cnt from public.assets;
   if cnt < 2 then
     raise exception 'RLS FAIL: admin cannot read all assets (%)', cnt;
@@ -191,6 +205,25 @@ begin
   on conflict do nothing;
 
   -- Architect A sees only their own row.
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims', json_build_object('sub', arch_a)::text, true);
+
+  -- A normal signed-in user cannot promote themselves by editing profiles.
+  update public.profiles set role = 'admin' where id = arch_a;
+  select role into strict fixture_role from public.profiles where id = arch_a;
+  if fixture_role = 'admin' then
+    raise exception 'RLS FAIL: architect self-promoted to admin';
+  end if;
+
+  -- A trusted SQL Editor operation can bootstrap/promote an account (migration
+  -- 0006). This is how the founder grants the first admin role.
+  perform set_config('role', 'postgres', true);
+  perform set_config('request.jwt.claims', '{}', true);
+  update public.profiles set role = 'admin' where id = arch_b;
+  select role into strict fixture_role from public.profiles where id = arch_b;
+  if fixture_role <> 'admin' then
+    raise exception 'RLS FAIL: trusted admin bootstrap could not assign admin role';
+  end if;
   perform set_config('role', 'authenticated', true);
   perform set_config('request.jwt.claims', json_build_object('sub', arch_a)::text, true);
 
