@@ -678,3 +678,67 @@ h1 {
 }
 .google-btn:hover { background: #f7f8f8; }
 #devicePending .primary-btn, #devicePending .ghost-btn { width: 100%; margin-top: 8px; }
+
+/* ------------------------------------------------------------------ */
+/* M6: download badge, product-info button, product/inspector body     */
+/* ------------------------------------------------------------------ */
+.dl-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 3;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(32, 43, 78, 0.82);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+}
+.dl-badge.busy { background: rgba(150, 100, 20, 0.9); animation: dlpulse 1s ease-in-out infinite; }
+.dl-badge.done { background: rgba(31, 122, 79, 0.9); }
+@keyframes dlpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+.info-btn {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  z-index: 3;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #39509f;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(32, 43, 78, 0.28);
+}
+.info-btn:hover { background: #fff; }
+
+.product-body { max-height: 60vh; overflow-y: auto; }
+.product-image {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #f1f3fb;
+  margin-bottom: 10px;
+}
+.product-row {
+  display: flex;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #eef0f6;
+  font-size: 11.5px;
+}
+.product-label { flex: 0 0 92px; color: #8a8a8e; }
+.product-value { flex: 1; color: #2b2b30; word-break: break-word; }
+.product-actions { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.product-empty { margin: 8px 0 0; font-size: 11.5px; color: #8a8a8e; line-height: 1.5; }

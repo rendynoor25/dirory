@@ -5,17 +5,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Sampled from the Dirory logo: a slate-indigo gradient from
+        // #3B52A1 (deep) to #5C6FB1 (light), averaging ~#4A5FAB.
         brand: {
-          50: "#eef4ff",
-          100: "#dbe6ff",
-          200: "#bccfff",
-          300: "#93aeff",
-          400: "#6a86ff",
-          500: "#4a5fff",
-          600: "#3440e8",
-          700: "#2a31bd",
-          800: "#262e96",
-          900: "#252e77",
+          50: "#f2f5fb",
+          100: "#e4eaf6",
+          200: "#c7d3ec",
+          300: "#a1b3de",
+          400: "#7489c8",
+          500: "#576baf",
+          600: "#4a5fab",
+          700: "#3b52a1",
+          800: "#31447f",
+          900: "#2a3861",
         },
       },
     },

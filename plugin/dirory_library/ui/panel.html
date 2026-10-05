@@ -12,6 +12,7 @@
       <h1>Dirory</h1>
     </div>
     <div class="toolbar">
+      <button id="inspectorBtn" title="Inspector — details of the selected product">🔍</button>
       <button id="accountBtn" title="Sign in">👤</button>
     </div>
   </header>
@@ -184,6 +185,26 @@
           </div>
         </details>
       </div>
+    </div>
+  </div>
+
+  <div id="productModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="productTitle">
+      <button id="productClose" class="modal-close" aria-label="Close">×</button>
+      <h2 id="productTitle">Product info</h2>
+      <div id="productBody" class="product-body"></div>
+    </div>
+  </div>
+
+  <div id="inspectorModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="inspectorTitle">
+      <button id="inspectorClose" class="modal-close" aria-label="Close">×</button>
+      <h2 id="inspectorTitle">Inspector</h2>
+      <p class="modal-lead">
+        Select a Dirory product in your model to see its details here — useful for
+        working drawings and purchase orders.
+      </p>
+      <div id="inspectorBody" class="product-body"></div>
     </div>
   </div>
 

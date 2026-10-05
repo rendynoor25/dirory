@@ -422,6 +422,14 @@ module Dirory
       entity.set_attribute(ATTR_DICT, 'name', (data['name'] || File.basename(path, '.*')).to_s)
       entity.set_attribute(ATTR_DICT, 'category', data['category'].to_s)
       entity.set_attribute(ATTR_DICT, 'brand', data['brand'].to_s)
+      # Extra detail the Inspector shows (M6). Stored on the entity so it still
+      # works with no network and survives save/reopen.
+      size = data['tile_size_cm']
+      entity.set_attribute(ATTR_DICT, 'tile_size', Array(size).join(' x ')) if size.is_a?(Array) && !size.empty?
+      entity.set_attribute(ATTR_DICT, 'sku', data['sku'].to_s) if data['sku']
+      entity.set_attribute(ATTR_DICT, 'product_url', data['product_url'].to_s) if data['product_url']
+      tags = data['tags']
+      entity.set_attribute(ATTR_DICT, 'tags', Array(tags).join(', ')) if tags.is_a?(Array) && !tags.empty?
     end
 
     def self.dirory_info(entity)
@@ -429,10 +437,79 @@ module Dirory
       return nil unless dict && dict['id']
       {
         'id' => dict['id'].to_s,
+        'asset_id' => dict['asset_id'].to_s,
         'name' => (dict['name'].to_s.empty? ? File.basename(dict['id'].to_s, '.*') : dict['name']).to_s,
         'category' => dict['category'].to_s,
-        'brand' => (dict['brand'].to_s.strip.empty? ? DIRORY_BRAND : dict['brand'].to_s)
+        'brand' => (dict['brand'].to_s.strip.empty? ? DIRORY_BRAND : dict['brand'].to_s),
+        'type' => dict['type'].to_s,
+        'tile_size' => dict['tile_size'].to_s,
+        'sku' => dict['sku'].to_s,
+        'product_url' => dict['product_url'].to_s,
+        'tags' => dict['tags'].to_s
       }
+    end
+
+    # ------------------------------------------------------------------
+    # Inspector (M6, after Thudio's Inspector window): read the Dirory tag of
+    # whatever the user has selected and show its product details in the panel.
+    # If nothing Dirory is selected, look for a Dirory instance anywhere in the
+    # selection's group/component chain.
+    # ------------------------------------------------------------------
+    def self.inspect_selection
+      return unless @dialog
+      model = Sketchup.active_model
+      entity = model ? model.selection.first : nil
+      info = entity ? dirory_info(entity) : nil
+
+      # A face painted with a Dirory material, or an edge of a Dirory component.
+      if info.nil? && entity
+        info = inspect_from_entity(entity)
+      end
+
+      payload =
+        if info
+          { 'found' => true, 'item' => info }
+        else
+          { 'found' => false }
+        end
+      @dialog.execute_script("window.diroryInspect(#{payload.to_json});")
+    rescue StandardError => e
+      @dialog.execute_script("window.diroryInspect(#{ { found: false }.to_json });") if @dialog
+      puts "[Dirory] inspect failed: #{e.message}"
+    end
+
+    # Walk the selected entity to find an inherited Dirory tag: a face's
+    # material, or the attribute dictionary of any ancestor definition.
+    def self.inspect_from_entity(entity)
+      # 1) A face (or an entity inside a group) whose material is a Dirory one.
+      face = entity.is_a?(Sketchup::Face) ? entity : nil
+      if face.nil? && entity.respond_to?(:faces) && entity.faces.first
+        face = entity.faces.first
+      end
+      if face && face.material
+        info = dirory_info(face.material)
+        return info if info
+      end
+
+      # 2) The instance's own definition.
+      if entity.respond_to?(:definition) && entity.definition
+        info = dirory_info(entity.definition)
+        return info if info
+      end
+
+      # 3) Any ancestor in the selection path.
+      begin
+        path = entity.respond_to?(:parent) ? entity.parent : nil
+        while path
+          info = dirory_info(path)
+          return info if info
+          path = path.respond_to?(:parent) ? path.parent : nil
+          break if path.is_a?(Sketchup::Model)
+        end
+      rescue StandardError
+        nil
+      end
+      nil
     end
 
     # ------------------------------------------------------------------
@@ -497,14 +574,18 @@ module Dirory
     def self.resolve_asset_path(data)
       path = data['path'].to_s
       if !path.empty? && File.exist?(path)
+        # Already on disk (local-folder item, or a previous cloud download).
+        notify_downloaded(data['asset_id'])
         yield(path, nil)
         return
       end
       if Cloud.uuid_like?(data['asset_id'])
         Sketchup.set_status_text('Dirory: downloading the file…', SB_PROMPT)
+        notify_downloading(data['asset_id'])
         Cloud.download_asset(data) do |local, error|
           if local
             data['path'] = local
+            notify_downloaded(data['asset_id'])
             yield(local, nil)
           else
             yield(nil, error || 'The file could not be downloaded.')
@@ -513,6 +594,22 @@ module Dirory
       else
         yield(nil, 'This item is not available on this computer. Click ⟳ to refresh the catalogue.')
       end
+    end
+
+    # Tell the panel a cloud card started / finished downloading, so it can show
+    # a download badge that turns into a tick (like Thudio's card badges).
+    def self.notify_downloading(asset_id)
+      return if @dialog.nil? || asset_id.to_s.empty?
+      @dialog.execute_script("window.diroryDownloading(#{ { asset_id: asset_id }.to_json });")
+    rescue StandardError
+      nil
+    end
+
+    def self.notify_downloaded(asset_id)
+      return if @dialog.nil? || asset_id.to_s.empty?
+      @dialog.execute_script("window.diroryDownloaded(#{ { asset_id: asset_id }.to_json });")
+    rescue StandardError
+      nil
     end
 
     def self.insert_model_file(data, path)
@@ -1172,6 +1269,12 @@ module Dirory
           push_account
         end
         @dialog.add_action_callback('openPrivacy') { |_ctx| UI.openURL(PRIVACY_URL) }
+        @dialog.add_action_callback('inspectSelection') { |_ctx| inspect_selection }
+        @dialog.add_action_callback('openURL') do |_ctx, payload|
+          data = parse_payload(payload)
+          url = data['url'].to_s
+          UI.openURL(url) unless url.empty?
+        end
         @dialog.add_action_callback('toggleFavourite') { |_ctx, key| toggle_favourite(key) }
         # Search returned 0 results across the whole library.
         @dialog.add_action_callback('searchMiss') do |_ctx, payload|

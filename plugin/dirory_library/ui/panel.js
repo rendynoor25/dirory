@@ -25,6 +25,10 @@ let brandLogos = {};     // lower-case brand name -> image URL
 let pendingAction = null;   // what the user clicked before being asked to sign in
 let missTimer = null;
 const reportedMisses = new Set(); // searches already reported in this session
+// M6: asset ids currently downloading, and those already cached locally. Used to
+// draw a download badge / progress ring on the card, like Thudio does.
+const downloading = new Set();
+const downloaded = new Set();
 
 function isFav(item) {
   return favourites.has(item.key);
@@ -405,6 +409,29 @@ function render() {
       chip.appendChild(logo);
       thumb.appendChild(chip);
     }
+    // Download state: a cloud item shows a badge until it is cached, then a tick.
+    // Local-folder items are always "downloaded".
+    const isCloud = !!item.asset_id;
+    if (isCloud) {
+      if (downloading.has(item.asset_id)) {
+        thumb.appendChild(el('span', 'dl-badge busy', '⤓'));
+      } else if (downloaded.has(item.asset_id)) {
+        thumb.appendChild(el('span', 'dl-badge done', '✓'));
+      } else {
+        thumb.appendChild(el('span', 'dl-badge', '⤓'));
+      }
+    }
+    // Product info button (hover/click), like Thudio's "Product Info".
+    const info = el('button', 'info-btn', 'ⓘ');
+    info.type = 'button';
+    info.title = 'Product info';
+    info.setAttribute('aria-label', 'Product info');
+    info.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation(); // do not insert / paint
+      openProductInfo(item);
+    });
+    thumb.appendChild(info);
     card.appendChild(thumb);
 
     // Star: keep this product in the Favourite tab.
@@ -849,4 +876,122 @@ window.diroryFavourites = function (data) {
   favourites = new Set(data.favourites || []);
   recentKeys = data.recent || [];
   if (currentFilter === 'favourite') render();
+};
+
+/* ------------------------------------------------------------------ */
+/* Download state (M6): badges on cloud cards                          */
+/* ------------------------------------------------------------------ */
+
+// Ruby tells the panel an asset finished downloading (or is now cached), so the
+// badge turns into a tick.
+window.diroryDownloaded = function (data) {
+  const id = String((data && data.asset_id) || '');
+  if (!id) return;
+  downloading.delete(id);
+  downloaded.add(id);
+  render();
+};
+
+window.diroryDownloading = function (data) {
+  const id = String((data && data.asset_id) || '');
+  if (!id) return;
+  downloading.add(id);
+  render();
+};
+
+/* ------------------------------------------------------------------ */
+/* Product info + Inspector                                            */
+/* ------------------------------------------------------------------ */
+
+function detailRow(label, value) {
+  if (value === undefined || value === null || value === '') return null;
+  const row = el('div', 'product-row');
+  row.appendChild(el('span', 'product-label', label));
+  row.appendChild(el('span', 'product-value', String(value)));
+  return row;
+}
+
+function renderProductBody(container, item) {
+  container.innerHTML = '';
+  if (item.thumbnail_url || item.thumbnail) {
+    const img = document.createElement('img');
+    img.className = 'product-image';
+    img.src = item.thumbnail_url || (/^https?:/i.test(item.thumbnail) ? item.thumbnail : 'file:///' + item.thumbnail.replace(/\\/g, '/'));
+    img.onerror = () => img.remove();
+    container.appendChild(img);
+  }
+  const rows = [
+    detailRow('Name', item.name),
+    detailRow('Brand', item.brand),
+    detailRow('Category', item.category),
+    detailRow('Type', item.type === 'material' ? 'Material' : '3D model'),
+    detailRow('Tile size', item.tile_size_cm && item.tile_size_cm.length ? item.tile_size_cm.join(' × ') + ' cm' : (item.tile_size || '')),
+    detailRow('Tags', Array.isArray(item.tags) ? item.tags.join(', ') : item.tags),
+    detailRow('SKU', item.sku),
+    detailRow('Product URL', item.product_url),
+  ].filter(Boolean);
+  rows.forEach((row) => container.appendChild(row));
+
+  const actions = el('div', 'product-actions');
+  if (item.product_url) {
+    const open = el('button', 'ghost-btn', 'Open product page ↗');
+    open.type = 'button';
+    open.addEventListener('click', () => sketchup.openURL(item.product_url));
+    actions.appendChild(open);
+  }
+  if (item.brand && String(item.brand).toLowerCase() !== 'dirory') {
+    const quote = el('button', 'ghost-btn', 'Ask this brand for a quote');
+    quote.type = 'button';
+    quote.addEventListener('click', () => {
+      closeProductInfo();
+      quoteBrands.clear();
+      quoteBrands.add(item.brand);
+      openQuote();
+    });
+    actions.appendChild(quote);
+  }
+  if (actions.children.length) container.appendChild(actions);
+}
+
+function openProductInfo(item) {
+  renderProductBody(byId('productBody'), item);
+  byId('productTitle').textContent = item.name || 'Product info';
+  byId('productModal').hidden = false;
+}
+
+function closeProductInfo() {
+  byId('productModal').hidden = true;
+}
+
+byId('productClose').addEventListener('click', closeProductInfo);
+byId('productModal').addEventListener('click', (e) => {
+  if (e.target === byId('productModal')) closeProductInfo();
+});
+
+function openInspector() {
+  byId('inspectorModal').hidden = false;
+  sketchup.inspectSelection();
+}
+
+function closeInspector() {
+  byId('inspectorModal').hidden = true;
+}
+
+byId('inspectorClose').addEventListener('click', closeInspector);
+byId('inspectorModal').addEventListener('click', (e) => {
+  if (e.target === byId('inspectorModal')) closeInspector();
+});
+byId('inspectorBtn').addEventListener('click', openInspector);
+
+// Ruby pushes the details of the selected entity (or null when nothing Dirory
+// is selected).
+window.diroryInspect = function (data) {
+  const body = byId('inspectorBody');
+  if (!data || !data.found) {
+    body.innerHTML = '';
+    body.appendChild(el('p', 'product-empty', 'Nothing Dirory is selected. Click a model or a painted surface, then open the Inspector again.'));
+    return;
+  }
+  renderProductBody(body, data.item);
+  byId('inspectorTitle').textContent = data.item.name || 'Inspector';
 };

@@ -1,19 +1,57 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const features = [
+/**
+ * Public landing page (dirory.com).
+ *
+ * Structure is modelled on Thudio's site — a clear how-it-works flow, the
+ * brands available, and a single obvious call to action — with Dirory's own
+ * logo colours sampled from the mark (#3B52A1 deep → #5C6FB1 light).
+ *
+ * NOTE: no community statistics are shown yet; the founder has not supplied
+ * real numbers and inventing them would be misleading. Add a <Stats> section
+ * once real figures exist.
+ */
+
+const steps = [
   {
     number: "01",
+    title: "Get the plugin",
+    text: "Create a free account and install the Dirory extension in SketchUp 2021 or newer.",
+  },
+  {
+    number: "02",
+    title: "Browse real products",
+    text: "Search every brand's models and materials inside SketchUp. Filter by category or brand, or star your favourites.",
+  },
+  {
+    number: "03",
+    title: "Drop them into your design",
+    text: "Click a model to place it, or click a material and paint a surface. Sizes, textures and 3 mm grout are handled for you.",
+  },
+];
+
+const brands = [
+  { name: "TOTO", note: "Sanitaryware" },
+  { name: "Trilliunware", note: "Sanitaryware" },
+  { name: "NIRO GRANITE", note: "Tiles & stone" },
+  { name: "ROMAN", note: "Tiles" },
+  { name: "TACO", note: "HPL & laminate" },
+  { name: "Nippon Paint", note: "Wall paint" },
+  { name: "Propan", note: "Wall paint" },
+  { name: "Malka", note: "Furniture" },
+];
+
+const features = [
+  {
     title: "Made for SketchUp",
     text: "Find product models and material textures without leaving your design workflow.",
   },
   {
-    number: "02",
     title: "Real Indonesian brands",
-    text: "Explore products from local suppliers, organized by category and brand.",
+    text: "Products from local suppliers, organised by category and brand, always up to date.",
   },
   {
-    number: "03",
     title: "Free for designers",
     text: "Browse the library for free. Create an account to download and use the Dirory plugin.",
   },
@@ -31,31 +69,34 @@ export default function Home() {
           <a href="#how-it-works" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             How it works
           </a>
+          <a href="#brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
+            Brands
+          </a>
           <Link href="/login?next=%2Fdownload" className="text-sm font-medium text-slate-700 hover:text-slate-950">
             Sign in
           </Link>
-          <Link href="/login?next=%2Fdownload" className="rounded-full bg-[#3549a7] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#293b91]">
+          <Link href="/login?next=%2Fdownload" className="rounded-full bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-800">
             Get the plugin
           </Link>
         </nav>
       </header>
 
       <section className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-10 lg:grid-cols-[1.04fr_.96fr] lg:px-10 lg:pb-28 lg:pt-16">
-        <div className="pointer-events-none absolute -left-40 top-4 h-96 w-96 rounded-full bg-indigo-100/70 blur-3xl" />
+        <div className="pointer-events-none absolute -left-40 top-4 h-96 w-96 rounded-full bg-brand-100/70 blur-3xl" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#3549a7] shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-3 py-1.5 text-xs font-semibold text-brand-700 shadow-sm">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
             Product library for SketchUp
           </div>
           <h1 className="mt-6 max-w-3xl text-5xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl lg:text-[4.5rem]">
-            Design with products that are <span className="text-[#465bb8]">real.</span>
+            Design with products that are <span className="text-brand-500">real.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
             Dirory brings Indonesian construction brands, 3D models and material textures into one
             easy-to-use SketchUp library.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/login?next=%2Fdownload" className="rounded-full bg-[#3549a7] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-900/15 transition hover:-translate-y-0.5 hover:bg-[#293b91]">
+            <Link href="/login?next=%2Fdownload" className="rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/15 transition hover:-translate-y-0.5 hover:bg-brand-800">
               Create a free account <span aria-hidden="true">→</span>
             </Link>
             <a href="#how-it-works" className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400">
@@ -65,16 +106,16 @@ export default function Home() {
           <p className="mt-4 text-xs text-slate-500">Free to browse. Account required to get the plugin download.</p>
           <div className="mt-10 flex items-center gap-4 border-t border-slate-200 pt-6">
             <div className="flex -space-x-2" aria-hidden="true">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-[#e2e8ff] text-xs font-bold text-[#3549a7]">3D</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-brand-100 text-xs font-bold text-brand-700">3D</span>
               <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-[#e6f3ed] text-xs font-bold text-emerald-800">M</span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-[#fff0dd] text-xs font-bold text-amber-800">ID</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-[#f4ecdd] text-xs font-bold text-amber-800">ID</span>
             </div>
             <p className="text-sm text-slate-500"><strong className="font-semibold text-slate-800">Models. Materials. Brands.</strong> Ready for your next project.</p>
           </div>
         </div>
 
         <div className="relative mx-auto w-full max-w-xl lg:justify-self-end">
-          <div className="absolute -right-8 -top-9 h-40 w-40 rounded-full bg-[#dce4ff] blur-2xl" />
+          <div className="absolute -right-8 -top-9 h-40 w-40 rounded-full bg-brand-100 blur-2xl" />
           <div className="absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-[#e4f2eb] blur-2xl" />
           <div className="relative overflow-hidden rounded-[2rem] border border-white bg-white p-3 shadow-[0_32px_100px_-42px_rgba(33,48,108,.42)]">
             <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
@@ -90,7 +131,7 @@ export default function Home() {
                   <span className="text-xs font-bold">Dirory</span>
                 </div>
                 {[["All products", true], ["Models", false], ["Materials", false], ["★ Favourite", false], ["Usage", false]].map(([label, active]) => (
-                  <div key={label as string} className={`mb-1 rounded-lg px-2 py-2 text-[10px] ${active ? "bg-[#e5eaff] font-semibold text-[#3549a7]" : "text-slate-500"}`}>
+                  <div key={label as string} className={`mb-1 rounded-lg px-2 py-2 text-[10px] ${active ? "bg-brand-100 font-semibold text-brand-700" : "text-slate-500"}`}>
                     {label as string}
                   </div>
                 ))}
@@ -102,7 +143,7 @@ export default function Home() {
                   <span>⌕ Search products and materials</span><span>⌘ K</span>
                 </div>
                 <div className="mt-3 flex gap-2 overflow-hidden text-[10px]">
-                  <span className="rounded-full bg-[#3549a7] px-3 py-1.5 font-semibold text-white">All</span>
+                  <span className="rounded-full bg-brand-700 px-3 py-1.5 font-semibold text-white">All</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">Models</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">Materials</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">Tiles</span>
@@ -124,17 +165,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How it works — three steps, like Thudio's flow. */}
       <section id="how-it-works" className="border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#465bb8]">A better design workflow</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">The right products, closer to your work.</h2>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">How it works</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">From search to placed, in three clicks.</h2>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {steps.map((step) => (
+              <article key={step.number} className="relative rounded-2xl border border-slate-200 bg-[#fbfcff] p-6">
+                <div className="text-xs font-bold tracking-widest text-brand-400">{step.number}</div>
+                <h3 className="mt-5 text-lg font-semibold">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{step.text}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-12 grid gap-4 md:grid-cols-3">
             {features.map((feature) => (
-              <article key={feature.number} className="rounded-2xl border border-slate-200 bg-[#fbfcff] p-6">
-                <div className="text-xs font-bold tracking-widest text-[#6678c5]">{feature.number}</div>
-                <h3 className="mt-5 text-lg font-semibold">{feature.title}</h3>
+              <article key={feature.title} className="rounded-2xl border border-slate-200 bg-white p-6">
+                <h3 className="text-base font-semibold">{feature.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{feature.text}</p>
               </article>
             ))}
@@ -142,14 +193,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
-        <div className="relative overflow-hidden rounded-[2rem] bg-[#202d70] px-7 py-10 text-white sm:px-12 sm:py-14">
+      {/* Brands available. Wordmark tiles (no third-party logo files are shipped). */}
+      <section id="brands" className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+        <div className="max-w-2xl">
+          <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">Brands in the library</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Products from brands you specify every day.</h2>
+          <p className="mt-4 text-sm leading-6 text-slate-600">
+            The sample library already covers these brands. More are added as Dirory grows — and you can
+            ask for a brand directly from inside SketchUp.
+          </p>
+        </div>
+        <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {brands.map((brand) => (
+            <div key={brand.name} className="flex h-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 text-center transition hover:border-brand-200 hover:shadow-sm">
+              <span className="text-sm font-semibold tracking-tight text-slate-800">{brand.name}</span>
+              <span className="mt-1 text-[10px] uppercase tracking-wider text-slate-400">{brand.note}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-20">
+        <div className="relative overflow-hidden rounded-[2rem] bg-brand-900 px-7 py-10 text-white sm:px-12 sm:py-14">
           <div className="absolute -right-12 -top-24 h-72 w-72 rounded-full border-[42px] border-white/5" />
           <div className="relative max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-indigo-200">Start designing</p>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-200">Start designing</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Bring better product detail into your next SketchUp project.</h2>
-            <p className="mt-4 leading-7 text-indigo-100">Create a free account. We’ll send a secure sign-in link to your email, then you can get the plugin.</p>
-            <Link href="/login?next=%2Fdownload" className="mt-7 inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#26377f] transition hover:bg-indigo-50">
+            <p className="mt-4 leading-7 text-brand-100">Create a free account. We’ll send a secure sign-in link to your email, then you can get the plugin.</p>
+            <Link href="/login?next=%2Fdownload" className="mt-7 inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-brand-800 transition hover:bg-brand-50">
               Create your free account <span className="ml-2" aria-hidden="true">→</span>
             </Link>
           </div>
@@ -171,7 +242,7 @@ export default function Home() {
 
 function ProductTile({ name, brand, tone }: { name: string; brand: string; tone: "blue" | "sand" | "green" | "wood" }) {
   const tones = {
-    blue: "from-[#cdd8ff] to-[#eef1ff]",
+    blue: "from-[#c7d3ec] to-[#eef1ff]",
     sand: "from-[#e9d7bd] to-[#f8f0e5]",
     green: "from-[#c9e3d4] to-[#edf6ef]",
     wood: "from-[#d4b797] to-[#f2e4d2]",

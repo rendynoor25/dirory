@@ -1,4 +1,4 @@
-require 'sketchup.rb'
+﻿require 'sketchup.rb'
 require 'json'
 require 'digest'
 require 'fileutils'
@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.6.4'.freeze
+      PLUGIN_VERSION = '0.7.0'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -64,7 +64,7 @@ module Dirory
       # @inflight and drops it when its callback completes.
       #
       # The official examples all keep the request in an instance variable for
-      # exactly this reason. This bit the M6 catalogue fetch — the panel opened,
+      # exactly this reason. This bit the M6 catalogue fetch â€” the panel opened,
       # no response ever arrived, and it showed the "didn't hear back" message.
       # --------------------------------------------------------------
       def self.new_request(url, method = Sketchup::Http::GET)
@@ -135,7 +135,7 @@ module Dirory
       end
 
       # --------------------------------------------------------------
-      # Account — verified device-code login (M6 / FR-A4)
+      # Account â€” verified device-code login (M6 / FR-A4)
       #
       # The plugin no longer trusts a typed name + email. It starts a device
       # login, opens the browser, polls until the architect approves, and stores
@@ -949,7 +949,7 @@ module Dirory
       def self.test_connection
         lines = []
         lines << "API base URL: #{configured? ? api_base_url : '(empty)'}"
-        lines << "API key: #{api_key.empty? ? '(empty)' : "set (#{api_key[0, 6]}…, #{api_key.length} chars)"}"
+        lines << "API key: #{api_key.empty? ? '(empty)' : "set (#{api_key[0, 6]}â€¦, #{api_key.length} chars)"}"
         lines << "Plugin version: #{PLUGIN_VERSION}"
         lines << "SketchUp: #{Sketchup.version}"
         lines << "Sketchup::Http available: #{defined?(Sketchup::Http::Request) ? 'yes' : 'NO (needs SketchUp 2021+)'}"
@@ -967,7 +967,7 @@ module Dirory
 
         url = "#{api_base_url}/catalog"
         lines << "Request: GET #{url}"
-        lines << 'Waiting for the server…'
+        lines << 'Waiting for the serverâ€¦'
 
         begin
           request = new_request(url, Sketchup::Http::GET)
@@ -978,14 +978,14 @@ module Dirory
             body_len = response.body.to_s.length
             lines << ''
             if code == 0
-              lines << 'Result: HTTP 0 — no response was received.'
+              lines << 'Result: HTTP 0 â€” no response was received.'
               lines << 'This means the request never completed. Common causes:'
-              lines << '  · the base URL is not reachable from this computer'
-              lines << '  · a TLS/network problem inside SketchUp'
-              lines << '  · the base URL must be https:// and end at /functions/v1'
+              lines << '  Â· the base URL is not reachable from this computer'
+              lines << '  Â· a TLS/network problem inside SketchUp'
+              lines << '  Â· the base URL must be https:// and end at /functions/v1'
               lines << "Open this in a browser to check: #{url}"
             elsif code >= 200 && code < 300
-              lines << "Result: HTTP #{code} — the server answered correctly."
+              lines << "Result: HTTP #{code} â€” the server answered correctly."
               lines << "Response size: #{body_len} bytes"
               lines << 'Connection is working. Try signing in again.'
             else

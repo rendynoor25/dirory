@@ -42,7 +42,7 @@ Deno.serve(async (req: Request) => {
   for (let offset = 0; ; offset += PAGE) {
     const params = new URLSearchParams({
       select:
-        "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key," +
+        "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key,sku,product_url," +
         "categories(name)," +
         "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path)," +
         "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status)",
@@ -126,6 +126,9 @@ Deno.serve(async (req: Request) => {
       tile_size_cm: r.tile_w_cm
         ? [Number(r.tile_w_cm), Number(r.tile_h_cm ?? r.tile_w_cm)]
         : null,
+      // Inspector / product-info detail (M6).
+      sku: r.sku ?? null,
+      product_url: r.product_url ?? null,
       // FR-A22: the plugin's local favourite key, so favourites recorded before
       // the cloud catalogue existed can be matched to this asset.
       legacy_key: r.legacy_key ?? null,
