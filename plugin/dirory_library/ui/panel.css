@@ -758,3 +758,22 @@ h1 {
   line-height: 1.45;
   box-shadow: 0 8px 24px rgba(20, 28, 60, 0.35);
 }
+
+/* Search row: input + explicit Search button. Search runs on Enter/click only,
+   so a half-typed query is never shown as a result. */
+.search-row { display: flex; gap: 6px; }
+.search-row input { flex: 1 1 auto; min-width: 0; }
+.search-row button {
+  flex: 0 0 auto;
+  border: 1px solid var(--brand, #4a5fab);
+  background: var(--brand, #4a5fab);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0.55;
+}
+.search-row button.pending { opacity: 1; }
+.search-row button:hover { opacity: 1; }

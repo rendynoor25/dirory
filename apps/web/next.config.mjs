@@ -6,7 +6,7 @@ const nextConfig = {
   // The RBZ is private (not in /public). The authenticated download route
   // checks the Supabase session before streaming this traced file.
   outputFileTracingIncludes: {
-    "/api/download/rbz": ["./private/DiroryLibrary-0.8.2.rbz"],
+    "/api/download/rbz": ["./private/DiroryLibrary-0.8.3.rbz"],
   },
   images: {
     remotePatterns: [

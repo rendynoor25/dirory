@@ -22,7 +22,10 @@
 
   <!-- Stays pinned to the top while the product list scrolls underneath. -->
   <div id="controls" class="controls">
-    <input id="search" type="text" list="searchSuggestions" placeholder="Search name, category or brand…">
+    <div class="search-row">
+      <input id="search" type="text" list="searchSuggestions" placeholder="Search name, category or brand…" autocomplete="off">
+      <button id="searchGo" type="button" title="Search (Enter)">Search</button>
+    </div>
     <datalist id="searchSuggestions"></datalist>
 
     <div id="tabs" class="tabs">

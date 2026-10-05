@@ -23,7 +23,6 @@ let favourites = new Set();
 let recentKeys = [];
 let brandLogos = {};     // lower-case brand name -> image URL
 let pendingAction = null;   // what the user clicked before being asked to sign in
-let missTimer = null;
 const reportedMisses = new Set(); // searches already reported in this session
 // M6: asset ids currently downloading, and those already cached locally. Used to
 // draw a download badge / progress ring on the card, like Thudio does.
@@ -88,10 +87,33 @@ window.diroryError = function (message) {
   diag.textContent = 'Error: ' + message;
 };
 
-document.getElementById('search').addEventListener('input', () => {
+// The search box only runs when the user commits it (Enter or the Search
+// button). Typing does not filter, so a half-typed query is never shown and a
+// backspace cannot silently drop the term the architect actually wanted — which
+// matters because a zero-result search is how Dirory learns what is missing.
+// The result of the committed search is what gets reported, once.
+let appliedQuery = '';
+
+function runSearch() {
+  appliedQuery = document.getElementById('search').value.trim().toLowerCase();
   render();
   scrollToTop();
-  scheduleMissCheck();
+  checkSearchMiss();
+}
+
+document.getElementById('search').addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    runSearch();
+  }
+});
+document.getElementById('searchGo').addEventListener('click', runSearch);
+
+// Keep the Search button visually "active" only when there is text waiting to
+// be committed, so it is obvious that typing alone does not filter.
+document.getElementById('search').addEventListener('input', () => {
+  const typed = document.getElementById('search').value.trim().toLowerCase();
+  document.getElementById('searchGo').classList.toggle('pending', typed !== appliedQuery);
 });
 
 document.getElementById('categoryFilter').addEventListener('change', (e) => {
@@ -297,22 +319,24 @@ function matchesSearch(item, q) {
   );
 }
 
-// Search terms that return nothing in the WHOLE library (not just under the
-// current tab / category / brand filter) are reported so Dirory can see what
-// architects are looking for. Debounced, so half-typed words aren't sent.
-function scheduleMissCheck() {
-  clearTimeout(missTimer);
-  missTimer = setTimeout(checkSearchMiss, 1200);
-}
-
+// A committed search that returns nothing in the WHOLE library (not just under
+// the current tab / category / brand filter) is reported once, so Dirory can see
+// what architects are looking for. Only real zero-result searches are sent —
+// this is PRD FR-A14, and it is why search must be an explicit action: the term
+// that gets reported is exactly the one the user committed.
 function checkSearchMiss() {
-  const q = document.getElementById('search').value.trim().toLowerCase();
+  const q = appliedQuery;
   if (q.length < 3 || allItems.length === 0) return;
   if (allItems.some((item) => matchesSearch(item, q))) return;
   if (reportedMisses.has(q)) return;
   reportedMisses.add(q);
   if (!account.shareUsage) return;
-  sketchup.searchMiss(JSON.stringify({ query: q, tab: currentFilter === 'model' || currentFilter === 'material' ? currentFilter : 'all' }));
+  sketchup.searchMiss(
+    JSON.stringify({
+      query: q,
+      tab: currentFilter === 'model' || currentFilter === 'material' ? currentFilter : 'all',
+    }),
+  );
 }
 
 function render() {
@@ -321,6 +345,7 @@ function render() {
   document.getElementById('grid').hidden = usage;
   document.getElementById('filters').hidden = usage;
   document.getElementById('search').hidden = usage;
+  document.getElementById('searchGo').hidden = usage;
   document.getElementById('hint').hidden = usage;
   document.getElementById('quoteBar').hidden = !usage;
   if (usage) document.getElementById('brandBanner').hidden = true;
@@ -335,7 +360,7 @@ function render() {
   refreshSuggestions();
   renderBrandBanner();
 
-  const q = document.getElementById('search').value.trim().toLowerCase();
+  const q = appliedQuery;
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
 
@@ -356,7 +381,7 @@ function render() {
   const emptyEl = document.getElementById('empty');
   emptyEl.hidden = filtered.length > 0;
   if (filtered.length === 0) {
-    const raw = document.getElementById('search').value.trim();
+    const raw = appliedQuery;
     // Zero results even across the whole library = something Dirory doesn't have yet.
     if (q && allItems.length > 0 && !allItems.some((i) => matchesSearch(i, q))) {
       emptyEl.textContent =

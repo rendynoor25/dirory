@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.8.3 — search only on Enter (so Dirory learns the query the user meant)
+
+**Why:** the panel filtered live as the architect typed, and a zero-result
+search is only reported after a pause. Backspacing ("toto closet" → "toto")
+silently changed the results and could erase the term the architect actually
+wanted, so the demand signal was lost.
+
+**Plugin 0.8.3**
+- The search box no longer filters as you type. Results appear when the query is
+  **committed** — press Enter or click the new **Search** button.
+- The whole catalogue stays visible until a search is run (unchanged).
+- Only committed zero-result searches are reported (PRD FR-A14 unchanged), so the
+  term reported is exactly the one the user committed.
+- The Search button is dimmed until there is typed text that has not been run
+  yet, so it is clear that typing alone does nothing.
+
+**Verified:** panel.js parses, every `sketchup.*` call still has a Ruby callback,
+Prism parses all plugin sources, web build clean.
+**Not verified:** the interaction itself (Enter/backspace behaviour) has not been
+exercised in SketchUp.
+
 ## 0.8.2 — web product catalogue, product pages, simpler plugin sign-in
 
 **Web (new pages, modelled on Dekoruma's supply warehouse):**
