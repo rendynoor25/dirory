@@ -6,10 +6,10 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 /**
  * Inline sign-in for the device-approval page.
  *
- * Kept on the same page as the device code so the OAuth round-trip never has to
- * carry the code through another redirect. `redirectTo` points straight back to
- * this page (with the code), so after Google/email the user lands on the
- * "go back to SketchUp" confirmation.
+ * Kept on the same page as the device code. `redirectTo` goes through
+ * /auth/callback (to turn the OAuth code into a session) with `next` set to this
+ * page and its device code, so after Google/email the user lands back here,
+ * signed in, and the code is approved automatically.
  */
 export function DeviceSignIn({
   code,
@@ -31,7 +31,13 @@ export function DeviceSignIn({
     if (siteOrigin && /^https?:\/\//.test(siteOrigin)) return siteOrigin;
     return window.location.origin;
   };
-  const returnUrl = () => `${origin()}/auth/device?code=${encodeURIComponent(code)}`;
+  // Google / the email link must come back through /auth/callback, which
+  // exchanges the OAuth `?code=` for a session. Pointing them straight at this
+  // page left the user signed out (nothing exchanged the code) and Supabase's
+  // appended `code=` collided with the device code (`?code=X&code=Y` -> 500),
+  // so the plugin's poll never saw an approval.
+  const returnUrl = () =>
+    `${origin()}/auth/callback?next=${encodeURIComponent(`/auth/device?code=${code}`)}`;
 
   async function onGoogle() {
     setStatus("google");

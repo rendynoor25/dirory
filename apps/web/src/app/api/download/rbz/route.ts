@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(login);
   }
 
-  const filename = "DiroryLibrary-0.8.0.rbz";
+  const filename = "DiroryLibrary-0.8.1.rbz";
   const filePath = path.join(process.cwd(), "private", filename);
 
   try {

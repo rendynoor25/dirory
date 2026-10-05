@@ -1,4 +1,4 @@
-﻿require 'sketchup.rb'
+require 'sketchup.rb'
 require 'json'
 require 'digest'
 require 'uri'
@@ -93,7 +93,7 @@ module Dirory
     #    individual material card; its image is also its texture map.
     #
     # This is the ONLY method that needs to change when the database
-    # moves to Supabase/Firebase â€” it just needs to keep returning an
+    # moves to Supabase/Firebase — it just needs to keep returning an
     # array of hashes shaped like the ones below. The panel and the
     # insert/apply logic downstream don't care where the data came from.
     # ------------------------------------------------------------------
@@ -514,7 +514,7 @@ module Dirory
 
     # ------------------------------------------------------------------
     # Insert a component (.skp): sticks to the cursor until the user
-    # clicks in the model to place it â€” the same interactive placement
+    # clicks in the model to place it — the same interactive placement
     # SketchUp's own Components browser uses.
     # ------------------------------------------------------------------
     def self.insert_model(payload)
@@ -526,7 +526,7 @@ module Dirory
           run_on_main_thread { UI.messagebox(error) }
         else
           # place_component starts an interactive tool. Starting it inside an
-          # async HTTP callback silently does nothing â€” the cursor never picks
+          # async HTTP callback silently does nothing — the cursor never picks
           # up the component. Hop back to the main thread first.
           run_on_main_thread { insert_model_file(data, path) }
         end
@@ -580,7 +580,7 @@ module Dirory
         return
       end
       if Cloud.uuid_like?(data['asset_id'])
-        Sketchup.set_status_text('Dirory: downloading the fileâ€¦', SB_PROMPT)
+        Sketchup.set_status_text('Dirory: downloading the file…', SB_PROMPT)
         notify_downloading(data['asset_id'])
         Cloud.download_asset(data) do |local, error|
           if local
@@ -592,7 +592,7 @@ module Dirory
           end
         end
       else
-        yield(nil, 'This item is not available on this computer. Click âŸ³ to refresh the catalogue.')
+        yield(nil, 'This item is not available on this computer. Click ⟳ to refresh the catalogue.')
       end
     end
 
@@ -625,7 +625,7 @@ module Dirory
       model = Sketchup.active_model
       started = false
       begin
-        Sketchup.set_status_text('Dirory: loading SketchUp modelâ€¦', SB_PROMPT)
+        Sketchup.set_status_text('Dirory: loading SketchUp model…', SB_PROMPT)
         comp_def = nil
         begin
           model.start_operation('Load Dirory Model', true)
@@ -894,7 +894,7 @@ module Dirory
 
     # ------------------------------------------------------------------
     # Apply a material (image file): load it into the model, make it the
-    # CURRENT material, then switch to SketchUp's own Paint Bucket tool â€” so
+    # CURRENT material, then switch to SketchUp's own Paint Bucket tool — so
     # it behaves exactly like picking a material in the Materials window.
     # ------------------------------------------------------------------
     def self.material_for(model, path, key = nil, size = nil)
@@ -918,7 +918,7 @@ module Dirory
         return legacy
       end
 
-      # 3) Otherwise create one â€” never overwrite a user's own material that
+      # 3) Otherwise create one — never overwrite a user's own material that
       #    just happens to share the name.
       name = legacy ? model.materials.unique_name(base) : base
       material = model.materials.add(name)
@@ -1392,16 +1392,16 @@ module Dirory
     unless file_loaded?(__FILE__)
       menu = UI.menu('Extensions').add_submenu('Dirory')
       menu.add_item('Open Library Panel') { show_panel }
-      menu.add_item('Sign in to Diroryâ€¦') { Cloud.begin_sign_in }
+      menu.add_item('Sign in to Dirory…') { Cloud.begin_sign_in }
       menu.add_separator
       menu.add_item('Send Usage Now') { Cloud.send_now }
-      menu.add_item('Cloud Statusâ€¦') { Cloud.show_status }
+      menu.add_item('Cloud Status…') { Cloud.show_status }
       menu.add_separator
       # Advanced: the plugin ships with working defaults, so most people never
       # open these. Kept for support and for pointing at a different environment.
-      menu.add_item('Test Connectionâ€¦') { Cloud.test_connection }
-      menu.add_item('Connection Settings (advanced)â€¦') { Cloud.connection_settings }
-      menu.add_item('Choose Local Library Folderâ€¦') { defer_folder_picker }
+      menu.add_item('Test Connection…') { Cloud.test_connection }
+      menu.add_item('Connection Settings (advanced)…') { Cloud.connection_settings }
+      menu.add_item('Choose Local Library Folder…') { defer_folder_picker }
 
       toolbar = UI::Toolbar.new('Dirory')
       cmd = UI::Command.new('Dirory') { show_panel }

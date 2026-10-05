@@ -4,6 +4,8 @@ import { approveDevice } from "./actions";
 import { DeviceSignIn } from "./DeviceSignIn";
 import { googleEnabled } from "@/lib/providers";
 
+const DEVICE_CODE_RE = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+
 /**
  * FR-A4 (M6) — the browser half of the SketchUp device-code login.
  *
@@ -21,10 +23,16 @@ import { googleEnabled } from "@/lib/providers";
 export default async function DevicePage({
   searchParams,
 }: {
-  searchParams: Promise<{ code?: string; status?: string; error?: string }>;
+  searchParams: Promise<{ code?: string | string[]; status?: string; error?: string }>;
 }) {
   const params = await searchParams;
-  const code = (params.code ?? "").trim().toUpperCase();
+  // `code` can arrive twice (`?code=ABCD-EFGH&code=<oauth code>`) when an OAuth
+  // provider returns here directly. Pick the value shaped like a device code
+  // instead of crashing on an array.
+  const codes = (Array.isArray(params.code) ? params.code : [params.code ?? ""]).map((c) =>
+    c.trim().toUpperCase(),
+  );
+  const code = codes.find((c) => DEVICE_CODE_RE.test(c)) ?? codes[0] ?? "";
   let status = params.status;
 
   if (!isSupabaseConfigured()) {
@@ -53,7 +61,7 @@ export default async function DevicePage({
   }
 
   // Signed in: approve a live pending code (auto-approve — no extra click).
-  if (!status && /^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
+  if (!status && DEVICE_CODE_RE.test(code)) {
     const { data } = await supabase
       .from("plugin_device_codes")
       .update({ status: "approved", profile_id: user.id, approved_at: new Date().toISOString() })

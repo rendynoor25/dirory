@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.8.1 — fix: plugin sign-in never completed, so cards never loaded
+
+**Symptom:** in plugin 0.8.0 clicking a model/material card asked to sign in;
+after signing in with Google, clicking a card still did nothing (it just asked to
+sign in again). No `plugin_token` was ever stored by the plugin.
+
+**Cause (web):** `/auth/device` sent Google/email straight back to
+`/auth/device?code=<device code>`. Nothing on that page exchanges the OAuth
+`?code=` for a session, and Supabase appends its own `code=`, giving
+`?code=ABCD-EFGH&code=<oauth>` — which crashed the page (HTTP 500, `code` was an
+array). The device code was never approved, the plugin's poll stayed `pending`,
+and the sign-in gate blocked every insert/paint.
+
+**Fix**
+- `DeviceSignIn.tsx`: return through `/auth/callback?next=/auth/device?code=…`
+  (the same path `/login` uses), so the session is created first.
+- `auth/device/page.tsx`: tolerate a repeated `code` param and pick the one
+  shaped like a device code instead of crashing.
+- Plugin 0.8.1: repaired `main.rb` text that 0.8.0 saved with broken encoding
+  (menu showed "Sign in to Diroryâ€¦"); no behaviour change.
+
 ## 0.6.0 — M6: plugin cloud catalogue, verified login, downloads, quotes
 
 Adds the client side of the cloud (PRD M6, FR-A4/A7/A10/A11/A20/A22) and the
