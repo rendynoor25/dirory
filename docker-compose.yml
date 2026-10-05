@@ -19,8 +19,7 @@ services:
         # be present at BUILD time. They come from the same .env file.
         NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:?set in .env}
         NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:?set in .env}
-        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://admin.dirory.com}
-        NEXT_PUBLIC_ADMIN_HOST: ${NEXT_PUBLIC_ADMIN_HOST:-admin.dirory.com}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dirory.com}
     image: dirory-web:latest
     restart: unless-stopped
     env_file:

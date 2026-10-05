@@ -218,9 +218,8 @@ breaks cookies.
 **Authentication → URL Configuration**:
 
 - **Site URL**: `https://dirory.com`
-- **Redirect URLs**: add `https://dirory.com/auth/callback`,
-  `https://admin.dirory.com/auth/callback`, and the Netlify deploy URL's
-  `/auth/callback` while testing.
+- **Redirect URLs**: add `https://dirory.com/auth/callback` and
+    `http://localhost:3000/auth/callback` for local development.
 
 Also set `NEXT_PUBLIC_SITE_URL=https://dirory.com` in the hosting environment
 variables. Without the redirect entry, magic-link sign-in silently fails.

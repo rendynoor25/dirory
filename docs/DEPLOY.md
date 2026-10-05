@@ -1,13 +1,22 @@
 # Dirory — deployment runbook (Sumopod VPS)
 
-The admin dashboard (and the whole web app) runs on your Sumopod VPS behind
-Caddy, which gets an HTTPS certificate automatically. Supabase stays in the cloud.
+The whole web app runs on your Sumopod VPS behind Caddy, which gets an HTTPS
+certificate automatically. Supabase stays in the cloud.
 
 **Read this whole file once before starting.** Steps 0–3 only need doing once.
 
-The app is one Next.js codebase: `admin.dirory.com` shows the dashboard
-(`/` is rewritten to `/admin`), and any other host shows the public pages
-(`/library`, `/login`, `/download`). See `middleware.ts`.
+**One domain.** Everything is served from `dirory.com`:
+
+| Path | What it is |
+|---|---|
+| `/` | public landing page |
+| `/library`, `/product/<id>` | public product catalogue |
+| `/login`, `/download` | architect sign-in and plugin download |
+| `/auth/device` | the plugin's sign-in approval page |
+| `/admin` | the back-office (role-gated; only admins see it) |
+
+There is no separate `admin.` subdomain. That keeps one certificate, one cookie
+scope, and sign-in that works across the whole site.
 
 Never paste passwords or private keys into chat, a commit, or a file in this repo.
 The steps below assume SSH keys.
@@ -22,30 +31,35 @@ The steps below assume SSH keys.
 | Private IP | `10.3.8.254` (Sumopod-internal; not a secret) |
 | Username | `ubuntu` |
 | Domain | `dirory.com`, managed at Domainesia |
-| Staging | Netlify, at `cheerful-arithmetic-490036.netlify.app` |
+| Staging | Netlify, at `cheerful-arithmetic-490036.netlify.app` (no longer used for production) |
 
 **The password you shared in chat must be considered compromised.** Change it on
 first login and switch to SSH keys (steps 2–3).
 
-## 1. DNS — point `admin.dirory.com` at this server
+## 1. DNS — point `dirory.com` at this server
 
-Today `admin.dirory.com` is a CNAME to Netlify. For production it must be an
-`A` record to the VPS:
+Today `dirory.com` points at Netlify. For production it must be an `A` record to
+the VPS:
 
 | Type | Name | Value | TTL |
 |---|---|---|---|
-| A | `admin` | `129.226.208.234` | 300 (lower it while setting up) |
+| A | `@` | `129.226.208.234` | 300 (lower it while setting up) |
 
-**Delete the existing CNAME first** — an `A` and a `CNAME` cannot both exist.
+Also point `www` at the server (a `CNAME` to `dirory.com` is fine).
 
-Leave `dirory.com` and `www` pointing at Netlify unless you also want the public
-site on the VPS. Mail records (`MX`, `A mail`, SPF, DMARC) must not change.
+**Leave the mail records alone** — `MX @`, `A mail`, SPF, DMARC and DKIM provide
+your Mailspace email. Only the website records change.
+
+If `admin.dirory.com` exists as a CNAME to Netlify, you may leave or delete it;
+nothing uses it once everything is on `dirory.com`.
 
 Verify before continuing — Caddy cannot issue a certificate until this resolves:
 
 ```bash
-nslookup admin.dirory.com        # must return 129.226.208.234
+nslookup dirory.com              # must return 129.226.208.234
 ```
+
+DNS can take 15–30 minutes; a 300 s TTL keeps that short.
 
 ## 2. First login and SSH keys
 
@@ -139,12 +153,11 @@ chmod 600 .env
 NEXT_PUBLIC_SUPABASE_URL=https://ajlmncbzufagplbaaukv.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key, sb_publishable_…>
 SUPABASE_SERVICE_ROLE_KEY=<secret key, sb_secret_…>
-NEXT_PUBLIC_SITE_URL=https://admin.dirory.com
-NEXT_PUBLIC_ADMIN_HOST=admin.dirory.com
-DOMAIN=admin.dirory.com
+NEXT_PUBLIC_SITE_URL=https://dirory.com
+DOMAIN=dirory.com
 ```
 
-The first four are public values baked into the client bundle at **build** time.
+The first two are public values baked into the client bundle at **build** time.
 `SUPABASE_SERVICE_ROLE_KEY` is server-only: it is passed at runtime and must never
 reach the browser. `DOMAIN` is what Caddy requests a certificate for.
 
@@ -159,20 +172,21 @@ script waits for the app to report healthy, then checks HTTPS. Caddy requests th
 certificate itself on first start, so the very first run can take a minute.
 
 ```bash
-curl -I https://admin.dirory.com/api/health     # expect HTTP 200
-docker compose logs -f caddy                    # certificate progress
-docker compose logs -f web                      # app logs
+curl -I https://dirory.com/api/health     # expect HTTP 200
+docker compose logs -f caddy              # certificate progress
+docker compose logs -f web                # app logs
 ```
 
 ## 8. Supabase redirect URLs
 
 Supabase → Authentication → URL Configuration:
 
-- **Site URL**: `https://admin.dirory.com`
-- **Redirect URLs**: add `https://admin.dirory.com/auth/callback`
+- **Site URL**: `https://dirory.com`
+- **Redirect URLs**: `https://dirory.com/auth/callback` (already listed) and
+  `http://localhost:3000/auth/callback` for local work.
 
-Without this, sign-in fails back to `/login`. (`dirory.com/auth/callback` is
-already listed for the public site.)
+Without the redirect entry, sign-in fails back to `/login`. If you previously
+added `admin.dirory.com/auth/callback`, it is now unused and can be removed.
 
 ## 9. Make yourself admin
 
@@ -183,20 +197,21 @@ update public.profiles set role = 'admin'
 where id = (select id from auth.users where email = 'your@email.com');
 ```
 
-Then visit `https://admin.dirory.com` — `/` is rewritten to the dashboard.
+Then visit `https://dirory.com/admin`.
 
 ## 10. Verify
 
 ```bash
-curl -s https://admin.dirory.com/api/health     # {"status":"ok",...}
-sudo ufw status                                  # 22, 80, 443 only
-sudo fail2ban-client status sshd                 # a jail is running
-docker compose ps                                # web healthy, caddy up
+curl -s https://dirory.com/api/health            # {"status":"ok",...}
+curl -s -o /dev/null -w '%{http_code}\n' https://dirory.com/library   # 200
+curl -s -o /dev/null -w '%{http_code}\n' https://dirory.com/          # 200
+sudo ufw status                                   # 22, 80, 443 only
+sudo fail2ban-client status sshd                  # a jail is running
+docker compose ps                                 # web healthy, caddy up
 ```
 
 Then walk the acceptance list: sign in as admin, approve a vendor and an asset,
-and check the audit log. The public catalogue at `dirory.com/library` should keep
-working from Netlify regardless of this deployment.
+and check the audit log.
 
 ---
 

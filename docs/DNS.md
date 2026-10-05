@@ -7,19 +7,33 @@ Read `DEPLOY.md` for the Sumopod VPS steps. This file is about names and records
 
 ---
 
-## 1. Facts about the current setup (verified 4 Oct 2026)
+## 1. The plan: one domain, one server
 
-| Thing | Value |
+Everything is served from **`dirory.com`**, on the Sumopod VPS:
+
+| Path | What it is |
 |---|---|
-| Registrar / DNS host | Domainesia, nameservers `ns1.domainesia.net`, `ns2.domainesia.net` |
-| Root `dirory.com` | `A` → `172.104.187.4` — **not your Sumopod**; it answers 404 |
-| Your Sumopod VPS | `129.226.208.234` (private `10.3.8.254`) |
-| Netlify site | `cheerful-arithmetic-490036.netlify.app` |
-| `admin.dirory.com` | does not exist yet |
+| `/` | public landing page |
+| `/library`, `/product/<id>` | public product catalogue (browse without an account) |
+| `/login`, `/download` | architect sign-in and plugin download |
+| `/auth/device` | the plugin's browser sign-in approval page |
+| `/admin` | the back-office (role-gated) |
 
-### Do not change the nameservers
+There is **no `admin.` subdomain**. One domain means one TLS certificate, one
+cookie scope, and sign-in that works everywhere. (An earlier plan used
+`admin.dirory.com`; it was dropped because cookies do not cross hostnames, so a
+sign-in on one host did not carry to the other.)
 
-`ns1.domainesia.net` / `ns2.domainesia.net` are correct. Keep them.
+```
+dirory.com  ──A──▶  129.226.208.234  (Sumopod VPS)
+www         ──CNAME──▶  dirory.com
+```
+
+---
+
+## 2. Do not change the nameservers
+
+Nameservers stay at Domainesia: `ns1.domainesia.net`, `ns2.domainesia.net`.
 
 Your domain has **live email** on it (Mailspace):
 
@@ -30,225 +44,109 @@ TXT  @      v=spf1 a mx include:relay.mailchannels.net ~all
 TXT  _dmarc v=DMARC1; p=reject; rua=mailto:dmarc@dirory.com
 ```
 
-Switching nameservers to a host (Netlify, Vercel, your VPS) moves **all** DNS
+Switching nameservers to a host (Netlify, Cloudflare, the VPS) moves **all** DNS
 control and will **break this email**. Add individual records instead. That is
-also why this runbook never asks you to change nameservers.
+why this document never asks you to change nameservers.
 
 ---
 
-## 2. Two hosting paths
+## 3. Point `dirory.com` at the VPS
 
-You have both. They are not exclusive, and DNS decides which is live.
+### 3.1 At Domainesia
 
-| | Netlify | Sumopod VPS |
-|---|---|---|
-| Status | Built, public, no GitHub link | Empty Ubuntu, paid |
-| Best for | Staging, previews, demo | Production |
-| Cost | Free tier restricts commercial use | Already paid |
-| HTTPS | Automatic | Automatic via Caddy |
-| Secrets | Service-role key lives with Netlify | Lives only on your server |
-
-**Recommendation:** point `admin.dirory.com` at **Netlify now** to unblock
-testing, then repoint the same record to the VPS when the admin dashboard is
-ready. Changing one record is the whole migration.
-
-Production should be the VPS: the `service_role` key bypasses all Row Level
-Security, and on your own server you control where it is stored.
-
----
-
-## 3. Point `admin.dirory.com` at Netlify
-
-### 3.1 Add the domain in Netlify first
-
-Netlify → your site → **Domain management** → **Add a domain** → `admin.dirory.com`.
-
-Netlify then displays the record it wants. **Use the value it shows** — the
-hostname differs per site, and a guessed value will not validate.
-
-### 3.2 Add the record at Domainesia
-
-Domainesia → **Domains** → `dirory.com` → **DNS Management** → **Add Record**:
+Domainesia → **Domains** → `dirory.com` → **DNS Management**.
 
 | Type | Name | Value | TTL |
 |---|---|---|---|
-| `CNAME` | `admin` | *(the target Netlify displays)* | 3600 |
+| `A` | `@` | `129.226.208.234` | 300 while setting up, then 3600 |
+| `CNAME` | `www` | `dirory.com` | 3600 |
 
 Notes:
 
-- **Name** is only the label: `admin`, not `admin.dirory.com`.
-- Only one record may exist for a given name. If an `A` or `CNAME` for `admin`
-  already exists, delete it first.
-- Do not add an `A` record for `admin` at the same time; that takes precedence
-  and masks the CNAME.
+- **Name** is only the label: `@` is the bare domain; `www` is the label, not
+  `www.dirory.com`.
+- If an old `A` record for `@` exists (it pointed at `172.104.187.4`, an
+  unrelated server), replace it.
+- Only one record may exist per name. Delete a conflicting `A`/`CNAME` first.
+- Leave every email record untouched.
 
-### 3.3 Wait, then check
+### 3.2 Wait, then check
 
-Propagation is usually 15–30 minutes. Check from your machine:
-
-```bash
-nslookup admin.dirory.com
-```
-
-Then Netlify → Domain management → **Verify DNS configuration**. Once it shows
-green, Netlify issues the TLS certificate automatically.
-
-### 3.4 Make the public landing page available at `dirory.com`
-
-The landing page is the app's `/` route. First add **`dirory.com`** as a domain
-alias in Netlify → Domain management. Netlify will display the exact apex
-records it requires. Then at Domainesia replace only the existing `A` record for
-host `@` (currently the old `172.104.187.4`) with the apex value Netlify shows.
-Netlify's common apex value is `75.2.60.5`, but follow your site's Domain
-management instructions if they show a different value.
-
-Keep these records untouched: `MX @`, `A mail`, SPF, DMARC and DKIM. They provide
-your Mailspace email. The existing `www CNAME -> dirory.com` can stay; after the
-apex points at Netlify, `www.dirory.com` follows it.
-
-Do not change nameservers. This changes only the website destination and
-preserves email.
-
----
-
-## 4. Point `admin.dirory.com` at the Sumopod VPS instead
-
-When you are ready for production, replace the CNAME with an `A` record:
-
-| Type | Name | Value | TTL |
-|---|---|---|---|
-| `A` | `admin` | `129.226.208.234` | 300 |
-
-Delete the CNAME first — an `A` and a `CNAME` cannot both exist for one name.
-
-Then follow `DEPLOY.md` from step 2. Caddy obtains the certificate as soon as
-this record resolves.
-
----
-
-## 5. What about `dirory.com` itself?
-
-It currently points at `172.104.187.4`, which returns 404.
-
-**Find out what that server is before overwriting it.** It may be an old
-experiment of yours or a hosting account you are still paying for. To check:
+Propagation is usually 15–30 minutes. From your own machine:
 
 ```bash
-nslookup dirory.com
+nslookup dirory.com          # must return 129.226.208.234
 ```
 
-Options once you know:
-
-1. **Leave it.** Harmless, and `admin.dirory.com` is independent.
-2. **Point it at the marketing site** (a future Next.js app) with `A @ →
-   <that host>` or a CNAME to Netlify/Vercel.
-3. **Redirect it to `admin`** via a Domainesia redirect, if you want one URL.
-
-Do not point the apex at the VPS unless the app there also serves the root
-domain; Caddy is configured for one hostname.
+Do not continue until it does — Caddy cannot obtain a certificate before then.
+A 300 s TTL keeps this quick to correct.
 
 ---
 
-## 6. Connect the Netlify site to GitHub
-
-Right now Netlify says *"Last deployed from Netlify Drop"* — a manual upload.
-That means pushes to GitHub do **not** update the site.
-
-To make it automatic:
-
-1. Netlify → **Project configuration** → **Build & deploy** → **Link repository**.
-2. Choose `rendynoor25/dirory`.
-3. Set:
-   - **Base directory**: `apps/web`
-   - **Build command**: `npm run build`
-   - **Publish directory**: `apps/web/.next`
-4. Add the environment variables (§7). `NEXT_PUBLIC_*` values are baked in at
-   **build** time, so they must exist before the build runs.
-5. **Deploys → Trigger deploy → Clear cache and deploy site.**
-
-### GitHub Actions
-
-`.github/workflows/deploy-web.yml` runs typecheck and build only. Netlify's own
-Git integration handles production deployment. It is currently blocked by
-Netlify's private-repository "Unrecognized Git contributor" restriction.
-Resolve it from the failed deploy's **Manage Git contributors** link by linking
-the GitHub account, or choose a paid plan. Keep this repository private: it
-contains the gated RBZ artifact.
-
----
-
-## 7. Environment variables
-
-Set these on whichever host serves the app.
-
-| Name | Value | Notes |
-|---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://ajlmncbzufagplbaaukv.supabase.co` | no trailing slash |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | *publishable key* (`sb_publishable_…`) | safe in the browser |
-| `SUPABASE_SERVICE_ROLE_KEY` | *secret key* (`sb_secret_…`) | **server-only, never public** |
-| `NEXT_PUBLIC_SITE_URL` | e.g. `https://admin.dirory.com` | used for auth redirects |
-
-The variable names keep the legacy wording (`ANON`, `SERVICE_ROLE`) so both older
-and newer projects work; the **values** are the new `sb_publishable_…` and
-`sb_secret_…` strings.
-
-### The public site: `dirory.com`
-
-The architect-facing pages (landing, sign-in, `/auth/device`, `/download`) are
-served at **`dirory.com`**. The plugin opens
-`https://dirory.com/auth/device?code=…` for sign-in.
-
-1. Netlify → your site → **Domain management → Add a domain** → `dirory.com`
-   (and `www.dirory.com` if you want it). Netlify shows the apex records to use.
-2. Domainesia → **DNS Management** → set the `@` **A** record to the value Netlify
-   shows (commonly `75.2.60.5`). Leave the `www` CNAME, and leave every email
-   record (`MX @`, `A mail`, SPF, DMARC, DKIM) untouched.
-3. Wait for the certificate, then confirm `https://dirory.com` loads the landing
-   page.
-
-### After the domains resolve
+## 4. Supabase auth URLs
 
 Supabase → **Authentication → URL Configuration**:
 
 - **Site URL**: `https://dirory.com`
-- **Redirect URLs**: add **all** of:
+- **Redirect URLs**:
   - `https://dirory.com/auth/callback`
-  - `https://admin.dirory.com/auth/callback`
   - `http://localhost:3000/auth/callback` (local development)
 
-Magic-link and Google sign-in fail silently without the matching redirect entry —
+Without the matching redirect entry, magic-link and Google sign-in fail silently —
 the mail sends and the link lands back on `/login`.
 
-### How the two hosts behave (one app)
-
-| Host | What it serves |
-|---|---|
-| `dirory.com` | Public/architect: `/`, `/login`, `/auth/device`, `/download`, `/privacy` |
-| `admin.dirory.com` | The dashboard: `/` is rewritten to `/admin`; `/vendor/*` still reachable |
-| `*.netlify.app`, `localhost` | No rewriting — normal paths, so previews and local dev are unaffected |
-
-Set `NEXT_PUBLIC_ADMIN_HOST` if the admin hostname ever differs from
-`admin.dirory.com`. Both hosts require the Supabase **role** to grant access:
-an admin sees `/admin`, everyone else is redirected.
-
-
-### Operational note
-
-`NEXT_PUBLIC_*` variables are compiled into the bundle. Changing one requires a
-**new build**, not a restart. `SUPABASE_SERVICE_ROLE_KEY` is read at runtime.
+If `admin.dirory.com/auth/callback` is still listed from the earlier plan, it is
+now unused and can be removed.
 
 ---
 
-## 8. Checklist
+## 5. Environment variables
 
-- [ ] Netlify: add `dirory.com` (public) and `admin.dirory.com` (dashboard)
-- [ ] Domainesia: point the `@` A record at Netlify; keep the `admin` CNAME
-- [ ] `nslookup dirory.com` and `nslookup admin.dirory.com` both resolve
-- [ ] Netlify shows a valid configuration and issues certificates for both
-- [ ] Set the environment variables (including `NEXT_PUBLIC_ADMIN_HOST`), then
-      clear-cache and redeploy
-- [ ] Supabase Site URL `https://dirory.com` + both `/auth/callback` redirect URLs
+Set these in `.env` on the server (see `DEPLOY.md` §6). `NEXT_PUBLIC_*` values are
+compiled into the bundle at **build** time, so changing one needs a rebuild, not
+a restart. `SUPABASE_SERVICE_ROLE_KEY` is read at runtime and is server-only.
+
+| Name | Value | Notes |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://ajlmncbzufagplbaaukv.supabase.co` | no trailing slash |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | publishable key (`sb_publishable_…`) | safe in the browser |
+| `SUPABASE_SERVICE_ROLE_KEY` | secret key (`sb_secret_…`) | **server-only, never public** |
+| `NEXT_PUBLIC_SITE_URL` | `https://dirory.com` | auth redirects and absolute links |
+| `DOMAIN` | `dirory.com` | what Caddy gets a certificate for |
+
+The variable names keep the legacy wording (`ANON`, `SERVICE_ROLE`) so both older
+and newer Supabase projects work; the **values** are the new `sb_publishable_…`
+and `sb_secret_…` strings.
+
+---
+
+## 6. Netlify (optional, no longer production)
+
+The Netlify site (`cheerful-arithmetic-490036.netlify.app`) was the staging host.
+Once `dirory.com` points at the VPS, nothing depends on Netlify.
+
+Options:
+
+1. **Leave it.** It keeps working at its `.netlify.app` address as a preview.
+   Harmless.
+2. **Remove the `dirory.com` alias in Netlify** if it was added there, so there is
+   no confusion about which host is live.
+3. **Delete the site** when you no longer need a preview.
+
+If you keep it, note that its `NEXT_PUBLIC_SITE_URL` should stay
+`https://dirory.com` so any links it renders point at production.
+
+---
+
+## 7. Checklist
+
+- [ ] Domainesia: `A @ → 129.226.208.234`; `CNAME www → dirory.com`
+- [ ] Email records (`MX @`, `A mail`, SPF, DMARC, DKIM) untouched
+- [ ] `nslookup dirory.com` returns `129.226.208.234`
+- [ ] `DEPLOY.md` steps 2–10 completed on the server
+- [ ] Supabase Site URL `https://dirory.com` + `/auth/callback` redirect
 - [ ] `https://dirory.com` loads the landing page
-- [ ] `https://admin.dirory.com` loads the dashboard (after you are an admin)
+- [ ] `https://dirory.com/library` loads the catalogue
+- [ ] `https://dirory.com/admin` loads the dashboard (after you are an admin)
 - [ ] Sign in, then grant yourself `admin` in the SQL editor
 - [ ] Confirm Mailspace email still works (you never changed nameservers)

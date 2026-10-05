@@ -34,8 +34,8 @@
 	}
 }
 
-# Optional: send the bare domain to the admin host. Enable only once the apex
-# resolves here too, otherwise Caddy will fail to get a certificate for it.
-# {$APEX_DOMAIN} {
+# Optional: redirect www to the bare domain. Uncomment and set WWW_DOMAIN if you
+# point www.dirory.com here too, so both names serve one canonical URL.
+# {$WWW_DOMAIN} {
 #	redir https://{$DOMAIN}{uri} permanent
 # }

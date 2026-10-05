@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.9.2 — single domain: dirory.com (admin at /admin)
+
+The earlier plan used `admin.dirory.com` as a separate host with middleware that
+rewrote `/` to `/admin`. That split caused a real problem: **cookies do not cross
+hostnames**, so signing in on one host did not carry to the other. It also needed
+host-routing code and two certificates for no benefit.
+
+**Decision (founder):** one domain, everything on the VPS.
+
+- `middleware.ts` no longer does host routing. It only refreshes the Supabase
+  session and redirects signed-out visitors from `/admin` and `/vendor` to
+  `/login`. The security boundary remains RLS plus `requireAdmin()`.
+- Removed `NEXT_PUBLIC_ADMIN_HOST` everywhere (Dockerfile, docker-compose,
+  `.env.example`, `apps/web/.env.example`, docs).
+- `NEXT_PUBLIC_SITE_URL` and `DOMAIN` are `https://dirory.com` / `dirory.com`.
+- `docs/DNS.md` rewritten for one domain: `A @ → 129.226.208.234`, `www` CNAME,
+  email records untouched.
+- `docs/DEPLOY.md` updated: DNS points the apex at the VPS, and `/admin` is the
+  dashboard (no subdomain).
+- Repaired lingering mojibake in `apps/web/.env.example`.
+
+**Not verified:** nothing has been deployed to the VPS yet — the runbook still
+needs SSH access.
+
 ## 0.9.1 — M5: VPS deployment artefacts and runbook
 
 The brief's M5 deliverables (Dockerfile, docker-compose, Caddyfile, .env.example,
