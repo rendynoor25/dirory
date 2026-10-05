@@ -1,0 +1,34 @@
+# Keep the Docker build context small and free of secrets/local state.
+#
+# Without this the builder uploads node_modules, .next and .git to the daemon on
+# every build — slow, and it can leak local files into an image layer.
+
+# Dependencies and build output are produced inside the image.
+node_modules
+**/node_modules
+.next
+**/.next
+out
+**/out
+dist
+**/*.tsbuildinfo
+
+# Git and editor noise
+.git
+.gitignore
+.vscode
+.idea
+*.log
+
+# Secrets — must NEVER enter a build context.
+.env
+.env.local
+.env.*.local
+**/.env.local
+
+# Local-only material
+admin
+dirory-website-v2
+RevitFamilyBrowser
+files
+*.zip

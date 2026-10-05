@@ -1,0 +1,41 @@
+# Dirory — Caddy reverse proxy with automatic HTTPS (brief §109).
+#
+# Caddy obtains and renews a Let's Encrypt certificate automatically, as soon as
+# the DNS name in $DOMAIN resolves to this server and port 80/443 are open. There
+# is no certificate configuration to do by hand.
+#
+# The domain is a variable so the same file works for any hostname:
+#   DOMAIN=admin.dirory.com docker compose up -d
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Reverse proxy to the Next.js container. `web` is the compose service name,
+	# resolved on the compose network.
+	reverse_proxy web:3000
+
+	# Basic security headers. Caddy adds HSTS itself once TLS is active.
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "geolocation=(), microphone=(), camera=()"
+		-Server
+	}
+
+	# Health endpoint is useful unauthenticated; keep it cheap and uncached.
+	@health path /api/health
+	header @health Cache-Control "no-store"
+
+	# Access logs to stdout (visible with `docker compose logs caddy`).
+	log {
+		output stdout
+		format console
+	}
+}
+
+# Optional: send the bare domain to the admin host. Enable only once the apex
+# resolves here too, otherwise Caddy will fail to get a certificate for it.
+# {$APEX_DOMAIN} {
+#	redir https://{$DOMAIN}{uri} permanent
+# }

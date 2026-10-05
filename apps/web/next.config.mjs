@@ -1,8 +1,17 @@
 ﻿/** @type {import('next').NextConfig} */
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+
 const nextConfig = {
   reactStrictMode: true,
-  // Pin the tracing root so the monorepo lockfile is used, not a stray one.
-  outputFileTracingRoot: new URL("../../", import.meta.url).pathname,
+  // Self-contained server bundle for the Docker image (M5 / DEPLOY.md).
+  // Produces .next/standalone with its own minimal node_modules.
+  output: "standalone",
+  // Pin the tracing root to the monorepo root so `node_modules` from the
+  // workspace hoist is traced. Must be an absolute path.
+  outputFileTracingRoot: repoRoot,
   // The RBZ is private (not in /public). The authenticated download route
   // checks the Supabase session before streaming this traced file.
   outputFileTracingIncludes: {

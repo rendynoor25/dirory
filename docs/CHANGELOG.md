@@ -1,5 +1,48 @@
 # Changelog
 
+## 0.9.1 — M5: VPS deployment artefacts and runbook
+
+The brief's M5 deliverables (Dockerfile, docker-compose, Caddyfile, .env.example,
+scripts/deploy.sh, docs/DEPLOY.md) existed only as a runbook; the files did not.
+All are now present and verified as far as this machine allows.
+
+**New files**
+- `Dockerfile` — three-stage build, `output: "standalone"`, runs as a non-root
+  user, with a HEALTHCHECK on `/api/health`. The service-role key is a RUNTIME
+  env var, never a build arg, so it cannot be baked into an image layer.
+- `docker-compose.yml` — `web` + `caddy` (automatic HTTPS), named volumes for
+  certificates, `web` healthcheck gating Caddy.
+- `Caddyfile` — reverse proxy to `web:3000`, domain from `$DOMAIN`, security
+  headers, access logs.
+- `.env.example` — every variable name with a comment; no values.
+- `scripts/deploy.sh` — preflight checks, pull, build, health-gated restart and
+  an HTTPS check. LF endings, marked executable in git.
+- `.dockerignore` — keeps node_modules/.next/.env out of the build context.
+
+**App changes required for the image**
+- `next.config.mjs`: enabled `output: "standalone"`, and fixed
+  `outputFileTracingRoot` to an absolute monorepo path. The previous
+  `new URL(...).pathname` form produced **no** standalone output, which would
+  have broken the Docker build (silently: `server.js` would not exist).
+- New `GET /api/health` (brief §120).
+- `catalog` gained `?thumbs=path`, and the web uses it: the catalogue dropped from
+  **1.71 MB to 1.01 MB** and no longer carries short-lived signed URLs. New
+  `/api/thumb/<asset_id>` proxies thumbnail images for the (private) storage
+  bucket with a long cache header, so a cached page does not show broken images.
+- Removed 10 stale `DiroryLibrary-*.rbz` copies from `apps/web/private/`; the image
+  was tracing all of them. Only the current version ships.
+
+**Verified on this machine** (no Docker available here)
+- `tsc` and `next build` clean; standalone output produced at
+  `apps/web/.next/standalone/apps/web/server.js`.
+- The **standalone server** was actually run: `/api/health` → 200 with
+  `{"status":"ok"}`, `/api/thumb/<id>` → 200 `image/jpeg`, `/library` → 200.
+- `docker-compose.yml` structure and the six env names cross-checked against
+  `.env.example`; `deploy.sh` is LF-only.
+
+**Not verified:** the Docker build itself, Caddy's certificate issuance, and the
+server hardening steps — these need the VPS. Run `docs/DEPLOY.md` from step 1.
+
 ## 0.9.0 — in-plugin update button and Settings (English / Bahasa Indonesia)
 
 **Plugin update, without the Extension Manager.**

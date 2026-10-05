@@ -1,67 +1,70 @@
 # Dirory — deployment runbook (Sumopod VPS)
 
-Written for the Sumopod VPS you have already bought. Follow it in order.
+The admin dashboard (and the whole web app) runs on your Sumopod VPS behind
+Caddy, which gets an HTTPS certificate automatically. Supabase stays in the cloud.
 
-**Current state:** you have an IP, a username and no domain. That means you are at
-**step 0**, not step 4. Caddy cannot obtain an HTTPS certificate until a domain
-resolves to the server, so the domain comes first.
+**Read this whole file once before starting.** Steps 0–3 only need doing once.
+
+The app is one Next.js codebase: `admin.dirory.com` shows the dashboard
+(`/` is rewritten to `/admin`), and any other host shows the public pages
+(`/library`, `/login`, `/download`). See `middleware.ts`.
 
 Never paste passwords or private keys into chat, a commit, or a file in this repo.
 The steps below assume SSH keys.
 
 ---
 
-## 0. First: the credentials you already shared
+## 0. State of play
 
-You sent the public IP, the private IP and the username `ubuntu` in a chat.
+| Thing | Value |
+|---|---|
+| Public IP | `129.226.208.234` |
+| Private IP | `10.3.8.254` (Sumopod-internal; not a secret) |
+| Username | `ubuntu` |
+| Domain | `dirory.com`, managed at Domainesia |
+| Staging | Netlify, at `cheerful-arithmetic-490036.netlify.app` |
 
-1. **Change the password immediately** on first login.
-2. **Then replace it with an SSH key** (step 2) and disable password login (step 3).
-3. The **private IP (`10.3.8.254`) is not a secret** — it is only reachable inside
-   Sumopod's network — but the public IP plus a leaked password is a real risk.
-   Treat the password as compromised from the moment it was pasted into a chat.
+**The password you shared in chat must be considered compromised.** Change it on
+first login and switch to SSH keys (steps 2–3).
 
-## 1. The domain (do this first — nothing else works without it)
+## 1. DNS — point `admin.dirory.com` at this server
 
-Buy a `.com` if you want `admin.<yourdomain>.com` as the brief specifies. Any
-registrar works; Cloudflare Registrar sells at cost with no markup.
-
-Then add a DNS record:
+Today `admin.dirory.com` is a CNAME to Netlify. For production it must be an
+`A` record to the VPS:
 
 | Type | Name | Value | TTL |
 |---|---|---|---|
 | A | `admin` | `129.226.208.234` | 300 (lower it while setting up) |
 
-Verify from your own machine before continuing:
+**Delete the existing CNAME first** — an `A` and a `CNAME` cannot both exist.
+
+Leave `dirory.com` and `www` pointing at Netlify unless you also want the public
+site on the VPS. Mail records (`MX`, `A mail`, SPF, DMARC) must not change.
+
+Verify before continuing — Caddy cannot issue a certificate until this resolves:
 
 ```bash
-nslookup admin.yourdomain.com
+nslookup admin.dirory.com        # must return 129.226.208.234
 ```
 
-It must return `129.226.208.234`. Do not go on until it does. DNS can take 15–30
-minutes; a 300 s TTL keeps that short.
-
 ## 2. First login and SSH keys
-
-From your laptop (replace the path to your key):
 
 ```bash
 ssh ubuntu@129.226.208.234          # with the password, once
 ```
 
-On the server, create your own key access:
+Change the password, then install your key:
 
 ```bash
-# Option A: you already have a key — paste the PUBLIC key (id_ed25519.pub)
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
-nano ~/.ssh/authorized_keys         # paste one line per key
+nano ~/.ssh/authorized_keys         # paste your PUBLIC key (~/.ssh/id_ed25519.pub)
 chmod 600 ~/.ssh/authorized_keys
 ```
 
 Test **in a second terminal** before closing the first — never lock yourself out:
 
 ```bash
-ssh ubuntu@129.226.208.234          # should log in without a password prompt
+ssh ubuntu@129.226.208.234          # should not ask for a password
 ```
 
 ## 3. Harden the server
@@ -114,14 +117,15 @@ docker run --rm hello-world
 
 ```bash
 sudo apt install -y git
-git clone <your-repo-url> dirory
+git clone https://github.com/rendynoor25/dirory.git dirory
 cd dirory
 ```
 
-## 6. Configure the environment
+The repository is private, so `git clone` will ask for credentials once. Use a
+GitHub personal access token as the password (Settings → Developer settings →
+Personal access tokens), or add a deploy key under the repo's Deploy keys.
 
-Create `.env` on the server (never commit it). Use `apps/web/.env.example` as the
-list of names; the values come from Supabase → Project Settings → API.
+## 6. Configure the environment
 
 ```bash
 cp .env.example .env
@@ -129,17 +133,20 @@ nano .env
 chmod 600 .env
 ```
 
-Required names:
+`.env.example` lists every name with a comment. Fill in:
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-NEXT_PUBLIC_SITE_URL=https://admin.yourdomain.com
-DOMAIN=admin.yourdomain.com
+NEXT_PUBLIC_SUPABASE_URL=https://ajlmncbzufagplbaaukv.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key, sb_publishable_…>
+SUPABASE_SERVICE_ROLE_KEY=<secret key, sb_secret_…>
+NEXT_PUBLIC_SITE_URL=https://admin.dirory.com
+NEXT_PUBLIC_ADMIN_HOST=admin.dirory.com
+DOMAIN=admin.dirory.com
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` is server-only and must never reach the browser.
+The first four are public values baked into the client bundle at **build** time.
+`SUPABASE_SERVICE_ROLE_KEY` is server-only: it is passed at runtime and must never
+reach the browser. `DOMAIN` is what Caddy requests a certificate for.
 
 ## 7. Deploy
 
@@ -147,23 +154,25 @@ DOMAIN=admin.yourdomain.com
 ./scripts/deploy.sh
 ```
 
-That builds the image and starts the app plus Caddy. Caddy requests the TLS
-certificate on first start; give it a minute, then:
+That pulls the latest code, builds the image and starts the app plus Caddy. The
+script waits for the app to report healthy, then checks HTTPS. Caddy requests the
+certificate itself on first start, so the very first run can take a minute.
 
 ```bash
-curl -I https://admin.yourdomain.com/api/health     # expect HTTP 200
-docker compose logs -f caddy                        # certificate progress
-docker compose logs -f web                          # app logs
+curl -I https://admin.dirory.com/api/health     # expect HTTP 200
+docker compose logs -f caddy                    # certificate progress
+docker compose logs -f web                      # app logs
 ```
 
 ## 8. Supabase redirect URLs
 
-In Supabase → Authentication → URL Configuration set:
+Supabase → Authentication → URL Configuration:
 
-- **Site URL**: `https://admin.yourdomain.com`
-- **Redirect URLs**: add `https://admin.yourdomain.com/auth/callback`
+- **Site URL**: `https://admin.dirory.com`
+- **Redirect URLs**: add `https://admin.dirory.com/auth/callback`
 
-Without this, magic-link sign-in fails silently.
+Without this, sign-in fails back to `/login`. (`dirory.com/auth/callback` is
+already listed for the public site.)
 
 ## 9. Make yourself admin
 
@@ -171,19 +180,23 @@ Sign in once in the browser, then in the Supabase SQL editor:
 
 ```sql
 update public.profiles set role = 'admin'
-where id = (select id from auth.users where email = 'you@example.com');
+where id = (select id from auth.users where email = 'your@email.com');
 ```
+
+Then visit `https://admin.dirory.com` — `/` is rewritten to the dashboard.
 
 ## 10. Verify
 
 ```bash
-curl -I https://admin.yourdomain.com/api/health
-sudo ufw status
-sudo fail2ban-client status sshd
+curl -s https://admin.dirory.com/api/health     # {"status":"ok",...}
+sudo ufw status                                  # 22, 80, 443 only
+sudo fail2ban-client status sshd                 # a jail is running
+docker compose ps                                # web healthy, caddy up
 ```
 
-Then walk the acceptance list: log in as admin, approve a vendor, approve an asset,
-upload the library, and check the audit log.
+Then walk the acceptance list: sign in as admin, approve a vendor and an asset,
+and check the audit log. The public catalogue at `dirory.com/library` should keep
+working from Netlify regardless of this deployment.
 
 ---
 

@@ -29,6 +29,11 @@ Deno.serve(async (req: Request) => {
 
   const url = new URL(req.url);
   const updatedSince = url.searchParams.get("updated_since");
+  // `thumbs=path` returns a stable, app-proxied thumbnail path instead of a
+  // signed storage URL. The website uses this: signed URLs are ~540 chars each
+  // (700 KB for 1,300 items) and expire within the hour, so a cached page would
+  // show broken images. The plugin keeps the signed URLs (it loads them live).
+  const thumbsPathMode = url.searchParams.get("thumbs") === "path";
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = resolveServiceKey();
@@ -77,26 +82,28 @@ Deno.serve(async (req: Request) => {
   }
 
   // Sign every distinct thumbnail in batches. The buckets are private, so the
-  // card grid cannot load a bare storage key.
-  const thumbPaths: string[] = Array.from(
-    new Set(
-      visible
-        .map((r: any) => {
-          const v = Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions;
-          return v?.thumbnail_path ? String(v.thumbnail_path) : null;
-        })
-        .filter((p: string | null): p is string => Boolean(p)),
-    ),
-  );
+  // card grid cannot load a bare storage key. Skipped entirely in path mode.
   const signedThumbs = new Map<string, string>();
-  if (thumbPaths.length) {
-    const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
-    const CHUNK = 100;
-    for (let i = 0; i < thumbPaths.length; i += CHUNK) {
-      const chunk = thumbPaths.slice(i, i + CHUNK);
-      const { data } = await admin.storage.from("materials").createSignedUrls(chunk, 3600);
-      for (const s of data ?? []) {
-        if (s?.path && s?.signedUrl) signedThumbs.set(s.path, s.signedUrl);
+  if (!thumbsPathMode) {
+    const thumbPaths: string[] = Array.from(
+      new Set(
+        visible
+          .map((r: any) => {
+            const v = Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions;
+            return v?.thumbnail_path ? String(v.thumbnail_path) : null;
+          })
+          .filter((p: string | null): p is string => Boolean(p)),
+      ),
+    );
+    if (thumbPaths.length) {
+      const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+      const CHUNK = 100;
+      for (let i = 0; i < thumbPaths.length; i += CHUNK) {
+        const chunk = thumbPaths.slice(i, i + CHUNK);
+        const { data } = await admin.storage.from("materials").createSignedUrls(chunk, 3600);
+        for (const s of data ?? []) {
+          if (s?.path && s?.signedUrl) signedThumbs.set(s.path, s.signedUrl);
+        }
       }
     }
   }
@@ -115,8 +122,13 @@ Deno.serve(async (req: Request) => {
       sample: Boolean(r.vendors?.is_platform),
       tags: r.tags ?? [],
       thumbnail: thumbKey,
-      // M6: a displayable, short-lived URL for the card grid.
-      thumbnail_url: thumbKey ? signedThumbs.get(thumbKey) ?? null : null,
+      // M6: a displayable URL for the card grid. In path mode this is a stable
+      // app-proxied route; otherwise a short-lived signed storage URL.
+      thumbnail_url: thumbKey
+        ? thumbsPathMode
+          ? `/api/thumb/${r.id}`
+          : signedThumbs.get(thumbKey) ?? null
+        : null,
       // The file is delivered by /download/<asset_id> on click, not here.
       model_path: r.type === "model" ? v?.file_path ?? null : null,
       material_path: r.type === "material" ? v?.file_path ?? null : null,

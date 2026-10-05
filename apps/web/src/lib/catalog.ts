@@ -38,6 +38,11 @@ export type Catalog = {
  * Fetch the catalogue server-side. Revalidated every 5 minutes so a newly
  * approved product shows up without a redeploy, while a burst of visitors does
  * not hammer the Edge Function.
+ *
+ * `thumbs=path` asks for stable `/api/thumb/<asset_id>` URLs instead of signed
+ * storage URLs. Signed URLs are ~540 characters each (~700 KB for the whole
+ * catalogue) and expire within the hour, so a cached page would show broken
+ * images — and the payload would exceed Next's 2 MB data-cache limit.
  */
 export async function fetchCatalog(): Promise<Catalog> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -46,7 +51,7 @@ export async function fetchCatalog(): Promise<Catalog> {
     return { updated_at: new Date().toISOString(), count: 0, items: [], brand_logos: {} };
   }
   try {
-    const res = await fetch(`${url}/functions/v1/catalog`, {
+    const res = await fetch(`${url}/functions/v1/catalog?thumbs=path`, {
       headers: { apikey: key },
       next: { revalidate: 300 },
     });
