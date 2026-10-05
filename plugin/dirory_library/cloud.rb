@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.6.3'.freeze
+      PLUGIN_VERSION = '0.6.4'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -941,16 +941,83 @@ module Dirory
         UI.messagebox(status_text)
       end
 
+      # Menu action: make one real request to <server>/catalog and report
+      # exactly what happened. This exists to diagnose the silent `HTTP 0`
+      # ("no response") failure, which has several possible causes that a plain
+      # status code cannot distinguish: an unreachable URL, a TLS problem, or an
+      # empty/mistyped base URL or key.
+      def self.test_connection
+        lines = []
+        lines << "API base URL: #{configured? ? api_base_url : '(empty)'}"
+        lines << "API key: #{api_key.empty? ? '(empty)' : "set (#{api_key[0, 6]}…, #{api_key.length} chars)"}"
+        lines << "Plugin version: #{PLUGIN_VERSION}"
+        lines << "SketchUp: #{Sketchup.version}"
+        lines << "Sketchup::Http available: #{defined?(Sketchup::Http::Request) ? 'yes' : 'NO (needs SketchUp 2021+)'}"
+
+        unless configured?
+          lines << ''
+          lines << 'Set the API base URL first, then run this again.'
+          UI.messagebox(lines.join("\n"))
+          return
+        end
+        unless defined?(Sketchup::Http::Request)
+          UI.messagebox(lines.join("\n"))
+          return
+        end
+
+        url = "#{api_base_url}/catalog"
+        lines << "Request: GET #{url}"
+        lines << 'Waiting for the server…'
+
+        begin
+          request = new_request(url, Sketchup::Http::GET)
+          request.headers = request_headers
+          request.start do |_req, response|
+            release_request(request)
+            code = response.status_code.to_i
+            body_len = response.body.to_s.length
+            lines << ''
+            if code == 0
+              lines << 'Result: HTTP 0 — no response was received.'
+              lines << 'This means the request never completed. Common causes:'
+              lines << '  · the base URL is not reachable from this computer'
+              lines << '  · a TLS/network problem inside SketchUp'
+              lines << '  · the base URL must be https:// and end at /functions/v1'
+              lines << "Open this in a browser to check: #{url}"
+            elsif code >= 200 && code < 300
+              lines << "Result: HTTP #{code} — the server answered correctly."
+              lines << "Response size: #{body_len} bytes"
+              lines << 'Connection is working. Try signing in again.'
+            else
+              lines << "Result: HTTP #{code}"
+              lines << "Response: #{response.body.to_s[0, 300]}"
+            end
+            UI.messagebox(lines.join("\n"))
+          end
+        rescue StandardError => e
+          lines << "Exception: #{e.class}: #{e.message}"
+          UI.messagebox(lines.join("\n"))
+        end
+      end
+
       def self.connection_settings
         prompts = ['API base URL', 'API key (optional)', 'Snapshot every (minutes)']
         defaults = [api_base_url, api_key, snapshot_minutes.to_s]
         result = UI.inputbox(prompts, defaults, 'Dirory connection settings')
         return unless result
-        write('api_base_url', result[0].to_s.strip)
+        url = result[0].to_s.strip
+        # A very common mistake: the base URL must include https:// and end at
+        # /functions/v1. Normalise the obvious cases instead of failing later.
+        if !url.empty? && !url.match?(%r{\Ahttps?://}i)
+          url = "https://#{url}"
+        end
+        url = url.sub(%r{/+\z}, '')
+        url = url.sub(%r{/events\z}i, '') # someone pasted the /events endpoint
+        write('api_base_url', url)
         write('api_key', result[1].to_s.strip)
         minutes = result[2].to_i
         write('snapshot_minutes', minutes < 1 ? DEFAULT_SNAPSHOT_MINUTES : minutes)
-        UI.messagebox("Saved. Restart SketchUp for a new snapshot interval to apply.\n\n#{status_text}")
+        UI.messagebox("Saved.\n\n#{status_text}\n\nTip: 'Test Connection' shows whether the server is reachable.")
       end
     end
   end

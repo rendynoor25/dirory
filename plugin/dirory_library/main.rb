@@ -1284,6 +1284,7 @@ module Dirory
       menu.add_separator
       menu.add_item('Send Usage Now') { Cloud.send_now }
       menu.add_item('Cloud Status…') { Cloud.show_status }
+      menu.add_item('Test Connection…') { Cloud.test_connection }
       menu.add_item('Connection Settings…') { Cloud.connection_settings }
 
       toolbar = UI::Toolbar.new('Dirory')

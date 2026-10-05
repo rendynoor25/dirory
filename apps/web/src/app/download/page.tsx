@@ -22,7 +22,7 @@ export default async function DownloadPage() {
               then install the RBZ in SketchUp Extension Manager.
             </p>
             <a href="/api/download/rbz" className="mt-7 inline-flex rounded-full bg-[#3549a7] px-6 py-3 text-sm font-semibold text-white hover:bg-[#293b91]">
-              Download RBZ (v0.6.3)
+              Download RBZ (v0.6.4)
             </a>
             <div className="mt-7 rounded-xl bg-amber-50 p-4 text-sm leading-6 text-amber-950">
               <strong>Current release note:</strong> this RBZ browses the library configured on your computer.
