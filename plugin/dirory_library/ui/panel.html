@@ -12,7 +12,9 @@
       <h1>Dirory</h1>
     </div>
     <div class="toolbar">
-      <button id="inspectorBtn" title="Inspector — details of the selected product">🔍</button>
+      <button id="updateBtn" class="update-btn" title="Update" hidden>⬆</button>
+      <button id="inspectorBtn" title="Inspector">🔍</button>
+      <button id="settingsBtn" title="Settings">⚙</button>
       <button id="accountBtn" title="Sign in">👤</button>
     </div>
   </header>
@@ -23,17 +25,17 @@
   <!-- Stays pinned to the top while the product list scrolls underneath. -->
   <div id="controls" class="controls">
     <div class="search-row">
-      <input id="search" type="text" list="searchSuggestions" placeholder="Search name, category or brand…" autocomplete="off">
-      <button id="searchGo" type="button" title="Search (Enter)">Search</button>
+      <input id="search" type="text" list="searchSuggestions" placeholder="Search name, category or brand…" data-i18n-placeholder="app.search_placeholder" autocomplete="off">
+      <button id="searchGo" type="button" title="Search (Enter)" data-i18n="app.search">Search</button>
     </div>
     <datalist id="searchSuggestions"></datalist>
 
     <div id="tabs" class="tabs">
-      <button class="tab active" data-filter="all">All</button>
-      <button class="tab" data-filter="model">Models</button>
-      <button class="tab" data-filter="material">Materials</button>
-      <button class="tab" data-filter="favourite">★ Favourite</button>
-      <button class="tab tab-usage" data-filter="usage">Usage</button>
+      <button class="tab active" data-filter="all" data-i18n="tab.all">All</button>
+      <button class="tab" data-filter="model" data-i18n="tab.model">Models</button>
+      <button class="tab" data-filter="material" data-i18n="tab.material">Materials</button>
+      <button class="tab" data-filter="favourite" data-i18n="tab.favourite">★ Favourite</button>
+      <button class="tab tab-usage" data-filter="usage" data-i18n="tab.usage">Usage</button>
     </div>
 
     <div id="filters" class="filters">
@@ -87,7 +89,7 @@
       <button id="accountClose" class="modal-close" aria-label="Close">×</button>
 
       <div id="signInView">
-        <h2 id="acctTitle">Sign in to Dirory</h2>
+        <h2 id="acctTitle" data-i18n="account.title">Sign in to Dirory</h2>
         <p class="modal-lead">
           Browsing and search are free without an account. Sign in to insert models,
           paint materials and ask for quotes.
@@ -101,13 +103,13 @@
           <p class="modal-lead" id="deviceStatus">
             Waiting for you to finish in the browser…
           </p>
-          <button id="acctReopen" class="primary-btn">Open the sign-in page again</button>
-          <button id="acctCancel" class="ghost-btn">Cancel</button>
+          <button id="acctReopen" class="primary-btn" data-i18n="account.reopen">Open the sign-in page again</button>
+          <button id="acctCancel" class="ghost-btn" data-i18n="account.cancel">Cancel</button>
         </div>
 
         <div id="deviceIdle">
           <button id="acctSubmit" class="primary-btn">
-            <span>Sign in with Google</span>
+            <span data-i18n="account.google">Sign in with Google</span>
           </button>
           <p class="modal-sub">
             Opens your browser so you can choose your Google account. Dirory never
@@ -118,9 +120,9 @@
       </div>
 
       <div id="accountView" hidden>
-        <h2>Your account</h2>
+        <h2 data-i18n="account.your_account">Your account</h2>
         <p id="acctWho" class="modal-lead"></p>
-        <button id="acctSignOut" class="ghost-btn">Sign out</button>
+        <button id="acctSignOut" class="ghost-btn" data-i18n="account.sign_out">Sign out</button>
       </div>
 
       <!-- v0.5.2 / UU 27/2022: two clearly-scoped consents, plus a plain-language
@@ -222,6 +224,24 @@
         Sends one request per brand, with only that brand's items. WhatsApp opens as an
         optional extra.
       </p>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <button id="settingsClose" class="modal-close" aria-label="Close">×</button>
+      <h2 id="settingsTitle" data-i18n="settings.title">Settings</h2>
+
+      <label><span data-i18n="settings.language">Language</span>
+        <select id="languageSelect"></select>
+      </label>
+
+      <div class="settings-about">
+        <h3 id="settingsAboutTitle" data-i18n="settings.about">About</h3>
+        <p id="settingsVersion"></p>
+        <button id="settingsUpdate" class="ghost-btn" data-i18n="update.button">Check for updates</button>
+        <p id="settingsUpdateMsg" class="modal-sub"></p>
+      </div>
     </div>
   </div>
 

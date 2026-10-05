@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.9.0 — in-plugin update button and Settings (English / Bahasa Indonesia)
+
+**Plugin update, without the Extension Manager.**
+- New **Update** badge in the toolbar appears when a newer version is published.
+- Clicking it downloads the new archive and **stages** it; the swap happens
+  automatically on the next SketchUp launch, then SketchUp is restarted by the
+  user. Settings and sign-in survive because they live in SketchUp defaults and
+  `~/.dirory`, not in the plugin folder.
+- A running extension cannot overwrite its own code (the Ruby is loaded and, on
+  Windows, the files are locked), so the swap is deferred to startup by design.
+- The plugin checks `GET /plugin-release` (no auth) and downloads from
+  `GET /plugin-release/download` with its device token.
+
+**Settings.**
+- New Settings dialog with **Language: English / Bahasa Indonesia**. The whole
+  panel UI is translated (`i18n.rb`); missing keys fall back to English, so a
+  partial translation is safe.
+
+**Infrastructure.**
+- Migration `0009_plugin_bucket.sql`: private `plugin-release` Storage bucket.
+- Edge Function `plugin-release`: version check + gated download (401 without a
+  plugin token). Verified live: 0.9.0 reported, 401 unauth, 182,446-byte ZIP
+  authenticated, and every .rb in the downloaded archive parses.
+- `scripts/upload-plugin-release.mjs` (`npm run rbz:publish`) uploads the built
+  archive; `apps/web/src/lib/pluginRelease.ts` is the single version constant.
+- `GET /api/plugin/latest` on the website for a browser-side version check.
+
+**Not verified:** the Update button and the language switch have not been clicked
+in SketchUp. The download/version endpoints are verified against the live project.
+
 ## 0.8.3 — search only on Enter (so Dirory learns the query the user meant)
 
 **Why:** the panel filtered live as the architect typed, and a zero-result

@@ -18,7 +18,8 @@
     "rb:check": "node scripts/check-ruby.mjs",
     "rbz:build": "powershell -ExecutionPolicy Bypass -File scripts/build-rbz.ps1",
     "db:check": "node scripts/check-supabase.mjs",
-    "library:upload": "node scripts/upload-library.mjs"
+    "library:upload": "node scripts/upload-library.mjs",
+    "rbz:publish": "node scripts/upload-plugin-release.mjs"
   },
   "engines": {
     "node": ">=20"

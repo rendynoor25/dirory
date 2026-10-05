@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.8.3'.freeze
+      PLUGIN_VERSION = '0.9.0'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -120,6 +120,118 @@ module Dirory
       def self.configured?
         !api_base_url.empty?
       end
+
+      # --------------------------------------------------------------
+      # Language (Settings)
+      # --------------------------------------------------------------
+      def self.language
+        Dirory::Library::I18n.normalize(read('language', 'en'))
+      end
+
+      def self.set_language(code)
+        write('language', Dirory::Library::I18n.normalize(code))
+      end
+
+      # The whole dictionary for the panel's current language.
+      def self.dictionary
+        Dirory::Library::I18n.dictionary(language)
+      end
+
+      # --------------------------------------------------------------
+      # Update check
+      #
+      # The plugin asks what version is published and compares it with its own.
+      # The result is pushed to the panel, which decides whether to show the
+      # Update badge.
+      # --------------------------------------------------------------
+      @latest_version = nil
+      @update_checked = false
+
+      def self.check_for_update(dialog = nil)
+        return unless configured? && defined?(Sketchup::Http::Request)
+        request = new_request("#{api_base_url}/plugin-release", Sketchup::Http::GET)
+        request.headers = request_headers
+        request.start do |_req, response|
+          release_request(request)
+          begin
+            if response.status_code.to_i == 200
+              data = (JSON.parse(response.body.to_s) rescue {})
+              @latest_version = data['version'].to_s
+              @update_checked = true
+              push_update_state(dialog)
+            end
+          rescue StandardError => e
+            puts "[Dirory] update check failed: #{e.message}"
+          end
+        end
+      end
+
+      def self.update_available?
+        !@latest_version.to_s.empty? &&
+          Dirory::Library::Updater.newer?(@latest_version, PLUGIN_VERSION)
+      end
+
+      def self.update_state
+        {
+          'installed' => PLUGIN_VERSION,
+          'latest' => @latest_version.to_s,
+          'available' => update_available?,
+          'checked' => @update_checked,
+          'staged' => Dirory::Library::Updater.staged?
+        }
+      end
+
+      def self.push_update_state(dialog = nil)
+        target = dialog || @sign_in_dialog
+        return unless target
+        target.execute_script("window.diroryUpdate && window.diroryUpdate(#{update_state.to_json});")
+      rescue StandardError
+        nil
+      end
+
+      # Download and stage the published archive. Yields nothing; the panel is
+      # told the outcome via window.diroryUpdateResult.
+      def self.download_update(dialog)
+        unless configured? && signed_in? && defined?(Sketchup::Http::Request)
+          push_update_result(dialog, false, 'sign in first')
+          return
+        end
+        request = new_request("#{api_base_url}/plugin-release/download", Sketchup::Http::GET)
+        request.headers = request_headers
+        request.start do |_req, response|
+          release_request(request)
+          begin
+            code = response.status_code.to_i
+            if code >= 200 && code < 300
+              body = response.body
+              ok = stage_update_bytes(body)
+              push_update_result(dialog, ok, ok ? nil : 'could not write the staged update')
+            elsif code == 401
+              push_update_result(dialog, false, 'sign in first')
+            else
+              push_update_result(dialog, false, "HTTP #{code}")
+            end
+          rescue StandardError => e
+            push_update_result(dialog, false, e.message)
+          end
+        end
+      end
+
+      def self.stage_update_bytes(bytes)
+        Dirory::Library::Updater.pending_dir
+        File.binwrite(Dirory::Library::Updater::STAGED_RBZ, bytes)
+        Dirory::Library::Updater.stage_from_file(Dirory::Library::Updater::STAGED_RBZ)
+      end
+
+      def self.push_update_result(dialog, ok, error)
+        return unless dialog
+        dialog.execute_script(
+          "window.diroryUpdateResult(#{ { ok: ok, error: error, restart_required: ok }.to_json });"
+        )
+      rescue StandardError
+        nil
+      end
+
 
       def self.share_usage?
         read('share_usage', true) ? true : false

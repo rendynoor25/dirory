@@ -4,6 +4,8 @@ require 'digest'
 require 'uri'
 require 'fileutils'
 require File.join(File.dirname(__FILE__), 'cloud')
+require File.join(File.dirname(__FILE__), 'i18n')
+require File.join(File.dirname(__FILE__), 'updater')
 
 if RUBY_PLATFORM =~ /mswin|mingw/i
   begin
@@ -1269,6 +1271,13 @@ module Dirory
           push_account
         end
         @dialog.add_action_callback('openPrivacy') { |_ctx| UI.openURL(PRIVACY_URL) }
+        @dialog.add_action_callback('setLanguage') do |_ctx, payload|
+          data = parse_payload(payload)
+          Cloud.set_language(data['language'] || data['code'] || 'en')
+          push_i18n
+        end
+        @dialog.add_action_callback('checkForUpdate') { |_ctx| Cloud.check_for_update(@dialog) }
+        @dialog.add_action_callback('downloadUpdate') { |_ctx| Cloud.download_update(@dialog) }
         @dialog.add_action_callback('inspectSelection') { |_ctx| inspect_selection }
         @dialog.add_action_callback('openURL') do |_ctx, payload|
           data = parse_payload(payload)
@@ -1344,6 +1353,10 @@ module Dirory
         brand_logos: payload['brand_logos'] || {},
         note: note
       }
+      # Make sure the panel has the dictionary before/with the first render, and
+      # kick off a background update check (once per session).
+      push_i18n
+      Cloud.check_for_update(@dialog) unless @update_checked
       @dialog.execute_script("window.diroryRender(#{data.to_json});")
     end
 
@@ -1358,6 +1371,20 @@ module Dirory
     def self.push_account(error = nil)
       return unless @dialog
       @dialog.execute_script("window.diroryAccount(#{Cloud.account_state(error).to_json});")
+    end
+
+    # Push the language dictionary so the panel can translate itself.
+    def self.push_i18n
+      return unless @dialog
+      payload = {
+        language: Cloud.language,
+        languages: Dirory::Library::I18n.supported,
+        version: Cloud::PLUGIN_VERSION,
+        strings: Cloud.dictionary
+      }
+      @dialog.execute_script("window.diroryI18n(#{payload.to_json});")
+    rescue StandardError => e
+      puts "[Dirory] could not push translations: #{e.message}"
     end
 
     # Menu action: open the panel (if closed) and begin the browser sign-in.

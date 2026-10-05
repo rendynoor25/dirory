@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * Real Ruby syntax check for the plugin, using Ruby's own Prism parser compiled
  * to WASM (@ruby/prism). No Ruby interpreter required.
@@ -23,6 +23,8 @@ const FILES = [
   "plugin/dirory_library.rb",
   "plugin/dirory_library/main.rb",
   "plugin/dirory_library/cloud.rb",
+  "plugin/dirory_library/i18n.rb",
+  "plugin/dirory_library/updater.rb",
 ];
 
 const parse = await loadPrism();
@@ -36,14 +38,14 @@ for (const rel of FILES) {
 
   if (errors.length) {
     failed = true;
-    console.log(`✗ ${rel}`);
+    console.log(`[FAIL] ${rel}`);
     for (const e of errors) {
       const line = (e.location?.startLine ?? 0) + 1;
       const col = (e.location?.startColumn ?? 0) + 1;
       console.log(`    line ${line}:${col}  ${e.message}`);
     }
   } else {
-    console.log(`✓ ${rel} — parses clean (${source.split(/\r?\n/).length} lines)`);
+    console.log(`[ok] ${rel} - parses clean (${source.split(/\r?\n/).length} lines)`);
   }
 }
 
@@ -56,9 +58,9 @@ const missing = [...used].filter((m) => !defined.has(m) && m !== "module" && m !
 
 if (missing.length) {
   failed = true;
-  console.log(`✗ main.rb calls Cloud.${missing.join(", Cloud.")} which cloud.rb does not define`);
+  console.log(`[FAIL] main.rb calls Cloud.${missing.join(", Cloud.")} which cloud.rb does not define`);
 } else {
-  console.log(`✓ every Cloud.* called from main.rb is defined in cloud.rb (${used.size} methods)`);
+  console.log(`[ok] every Cloud.* called from main.rb is defined in cloud.rb (${used.size} methods)`);
 }
 
 process.exit(failed ? 1 : 0);

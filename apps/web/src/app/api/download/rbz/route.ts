@@ -2,6 +2,7 @@
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { PLUGIN_FILENAME } from "@/lib/pluginRelease";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,7 +39,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(login);
   }
 
-  const filename = "DiroryLibrary-0.8.3.rbz";
+  const filename = PLUGIN_FILENAME;
   const filePath = path.join(process.cwd(), "private", filename);
 
   try {

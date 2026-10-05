@@ -803,6 +803,119 @@ function updateAccountButton() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Internationalisation (English / Bahasa Indonesia)                   */
+/* ------------------------------------------------------------------ */
+
+// Ruby pushes the dictionary for the selected language. Every element with a
+// data-i18n attribute is filled from it; anything missing falls back to English
+// server-side, so a partial translation is always safe.
+let i18n = {};
+let languages = { en: 'English' };
+
+function t(key, vars) {
+  let text = i18n[key] || key;
+  if (vars) {
+    Object.keys(vars).forEach((k) => {
+      text = text.replace(new RegExp('%\\{' + k + '\\}', 'g'), vars[k]);
+    });
+  }
+  return text;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+    el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
+  });
+  render();
+}
+
+window.diroryI18n = function (data) {
+  i18n = (data && data.strings) || {};
+  languages = (data && data.languages) || languages;
+  document.documentElement.lang = (data && data.language) || 'en';
+  const select = byId('languageSelect');
+  if (select) {
+    select.innerHTML = '';
+    Object.keys(languages).forEach((code) => {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = languages[code];
+      select.appendChild(opt);
+    });
+    select.value = (data && data.language) || 'en';
+  }
+  byId('settingsVersion').textContent = t('settings.version', {
+    version: (data && data.version) || '',
+  });
+  applyTranslations();
+};
+
+/* ------------------------------------------------------------------ */
+/* Settings                                                            */
+/* ------------------------------------------------------------------ */
+
+function openSettings() {
+  byId('settingsModal').hidden = false;
+}
+function closeSettings() {
+  byId('settingsModal').hidden = true;
+}
+byId('settingsBtn').addEventListener('click', openSettings);
+byId('settingsClose').addEventListener('click', closeSettings);
+byId('settingsModal').addEventListener('click', (e) => {
+  if (e.target === byId('settingsModal')) closeSettings();
+});
+byId('languageSelect').addEventListener('change', (e) => {
+  sketchup.setLanguage(JSON.stringify({ language: e.target.value }));
+});
+
+/* ------------------------------------------------------------------ */
+/* Update                                                              */
+/* ------------------------------------------------------------------ */
+
+// Ruby tells the panel whether a newer version exists; show the toolbar badge.
+window.diroryUpdate = function (state) {
+  updateState = state || {};
+  const btn = byId('updateBtn');
+  if (btn) btn.hidden = !updateState.available;
+  if (updateState.staged) {
+    // An update is already downloaded and waiting for a restart.
+    if (btn) btn.hidden = false;
+    byId('settingsUpdateMsg').textContent = t('update.staged');
+  }
+};
+
+window.diroryUpdateResult = function (result) {
+  const msg = byId('settingsUpdateMsg');
+  if (result && result.ok) {
+    if (msg) msg.textContent = t('update.staged');
+    if (window.diroryToast) window.diroryToast({ text: t('update.staged'), ms: 9000 });
+  } else {
+    const err = (result && result.error) || '';
+    if (msg) msg.textContent = t('update.failed', { error: err });
+    if (window.diroryToast) window.diroryToast({ text: t('update.failed', { error: err }), ms: 7000 });
+  }
+};
+
+let updateState = {};
+
+byId('updateBtn').addEventListener('click', () => {
+  openSettings();
+  byId('settingsUpdateMsg').textContent = t('update.leading', {}) || '';
+  sketchup.downloadUpdate();
+});
+byId('settingsUpdate').addEventListener('click', () => {
+  byId('settingsUpdateMsg').textContent = t('update.checking');
+  sketchup.checkForUpdate();
+});
+
+/* ------------------------------------------------------------------ */
 /* Toast: short messages ("sign in to load into your project")          */
 /* ------------------------------------------------------------------ */
 
