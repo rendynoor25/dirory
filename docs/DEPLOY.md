@@ -83,22 +83,35 @@ ssh ubuntu@129.226.208.234          # should not ask for a password
 
 ## 3. Harden the server
 
-```bash
-# 3.1 Disable password and root login
-sudo nano /etc/ssh/sshd_config
-#   PermitRootLogin no
-#   PasswordAuthentication no
-#   PubkeyAuthentication yes
-sudo systemctl restart ssh
+Run these on the server. Keep your first SSH session open until you have
+confirmed a second one still works after each change.
 
-# 3.2 Firewall: only SSH, HTTP, HTTPS
+```bash
+# 3.1 SSH: key-only, no root login
+#
+# IMPORTANT: Ubuntu cloud images ship /etc/ssh/sshd_config.d/50-cloud-init.conf
+# which sets `PasswordAuthentication yes`, and the main sshd_config also has it.
+# sshd uses FIRST-match-wins, and the drop-ins load alphabetically, so a file
+# named 99- loses to 50-. Name yours 00- so it wins.
+sudo tee /etc/ssh/sshd_config.d/00-dirory-hardening.conf >/dev/null <<'EOF'
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+EOF
+sudo sshd -t                      # syntax check before restarting
+sudo systemctl restart ssh
+sudo sshd -T | grep -Ei '^(passwordauthentication|permitrootlogin|pubkeyauthentication)'
+#   expect: passwordauthentication no / permitrootlogin no / pubkeyauthentication yes
+
+# 3.2 Firewall: allow SSH BEFORE enabling, or you lock yourself out
 sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw --force enable
-sudo ufw status
+sudo ufw status verbose
 
-# 3.3 Automatic security updates
+# 3.3 Automatic security updates (already enabled on most cloud images)
 sudo apt update && sudo apt install -y unattended-upgrades fail2ban
 sudo dpkg-reconfigure -plow unattended-upgrades
 
@@ -109,13 +122,19 @@ enabled  = true
 port     = 22
 maxretry = 4
 bantime  = 1h
+findtime = 10m
 EOF
 sudo systemctl enable --now fail2ban
 sudo fail2ban-client status sshd
 ```
 
-Keep the first SSH session open until you have confirmed a second one still works
-after each change.
+**Verify you are not locked out** before closing anything:
+
+```bash
+# in a NEW terminal — must connect without a password
+ssh -i ~/.ssh/yourkey ubuntu@129.226.208.234
+```
+
 
 ## 4. Install Docker
 

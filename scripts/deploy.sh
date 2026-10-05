@@ -72,17 +72,27 @@ for i in $(seq 1 30); do
 done
 
 # --- verify -----------------------------------------------------------------
-log "Checking HTTPS for ${DOMAIN}"
-if curl -fsS -o /dev/null --max-time 20 "https://${DOMAIN}/api/health"; then
-  curl -fsS --max-time 20 "https://${DOMAIN}/api/health" || true
+# Test the app ON THIS SERVER (via Caddy, resolving the domain locally) rather
+# than the public domain. Testing the public domain would silently test whatever
+# DNS currently points at — e.g. the old Netlify site — and report a false pass.
+log "Checking the app on this server"
+
+if curl -fsS -o /dev/null --max-time 15 --resolve "${DOMAIN}:443:127.0.0.1" "https://${DOMAIN}/api/health" 2>/dev/null; then
+  curl -fsS --max-time 15 --resolve "${DOMAIN}:443:127.0.0.1" "https://${DOMAIN}/api/health" || true
   printf '\n'
-  log "Deploy complete: https://${DOMAIN}"
+  log "HTTPS is live on this server for ${DOMAIN}"
 else
-  warn "HTTPS check failed. This is normal on the FIRST run before Caddy has"
-  warn "obtained a certificate (it can take a minute). Inspect the logs:"
-  docker compose logs --tail 40 caddy || true
-  warn "If it persists: confirm DNS points here and ports 80/443 are open."
-  exit 1
+  warn "No HTTPS response from Caddy yet. Usually this means Caddy has not been"
+  warn "able to obtain a certificate, which it cannot do until DNS is correct."
+  RESOLVED="$(getent hosts "${DOMAIN}" 2>/dev/null | awk '{print $1}' | head -1)"
+  if [ -n "${RESOLVED}" ]; then
+    warn "  ${DOMAIN} currently resolves to: ${RESOLVED}"
+    warn "  If that is not this server, update the A record and Caddy will retry"
+    warn "  automatically (it retries for up to 30 days)."
+  fi
+  warn "Caddy log tail:"
+  docker compose logs --tail 15 caddy || true
+  warn "The app itself is running; only the certificate is pending."
 fi
 
 log "Container status"

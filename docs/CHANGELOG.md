@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.9.3 — deployed to the VPS (certificate pending DNS)
+
+The app now runs on the Sumopod VPS behind Caddy. Verified on the server:
+
+- `tsc` + Docker build succeed; containers `web` (healthy) and `caddy` (up) run.
+- Routes from inside the container: `/api/health`, `/`, `/library`, `/login`,
+  `/download`, `/api/plugin/latest`, `/privacy` all **200**; `/admin` **307** to
+  `/login` when signed out; an unknown product **404**.
+- The VPS reaches the Supabase catalogue (1,307 items) and the RBZ is in the image.
+
+Server hardening applied: ufw (22/80/443 only), fail2ban, root login refused,
+password login refused, key login working.
+
+**Fixed a false-positive in `scripts/deploy.sh`:** the post-deploy check fetched
+`https://$DOMAIN/api/health` over the public internet, which silently tested
+whatever DNS pointed at — the old Netlify site — and reported success while the
+VPS certificate was still failing. It now tests Caddy locally with
+`--resolve $DOMAIN:443:127.0.0.1` and explains a pending certificate instead of
+exiting with an error.
+
+**Not yet verified:** the public HTTPS certificate. Caddy's ACME challenge fails
+while `dirory.com` resolves to Netlify (`75.2.60.5`). It retries automatically;
+once the A record points at `129.226.208.234` the certificate is issued with no
+further action.
+
 ## 0.9.2 — single domain: dirory.com (admin at /admin)
 
 The earlier plan used `admin.dirory.com` as a separate host with middleware that
