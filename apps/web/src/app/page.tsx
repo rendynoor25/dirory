@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AccountMenu } from "@/components/AccountMenu";
 
 /**
  * Public landing page (dirory.com).
@@ -72,12 +73,7 @@ export default function Home() {
           <a href="#brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             Brands
           </a>
-          <Link href="/login?next=%2Fdownload" className="text-sm font-medium text-slate-700 hover:text-slate-950">
-            Sign in
-          </Link>
-          <Link href="/login?next=%2Fdownload" className="rounded-full bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-800">
-            Get the plugin
-          </Link>
+          <AccountMenu />
         </nav>
       </header>
 

@@ -27,8 +27,19 @@ export function SignInForm({
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error" | "google">("idle");
   const [message, setMessage] = useState("");
 
+  // Prefer the configured canonical site URL over window.location.origin.
+  // On a Netlify deploy-preview host the origin is an ephemeral alias that is
+  // usually NOT in Supabase's allow-list, so OAuth/magic-link returns fail with
+  // a confusing "back on the sign-in page" result. Using the canonical URL
+  // avoids that class of bug entirely.
+  const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/+$/, "");
+  const origin = (): string => {
+    if (siteOrigin && /^https?:\/\//.test(siteOrigin)) return siteOrigin;
+    return window.location.origin;
+  };
+
   const callbackUrl = (target: string) =>
-    `${window.location.origin}/auth/callback?next=${encodeURIComponent(target)}`;
+    `${origin()}/auth/callback?next=${encodeURIComponent(target)}`;
 
   async function onGoogle() {
     setStatus("google");
