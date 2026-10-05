@@ -192,15 +192,45 @@ The variable names keep the legacy wording (`ANON`, `SERVICE_ROLE`) so both olde
 and newer projects work; the **values** are the new `sb_publishable_…` and
 `sb_secret_…` strings.
 
-### After the domain resolves
+### The public site: `dirory.com`
+
+The architect-facing pages (landing, sign-in, `/auth/device`, `/download`) are
+served at **`dirory.com`**. The plugin opens
+`https://dirory.com/auth/device?code=…` for sign-in.
+
+1. Netlify → your site → **Domain management → Add a domain** → `dirory.com`
+   (and `www.dirory.com` if you want it). Netlify shows the apex records to use.
+2. Domainesia → **DNS Management** → set the `@` **A** record to the value Netlify
+   shows (commonly `75.2.60.5`). Leave the `www` CNAME, and leave every email
+   record (`MX @`, `A mail`, SPF, DMARC, DKIM) untouched.
+3. Wait for the certificate, then confirm `https://dirory.com` loads the landing
+   page.
+
+### After the domains resolve
 
 Supabase → **Authentication → URL Configuration**:
 
-- **Site URL**: `https://admin.dirory.com`
-- **Redirect URLs**: add `https://admin.dirory.com/auth/callback`
+- **Site URL**: `https://dirory.com`
+- **Redirect URLs**: add **all** of:
+  - `https://dirory.com/auth/callback`
+  - `https://admin.dirory.com/auth/callback`
+  - `http://localhost:3000/auth/callback` (local development)
 
-Magic-link sign-in fails silently without the redirect entry — the mail sends
-and the link lands back on `/login`.
+Magic-link and Google sign-in fail silently without the matching redirect entry —
+the mail sends and the link lands back on `/login`.
+
+### How the two hosts behave (one app)
+
+| Host | What it serves |
+|---|---|
+| `dirory.com` | Public/architect: `/`, `/login`, `/auth/device`, `/download`, `/privacy` |
+| `admin.dirory.com` | The dashboard: `/` is rewritten to `/admin`; `/vendor/*` still reachable |
+| `*.netlify.app`, `localhost` | No rewriting — normal paths, so previews and local dev are unaffected |
+
+Set `NEXT_PUBLIC_ADMIN_HOST` if the admin hostname ever differs from
+`admin.dirory.com`. Both hosts require the Supabase **role** to grant access:
+an admin sees `/admin`, everyone else is redirected.
+
 
 ### Operational note
 
@@ -211,12 +241,14 @@ and the link lands back on `/login`.
 
 ## 8. Checklist
 
-- [ ] Netlify: add `admin.dirory.com`, note the CNAME target
-- [ ] Domainesia: add `CNAME admin` → that target
-- [ ] `nslookup admin.dirory.com` returns the target
-- [ ] Netlify shows a valid configuration and issues a certificate
-- [ ] Set the four environment variables, then clear-cache and redeploy
-- [ ] Supabase Site URL and redirect URLs updated
-- [ ] `https://admin.dirory.com` loads the app
+- [ ] Netlify: add `dirory.com` (public) and `admin.dirory.com` (dashboard)
+- [ ] Domainesia: point the `@` A record at Netlify; keep the `admin` CNAME
+- [ ] `nslookup dirory.com` and `nslookup admin.dirory.com` both resolve
+- [ ] Netlify shows a valid configuration and issues certificates for both
+- [ ] Set the environment variables (including `NEXT_PUBLIC_ADMIN_HOST`), then
+      clear-cache and redeploy
+- [ ] Supabase Site URL `https://dirory.com` + both `/auth/callback` redirect URLs
+- [ ] `https://dirory.com` loads the landing page
+- [ ] `https://admin.dirory.com` loads the dashboard (after you are an admin)
 - [ ] Sign in, then grant yourself `admin` in the SQL editor
 - [ ] Confirm Mailspace email still works (you never changed nameservers)
