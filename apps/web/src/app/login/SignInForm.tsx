@@ -14,7 +14,15 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
  * `async`, and awaiting `searchParams` inside one makes React call hooks out of
  * order (React error #321, "Invalid hook call").
  */
-export function SignInForm({ next, error }: { next: string; error?: string }) {
+export function SignInForm({
+  next,
+  error,
+  googleEnabled = true,
+}: {
+  next: string;
+  error?: string;
+  googleEnabled?: boolean;
+}) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error" | "google">("idle");
   const [message, setMessage] = useState("");
@@ -80,21 +88,27 @@ export function SignInForm({ next, error }: { next: string; error?: string }) {
         <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>
       ) : null}
 
-      <button
-        type="button"
-        onClick={onGoogle}
-        disabled={status === "google"}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        <GoogleMark />
-        {status === "google" ? "Opening Google…" : "Continue with Google"}
-      </button>
+      {googleEnabled ? (
+        <>
+          <button
+            type="button"
+            onClick={onGoogle}
+            disabled={status === "google"}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <GoogleMark />
+            {status === "google" ? "Opening Google…" : "Continue with Google"}
+          </button>
 
-      <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
-        <span className="h-px flex-1 bg-slate-200" />
-        or use email
-        <span className="h-px flex-1 bg-slate-200" />
-      </div>
+          <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
+            <span className="h-px flex-1 bg-slate-200" />
+            or use email
+            <span className="h-px flex-1 bg-slate-200" />
+          </div>
+        </>
+      ) : (
+        <div className="mt-6" />
+      )}
 
       <form onSubmit={onSubmit} className="space-y-4">
         <div>

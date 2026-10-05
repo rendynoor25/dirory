@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+﻿import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(login);
   }
 
-  const filename = "DiroryLibrary-0.6.4.rbz";
+  const filename = "DiroryLibrary-0.7.1.rbz";
   const filePath = path.join(process.cwd(), "private", filename);
 
   try {

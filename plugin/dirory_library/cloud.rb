@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.7.0'.freeze
+      PLUGIN_VERSION = '0.7.1'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -216,13 +216,16 @@ module Dirory
         nil
       end
 
-      # The verification page is on our own site; "provider=google" lets it go
-      # straight to Google instead of showing a login choice.
+      # The verification page is on our own site. We deliberately do NOT force a
+      # provider: an earlier build appended "&provider=google", which fails with
+      # "provider is not enabled" whenever Google OAuth is not configured on the
+      # Supabase project — and it hid the email-link option entirely. The page
+      # now offers whatever is actually available (Google if enabled, plus the
+      # email link, which always works).
       def self.sign_in_url
         return nil unless @pending_device
         url = (@pending_device['verification_url_complete'] || @pending_device['verification_url']).to_s
         return nil if url.empty?
-        url += (url.include?('?') ? '&' : '?') + 'provider=google' unless url.include?('provider=')
         url
       end
 
