@@ -489,6 +489,16 @@ function render() {
     const chooseCard = () => {
       if (!account.signedIn && account.cloudConfigured !== false) {
         pendingAction = runCard;
+        // Explain why the click did nothing, then open the sign-in dialog.
+        if (window.diroryToast) {
+          window.diroryToast({
+            text:
+              item.type === 'material'
+                ? 'Sign in to paint this material onto a surface.'
+                : 'Sign in to load this model into your project.',
+            ms: 5000,
+          });
+        }
         openAccount();
         return;
       }
@@ -806,11 +816,10 @@ function applyDeviceState() {
   byId('devicePending').hidden = !pending;
   byId('deviceIdle').hidden = pending;
   if (pending) {
-    byId('deviceCode').textContent = account.deviceUserCode || '————-————';
-    byId('deviceUrl').textContent = account.verificationUrl || '';
+    // No code is shown any more: sign-in is Google OAuth in the browser.
     byId('deviceStatus').textContent = account.deviceStatus
-      ? 'Waiting for approval… (server: ' + account.deviceStatus + ')'
-      : 'Waiting for approval…';
+      ? 'Waiting for you to finish in the browser… (' + account.deviceStatus + ')'
+      : 'Waiting for you to finish in the browser…';
   }
 }
 

@@ -92,26 +92,24 @@
 
         <div id="acctError" class="modal-error" hidden></div>
 
+        <!-- Google OAuth only. No code to read or type: the browser opens, the
+             architect picks an account, and this panel connects on its own. -->
         <div id="devicePending" hidden>
-          <p class="modal-lead">
-            Finish signing in the browser window that just opened. If it did not
-            open, use the button below, or visit the address and enter this code:
+          <p class="modal-lead" id="deviceStatus">
+            Waiting for you to finish in the browser…
           </p>
-          <div class="device-code" id="deviceCode">————-————</div>
-          <p class="modal-sub" id="deviceUrl"></p>
-          <p class="modal-sub" id="deviceStatus">Waiting for approval…</p>
-          <button id="acctReopen" class="primary-btn">Open sign-in page again</button>
+          <button id="acctReopen" class="primary-btn">Open the sign-in page again</button>
           <button id="acctCancel" class="ghost-btn">Cancel</button>
         </div>
 
         <div id="deviceIdle">
           <button id="acctSubmit" class="primary-btn">
-            <span>Sign in with browser</span>
+            <span>Sign in with Google</span>
           </button>
           <p class="modal-sub">
-            Opens your browser at the Dirory sign-in page. Sign in with Google or an
-            email link, approve this device, and come back — the panel connects on
-            its own. Dirory never sees or stores your password.
+            Opens your browser so you can choose your Google account. Dirory never
+            sees or stores your password. When you are done, come back to SketchUp —
+            this panel signs in by itself.
           </p>
         </div>
       </div>

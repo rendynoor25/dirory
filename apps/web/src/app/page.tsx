@@ -92,12 +92,12 @@ export default function Home() {
             easy-to-use SketchUp library.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/login?next=%2Fdownload" className="rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/15 transition hover:-translate-y-0.5 hover:bg-brand-800">
-              Create a free account <span aria-hidden="true">→</span>
+            <Link href="/library" className="rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/15 transition hover:-translate-y-0.5 hover:bg-brand-800">
+              Browse the library <span aria-hidden="true">→</span>
             </Link>
-            <a href="#how-it-works" className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400">
-              See how it works
-            </a>
+            <Link href="/login?next=%2Fdownload" className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400">
+              Get the plugin
+            </Link>
           </div>
           <p className="mt-4 text-xs text-slate-500">Free to browse. Account required to get the plugin download.</p>
           <div className="mt-10 flex items-center gap-4 border-t border-slate-200 pt-6">

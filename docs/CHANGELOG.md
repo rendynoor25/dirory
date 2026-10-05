@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.8.2 — web product catalogue, product pages, simpler plugin sign-in
+
+**Web (new pages, modelled on Dekoruma's supply warehouse):**
+- `/library`: a public product catalogue — search, All/Models/Materials tabs,
+  brand and category filters, sort, and a responsive grid. Browsing needs no
+  account; "Free sample" is badged.
+- `/product/<asset_id>`: a product page with a large image, specifications
+  (brand, category, type, tile size, SKU, tags) and related products from the
+  same brand/category.
+- The product page's action is **"install Dirory to use this in SketchUp"**, not
+  a file download. No file is offered on the web; the plugin fetches assets on
+  demand. Signed-out visitors are sent to sign in first.
+
+**Plugin 0.8.2:**
+- Sign-in is now a single **"Sign in with Google"** button. The device code is no
+  longer shown — the browser step auto-approves and the panel connects by itself.
+- Clicking a model/material card while signed out shows a short notice
+  ("Sign in to load this model…" / "…paint this material…") and opens the
+  in-panel sign-in, instead of appearing to do nothing.
+
+**Not verified:** the two new pages render and typecheck, but they have not been
+reviewed in a browser by the founder, and the plugin changes have not been run
+in SketchUp.
+
 ## 0.8.1 — fix: plugin sign-in never completed, so cards never loaded
 
 **Symptom:** in plugin 0.8.0 clicking a model/material card asked to sign in;
