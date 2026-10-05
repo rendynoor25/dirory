@@ -189,6 +189,52 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Real screenshot of the panel inside SketchUp. */}
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+          <div className="grid items-center gap-10 lg:grid-cols-[.9fr_1.1fr]">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">Inside SketchUp</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                The catalogue lives in your SketchUp window.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                Sign in once with Google and the whole library loads in the Dirory panel — brands,
+                categories, and every model and material. Click a card to place a model or paint a
+                surface; files download in the background and are cached for next time.
+              </p>
+              <ul className="mt-6 space-y-3 text-sm text-slate-700">
+                {[
+                  "Filter by brand, category or type, and star favourites",
+                  "Download badges show what is already cached on your computer",
+                  "Your name appears in the panel — favourites follow your account",
+                ].map((line) => (
+                  <li key={line} className="flex gap-3">
+                    <span aria-hidden="true" className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+                      ✓
+                    </span>
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <figure className="relative">
+              <div className="absolute -inset-4 rounded-[2rem] bg-brand-50" aria-hidden="true" />
+              <Image
+                src="/dirory-in-sketchup.png"
+                alt="The Dirory panel open inside SketchUp, showing the TACO brand with 634 materials"
+                width={1193}
+                height={680}
+                className="relative w-full rounded-2xl border border-slate-200 shadow-[0_28px_80px_-40px_rgba(33,48,108,.5)]"
+              />
+              <figcaption className="relative mt-3 text-center text-xs text-slate-400">
+                The Dirory panel running in SketchUp — browsing 634 TACO materials.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
       {/* Brands available. Wordmark tiles (no third-party logo files are shipped). */}
       <section id="brands" className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
         <div className="max-w-2xl">
