@@ -767,6 +767,25 @@ function updateAccountButton() {
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Toast: short messages ("sign in to load into your project")          */
+/* ------------------------------------------------------------------ */
+
+let toastTimer = null;
+window.diroryToast = function (data) {
+  const el = byId('toast');
+  if (!el) return;
+  const text = typeof data === 'string' ? data : (data && data.text) || '';
+  if (!text) return;
+  el.textContent = text;
+  el.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.hidden = true;
+    toastTimer = null;
+  }, (data && data.ms) || 6000);
+};
+
 function openAccount() {
   byId('signInView').hidden = !!account.signedIn;
   byId('accountView').hidden = !account.signedIn;
@@ -838,7 +857,18 @@ byId('privacyLink').addEventListener('click', (e) => {
 });
 
 // Ruby asks for a sign-in when an insert / paint / quote arrives without one.
-window.diroryNeedSignIn = function () {
+// Show a toast explaining *why* the click did nothing, then open the account
+// modal so the user can sign in. (Reported: clicking a card seemed to do
+// nothing when signed out.)
+window.diroryNeedSignIn = function (data) {
+  const action = (data && data.action) || 'load';
+  const text =
+    action === 'material'
+      ? 'Sign in to paint this material onto a surface.'
+      : action === 'quote'
+        ? 'Sign in to ask this brand for a quote.'
+        : 'Sign in to load this model into your project.';
+  if (window.diroryToast) window.diroryToast({ text: text, ms: 6000 });
   openAccount();
 };
 

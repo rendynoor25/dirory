@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.7.1'.freeze
+      PLUGIN_VERSION = '0.8.0'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -36,7 +36,15 @@ module Dirory
 
       # Leave empty until the backend exists; set it in
       # Extensions > Dirory > Connection Settings...
-      DEFAULT_API_BASE_URL = ''.freeze
+      # Zero-configuration defaults. A normal user installs the RBZ and it just
+      # works: the cloud endpoint and the public (publishable) key are baked in
+      # here, so nobody has to open Connection Settings.
+      #
+      # The publishable key is designed to be public — it ships in every browser
+      # bundle of the website too. It is NOT a secret. Never put the
+      # service-role/secret key here.
+      DEFAULT_API_BASE_URL = 'https://ajlmncbzufagplbaaukv.supabase.co/functions/v1'.freeze
+      DEFAULT_API_KEY = 'sb_publishable_JIpzGVjnwobUxaGbhBEsHg_0Lfu_QPs'.freeze
 
       FLUSH_INTERVAL_SECONDS = 60
       DEFAULT_SNAPSHOT_MINUTES = 5
@@ -106,7 +114,7 @@ module Dirory
       end
 
       def self.api_key
-        read('api_key', '').to_s.strip
+        read('api_key', DEFAULT_API_KEY).to_s.strip
       end
 
       def self.configured?
@@ -179,10 +187,17 @@ module Dirory
         state
       end
 
+      # Menu entry: open the panel and start the browser sign-in. The panel owns
+      # the dialog, so it starts the flow for us.
+      def self.begin_sign_in
+        Dirory::Library.sign_in_from_menu
+      rescue StandardError => e
+        UI.messagebox("Dirory could not start sign-in: #{e.message}")
+      end
+
       # Kick off the browser sign-in. Returns an error message, or nil while the
       # flow runs in the background. The panel shows the returned user code.
-      def self.sign_in_start(dialog)
-        return 'Set the server URL first (Extensions > Dirory > Connection Settings).' unless configured?
+      def self.sign_in_start(dialog)        return 'Set the server URL first (Extensions > Dirory > Connection Settings).' unless configured?
         unless defined?(Sketchup::Http::Request)
           return 'This SketchUp version has no Sketchup::Http (needs 2021+).'
         end
@@ -348,13 +363,14 @@ module Dirory
 
       # Called by insert / paint / quote. Returns true when allowed; otherwise
       # asks the panel to show its sign-in form and returns false.
-      def self.require_sign_in(dialog)
+      def self.require_sign_in(dialog, action = 'load')
         # Without a server URL there is no account system to sign in to, so a
         # local library stays usable (otherwise every card click is blocked by
         # a sign-in that can never complete).
         return true if !configured? || signed_in?
+        payload = { 'action' => action.to_s }.to_json
         if dialog
-          dialog.execute_script('window.diroryNeedSignIn && window.diroryNeedSignIn();')
+          dialog.execute_script("window.diroryNeedSignIn && window.diroryNeedSignIn(#{payload});")
         else
           UI.messagebox('Please sign in to Dirory first: open the Dirory panel and use the account button.')
         end
