@@ -133,6 +133,16 @@ export async function registerProduct(input: RegisterProductInput) {
       : `https://${d.product_url}`
     : null;
 
+  // Both storage paths must live under the chosen vendor, so a bad path cannot
+  // attach a product to the wrong brand's file. The form always builds them so.
+  const prefix = `${d.vendor_id}/`;
+  if (!d.file_path.startsWith(prefix)) {
+    return { ok: false as const, error: "The uploaded file does not belong to that brand." };
+  }
+  if (d.thumbnail_path && !d.thumbnail_path.startsWith(prefix)) {
+    return { ok: false as const, error: "The preview image does not belong to that brand." };
+  }
+
   const { data: asset, error: assetError } = await supabase
     .from("assets")
     .insert({
