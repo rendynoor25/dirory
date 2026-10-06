@@ -529,25 +529,27 @@ h1 {
 .controls .filters { padding-bottom: 8px; }
 
 /* ---------- Favourite star ---------- */
+/* Bottom-right of the thumbnail. The download badge owns the top-right and the
+   brand logo chip the bottom-left, so nothing overlaps. */
 .star {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  z-index: 2;
-  width: 22px;
-  height: 22px;
+  bottom: 5px;
+  right: 5px;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   color: #8a8a8e;
-  font-size: 14px;
-  line-height: 22px;
+  font-size: 15px;
+  line-height: 24px;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(32, 43, 78, 0.25);
+  box-shadow: 0 1px 3px rgba(32, 43, 78, 0.28);
 }
-.star:hover { color: #e0a100; }
+.star:hover { color: #e0a100; background: #fff; }
 .star.on { color: #e0a100; }
 .card .badge { z-index: 2; }
 .grid-heading {
@@ -702,25 +704,6 @@ h1 {
 .dl-badge.busy { background: rgba(150, 100, 20, 0.9); animation: dlpulse 1s ease-in-out infinite; }
 .dl-badge.done { background: rgba(31, 122, 79, 0.9); }
 @keyframes dlpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
-
-.info-btn {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  z-index: 3;
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  color: #39509f;
-  font-size: 12px;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(32, 43, 78, 0.28);
-}
-.info-btn:hover { background: #fff; }
 
 .product-body { max-height: 60vh; overflow-y: auto; }
 .product-image {

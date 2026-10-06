@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.9.4 (plugin) — fix: favourites did nothing, and the star was hidden
+
+Two real bugs meant the Favourite feature could not work at all.
+
+1. **The catalogue had no `key` field.** The panel keys favourites by `item.key`,
+   but `catalog` returned only `asset_id` / `legacy_key`, so `item.key` was
+   `undefined`. Tapping the star added `undefined` and Ruby dropped it
+   (`key.to_s.empty?`), so nothing was ever saved. `catalog` now returns
+   `key: asset_id`, which is also what the `/favourites` endpoint expects for
+   account-wide sync.
+
+2. **The star sat underneath the download badge.** Both were pinned to the
+   thumbnail's top-right, and the badge had the higher z-index, so on every cloud
+   card the star was invisible and unclickable.
+
+**Card layout** (founder request): the per-card product-info button (ⓘ) is
+removed — product details already live in the Inspector (🔍), which shows the
+same information for the selected item. The star takes the thumbnail's
+bottom-right, where the ⓘ used to be:
+
+| Corner | Element |
+|---|---|
+| top-right | download badge (⤓ / ✓) |
+| bottom-left | brand logo chip |
+| **bottom-right** | **Favourite star (☆ / ★)** |
+
+The unused product-info modal, its handlers and its CSS were removed too.
+
+**Verified:** `catalog` returns `key` equal to `asset_id` for all 1,307 items;
+`plugin-release` reports 0.9.4; Ruby and panel.js parse clean; web build clean.
+**Not verified:** the star tap in SketchUp — needs a human click.
+
 ## 0.9.3 — deployed to the VPS (certificate pending DNS)
 
 The app now runs on the Sumopod VPS behind Caddy. Verified on the server:

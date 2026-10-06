@@ -134,6 +134,12 @@ Deno.serve(async (req: Request) => {
       material_path: r.type === "material" ? v?.file_path ?? null : null,
       // ---- new fields ----
       asset_id: r.id,
+      // The panel keys favourites (and "used before") by this value. It must be
+      // present or favouriting silently does nothing: the star toggles
+      // `item.key`, which would be undefined. Use the asset id so favourites
+      // follow the account across computers (the /favourites endpoint treats a
+      // UUID as asset_id and anything else as a legacy local-library path).
+      key: r.id,
       version: v?.version ?? 1,
       tile_size_cm: r.tile_w_cm
         ? [Number(r.tile_w_cm), Number(r.tile_h_cm ?? r.tile_w_cm)]

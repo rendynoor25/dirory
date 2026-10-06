@@ -18,7 +18,7 @@ import { corsHeaders, json } from "../_shared/cors.ts";
 import { resolvePluginToken, serviceClient } from "../_shared/plugin-auth.ts";
 
 /** Keep in step with apps/web/src/lib/pluginRelease.ts. */
-const PLUGIN_VERSION = "0.9.0";
+const PLUGIN_VERSION = "0.9.4";
 const PLUGIN_FILENAME = `DiroryLibrary-${PLUGIN_VERSION}.rbz`;
 // Private bucket created by migration 0009; only the service role touches it.
 const BUCKET = "plugin-release";

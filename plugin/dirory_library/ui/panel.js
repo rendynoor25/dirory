@@ -446,20 +446,14 @@ function render() {
         thumb.appendChild(el('span', 'dl-badge', '⤓'));
       }
     }
-    // Product info button (hover/click), like Thudio's "Product Info".
-    const info = el('button', 'info-btn', 'ⓘ');
-    info.type = 'button';
-    info.title = 'Product info';
-    info.setAttribute('aria-label', 'Product info');
-    info.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation(); // do not insert / paint
-      openProductInfo(item);
-    });
-    thumb.appendChild(info);
+    // No per-card info button: product details are in the Inspector (🔍), which
+    // shows the same information for whatever is selected in the model. The
+    // bottom-right corner of the thumbnail is used by the Favourite star.
     card.appendChild(thumb);
 
-    // Star: keep this product in the Favourite tab.
+    // Star: keep this product in the Favourite tab. Lives on the thumbnail so it
+    // cannot collide with the download badge (top-right) or the brand chip
+    // (bottom-left).
     const star = el('button', 'star' + (isFav(item) ? ' on' : ''), isFav(item) ? '★' : '☆');
     star.type = 'button';
     star.title = isFav(item) ? 'Remove from Favourite' : 'Add to Favourite';
@@ -479,7 +473,7 @@ function render() {
       }
     });
     star.addEventListener('keydown', (event) => event.stopPropagation());
-    card.appendChild(star);
+    thumb.appendChild(star);
 
     const name = document.createElement('div');
     name.className = 'name';
@@ -1088,7 +1082,7 @@ function detailRow(label, value) {
   return row;
 }
 
-function renderProductBody(container, item) {
+function renderProductBody(container, item, onAction) {
   container.innerHTML = '';
   if (item.thumbnail_url || item.thumbnail) {
     const img = document.createElement('img');
@@ -1120,7 +1114,8 @@ function renderProductBody(container, item) {
     const quote = el('button', 'ghost-btn', 'Ask this brand for a quote');
     quote.type = 'button';
     quote.addEventListener('click', () => {
-      closeProductInfo();
+      // Close whatever panel showed this detail view before opening the quote.
+      if (typeof onAction === 'function') onAction();
       quoteBrands.clear();
       quoteBrands.add(item.brand);
       openQuote();
@@ -1129,21 +1124,6 @@ function renderProductBody(container, item) {
   }
   if (actions.children.length) container.appendChild(actions);
 }
-
-function openProductInfo(item) {
-  renderProductBody(byId('productBody'), item);
-  byId('productTitle').textContent = item.name || 'Product info';
-  byId('productModal').hidden = false;
-}
-
-function closeProductInfo() {
-  byId('productModal').hidden = true;
-}
-
-byId('productClose').addEventListener('click', closeProductInfo);
-byId('productModal').addEventListener('click', (e) => {
-  if (e.target === byId('productModal')) closeProductInfo();
-});
 
 function openInspector() {
   byId('inspectorModal').hidden = false;
@@ -1169,6 +1149,6 @@ window.diroryInspect = function (data) {
     body.appendChild(el('p', 'product-empty', 'Nothing Dirory is selected. Click a model or a painted surface, then open the Inspector again.'));
     return;
   }
-  renderProductBody(body, data.item);
+  renderProductBody(body, data.item, closeInspector);
   byId('inspectorTitle').textContent = data.item.name || 'Inspector';
 };
