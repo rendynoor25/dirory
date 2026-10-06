@@ -14,8 +14,11 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const params = await searchParams;
-  const candidate = params.next ?? "/vendor";
-  const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/vendor";
+  // A visitor signing in from the public page should return home, not be sent
+  // to the vendor portal. Protected destinations (e.g. /admin or /download)
+  // arrive explicitly via `next` and are preserved.
+  const candidate = params.next ?? "/";
+  const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/";
   const withGoogle = await googleEnabled();
 
   return (
