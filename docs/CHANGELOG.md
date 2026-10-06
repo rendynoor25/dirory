@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.9.7 — five new models, plus a name override and a removal tool
+
+**Library.** Five models were added to `sample_library/Model` and pushed to
+Supabase: **Polonium Credenza** (Malka / Cabinet), **Ellis 3 Seater**
+(Ellis / Chair), **MAX 1** and **MAX 2** (ALPHAMAX / Doors), and
+**Tromso Coffee Table** (Tromso / Table). The catalogue is now **1,311 assets,
+13 models**. New vendors created: Ellis, ALPHAMAX, Tromso.
+
+**`--overrides` for the uploader.** The two ALPHAMAX door folders would have
+become their own brands and both taken the name "Panel Door A" from a leftover
+scaffold `meta.json`. `scripts/library-overrides.json` maps a path to
+`{ brand, name, category }`, applied before upload:
+
+```
+node scripts/upload-library.mjs --root "D:/Dirory/sample_library" \
+  --overrides scripts/library-overrides.json
+```
+
+The source folder is left untouched (`D:\Dirory` is read-only input).
+
+**`scripts/remove-library-item.mjs`** (`npm run library:remove`). Removes an
+item whose source folder was renamed or deleted — the asset row plus its stored
+files, matched by `legacy_key`. Used to retire the old **Panel Door A**, whose
+folder no longer exists.
+
+**Verified:** upload reported "Uploaded 5, skipped 1306, 0 failed"; the catalogue
+returns 13 models and Panel Door A is gone; `dirory.com/library` lists the new
+brands (ALPHAMAX, Tromso, Ellis) and a new product page returns 200.
+**Note:** Tromso Coffee Table has no thumbnail image, so its card shows a
+placeholder until one is added.
+
 ## 0.9.6 (web) — user metrics and a one-time "what do you do?" question
 
 **Admin — Users (`/admin/users`, brief §4.6 / FR-M9).** New screen with:

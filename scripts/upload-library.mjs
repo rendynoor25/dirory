@@ -78,6 +78,31 @@ const forcedVendor = arg("vendor", null);
 const limit = Number(arg("limit", 0)) || 0;
 const only = String(arg("only", "") || "").toLowerCase() || null;
 
+/**
+ * Optional corrections, keyed by the item's legacy key (its path relative to
+ * the library root). Use when a folder or its meta.json is misleading — for
+ * example a product folder that would otherwise become its own brand:
+ *
+ *   { "Model/Doors/ALPHAMAX- MAX 1/ALPHAMAX- MAX 1.skp": { "brand": "ALPHAMAX", "name": "MAX 1" } }
+ *
+ * Fields not present are left as scanned.
+ */
+const overrides = (() => {
+  const file = arg("overrides", null);
+  if (!file) return {};
+  const p = path.resolve(String(file));
+  if (!fs.existsSync(p)) {
+    console.error(`Overrides file not found: ${p}`);
+    process.exit(1);
+  }
+  try {
+    return JSON.parse(fs.readFileSync(p, "utf8"));
+  } catch (err) {
+    console.error(`Could not read overrides: ${err.message}`);
+    process.exit(1);
+  }
+})();
+
 const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -201,6 +226,13 @@ function scan(base) {
   const seen = new Set();
 
   const push = (item) => {
+    // Apply any manual correction for this path before de-duplicating.
+    const override = overrides[item.legacyKey];
+    if (override) {
+      if (override.brand) item.brand = String(override.brand);
+      if (override.name) item.name = String(override.name);
+      if (override.category) item.category = String(override.category);
+    }
     const dedupe = item.legacyKey.toLowerCase();
     if (seen.has(dedupe)) return;
     seen.add(dedupe);

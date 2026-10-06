@@ -1,0 +1,5 @@
+{
+  "_comment": "Manual corrections for the sample library, keyed by the item's path relative to the library root. Use when a folder or its meta.json would produce a misleading brand or name. Pass with --overrides. Fields not listed are left as scanned.",
+  "Model/Doors/ALPHAMAX- MAX 1/ALPHAMAX- MAX 1.skp": { "brand": "ALPHAMAX", "name": "MAX 1" },
+  "Model/Doors/ALPHAMAX - MAX 2/ALPHAMAX- MAX 2.skp": { "brand": "ALPHAMAX", "name": "MAX 2" }
+}

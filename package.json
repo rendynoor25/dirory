@@ -19,6 +19,7 @@
     "rbz:build": "powershell -ExecutionPolicy Bypass -File scripts/build-rbz.ps1",
     "db:check": "node scripts/check-supabase.mjs",
     "library:upload": "node scripts/upload-library.mjs",
+    "library:remove": "node scripts/remove-library-item.mjs",
     "rbz:publish": "node scripts/upload-plugin-release.mjs"
   },
   "engines": {
