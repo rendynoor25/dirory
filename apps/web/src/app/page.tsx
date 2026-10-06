@@ -73,6 +73,9 @@ export default function Home() {
           <a href="#brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             Brands
           </a>
+          <Link href="/how-to-install" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
+            How to install
+          </Link>
           <AccountMenu />
         </nav>
       </header>

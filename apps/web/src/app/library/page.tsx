@@ -31,14 +31,12 @@ export default async function LibraryPage() {
             <Link href="/library" className="text-sm font-semibold text-brand-700">
               Library
             </Link>
-            <a
-              href="https://dekoruma.freshdesk.com/support/solutions/articles/17000144296-thudio-workspace-onboarding/"
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              href="/how-to-install"
               className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline"
             >
-              How to use
-            </a>
+              How to install
+            </Link>
             <AccountMenu />
           </nav>
         </div>
