@@ -49,7 +49,7 @@ export async function GET(request: Request) {
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, occupation")
       .eq("id", user.id)
       .maybeSingle();
 
@@ -57,6 +57,15 @@ export async function GET(request: Request) {
     // Everyone else continues to `next` (their original target).
     if (profile?.role === "admin" && next === "/") {
       return NextResponse.redirect(new URL("/admin", origin));
+    }
+
+    // Ask the one-time "what best describes you?" question, once, on the first
+    // sign-in. /welcome itself redirects straight on if it is already answered,
+    // so this cannot loop.
+    if (profile && !profile.occupation) {
+      const welcome = new URL("/welcome", origin);
+      welcome.searchParams.set("next", next);
+      return NextResponse.redirect(welcome);
     }
   }
 

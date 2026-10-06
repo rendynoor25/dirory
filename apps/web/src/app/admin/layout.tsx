@@ -28,6 +28,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           { href: "/admin/missing-requests", label: "Missing requests", badge: newMissing ?? undefined },
           { href: "/admin/usage", label: "Usage explorer" },
           { href: "/admin/quotes", label: "Quotes", badge: newQuotes ?? undefined },
+          { href: "/admin/users", label: "Users" },
         ]}
         footer="Dirory v0.1 · PRD v1.1"
       />

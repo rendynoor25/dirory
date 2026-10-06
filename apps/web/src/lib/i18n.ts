@@ -39,6 +39,7 @@ const en: Record<string, string> = {
   "account.admin": "Admin dashboard",
   "account.vendor": "Vendor dashboard",
   "account.privacy": "Privacy",
+  "account.profile": "Your profile",
   "account.signOut": "Sign out",
   "common.viewProduct": "View product",
   "common.freeSample": "Free sample",
@@ -254,6 +255,21 @@ const en: Record<string, string> = {
   "login.sendFail": "Could not send the link.",
   "login.emailPlaceholder": "you@gmail.com",
 
+  // ---- welcome (occupation) ----------------------------------------------
+  "welcome.tag": "One quick question",
+  "welcome.title": "What best describes you?",
+  "welcome.lead": "This helps us understand who uses Dirory and what to build next. You can change it later.",
+  "welcome.architect": "Architect",
+  "welcome.designer": "Designer",
+  "welcome.student": "Student",
+  "welcome.other": "Other",
+  "welcome.saving": "Saving…",
+  "welcome.skip": "Skip for now",
+  "welcome.thanks": "Thanks — you're all set.",
+  "welcome.error": "Could not save that. Please try again.",
+  "welcome.continue": "Continue",
+  "welcome.askedInSketchUp": "One quick question before you go back to SketchUp.",
+
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Language",
 };
@@ -273,6 +289,7 @@ const id: Record<string, string> = {
   "account.admin": "Dasbor admin",
   "account.vendor": "Dasbor vendor",
   "account.privacy": "Privasi",
+  "account.profile": "Profil Anda",
   "account.signOut": "Keluar",
   "common.viewProduct": "Lihat produk",
   "common.freeSample": "Sampel gratis",
@@ -487,6 +504,21 @@ const id: Record<string, string> = {
   "login.googleFail": "Tidak dapat memulai masuk dengan Google.",
   "login.sendFail": "Tidak dapat mengirim tautan.",
   "login.emailPlaceholder": "anda@gmail.com",
+
+  // ---- welcome (occupation) ----------------------------------------------
+  "welcome.tag": "Satu pertanyaan singkat",
+  "welcome.title": "Anda paling tepat digambarkan sebagai?",
+  "welcome.lead": "Ini membantu kami memahami siapa yang memakai Dirory dan apa yang perlu dibangun berikutnya. Bisa diubah nanti.",
+  "welcome.architect": "Arsitek",
+  "welcome.designer": "Desainer",
+  "welcome.student": "Mahasiswa",
+  "welcome.other": "Lainnya",
+  "welcome.saving": "Menyimpan…",
+  "welcome.skip": "Lewati dulu",
+  "welcome.thanks": "Terima kasih — semuanya siap.",
+  "welcome.error": "Tidak dapat menyimpan. Silakan coba lagi.",
+  "welcome.continue": "Lanjutkan",
+  "welcome.askedInSketchUp": "Satu pertanyaan singkat sebelum kembali ke SketchUp.",
 
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Bahasa",

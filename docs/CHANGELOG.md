@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.9.6 (web) — user metrics and a one-time "what do you do?" question
+
+**Admin — Users (`/admin/users`, brief §4.6 / FR-M9).** New screen with:
+- KPIs: total users, architects, designers, students, plus "joined in the last
+  30 days" and how many answered.
+- A breakdown strip by occupation.
+- A table of every account: name, email, occupation, role, joined, last seen
+  (from the plugin installs).
+
+**Admin — Overview.** Added a **Users** KPI (the first tile) linking to the
+screen, and the grid is now five columns on wide screens.
+
+**Ask once, after the first sign-in.** A new `/welcome` page asks "What best
+describes you?" — Architect / Designer / Student / Other — and saves it to the
+profile. It is optional ("Skip for now") and asked only once.
+- Web sign-in: `/auth/callback` sends a first-time user to `/welcome`.
+- **Plugin sign-in:** `/auth/device` asks the same question after approving the
+  device, because most people sign in from SketchUp and would otherwise never
+  see it.
+- The account menu has "Your profile" (`/welcome?edit=1`) so an answer can be
+  changed later.
+
+**Schema (`0010_profiles_occupation.sql`)**
+- `profiles.occupation` (`architect | designer | student | other`, NULL until
+  answered — never guessed).
+- `profiles.email`, mirrored from `auth.users`: that table is not reachable
+  through PostgREST with the anon key, so the admin dashboard could not otherwise
+  show which account is which. Backfilled for existing rows and kept up to date
+  by the sign-up trigger.
+- `user_occupation_counts()` helper for the dashboard.
+
+**Verified:** migration applied; emails backfilled for all three existing
+accounts; typecheck and build clean; `/welcome` and `/admin/users` both build.
+**Not verified:** the picker click and the admin screen in a browser (needs the
+admin account to be signed in).
+
 ## 0.9.5 (web) — English / Bahasa Indonesia toggle
 
 The public site can now be read in Indonesian. English stays the default.

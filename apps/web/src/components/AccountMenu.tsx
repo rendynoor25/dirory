@@ -62,6 +62,9 @@ export async function AccountMenu() {
             {t(locale, "account.vendor")}
           </Link>
         ) : null}
+        <Link href="/welcome?edit=1" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+          {t(locale, "account.profile")}
+        </Link>
         <Link href="/privacy" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
           {t(locale, "account.privacy")}
         </Link>

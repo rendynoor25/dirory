@@ -7,6 +7,7 @@ export default async function AdminOverview() {
   const { supabase } = await requireAdmin();
 
   const [
+    { count: users },
     { count: vendors },
     { count: assets },
     { count: samples },
@@ -15,6 +16,7 @@ export default async function AdminOverview() {
     { count: quotes },
     { data: mrrRows },
   ] = await Promise.all([
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase.from("vendors").select("id", { count: "exact", head: true }).eq("status", "approved"),
     supabase.from("assets").select("id", { count: "exact", head: true }).eq("status", "approved"),
     supabase.from("assets").select("id", { count: "exact", head: true }).eq("status", "approved").eq("vendor_id", "00000000-0000-0000-0000-0000000000d1"),
@@ -52,7 +54,8 @@ export default async function AdminOverview() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <Kpi label="Users" value={users ?? 0} href="/admin/users" hint="architects & designers" />
         <Kpi label="Approved vendors" value={vendors ?? 0} href="/admin/vendors" />
         <Kpi label="Approved assets" value={assets ?? 0} hint={`${samples ?? 0} Dirory samples`} />
         <Kpi label="Installations" value={installs ?? 0} hint={`${snapshots ?? 0} live projects`} />

@@ -3,6 +3,9 @@ import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase
 import { approveDevice } from "./actions";
 import { DeviceSignIn } from "./DeviceSignIn";
 import { googleEnabled } from "@/lib/providers";
+import { getLocale } from "@/lib/locale-server";
+import { t } from "@/lib/i18n";
+import { OccupationPicker } from "@/components/OccupationPicker";
 
 const DEVICE_CODE_RE = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 
@@ -49,6 +52,7 @@ export default async function DevicePage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const locale = await getLocale();
 
   // Not signed in: show the sign-in form here, preserving the code.
   if (!user) {
@@ -59,6 +63,16 @@ export default async function DevicePage({
       </Main>
     );
   }
+
+  // Most people sign in from the plugin, so this page also asks the one-time
+  // "what best describes you?" question — the answer is what the admin
+  // dashboard reports as the architect / designer / student mix.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("occupation")
+    .eq("id", user.id)
+    .maybeSingle();
+  const needsOccupation = !profile?.occupation;
 
   // Signed in: approve a live pending code (auto-approve — no extra click).
   if (!status && DEVICE_CODE_RE.test(code)) {
@@ -79,7 +93,21 @@ export default async function DevicePage({
           <strong>You&apos;re signed in.</strong> Now go back to SketchUp — the Dirory panel
           finishes signing in by itself and your name appears in the top-right corner.
         </Notice>
-        <p className="mt-3 text-xs text-slate-500">You can close this browser tab.</p>
+
+        {needsOccupation ? (
+          <div className="mt-6 rounded-xl border border-slate-200 bg-white px-4 py-4">
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-600">
+              {t(locale, "welcome.tag")}
+            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-800">{t(locale, "welcome.title")}</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">{t(locale, "welcome.lead")}</p>
+            <div className="mt-4">
+              <OccupationPicker locale={locale} compact />
+            </div>
+          </div>
+        ) : (
+          <p className="mt-3 text-xs text-slate-500">You can close this browser tab.</p>
+        )}
       </Main>
     );
   }
