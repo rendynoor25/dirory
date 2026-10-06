@@ -2,8 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AccountMenu } from "@/components/AccountMenu";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import { fetchCatalog, tileLabel, type CatalogItem } from "@/lib/catalog";
 import { getSession } from "@/lib/auth";
+import { getLocale } from "@/lib/locale-server";
+import { t, type Locale } from "@/lib/i18n";
 import { DownloadCta } from "./DownloadCta";
 
 export const metadata = {
@@ -20,25 +23,26 @@ export const metadata = {
  */
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const catalog = await fetchCatalog();
+  const [catalog, { user }, locale] = await Promise.all([fetchCatalog(), getSession(), getLocale()]);
   const item = catalog.items.find((i) => i.asset_id === id);
   if (!item) notFound();
-
-  const { user } = await getSession();
 
   const related: CatalogItem[] = catalog.items
     .filter((i) => i.asset_id !== item.asset_id && (i.brand === item.brand || i.category === item.category))
     .slice(0, 8);
 
   const specs: [string, string][] = [
-    ["Brand", item.brand],
-    ["Category", item.category || "—"],
-    ["Type", item.type === "material" ? "Material (texture)" : "3D model (component)"],
+    [t(locale, "product.brand"), item.brand],
+    [t(locale, "product.category"), item.category || "—"],
+    [
+      t(locale, "product.type"),
+      item.type === "material" ? t(locale, "product.typeMaterial") : t(locale, "product.typeModel"),
+    ],
   ];
   const tile = tileLabel(item);
-  if (tile) specs.push(["Tile size", tile]);
-  if (item.sku) specs.push(["SKU / code", item.sku]);
-  if (item.tags.length) specs.push(["Tags", item.tags.join(", ")]);
+  if (tile) specs.push([t(locale, "product.tileSize"), tile]);
+  if (item.sku) specs.push([t(locale, "product.sku"), item.sku]);
+  if (item.tags.length) specs.push([t(locale, "product.tags"), item.tags.join(", ")]);
 
   return (
     <main className="min-h-screen bg-[#f8f9fc] text-slate-950">
@@ -50,8 +54,9 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </Link>
           <nav className="flex items-center gap-3 sm:gap-5" aria-label="Main navigation">
             <Link href="/library" className="text-sm text-slate-600 hover:text-slate-950">
-              Library
+              {t(locale, "nav.library")}
             </Link>
+            <LanguageToggle locale={locale} />
             <AccountMenu />
           </nav>
         </div>
@@ -60,16 +65,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <nav className="mb-5 text-xs text-slate-500" aria-label="Breadcrumb">
           <Link href="/library" className="hover:text-slate-800">
-            Library
+            {t(locale, "nav.library")}
           </Link>
-          {item.type ? (
-            <>
-              <span className="mx-1.5">/</span>
-              <Link href={`/library?type=${item.type}`} className="hover:text-slate-800">
-                {item.type === "material" ? "Materials" : "Models"}
-              </Link>
-            </>
-          ) : null}
+          <span className="mx-1.5">/</span>
+          <span className="text-slate-700">
+            {item.type === "material" ? t(locale, "library.materials") : t(locale, "library.models")}
+          </span>
           {item.category ? (
             <>
               <span className="mx-1.5">/</span>
@@ -98,7 +99,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               )}
               {item.sample ? (
                 <span className="absolute left-3 top-3 rounded-md bg-emerald-600/90 px-2 py-1 text-xs font-semibold text-white">
-                  Free sample
+                  {t(locale, "common.freeSample")}
                 </span>
               ) : null}
             </div>
@@ -108,7 +109,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <p className="text-sm font-semibold uppercase tracking-widest text-brand-600">{item.brand}</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight">{item.name}</h1>
             <p className="mt-2 text-sm text-slate-500">
-              {item.type === "material" ? "Material" : "3D model"}
+              {item.type === "material" ? t(locale, "product.typeLabel") : t(locale, "product.typeLabelModel")}
               {item.category ? ` · ${item.category}` : ""}
             </p>
 
@@ -121,13 +122,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               ))}
             </dl>
 
-            <DownloadCta signedIn={Boolean(user)} productUrl={item.product_url} />
+            <DownloadCta signedIn={Boolean(user)} productUrl={item.product_url} locale={locale} />
           </div>
         </div>
 
         {related.length ? (
           <section className="mt-14">
-            <h2 className="text-lg font-semibold">More from {item.brand} and {item.category}</h2>
+            <h2 className="text-lg font-semibold">
+              {t(locale, "product.moreFrom", { brand: item.brand, category: item.category || "" })}
+            </h2>
             <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {related.map((r) => (
                 <li key={r.asset_id}>

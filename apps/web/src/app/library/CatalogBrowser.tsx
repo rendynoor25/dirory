@@ -5,18 +5,19 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CatalogItem } from "@/lib/catalog";
 import { productHref, tileLabel } from "@/lib/catalog";
+import { t, type Locale } from "@/lib/i18n";
 
 type SortKey = "name" | "brand" | "newest";
 
 /**
  * The public product catalogue: search, type tabs, brand/category filters and a
  * responsive grid. Modelled on Dekoruma's supply-warehouse listing, kept to the
- * two product kinds Dirory actually has (models and materials).
+ * two product kinds Dirory has (models and materials).
  *
- * Filtering is client-side over the full catalogue (1,300+ items today), which
- * makes it instant and needs no extra endpoints.
+ * Filtering is client-side over the full catalogue (1,300+ items), which makes
+ * it instant and needs no extra endpoints. `locale` comes from the server page.
  */
-export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
+export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale: Locale }) {
   const [query, setQuery] = useState("");
   const [type, setType] = useState<"all" | "model" | "material">("all");
   const [brand, setBrand] = useState("");
@@ -28,7 +29,6 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
     () => Array.from(new Set(items.map((i) => i.brand).filter(Boolean))).sort(),
     [items],
   );
-  // Categories depend on the type tab, since model and material categories differ.
   const categories = useMemo(() => {
     const pool = type === "all" ? items : items.filter((i) => i.type === type);
     return Array.from(new Set(pool.map((i) => i.category).filter(Boolean))).sort();
@@ -45,7 +45,7 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
         item.name.toLowerCase().includes(q) ||
         item.brand.toLowerCase().includes(q) ||
         item.category.toLowerCase().includes(q) ||
-        item.tags.some((t) => t.toLowerCase().includes(q))
+        item.tags.some((tag) => tag.toLowerCase().includes(q))
       );
     });
     if (sort === "brand") list.sort((a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name));
@@ -77,39 +77,43 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
                 setQuery(e.target.value);
                 setVisible(60);
               }}
-              placeholder="Search models, materials, brands…"
-              aria-label="Search products"
+              placeholder={t(locale, "library.searchPlaceholder")}
+              aria-label={t(locale, "library.searchLabel")}
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
             />
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
-              aria-label="Sort by"
+              aria-label={t(locale, "library.sortLabel")}
               className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-brand-500"
             >
-              <option value="name">Name A–Z</option>
-              <option value="brand">Brand</option>
-              <option value="newest">Newest</option>
+              <option value="name">{t(locale, "library.sortName")}</option>
+              <option value="brand">{t(locale, "library.sortBrand")}</option>
+              <option value="newest">{t(locale, "library.sortNewest")}</option>
             </select>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {(["all", "model", "material"] as const).map((t) => (
+            {(["all", "model", "material"] as const).map((kind) => (
               <button
-                key={t}
+                key={kind}
                 type="button"
                 onClick={() => {
-                  setType(t);
+                  setType(kind);
                   setCategory("");
                   setVisible(60);
                 }}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-                  type === t
+                  type === kind
                     ? "bg-brand-700 text-white"
                     : "border border-slate-300 bg-white text-slate-600 hover:border-slate-400"
                 }`}
               >
-                {t === "all" ? "All products" : t === "model" ? "Models" : "Materials"}
+                {kind === "all"
+                  ? t(locale, "library.allProducts")
+                  : kind === "model"
+                    ? t(locale, "library.models")
+                    : t(locale, "library.materials")}
               </button>
             ))}
 
@@ -120,10 +124,10 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
                   setBrand(e.target.value);
                   setVisible(60);
                 }}
-                aria-label="Filter by brand"
+                aria-label={t(locale, "library.filterBrand")}
                 className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-brand-500"
               >
-                <option value="">All brands</option>
+                <option value="">{t(locale, "library.allBrands")}</option>
                 {brands.map((b) => (
                   <option key={b} value={b}>
                     {b}
@@ -136,10 +140,10 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
                   setCategory(e.target.value);
                   setVisible(60);
                 }}
-                aria-label="Filter by category"
+                aria-label={t(locale, "library.filterCategory")}
                 className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-brand-500"
               >
-                <option value="">All categories</option>
+                <option value="">{t(locale, "library.allCategories")}</option>
                 {categories.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -152,7 +156,7 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
                   onClick={resetFilters}
                   className="rounded-xl px-2 py-2 text-sm text-slate-500 hover:text-slate-800"
                 >
-                  Clear
+                  {t(locale, "library.clear")}
                 </button>
               )}
             </div>
@@ -161,22 +165,24 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
       </div>
 
       <p className="mb-4 text-sm text-slate-500">
-        {filtered.length.toLocaleString()} product{filtered.length === 1 ? "" : "s"}
-        {brand ? ` from ${brand}` : ""}
+        {t(locale, filtered.length === 1 ? "library.countOne" : "library.countMany", {
+          count: filtered.length.toLocaleString(),
+        })}
+        {brand ? t(locale, "library.fromBrand", { brand }) : ""}
       </p>
 
       {filtered.length === 0 ? (
         <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center">
-          <p className="text-sm text-slate-600">No products match that search.</p>
+          <p className="text-sm text-slate-600">{t(locale, "library.none")}</p>
           <button type="button" onClick={resetFilters} className="mt-3 text-sm font-medium text-brand-700 hover:underline">
-            Clear filters
+            {t(locale, "library.clear")}
           </button>
         </div>
       ) : (
         <>
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {shown.map((item) => (
-              <ProductCard key={item.asset_id} item={item} />
+              <ProductCard key={item.asset_id} item={item} locale={locale} />
             ))}
           </ul>
 
@@ -187,7 +193,7 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
                 onClick={() => setVisible((v) => v + 60)}
                 className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
               >
-                Show more ({filtered.length - shown.length} left)
+                {t(locale, "library.showMore", { count: filtered.length - shown.length })}
               </button>
             </div>
           ) : null}
@@ -197,7 +203,8 @@ export function CatalogBrowser({ items }: { items: CatalogItem[] }) {
   );
 }
 
-function ProductCard({ item }: { item: CatalogItem }) {
+function ProductCard({ item, locale }: { item: CatalogItem; locale: Locale }) {
+  const kindLabel = item.type === "material" ? t(locale, "library.material") : t(locale, "library.model");
   return (
     <li>
       <Link
@@ -224,14 +231,14 @@ function ProductCard({ item }: { item: CatalogItem }) {
           </span>
           {item.sample ? (
             <span className="absolute right-2 top-2 rounded-md bg-emerald-600/90 px-1.5 py-0.5 text-[10px] font-semibold text-white">
-              Free sample
+              {t(locale, "common.freeSample")}
             </span>
           ) : null}
         </div>
         <div className="p-3">
           <p className="truncate text-sm font-semibold text-slate-800">{item.name}</p>
           <p className="mt-0.5 truncate text-xs text-slate-500">
-            {item.type === "material" ? "Material" : "3D model"}
+            {kindLabel}
             {item.category ? ` · ${item.category}` : ""}
           </p>
           {tileLabel(item) ? <p className="mt-0.5 text-xs text-slate-400">{tileLabel(item)}</p> : null}

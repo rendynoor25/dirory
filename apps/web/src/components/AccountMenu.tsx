@@ -1,30 +1,31 @@
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
+import { getLocale } from "@/lib/locale-server";
+import { t } from "@/lib/i18n";
 
 /**
  * Header account control for the public site.
  *
  * Signed out: "Sign in" + "Get the plugin".
- * Signed in:  the user's name/email with a menu (their dashboard or download,
- *             and sign out).
+ * Signed in:  the user's name/email with a menu (download, dashboard, sign out).
  *
- * This is a server component so the session is read from the cookie on the
- * server — no client-side flash of the signed-out state.
+ * A server component, so the session and the language both come from cookies —
+ * no client-side flash of the wrong state.
  */
 export async function AccountMenu() {
-  const { user, profile, memberships } = await getSession();
+  const [{ user, profile, memberships }, locale] = await Promise.all([getSession(), getLocale()]);
 
   if (!user) {
     return (
       <>
         <Link href="/login?next=%2Fdownload" className="text-sm font-medium text-slate-700 hover:text-slate-950">
-          Sign in
+          {t(locale, "nav.signIn")}
         </Link>
         <Link
           href="/login?next=%2Fdownload"
           className="rounded-full bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-800"
         >
-          Get the plugin
+          {t(locale, "nav.getPlugin")}
         </Link>
       </>
     );
@@ -49,24 +50,24 @@ export async function AccountMenu() {
           <p className="truncate text-xs text-slate-500">{user.email}</p>
         </div>
         <Link href="/download" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-          Download the plugin
+          {t(locale, "account.download")}
         </Link>
         {isAdmin ? (
           <a href="/admin" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-            Admin dashboard
+            {t(locale, "account.admin")}
           </a>
         ) : null}
         {isVendor ? (
           <Link href="/vendor" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-            Vendor dashboard
+            {t(locale, "account.vendor")}
           </Link>
         ) : null}
         <Link href="/privacy" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-          Privacy
+          {t(locale, "account.privacy")}
         </Link>
         <form action="/auth/signout" method="post" className="border-t border-slate-100">
           <button type="submit" className="w-full px-4 py-2 text-left text-sm text-rose-600 hover:bg-rose-50">
-            Sign out
+            {t(locale, "account.signOut")}
           </button>
         </form>
       </div>

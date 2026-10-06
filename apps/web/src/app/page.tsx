@@ -1,64 +1,60 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { getLocale } from "@/lib/locale-server";
+import { t } from "@/lib/i18n";
 
 /**
  * Public landing page (dirory.com).
  *
- * Structure is modelled on Thudio's site — a clear how-it-works flow, the
- * brands available, and a single obvious call to action — with Dirory's own
- * logo colours sampled from the mark (#3B52A1 deep → #5C6FB1 light).
+ * Structure follows Thudio's site — a clear how-it-works flow, the brands
+ * available, and one obvious call to action — using Dirory's own logo colours
+ * (#3B52A1 deep → #5C6FB1 light).
+ *
+ * All copy comes from lib/i18n.ts so the EN/ID toggle works. English is the
+ * default and the fallback.
  *
  * NOTE: no community statistics are shown yet; the founder has not supplied
- * real numbers and inventing them would be misleading. Add a <Stats> section
- * once real figures exist.
+ * real numbers and inventing them would be misleading.
  */
 
-const steps = [
-  {
-    number: "01",
-    title: "Get the plugin",
-    text: "Create a free account and install the Dirory extension in SketchUp 2021 or newer.",
-  },
-  {
-    number: "02",
-    title: "Browse real products",
-    text: "Search every brand's models and materials inside SketchUp. Filter by category or brand, or star your favourites.",
-  },
-  {
-    number: "03",
-    title: "Drop them into your design",
-    text: "Click a model to place it, or click a material and paint a surface. Sizes, textures and 3 mm grout are handled for you.",
-  },
-];
+export default async function Home() {
+  const locale = await getLocale();
 
-const brands = [
-  { name: "TOTO", note: "Sanitaryware" },
-  { name: "Trilliunware", note: "Sanitaryware" },
-  { name: "NIRO GRANITE", note: "Tiles & stone" },
-  { name: "ROMAN", note: "Tiles" },
-  { name: "TACO", note: "HPL & laminate" },
-  { name: "Nippon Paint", note: "Wall paint" },
-  { name: "Propan", note: "Wall paint" },
-  { name: "Malka", note: "Furniture" },
-];
+  const steps = [
+    { number: "01", title: t(locale, "home.step1Title"), text: t(locale, "home.step1Text") },
+    { number: "02", title: t(locale, "home.step2Title"), text: t(locale, "home.step2Text") },
+    { number: "03", title: t(locale, "home.step3Title"), text: t(locale, "home.step3Text") },
+  ];
 
-const features = [
-  {
-    title: "Made for SketchUp",
-    text: "Find product models and material textures without leaving your design workflow.",
-  },
-  {
-    title: "Real Indonesian brands",
-    text: "Products from local suppliers, organised by category and brand, always up to date.",
-  },
-  {
-    title: "Free for designers",
-    text: "Browse the library for free. Create an account to download and use the Dirory plugin.",
-  },
-];
+  const features = [
+    { title: t(locale, "home.feat1Title"), text: t(locale, "home.feat1Text") },
+    { title: t(locale, "home.feat2Title"), text: t(locale, "home.feat2Text") },
+    { title: t(locale, "home.feat3Title"), text: t(locale, "home.feat3Text") },
+  ];
 
-export default function Home() {
+  const brands = [
+    { name: "TOTO", note: t(locale, "brand.sanitaryware") },
+    { name: "Trilliunware", note: t(locale, "brand.sanitaryware") },
+    { name: "NIRO GRANITE", note: t(locale, "brand.tilesStone") },
+    { name: "ROMAN", note: t(locale, "brand.tiles") },
+    { name: "TACO", note: t(locale, "brand.hpl") },
+    { name: "Nippon Paint", note: t(locale, "brand.wallPaint") },
+    { name: "Propan", note: t(locale, "brand.wallPaint") },
+    { name: "Malka", note: t(locale, "brand.furniture") },
+  ];
+
+  const insidePoints = [t(locale, "home.insideB1"), t(locale, "home.insideB2"), t(locale, "home.insideB3")];
+
+  const mockTabs = [
+    [t(locale, "home.mockAll"), true],
+    [t(locale, "home.mockModels"), false],
+    [t(locale, "home.mockMaterials"), false],
+    [t(locale, "home.mockFavourite"), false],
+    [t(locale, "home.mockUsage"), false],
+  ] as const;
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f9fc] text-slate-950">
       <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
@@ -68,14 +64,15 @@ export default function Home() {
         </Link>
         <nav className="flex items-center gap-3 sm:gap-6" aria-label="Main navigation">
           <a href="#how-it-works" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
-            How it works
+            {t(locale, "nav.howItWorks")}
           </a>
           <a href="#brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
-            Brands
+            {t(locale, "nav.brands")}
           </a>
           <Link href="/how-to-install" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
-            How to install
+            {t(locale, "nav.howToInstall")}
           </Link>
+          <LanguageToggle locale={locale} />
           <AccountMenu />
         </nav>
       </header>
@@ -85,31 +82,31 @@ export default function Home() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-3 py-1.5 text-xs font-semibold text-brand-700 shadow-sm">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            Product library for SketchUp
+            {t(locale, "home.badge")}
           </div>
           <h1 className="mt-6 max-w-3xl text-5xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl lg:text-[4.5rem]">
-            Design with products that are <span className="text-brand-500">real.</span>
+            {t(locale, "home.h1a")} <span className="text-brand-500">{t(locale, "home.h1b")}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-            Dirory brings Indonesian construction brands, 3D models and material textures into one
-            easy-to-use SketchUp library.
-          </p>
+          <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">{t(locale, "home.lead")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href="/library" className="rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/15 transition hover:-translate-y-0.5 hover:bg-brand-800">
-              Browse the library <span aria-hidden="true">→</span>
+              {t(locale, "home.browse")} <span aria-hidden="true">→</span>
             </Link>
             <Link href="/login?next=%2Fdownload" className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400">
-              Get the plugin
+              {t(locale, "home.getPlugin")}
             </Link>
           </div>
-          <p className="mt-4 text-xs text-slate-500">Free to browse. Account required to get the plugin download.</p>
+          <p className="mt-4 text-xs text-slate-500">{t(locale, "home.freeNote")}</p>
           <div className="mt-10 flex items-center gap-4 border-t border-slate-200 pt-6">
             <div className="flex -space-x-2" aria-hidden="true">
               <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-brand-100 text-xs font-bold text-brand-700">3D</span>
               <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-[#e6f3ed] text-xs font-bold text-emerald-800">M</span>
               <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#f8f9fc] bg-[#f4ecdd] text-xs font-bold text-amber-800">ID</span>
             </div>
-            <p className="text-sm text-slate-500"><strong className="font-semibold text-slate-800">Models. Materials. Brands.</strong> Ready for your next project.</p>
+            <p className="text-sm text-slate-500">
+              <strong className="font-semibold text-slate-800">{t(locale, "home.socialStrong")}</strong>{" "}
+              {t(locale, "home.socialRest")}
+            </p>
           </div>
         </div>
 
@@ -121,7 +118,7 @@ export default function Home() {
               <span className="h-2.5 w-2.5 rounded-full bg-rose-300" />
               <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
-              <span className="ml-3 text-xs font-medium text-slate-400">Dirory · SketchUp library</span>
+              <span className="ml-3 text-xs font-medium text-slate-400">{t(locale, "home.mockTitle")}</span>
             </div>
             <div className="grid grid-cols-[104px_1fr] gap-3 p-3 sm:grid-cols-[128px_1fr]">
               <aside className="rounded-2xl bg-[#f5f6fb] p-3">
@@ -129,47 +126,48 @@ export default function Home() {
                   <Image src="/dirory-mark.png" alt="Dirory" width={23} height={25} className="h-6 w-auto" />
                   <span className="text-xs font-bold">Dirory</span>
                 </div>
-                {[["All products", true], ["Models", false], ["Materials", false], ["★ Favourite", false], ["Usage", false]].map(([label, active]) => (
-                  <div key={label as string} className={`mb-1 rounded-lg px-2 py-2 text-[10px] ${active ? "bg-brand-100 font-semibold text-brand-700" : "text-slate-500"}`}>
-                    {label as string}
+                {mockTabs.map(([label, active]) => (
+                  <div key={label} className={`mb-1 rounded-lg px-2 py-2 text-[10px] ${active ? "bg-brand-100 font-semibold text-brand-700" : "text-slate-500"}`}>
+                    {label}
                   </div>
                 ))}
-                <div className="mt-5 border-t border-slate-200 pt-3 text-[9px] uppercase tracking-wider text-slate-400">Brands</div>
+                <div className="mt-5 border-t border-slate-200 pt-3 text-[9px] uppercase tracking-wider text-slate-400">
+                  {t(locale, "nav.brands")}
+                </div>
                 <div className="mt-2 space-y-2 text-[10px] text-slate-600"><p>◉ TOTO</p><p>◉ ROMAN</p><p>◉ Dirory</p></div>
               </aside>
               <div>
                 <div className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-400">
-                  <span>⌕ Search products and materials</span><span>⌘ K</span>
+                  <span>⌕ {t(locale, "home.mockSearch")}</span><span>⌘ K</span>
                 </div>
                 <div className="mt-3 flex gap-2 overflow-hidden text-[10px]">
-                  <span className="rounded-full bg-brand-700 px-3 py-1.5 font-semibold text-white">All</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">Models</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">Materials</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">Tiles</span>
+                  <span className="rounded-full bg-brand-700 px-3 py-1.5 font-semibold text-white">{t(locale, "home.mockAll")}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">{t(locale, "home.mockModels")}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">{t(locale, "home.mockMaterials")}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">{t(locale, "brand.tiles")}</span>
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
-                  <ProductTile name="Modern basin mixer" brand="TOTO" tone="blue" />
-                  <ProductTile name="Stonewash · 60×120" brand="ROMAN" tone="sand" />
-                  <ProductTile name="Minimal wall basin" brand="TOTO" tone="green" />
-                  <ProductTile name="Warm oak texture" brand="DIRORY" tone="wood" />
+                  <ProductTile name="Modern basin mixer" brand="TOTO" tone="blue" viewLabel={t(locale, "common.viewProduct")} />
+                  <ProductTile name="Stonewash · 60×120" brand="ROMAN" tone="sand" viewLabel={t(locale, "common.viewProduct")} />
+                  <ProductTile name="Minimal wall basin" brand="TOTO" tone="green" viewLabel={t(locale, "common.viewProduct")} />
+                  <ProductTile name="Warm oak texture" brand="DIRORY" tone="wood" viewLabel={t(locale, "common.viewProduct")} />
                 </div>
-                <div className="mt-3 rounded-xl bg-[#f7f8fc] px-3 py-2 text-[10px] text-slate-500">Browse freely · sign in when you’re ready to use a product</div>
+                <div className="mt-3 rounded-xl bg-[#f7f8fc] px-3 py-2 text-[10px] text-slate-500">{t(locale, "home.mockBrowseNote")}</div>
               </div>
             </div>
           </div>
           <div className="absolute -bottom-5 right-5 rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-xl shadow-slate-900/10 sm:right-0">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Built for designers</div>
-            <div className="mt-1 text-sm font-semibold text-slate-800">Your material library, in SketchUp</div>
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">{t(locale, "home.builtFor")}</div>
+            <div className="mt-1 text-sm font-semibold text-slate-800">{t(locale, "home.builtForSub")}</div>
           </div>
         </div>
       </section>
 
-      {/* How it works — three steps, like Thudio's flow. */}
       <section id="how-it-works" className="border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">How it works</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">From search to placed, in three clicks.</h2>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">{t(locale, "home.howTag")}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "home.howHeading")}</h2>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {steps.map((step) => (
@@ -192,26 +190,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Real screenshot of the panel inside SketchUp. */}
       <section className="border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-[.9fr_1.1fr]">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">Inside SketchUp</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                The catalogue lives in your SketchUp window.
-              </h2>
-              <p className="mt-4 text-sm leading-7 text-slate-600">
-                Sign in once with Google and the whole library loads in the Dirory panel — brands,
-                categories, and every model and material. Click a card to place a model or paint a
-                surface; files download in the background and are cached for next time.
-              </p>
+              <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">{t(locale, "home.insideTag")}</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "home.insideHeading")}</h2>
+              <p className="mt-4 text-sm leading-7 text-slate-600">{t(locale, "home.insideBody")}</p>
               <ul className="mt-6 space-y-3 text-sm text-slate-700">
-                {[
-                  "Filter by brand, category or type, and star favourites",
-                  "Download badges show what is already cached on your computer",
-                  "Your name appears in the panel — favourites follow your account",
-                ].map((line) => (
+                {insidePoints.map((line) => (
                   <li key={line} className="flex gap-3">
                     <span aria-hidden="true" className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                       ✓
@@ -225,28 +212,22 @@ export default function Home() {
               <div className="absolute -inset-4 rounded-[2rem] bg-brand-50" aria-hidden="true" />
               <Image
                 src="/dirory-in-sketchup.png"
-                alt="The Dirory panel open inside SketchUp, showing the TACO brand with 634 materials"
+                alt={t(locale, "home.insideAlt")}
                 width={1193}
                 height={680}
                 className="relative w-full rounded-2xl border border-slate-200 shadow-[0_28px_80px_-40px_rgba(33,48,108,.5)]"
               />
-              <figcaption className="relative mt-3 text-center text-xs text-slate-400">
-                The Dirory panel running in SketchUp — browsing 634 TACO materials.
-              </figcaption>
+              <figcaption className="relative mt-3 text-center text-xs text-slate-400">{t(locale, "home.insideCaption")}</figcaption>
             </figure>
           </div>
         </div>
       </section>
 
-      {/* Brands available. Wordmark tiles (no third-party logo files are shipped). */}
       <section id="brands" className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
         <div className="max-w-2xl">
-          <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">Brands in the library</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Products from brands you specify every day.</h2>
-          <p className="mt-4 text-sm leading-6 text-slate-600">
-            The sample library already covers these brands. More are added as Dirory grows — and you can
-            ask for a brand directly from inside SketchUp.
-          </p>
+          <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">{t(locale, "home.brandsTag")}</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "home.brandsHeading")}</h2>
+          <p className="mt-4 text-sm leading-6 text-slate-600">{t(locale, "home.brandsBody")}</p>
         </div>
         <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {brands.map((brand) => (
@@ -262,11 +243,11 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-[2rem] bg-brand-900 px-7 py-10 text-white sm:px-12 sm:py-14">
           <div className="absolute -right-12 -top-24 h-72 w-72 rounded-full border-[42px] border-white/5" />
           <div className="relative max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-200">Start designing</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Bring better product detail into your next SketchUp project.</h2>
-            <p className="mt-4 leading-7 text-brand-100">Create a free account. We’ll send a secure sign-in link to your email, then you can get the plugin.</p>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-200">{t(locale, "home.ctaTag")}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "home.ctaHeading")}</h2>
+            <p className="mt-4 leading-7 text-brand-100">{t(locale, "home.ctaBody")}</p>
             <Link href="/login?next=%2Fdownload" className="mt-7 inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-brand-800 transition hover:bg-brand-50">
-              Create your free account <span className="ml-2" aria-hidden="true">→</span>
+              {t(locale, "home.ctaButton")} <span className="ml-2" aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
@@ -277,15 +258,29 @@ export default function Home() {
           <Link href="/" className="flex items-center gap-2 font-semibold text-slate-800">
             <Image src="/dirory-mark.png" alt="" width={22} height={24} className="h-6 w-auto" /> Dirory
           </Link>
-          <p>Product library for architects and designers.</p>
-          <div className="flex gap-5"><Link href="/privacy" className="hover:text-slate-900">Privacy</Link><Link href="/login" className="hover:text-slate-900">Account</Link></div>
+          <p>{t(locale, "footer.tagline")}</p>
+          <div className="flex items-center gap-5">
+            <Link href="/privacy" className="hover:text-slate-900">{t(locale, "footer.privacy")}</Link>
+            <Link href="/login" className="hover:text-slate-900">{t(locale, "footer.account")}</Link>
+            <LanguageToggle locale={locale} />
+          </div>
         </div>
       </footer>
     </main>
   );
 }
 
-function ProductTile({ name, brand, tone }: { name: string; brand: string; tone: "blue" | "sand" | "green" | "wood" }) {
+function ProductTile({
+  name,
+  brand,
+  tone,
+  viewLabel,
+}: {
+  name: string;
+  brand: string;
+  tone: "blue" | "sand" | "green" | "wood";
+  viewLabel: string;
+}) {
   const tones = {
     blue: "from-[#c7d3ec] to-[#eef1ff]",
     sand: "from-[#e9d7bd] to-[#f8f0e5]",
@@ -299,7 +294,10 @@ function ProductTile({ name, brand, tone }: { name: string; brand: string; tone:
         <span className="absolute bottom-1.5 left-1.5 rounded-md bg-white/80 px-1.5 py-0.5 text-[8px] font-semibold text-slate-600">{brand}</span>
         <span className="absolute right-2 top-1 text-white drop-shadow">☆</span>
       </div>
-      <div className="px-2.5 py-2"><div className="truncate text-[10px] font-semibold text-slate-800">{name}</div><div className="mt-1 text-[9px] text-slate-400">View product&nbsp; →</div></div>
+      <div className="px-2.5 py-2">
+        <div className="truncate text-[10px] font-semibold text-slate-800">{name}</div>
+        <div className="mt-1 text-[9px] text-slate-400">{viewLabel}&nbsp; →</div>
+      </div>
     </div>
   );
 }

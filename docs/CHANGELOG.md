@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.9.5 (web) — English / Bahasa Indonesia toggle
+
+The public site can now be read in Indonesian. English stays the default.
+
+- **Toggle** (EN / ID) in the header of every public page — landing, library,
+  product, how-to-install, download, login — and in the footers.
+- **Cookie-based, not URL-based.** The choice is stored in a `locale` cookie, so
+  every existing route and link is unchanged and pages keep server-rendering.
+  A server action writes it and the toggle refreshes; unknown values fall back
+  to English.
+- Translations live in `lib/i18n.ts` as flat key→string dictionaries for both
+  languages. `t()` falls back English → key, so a missing string shows up rather
+  than rendering blank.
+- Translated: the whole landing page (hero, how-it-works, inside-SketchUp,
+  brands, CTA, footer), the library (search, filters, sort, cards, counts), the
+  product page (specs, CTA, related), the install guide (steps, version checker,
+  troubleshooting), download, login, and the account menu.
+- **Not translated yet:** `/privacy` (a legal draft) and the admin/vendor
+  back-office (internal tools).
+
+**Verified locally:** with no cookie the pages render English; with
+`locale=id` the landing, library, product, how-to-install, download and login
+pages all render Indonesian with no English leaking through. Typecheck and build
+clean.
+
 ## 0.9.4 (plugin) — fix: favourites did nothing, and the star was hidden
 
 Two real bugs meant the Favourite feature could not work at all.

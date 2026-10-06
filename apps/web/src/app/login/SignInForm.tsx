@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { t, type Locale } from "@/lib/i18n";
 
 /**
  * Passwordless sign-in and first-time architect registration.
@@ -18,28 +19,28 @@ export function SignInForm({
   next,
   error,
   googleEnabled = true,
+  locale,
 }: {
   next: string;
   error?: string;
   googleEnabled?: boolean;
+  locale: Locale;
 }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error" | "google">("idle");
   const [message, setMessage] = useState("");
 
   // Prefer the configured canonical site URL over window.location.origin.
-  // On a Netlify deploy-preview host the origin is an ephemeral alias that is
-  // usually NOT in Supabase's allow-list, so OAuth/magic-link returns fail with
-  // a confusing "back on the sign-in page" result. Using the canonical URL
-  // avoids that class of bug entirely.
+  // On a deploy-preview host the origin is an ephemeral alias that is usually
+  // NOT in Supabase's allow-list, so OAuth/magic-link returns fail with a
+  // confusing "back on the sign-in page" result. The canonical URL avoids that.
   const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/+$/, "");
   const origin = (): string => {
     if (siteOrigin && /^https?:\/\//.test(siteOrigin)) return siteOrigin;
     return window.location.origin;
   };
 
-  const callbackUrl = (target: string) =>
-    `${origin()}/auth/callback?next=${encodeURIComponent(target)}`;
+  const callbackUrl = (target: string) => `${origin()}/auth/callback?next=${encodeURIComponent(target)}`;
 
   async function onGoogle() {
     setStatus("google");
@@ -53,13 +54,11 @@ export function SignInForm({
       // On success the browser is redirected to Google; only errors return here.
       if (oauthError) {
         setStatus("error");
-        setMessage(
-          `${oauthError.message} — Google sign-in may not be enabled yet. Use the email link below.`,
-        );
+        setMessage(t(locale, "login.googleError", { message: oauthError.message }));
       }
     } catch (err) {
       setStatus("error");
-      setMessage(err instanceof Error ? err.message : "Could not start Google sign-in.");
+      setMessage(err instanceof Error ? err.message : t(locale, "login.googleFail"));
     }
   }
 
@@ -72,10 +71,7 @@ export function SignInForm({
       const supabase = createSupabaseBrowserClient();
       const { error: signInError } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
-        options: {
-          shouldCreateUser: true,
-          emailRedirectTo: callbackUrl(next),
-        },
+        options: { shouldCreateUser: true, emailRedirectTo: callbackUrl(next) },
       });
 
       if (signInError) {
@@ -84,20 +80,18 @@ export function SignInForm({
         return;
       }
       setStatus("sent");
-      setMessage("Check your inbox. The secure sign-in link is valid for a few minutes. New email addresses create a free architect account.");
+      setMessage(t(locale, "login.sentBody"));
     } catch (err) {
       // A misconfigured project throws here rather than returning an error,
       // which is common right after setup. Surface it instead of blanking.
       setStatus("error");
-      setMessage(err instanceof Error ? err.message : "Could not send the link.");
+      setMessage(err instanceof Error ? err.message : t(locale, "login.sendFail"));
     }
   }
 
   return (
     <>
-      {error ? (
-        <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>
-      ) : null}
+      {error ? <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p> : null}
 
       {googleEnabled ? (
         <>
@@ -108,12 +102,12 @@ export function SignInForm({
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <GoogleMark />
-            {status === "google" ? "Opening Google…" : "Continue with Google"}
+            {status === "google" ? t(locale, "login.googleOpening") : t(locale, "login.google")}
           </button>
 
           <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
             <span className="h-px flex-1 bg-slate-200" />
-            or use email
+            {t(locale, "login.orEmail")}
             <span className="h-px flex-1 bg-slate-200" />
           </div>
         </>
@@ -124,7 +118,7 @@ export function SignInForm({
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="text-sm font-medium text-slate-700">
-            Email address (Gmail works)
+            {t(locale, "login.emailLabel")}
           </label>
           <input
             id="email"
@@ -132,7 +126,7 @@ export function SignInForm({
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@gmail.com"
+            placeholder={t(locale, "login.emailPlaceholder")}
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
           />
         </div>
@@ -141,7 +135,11 @@ export function SignInForm({
           disabled={status === "sending" || status === "sent"}
           className="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {status === "sending" ? "Sending..." : status === "sent" ? "Link sent" : "Email me a sign-in link"}
+          {status === "sending"
+            ? t(locale, "login.sending")
+            : status === "sent"
+              ? t(locale, "login.sent")
+              : t(locale, "login.emailButton")}
         </button>
       </form>
 
@@ -155,9 +153,11 @@ export function SignInForm({
         </p>
       ) : null}
       <p className="mt-3 text-xs leading-5 text-slate-500">
-        First time here? Signing in creates your free architect account. By continuing, you
-        acknowledge our <a className="underline underline-offset-2" href="/privacy">Privacy Policy</a>.
-        No password is collected by Dirory.
+        {t(locale, "login.terms")}{" "}
+        <a className="underline underline-offset-2" href="/privacy">
+          {t(locale, "login.privacyLink")}
+        </a>
+        . {t(locale, "login.noPassword")}
       </p>
     </>
   );
