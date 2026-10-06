@@ -3,6 +3,7 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { PLUGIN_FILENAME } from "@/lib/pluginRelease";
+import { publicOrigin } from "@/lib/site-url";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
   } = await supabase.auth.getUser();
 
   if (error || !user) {
-    const login = new URL("/login", request.url);
+    const login = new URL("/login", publicOrigin(request));
     login.searchParams.set("next", "/download");
     return NextResponse.redirect(login);
   }
@@ -33,7 +34,7 @@ export async function GET(request: Request) {
     .maybeSingle();
   if (profileError || !profile) {
     await supabase.auth.signOut();
-    const login = new URL("/login", request.url);
+    const login = new URL("/login", publicOrigin(request));
     login.searchParams.set("next", "/download");
     login.searchParams.set("error", "Your account profile could not be verified. Please sign in again.");
     return NextResponse.redirect(login);

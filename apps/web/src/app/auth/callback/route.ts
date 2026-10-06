@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { publicOrigin } from "@/lib/site-url";
 
 /**
  * OAuth / magic-link return path.
@@ -14,6 +15,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
+  const origin = publicOrigin(request);
   const code = url.searchParams.get("code");
   const candidate = url.searchParams.get("next") ?? "/";
   // Do not turn the callback into an open redirect. Only accept local paths.
@@ -23,12 +25,12 @@ export async function GET(request: Request) {
   const providerError = url.searchParams.get("error_description") ?? url.searchParams.get("error");
   if (providerError) {
     return NextResponse.redirect(
-      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(providerError)}`, url.origin),
+      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(providerError)}`, origin),
     );
   }
 
   if (!code) {
-    return NextResponse.redirect(new URL("/login?error=Missing+code", url.origin));
+    return NextResponse.redirect(new URL("/login?error=Missing+code", origin));
   }
 
   const supabase = await createSupabaseServerClient();
@@ -36,7 +38,7 @@ export async function GET(request: Request) {
 
   if (error) {
     return NextResponse.redirect(
-      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(error.message)}`, url.origin),
+      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(error.message)}`, origin),
     );
   }
 
@@ -54,9 +56,9 @@ export async function GET(request: Request) {
     // An admin who landed on the default destination goes to the dashboard.
     // Everyone else continues to `next` (their original target).
     if (profile?.role === "admin" && next === "/") {
-      return NextResponse.redirect(new URL("/admin", url.origin));
+      return NextResponse.redirect(new URL("/admin", origin));
     }
   }
 
-  return NextResponse.redirect(new URL(next, url.origin));
+  return NextResponse.redirect(new URL(next, origin));
 }

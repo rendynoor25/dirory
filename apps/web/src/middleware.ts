@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { publicOrigin } from "@/lib/site-url";
 
 /**
  * One domain, one app: `dirory.com`.
@@ -47,7 +48,7 @@ export async function middleware(request: NextRequest) {
   const isProtected = path.startsWith("/admin") || path.startsWith("/vendor");
 
   if (isProtected && !user) {
-    const redirect = new URL("/login", request.url);
+    const redirect = new URL("/login", publicOrigin(request));
     redirect.searchParams.set("next", path);
     return NextResponse.redirect(redirect);
   }
