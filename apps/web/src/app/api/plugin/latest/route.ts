@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PLUGIN_FILENAME, PLUGIN_VERSION } from "@/lib/pluginRelease";
+import { publicOrigin } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,9 @@ export const dynamic = "force-dynamic";
  * itself stays behind the /api/download/rbz sign-in gate.
  */
 export async function GET(request: Request) {
-  const origin = new URL(request.url).origin;
+  // Behind Caddy, request.url is the container address (0.0.0.0:3000), which is
+  // not reachable from a browser. Use the canonical public origin.
+  const origin = publicOrigin(request);
   return NextResponse.json(
     {
       version: PLUGIN_VERSION,
