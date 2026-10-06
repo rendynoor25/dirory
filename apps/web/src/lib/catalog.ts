@@ -22,6 +22,10 @@ export type CatalogItem = {
   tile_size_cm: [number, number] | null;
   sku: string | null;
   product_url: string | null;
+  /** Free-text size for models, e.g. "120 × 60 × 75 cm" (FR-V3). */
+  dimensions: string | null;
+  /** SketchUp release the file was saved in: "2018" or "2021+". Null for materials. */
+  su_version: string | null;
   legacy_key: string | null;
   brand_logo: string | null;
   vendor_id: string | null;

@@ -430,6 +430,10 @@ module Dirory
       entity.set_attribute(ATTR_DICT, 'tile_size', Array(size).join(' x ')) if size.is_a?(Array) && !size.empty?
       entity.set_attribute(ATTR_DICT, 'sku', data['sku'].to_s) if data['sku']
       entity.set_attribute(ATTR_DICT, 'product_url', data['product_url'].to_s) if data['product_url']
+      entity.set_attribute(ATTR_DICT, 'dimensions', data['dimensions'].to_s) if data['dimensions']
+      # The SketchUp release the file needs ("2018", "2021+"). Kept on the entity
+      # so the Inspector can still show it long after the catalogue moved on.
+      entity.set_attribute(ATTR_DICT, 'su_version', data['su_version'].to_s) if data['su_version']
       tags = data['tags']
       entity.set_attribute(ATTR_DICT, 'tags', Array(tags).join(', ')) if tags.is_a?(Array) && !tags.empty?
     end
@@ -445,6 +449,8 @@ module Dirory
         'brand' => (dict['brand'].to_s.strip.empty? ? DIRORY_BRAND : dict['brand'].to_s),
         'type' => dict['type'].to_s,
         'tile_size' => dict['tile_size'].to_s,
+        'dimensions' => dict['dimensions'].to_s,
+        'su_version' => dict['su_version'].to_s,
         'sku' => dict['sku'].to_s,
         'product_url' => dict['product_url'].to_s,
         'tags' => dict['tags'].to_s
@@ -614,6 +620,21 @@ module Dirory
       nil
     end
 
+    # True when the running SketchUp is older than the release that saved this
+    # file. `su_version` is a year ("2018") or "2021+"; `Sketchup.version` is the
+    # SketchUp major number (18 for 2018, 21 for 2021). A file saved in a newer
+    # SketchUp cannot be loaded by an older one.
+    def self.su_too_new?(data)
+      label = data['su_version'].to_s[/\d+/]
+      return false unless label
+      required = label.to_i
+      required -= 2000 if required >= 2000
+      running = Sketchup.version.to_i
+      running.positive? && running < required
+    rescue StandardError
+      false
+    end
+
     def self.insert_model_file(data, path)
       unless File.extname(path).downcase == '.skp'
         UI.messagebox("This card does not point to a SketchUp model (.skp):\n#{path}")
@@ -622,6 +643,18 @@ module Dirory
       unless File.file?(path) && File.size(path) > 0
         UI.messagebox("This model file is missing or empty:\n#{path}")
         return
+      end
+
+      # Warn before trying: an older SketchUp cannot load a newer .skp, and the
+      # error it raises is cryptic. The user may still choose to try.
+      if su_too_new?(data)
+        required = data['su_version'].to_s
+        running = Sketchup.version.to_i
+        message = "This model was saved in SketchUp #{required}, but you are running " \
+                  "SketchUp #{running}.\n\nA file saved in a newer SketchUp cannot be opened " \
+                  "by an older one.\n\nUpdate SketchUp, or ask the brand for a copy saved in " \
+                  "SketchUp #{running} or earlier.\n\nTry to load it anyway?"
+        return unless UI.messagebox(message, MB_YESNO) == IDYES
       end
 
       model = Sketchup.active_model

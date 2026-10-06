@@ -497,7 +497,14 @@ function render() {
         tile_size_cm: item.tile_size_cm || null,
         name: item.name,
         category: item.category || '',
-        brand: item.brand || ''
+        brand: item.brand || '',
+        // Everything the Inspector shows, so a placed item still knows its own
+        // detail after the catalogue has moved on.
+        sku: item.sku || null,
+        product_url: item.product_url || null,
+        dimensions: item.dimensions || null,
+        su_version: item.su_version || null,
+        tags: Array.isArray(item.tags) && item.tags.length ? item.tags : null
       });
       if (item.type === 'material') {
         sketchup.applyMaterial(payload);
@@ -1092,26 +1099,28 @@ function renderProductBody(container, item, onAction) {
     container.appendChild(img);
   }
   const rows = [
-    detailRow('Name', item.name),
-    detailRow('Brand', item.brand),
-    detailRow('Category', item.category),
-    detailRow('Type', item.type === 'material' ? 'Material' : '3D model'),
-    detailRow('Tile size', item.tile_size_cm && item.tile_size_cm.length ? item.tile_size_cm.join(' × ') + ' cm' : (item.tile_size || '')),
-    detailRow('Tags', Array.isArray(item.tags) ? item.tags.join(', ') : item.tags),
-    detailRow('SKU', item.sku),
-    detailRow('Product URL', item.product_url),
+    detailRow(t('product.name'), item.name),
+    detailRow(t('product.brand'), item.brand),
+    detailRow(t('product.category'), item.category),
+    detailRow(t('product.type'), item.type === 'material' ? t('product.type.material') : t('product.type.model')),
+    detailRow(t('product.tile_size'), item.tile_size_cm && item.tile_size_cm.length ? item.tile_size_cm.join(' × ') + ' cm' : (item.tile_size || '')),
+    detailRow(t('product.dimensions'), item.dimensions),
+    detailRow(t('product.sketchup'), item.su_version ? t('product.sketchup_or_later', { version: item.su_version }) : ''),
+    detailRow(t('product.tags'), Array.isArray(item.tags) ? item.tags.join(', ') : item.tags),
+    detailRow(t('product.sku'), item.sku),
+    detailRow(t('product.url'), item.product_url),
   ].filter(Boolean);
   rows.forEach((row) => container.appendChild(row));
 
   const actions = el('div', 'product-actions');
   if (item.product_url) {
-    const open = el('button', 'ghost-btn', 'Open product page ↗');
+    const open = el('button', 'ghost-btn', t('product.open_page'));
     open.type = 'button';
     open.addEventListener('click', () => sketchup.openURL(item.product_url));
     actions.appendChild(open);
   }
   if (item.brand && String(item.brand).toLowerCase() !== 'dirory') {
-    const quote = el('button', 'ghost-btn', 'Ask this brand for a quote');
+    const quote = el('button', 'ghost-btn', t('product.ask_quote'));
     quote.type = 'button';
     quote.addEventListener('click', () => {
       // Close whatever panel showed this detail view before opening the quote.
@@ -1146,7 +1155,7 @@ window.diroryInspect = function (data) {
   const body = byId('inspectorBody');
   if (!data || !data.found) {
     body.innerHTML = '';
-    body.appendChild(el('p', 'product-empty', 'Nothing Dirory is selected. Click a model or a painted surface, then open the Inspector again.'));
+    body.appendChild(el('p', 'product-empty', t('inspector.nothing')));
     return;
   }
   renderProductBody(body, data.item, closeInspector);

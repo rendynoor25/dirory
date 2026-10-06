@@ -23,7 +23,7 @@ export default async function AdminSamples() {
           subtitle="FR-M12 / FR-A8 · free samples owned by the platform. Always visible, never quotable, excluded from vendor dashboards."
           action={
             <a
-              href="/admin/samples/new"
+              href="/admin/products/new?brand=00000000-0000-0000-0000-0000000000d1"
               className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
             >
               New sample

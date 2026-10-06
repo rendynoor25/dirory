@@ -36,6 +36,7 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { createClient } from "@supabase/supabase-js";
+import { suVersionForFile } from "./lib/su-version.mjs";
 
 const PLATFORM_VENDOR_ID = "00000000-0000-0000-0000-0000000000d1";
 const DIRORY_BRAND = "Dirory";
@@ -261,6 +262,9 @@ function scan(base) {
       thumbnailAbs: sidecarThumbnail(skpPath, meta),
       size: fs.statSync(skpPath).size,
       tile: null,
+      // The SketchUp release the file was saved in, so an older SketchUp can be
+      // warned before it tries to open it.
+      su: suVersionForFile(skpPath),
     });
   }
 
@@ -401,7 +405,8 @@ async function main() {
     for (const i of items) {
       const tile = i.tile ? ` ${i.tile.w}x${i.tile.h}` : "";
       const thumb = i.thumbnailAbs ? "" : " (no thumbnail)";
-      console.log(`  · ${i.kind.padEnd(8)} ${i.name.padEnd(40)} brand=${i.brand} category=${i.category}${tile}${thumb}`);
+      const su = i.su ? ` su=${i.su.label}` : "";
+      console.log(`  · ${i.kind.padEnd(8)} ${i.name.padEnd(40)} brand=${i.brand} category=${i.category}${tile}${su}${thumb}`);
     }
     console.log("\nDry run complete. Nothing was written.");
     return;
@@ -486,6 +491,8 @@ async function main() {
           thumbnail_path: thumbnailPath,
           file_size: item.size,
           review_status: assetStatus === "approved" ? "approved" : "pending",
+          su_version: item.su ? item.su.label : null,
+          su_version_raw: item.su ? item.su.raw : null,
         })
         .select("id")
         .single();

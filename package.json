@@ -20,6 +20,7 @@
     "db:check": "node scripts/check-supabase.mjs",
     "library:upload": "node scripts/upload-library.mjs",
     "library:remove": "node scripts/remove-library-item.mjs",
+    "library:backfill-su": "node scripts/backfill-su-version.mjs",
     "rbz:publish": "node scripts/upload-plugin-release.mjs"
   },
   "engines": {

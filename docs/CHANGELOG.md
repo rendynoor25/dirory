@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.9.8 — admin product upload, and SketchUp-version awareness
+
+**Admin — Products (`/admin/products`, FR-M12 / FR-V3).** A new section with a
+list (search by name, filter by type, paginated) and an upload form. The form
+carries the same detail the plugin's Inspector shows — name, brand, category,
+tags, SKU, product URL, dimensions (models) or tile size (materials) — and lets
+the brand and category be created inline, so nothing is a dead end. A file goes
+**straight from the browser to the private `models` / `materials` bucket**; only
+the metadata passes through a server action (`registerProduct`), because a `.skp`
+can be tens of megabytes. New uploads publish immediately (like a Dirory sample)
+unless "Publish now" is unticked, which sends them to the review queue instead.
+The dead `/admin/samples/new` link now points here with the Dirory brand
+preselected.
+
+**SketchUp version (FR-V3).** A model saved in a newer SketchUp cannot be opened
+by an older one. The upload form now reads the version out of the `.skp` header
+(`{18.0.16975}` → SketchUp 2018; 21+ → the versionless "2021+"), stores it on the
+version (`asset_versions.su_version` / `su_version_raw`, migration `0011`), and
+shows it on the product page. The plugin carries it on the entity and, before
+inserting a model, warns and asks for confirmation when the running SketchUp is
+older than the file. The Inspector gained **Dimensions** and **SketchUp** rows
+and its labels are now translated.
+
+**Backfill.** `scripts/backfill-su-version.mjs` (`npm run library:backfill-su`)
+set the version on all 13 existing models by reading the matching file in the
+library: 2013 (Polonium Credenza, Ottium), 2015 (Arabian, LW952J, SAPPHIRA),
+2016 (Ellis 3 Seater, Tromso), 2018 (CE9, CW 630 PJ, Chrysolite, MAX 1, MAX 2,
+U104). The bulk uploader records it too.
+
+**Plugin 0.9.5** built and published to `plugin-release`; the website's
+`/download` serves the same archive.
+
+**Verified:** migration `0011` pushed; catalogue returns `su_version` and
+`dimensions`; a throwaway asset created through the exact storage + DB path was
+served by the catalogue and then removed; `next build` passes; the Ruby plugin
+parses clean.
+
 ## 0.9.7 — five new models, plus a name override and a removal tool
 
 **Library.** Five models were added to `sample_library/Model` and pushed to

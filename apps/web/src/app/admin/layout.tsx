@@ -21,6 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           { href: "/admin", label: "Overview" },
           { href: "/admin/vendors", label: "Vendors", badge: pendingVendors ?? undefined },
           { href: "/admin/reviews", label: "Review queue", badge: pendingAssets ?? undefined },
+          { href: "/admin/products", label: "Products" },
           { href: "/admin/samples", label: "Dirory samples" },
           { href: "/admin/taxonomy", label: "Taxonomy" },
           { href: "/admin/plans", label: "Plans & pricing" },

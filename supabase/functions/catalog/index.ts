@@ -47,10 +47,10 @@ Deno.serve(async (req: Request) => {
   for (let offset = 0; ; offset += PAGE) {
     const params = new URLSearchParams({
       select:
-        "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key,sku,product_url," +
+        "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key,sku,product_url,dimensions," +
         "categories(name)," +
         "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path)," +
-        "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status)",
+        "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status,su_version)",
       status: "eq.approved",
       order: "updated_at.asc,id.asc",
       limit: String(PAGE),
@@ -147,6 +147,12 @@ Deno.serve(async (req: Request) => {
       // Inspector / product-info detail (M6).
       sku: r.sku ?? null,
       product_url: r.product_url ?? null,
+      // FR-V3: free-text size for models, e.g. "120 × 60 × 75 cm".
+      dimensions: r.dimensions ?? null,
+      // The SketchUp release the file was saved in ("2018", "2021+"), read from
+      // the .skp header at upload. A newer file cannot be opened by an older
+      // SketchUp, so the panel warns before inserting one.
+      su_version: v?.su_version ?? null,
       // FR-A22: the plugin's local favourite key, so favourites recorded before
       // the cloud catalogue existed can be matched to this asset.
       legacy_key: r.legacy_key ?? null,

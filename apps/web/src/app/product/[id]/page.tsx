@@ -41,6 +41,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   ];
   const tile = tileLabel(item);
   if (tile) specs.push([t(locale, "product.tileSize"), tile]);
+  if (item.dimensions) specs.push([t(locale, "product.dimensions"), item.dimensions]);
+  if (item.type === "model" && item.su_version) {
+    specs.push([
+      t(locale, "product.sketchUp"),
+      t(locale, "product.sketchUpOrLater", { version: item.su_version }),
+    ]);
+  }
   if (item.sku) specs.push([t(locale, "product.sku"), item.sku]);
   if (item.tags.length) specs.push([t(locale, "product.tags"), item.tags.join(", ")]);
 
