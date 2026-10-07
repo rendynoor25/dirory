@@ -23,6 +23,14 @@ export default async function VendorLeads() {
         <CardHeader
           title="Leads inbox"
           subtitle="FR-V5 · quote requests containing only your products. Status: new → contacted → won / lost."
+          action={
+            <a
+              href="/api/vendor/leads"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+            >
+              ⭳ Export CSV
+            </a>
+          }
         />
         {leads?.length ? (
           <Table head={["Project", "City", "Items", "Note", "Received", "Status"]}>

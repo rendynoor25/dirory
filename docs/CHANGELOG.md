@@ -1,5 +1,58 @@
 # Changelog
 
+## 0.9.9 — vendor dashboard that works, and subscription payments
+
+**Why the old dashboard showed nothing.** `/vendor` read `daily_asset_usage`, the
+nightly rollup, which had **0 rows** — it needs `pg_cron`, which was never
+installed. The real data was in `usage_snapshots` all along. There was also a
+bug: "Projects using your products" counted *products*, not projects.
+
+**Vendor dashboard (M7, FR-V4/V5).** Rebuilt on three new SECURITY DEFINER
+functions that aggregate live from the snapshot tables, so it no longer depends
+on the rollup:
+
+- `vendor_usage_totals` — projects, units, painted area, distinct architects,
+  quote requests.
+- `vendor_usage_by_asset` — the same per product, plus quotes matched from the
+  quote items.
+- `vendor_usage_daily` — the trend series from the append-only `usage_history`.
+
+Every function checks membership itself and returns **counts only** — never a
+project name or an architect identity (PRD §9). The screen gains six KPI tiles, a
+vendor-wide activity chart, per-product sparklines, server-side sorting, a
+7/30/90/custom range, and **CSV export** for both usage and leads.
+
+**Subscription and payment (M8, FR-V6/FR-M5).** The vendor side had no way to
+pay at all. Now:
+
+- `/vendor/subscription` — pick a plan (or switch/renew); the RPC
+  `vendor_request_subscription` creates the subscription and an **unpaid
+  invoice**, and is idempotent (re-running reuses the invoice rather than
+  stacking duplicates).
+- `/vendor/subscription/invoice/<id>` — the amount, due date, **bank transfer
+  details**, and an **"I've paid"** form that uploads the receipt and records a
+  reference (`vendor_submit_payment`). The invoice stays unpaid until the admin
+  confirms it.
+- Admin *Mark paid* now extends by the **plan's** period (it assumed monthly)
+  and extends from the later of now and the current period end.
+
+**QRIS — scaffolded, not switched on.** Dynamic QRIS needs a gateway merchant
+account and API keys, which do not exist yet. `lib/payments.ts` holds the
+adapter (`qrisConfigured`, `createQrisCharge`) and the invoice page says the QR
+is coming, so switching it on later is a small, contained change.
+
+**Migration `0012_vendor_portal.sql`** (functions + invoice columns).
+**Test `supabase/tests/vendor_portal_test.sql`** — 10 checks covering the
+aggregates, cross-vendor isolation, the subscribe/proof flow, and that a vendor
+still cannot read search misses. Runs in a transaction and rolls back.
+
+**Not changed:** visibility gating. An approved vendor is still visible whether
+or not it pays (FR-M6 would hide every seeded brand, so that stays a separate
+decision).
+
+**Verified:** migration pushed; the test suite passes and leaves no residue;
+`next build` passes.
+
 ## 0.9.8 — admin product upload, and SketchUp-version awareness
 
 **Admin — Products (`/admin/products`, FR-M12 / FR-V3).** A new section with a

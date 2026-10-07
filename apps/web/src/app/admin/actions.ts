@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
+import { addPeriod } from "@/lib/billing";
 import { z } from "zod";
 
 const StatusSchema = z.object({
@@ -125,22 +126,26 @@ export async function markInvoicePaid(formData: FormData) {
     .update({ status: "paid", paid_at: new Date().toISOString() })
     .eq("id", invoiceId);
 
-  // Extend the subscription by one period (FR-M6 / FR-M8).
+  // Extend the subscription by one billing period (FR-V6 / FR-M8). The length
+  // comes from the plan (monthly or yearly), and it extends from the later of
+  // now and the current period end — so renewing early keeps the paid days and
+  // renewing late does not start the new period in the past.
   if (invoice.subscription_id) {
     const { data: sub } = await supabase
       .from("subscriptions")
-      .select("id, current_period_end")
+      .select("id, current_period_end, plans(period)")
       .eq("id", invoice.subscription_id)
       .maybeSingle();
     if (sub) {
-      const base = sub.current_period_end ? new Date(sub.current_period_end) : new Date();
-      const until = new Date(base);
-      until.setMonth(until.getMonth() + 1);
+      const now = new Date();
+      const currentEnd = sub.current_period_end ? new Date(sub.current_period_end) : null;
+      const base = currentEnd && currentEnd > now ? currentEnd : now;
+      const until = addPeriod(base, (sub as any).plans?.period);
       await supabase
         .from("subscriptions")
         .update({
           status: "active",
-          current_period_start: new Date().toISOString(),
+          current_period_start: now.toISOString(),
           current_period_end: until.toISOString(),
         })
         .eq("id", sub.id);

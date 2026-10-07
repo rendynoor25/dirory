@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
 
@@ -147,4 +148,69 @@ export async function updateLeadStatus(formData: FormData) {
 
   await supabase.from("quote_requests").update({ status }).eq("id", id);
   revalidatePath("/vendor/leads");
+}
+
+// ---------------------------------------------------------------------------
+// FR-V6 — subscription and payment
+// ---------------------------------------------------------------------------
+
+/**
+ * Pick a plan. The RPC creates/updates the subscription and an unpaid invoice,
+ * then we send the vendor straight to that invoice to pay it.
+ */
+export async function choosePlan(formData: FormData) {
+  const { supabase } = await getSession();
+  const planId = String(formData.get("plan_id") ?? "");
+  if (!planId) return;
+
+  const { data, error } = await supabase.rpc("vendor_request_subscription", { p_plan: planId });
+  if (error || !data) return;
+
+  revalidatePath("/vendor/subscription");
+  redirect(`/vendor/subscription/invoice/${data}`);
+}
+
+const MethodSchema = z.enum(["qris", "transfer"]);
+
+/** Remember which method the vendor intends to use, so the page can preselect it. */
+export async function setPaymentMethod(formData: FormData) {
+  const { supabase } = await getSession();
+  const invoiceId = String(formData.get("invoice_id") ?? "");
+  const parsed = MethodSchema.safeParse(formData.get("method"));
+  if (!invoiceId || !parsed.success) return;
+
+  await supabase.rpc("vendor_set_payment_method", {
+    p_invoice: invoiceId,
+    p_method: parsed.data,
+  });
+  revalidatePath(`/vendor/subscription/invoice/${invoiceId}`);
+}
+
+const PaymentSchema = z.object({
+  invoice_id: z.string().uuid(),
+  reference: z.string().trim().max(120).optional(),
+  proof_path: z.string().trim().max(400).optional(),
+  method: MethodSchema.optional(),
+});
+
+/** "I've paid" — attach the transfer proof + reference for the admin to confirm. */
+export async function submitPayment(formData: FormData) {
+  const { supabase } = await getSession();
+  const parsed = PaymentSchema.safeParse({
+    invoice_id: formData.get("invoice_id"),
+    reference: formData.get("reference") ?? "",
+    proof_path: formData.get("proof_path") ?? "",
+    method: formData.get("method") ?? undefined,
+  });
+  if (!parsed.success) return;
+
+  await supabase.rpc("vendor_submit_payment", {
+    p_invoice: parsed.data.invoice_id,
+    p_proof_path: parsed.data.proof_path || null,
+    p_reference: parsed.data.reference || null,
+    p_method: parsed.data.method ?? null,
+  });
+
+  revalidatePath(`/vendor/subscription/invoice/${parsed.data.invoice_id}`);
+  revalidatePath("/vendor/subscription");
 }

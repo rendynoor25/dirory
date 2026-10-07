@@ -9,8 +9,8 @@ export default async function AdminPayments() {
   const { data: invoices } = await supabase
     .from("invoices")
     .select(
-      "id, amount_idr, status, gateway, gateway_ref, proof_path, paid_at, due_at, created_at, " +
-        "vendors(brand_name), subscriptions(plans(name))",
+      "id, amount_idr, status, gateway, gateway_ref, payment_method, proof_reference, proof_path, " +
+        "paid_at, due_at, created_at, vendors(brand_name), subscriptions(plans(name))",
     )
     .order("created_at", { ascending: false });
 
@@ -54,7 +54,8 @@ export default async function AdminPayments() {
                 <Td>{formatIDR(i.amount_idr)}</Td>
                 <Td className="text-xs">{formatDate(i.due_at)}</Td>
                 <Td className="text-xs">
-                  {i.gateway}
+                  {i.payment_method ?? i.gateway}
+                  {i.proof_reference ? <div className="text-slate-400">{i.proof_reference}</div> : null}
                   {i.gateway_ref ? <div className="text-slate-400">{i.gateway_ref}</div> : null}
                 </Td>
                 <Td>

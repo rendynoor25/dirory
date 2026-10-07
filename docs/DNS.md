@@ -113,6 +113,14 @@ a restart. `SUPABASE_SERVICE_ROLE_KEY` is read at runtime and is server-only.
 | `SUPABASE_SERVICE_ROLE_KEY` | secret key (`sb_secret_…`) | **server-only, never public** |
 | `NEXT_PUBLIC_SITE_URL` | `https://dirory.com` | auth redirects and absolute links |
 | `DOMAIN` | `dirory.com` | what Caddy gets a certificate for |
+| `BILLING_BANK_NAME` | e.g. `Bank Central Asia (BCA)` | server-only, shown on an invoice |
+| `BILLING_BANK_ACCOUNT` | account number | server-only |
+| `BILLING_BANK_HOLDER` | account holder name | server-only |
+| `XENDIT_SECRET_KEY` *or* `MIDTRANS_SERVER_KEY` | gateway key | optional; switches on dynamic QRIS |
+
+The `BILLING_*` and gateway keys are **not** `NEXT_PUBLIC_*`, so they are read at
+runtime and never reach the browser bundle. Changing them needs a restart, not a
+rebuild.
 
 The variable names keep the legacy wording (`ANON`, `SERVICE_ROLE`) so both older
 and newer Supabase projects work; the **values** are the new `sb_publishable_…`

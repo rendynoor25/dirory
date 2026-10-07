@@ -1,15 +1,43 @@
 import Link from "next/link";
 import { Badge, Card, CardHeader, Empty, Kpi, Table, Td, statusTone } from "@/components/ui";
+import { Sparkline } from "@/components/Sparkline";
 import { getSession } from "@/lib/auth";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatIDR } from "@/lib/format";
 import { registerVendor } from "./actions";
 
 export const dynamic = "force-dynamic";
 
+const SORTS = ["units", "area", "projects", "quotes", "name"] as const;
+type Sort = (typeof SORTS)[number];
+
+function isoDate(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+
+function dayAxis(from: string, to: string): string[] {
+  const days: string[] = [];
+  const start = new Date(`${from}T00:00:00Z`);
+  const end = new Date(`${to}T00:00:00Z`);
+  for (let d = start; d <= end && days.length < 400; d = new Date(d.getTime() + 86400000)) {
+    days.push(isoDate(d));
+  }
+  return days;
+}
+
+/**
+ * FR-V4 — the vendor dashboard, the screen the marketing and sales team lives in.
+ *
+ * All numbers come from `vendor_usage_totals` / `vendor_usage_by_asset` /
+ * `vendor_usage_daily`, which are SECURITY DEFINER aggregates: a vendor sees
+ * counts and never a project name or an architect identity (PRD §9).
+ *
+ * Computed live from the snapshot tables, so it no longer depends on the nightly
+ * rollup (which needs pg_cron and was never scheduled).
+ */
 export default async function VendorHome({
   searchParams,
 }: {
-  searchParams: Promise<{ range?: string }>;
+  searchParams: Promise<{ range?: string; from?: string; to?: string; sort?: string }>;
 }) {
   const { supabase, memberships } = await getSession();
   const membership = memberships[0];
@@ -40,29 +68,21 @@ export default async function VendorHome({
   }
 
   const vendorId = membership.vendor_id;
-  const { range } = await searchParams;
-  const rangeDays = Number(range ?? 30);
-  const since = new Date();
-  since.setDate(since.getDate() - rangeDays);
-  const sinceISO = since.toISOString().slice(0, 10);
+  const sp = await searchParams;
 
-  // FR-V4 — metrics come from usage snapshots and quotes, aggregated per asset.
-  const [
-    { data: rollup },
-    { count: architectCount },
-    { data: leads },
-    { data: subscription },
-    { data: assets },
-  ] = await Promise.all([
-    supabase
-      .from("daily_asset_usage")
-      .select("day, asset_id, projects, units, area_m2, quotes, assets(name, type)")
-      .eq("vendor_id", vendorId)
-      .gte("day", sinceISO),
-    supabase
-      .from("usage_snapshots")
-      .select("profile_id", { count: "exact", head: true })
-      .not("profile_id", "is", null),
+  const rangeDays = Number(sp.range ?? 30) || 30;
+  const to = sp.to ?? isoDate(new Date());
+  const fromDefault = new Date();
+  fromDefault.setDate(fromDefault.getDate() - rangeDays);
+  const from = sp.from ?? isoDate(fromDefault);
+  const sort: Sort = (SORTS as readonly string[]).includes(sp.sort ?? "")
+    ? (sp.sort as Sort)
+    : "units";
+
+  const [totalsRes, byAssetRes, dailyRes, leadsRes, subRes, assetsRes] = await Promise.all([
+    supabase.rpc("vendor_usage_totals", { p_vendor: vendorId, p_from: from, p_to: to }),
+    supabase.rpc("vendor_usage_by_asset", { p_vendor: vendorId, p_from: from, p_to: to }),
+    supabase.rpc("vendor_usage_daily", { p_vendor: vendorId, p_from: from, p_to: to }),
     supabase
       .from("quote_requests")
       .select("id, project_name, city, status, created_at, items")
@@ -74,44 +94,58 @@ export default async function VendorHome({
       .select("status, current_period_end, plans(name)")
       .eq("vendor_id", vendorId)
       .maybeSingle(),
-    supabase
-      .from("assets")
-      .select("id, name, status, type")
-      .eq("vendor_id", vendorId),
+    supabase.from("assets").select("id, status").eq("vendor_id", vendorId),
   ]);
 
-  // Per-product aggregation over the selected range.
-  const byAsset = new Map<
-    string,
-    { name: string; type: string; projects: number; units: number; area: number; quotes: number }
-  >();
-  for (const row of rollup ?? []) {
-    const key = row.asset_id as string;
-    const cur =
-      byAsset.get(key) ??
-      {
-        name: (row as any).assets?.name ?? "—",
-        type: (row as any).assets?.type ?? "model",
-        projects: 0,
-        units: 0,
-        area: 0,
-        quotes: 0,
-      };
-    cur.projects += row.projects ?? 0;
-    cur.units += row.units ?? 0;
-    cur.area += Number(row.area_m2 ?? 0);
-    cur.quotes += row.quotes ?? 0;
-    byAsset.set(key, cur);
+  const totals = (totalsRes.data?.[0] ?? {
+    projects: 0,
+    units: 0,
+    area_m2: 0,
+    architects: 0,
+    quotes: 0,
+  }) as { projects: number; units: number; area_m2: number; architects: number; quotes: number };
+
+  type Row = {
+    asset_id: string;
+    name: string;
+    type: string;
+    projects: number;
+    units: number;
+    area_m2: number;
+    quotes: number;
+  };
+  const rows = (byAssetRes.data ?? []) as Row[];
+
+  // Daily series → a full day axis, per asset and vendor-wide.
+  const days = dayAxis(from, to);
+  const dayIndex = new Map(days.map((d, i) => [d, i]));
+  const seriesByAsset = new Map<string, number[]>();
+  const vendorSeries = new Array(days.length).fill(0);
+  for (const p of (dailyRes.data ?? []) as { asset_id: string; day: string; units: number; area_m2: number }[]) {
+    const i = dayIndex.get(p.day);
+    if (i === undefined) continue;
+    const value = Number(p.units || 0) + Number(p.area_m2 || 0);
+    if (!seriesByAsset.has(p.asset_id)) seriesByAsset.set(p.asset_id, new Array(days.length).fill(0));
+    seriesByAsset.get(p.asset_id)![i] += value;
+    vendorSeries[i] += value;
   }
-  const products = [...byAsset.entries()].sort((a, b) => b[1].units + b[1].area - (a[1].units + a[1].area));
 
-  const totalProjects = new Set(products.map(([id]) => id)).size;
-  const totals = products.reduce(
-    (a, [, v]) => ({ units: a.units + v.units, area: a.area + v.area }),
-    { units: 0, area: 0 },
-  );
+  const sorted = [...rows].sort((a, b) => {
+    if (sort === "name") return a.name.localeCompare(b.name);
+    if (sort === "area") return Number(b.area_m2) - Number(a.area_m2);
+    if (sort === "projects") return b.projects - a.projects;
+    if (sort === "quotes") return b.quotes - a.quotes;
+    return b.units - a.units;
+  });
 
-  const published = (assets ?? []).filter((a: any) => a.status === "approved").length;
+  const published = (assetsRes.data ?? []).filter((a) => a.status === "approved").length;
+  const subscription = subRes.data as { status: string; current_period_end: string | null; plans: { name: string } | null } | null;
+
+  const rangeHref = (over: Record<string, string | undefined>) => {
+    const q = new URLSearchParams({ range: String(rangeDays), from, to, sort, ...over });
+    return `/vendor?${q.toString()}`;
+  };
+  const csvHref = `/api/vendor/usage?from=${from}&to=${to}`;
 
   return (
     <div className="space-y-6">
@@ -119,58 +153,130 @@ export default async function VendorHome({
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           Your vendor account is <strong>{membership.vendor.status}</strong>. You can upload products
           now; they become visible to architects once the Dirory team approves your account and the
-          products. Dirory's own free samples are visible either way.
+          products. Dirory&apos;s own free samples are visible either way.
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-slate-500">Range</span>
-        {[7, 30, 90].map((d) => (
-          <Link
-            key={d}
-            href={`/vendor?range=${d}`}
-            className={`rounded-full px-3 py-1 text-xs font-medium ${
-              rangeDays === d ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600"
-            }`}
-          >
-            {d} days
-          </Link>
-        ))}
+      {/* ---- range picker ------------------------------------------------ */}
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-slate-500">Range</span>
+          {[7, 30, 90].map((d) => (
+            <Link
+              key={d}
+              href={`/vendor?range=${d}&sort=${sort}`}
+              className={`rounded-full px-3 py-1 text-xs font-medium ${
+                rangeDays === d && !sp.from ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-600"
+              }`}
+            >
+              {d} days
+            </Link>
+          ))}
+        </div>
+        <form method="get" className="flex items-end gap-2">
+          <input type="hidden" name="range" value={rangeDays} />
+          <input type="hidden" name="sort" value={sort} />
+          <div>
+            <label className="text-xs font-medium text-slate-600">From</label>
+            <input
+              type="date"
+              name="from"
+              defaultValue={from}
+              className="mt-1 rounded-lg border border-slate-300 px-2 py-1.5 text-xs"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-slate-600">To</label>
+            <input
+              type="date"
+              name="to"
+              defaultValue={to}
+              className="mt-1 rounded-lg border border-slate-300 px-2 py-1.5 text-xs"
+            />
+          </div>
+          <button className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
+            Apply
+          </button>
+        </form>
+        <a
+          href={csvHref}
+          className="ml-auto rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+        >
+          ⭳ Export CSV
+        </a>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Kpi label="Projects using your products" value={products.length} hint={`${rangeDays}-day window`} />
-        <Kpi label="Units placed" value={totals.units} />
-        <Kpi label="Painted area" value={`${totals.area.toFixed(1)} m²`} />
-        <Kpi label="Published products" value={`${published} / ${(assets ?? []).length}`} />
+      {/* ---- KPIs -------------------------------------------------------- */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
+        <Kpi label="Projects using" value={totals.projects} hint="distinct SketchUp files" />
+        <Kpi label="Units placed" value={totals.units} hint="models" />
+        <Kpi label="Painted area" value={`${Number(totals.area_m2).toFixed(1)} m²`} hint="materials" />
+        <Kpi label="Architects" value={totals.architects} hint="signed in" />
+        <Kpi label="Quote requests" value={totals.quotes} />
+        <Kpi label="Published products" value={`${published} / ${(assetsRes.data ?? []).length}`} />
       </div>
+
+      {/* ---- trend ------------------------------------------------------- */}
+      <Card>
+        <CardHeader
+          title="Activity trend"
+          subtitle={`Units + painted area per day, ${formatDate(from)} → ${formatDate(to)}.`}
+        />
+        <div className="px-5 py-5">
+          {vendorSeries.some((v) => v > 0) ? (
+            <Sparkline points={vendorSeries} width={900} height={70} />
+          ) : (
+            <p className="text-sm text-slate-500">
+              No activity recorded in this range yet. Numbers appear once architects insert your
+              products in SketchUp and the usage snapshots arrive.
+            </p>
+          )}
+        </div>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader
             title="Products"
-            subtitle="FR-V4 · projects, units and painted area per product. You never see project names or architect identities here."
+            subtitle="FR-V4 · per-product performance. You never see project names or architect identities here."
           />
-          {products.length ? (
-            <Table head={["Product", "Type", "Projects", "Units", "Area m²"]}>
-              {products.map(([id, v]) => (
-                <tr key={id}>
-                  <Td className="font-medium text-slate-900">{v.name}</Td>
+          {sorted.length ? (
+            <Table head={["Product", "Type", "Projects", "Units", "Area m²", "Quotes", "Trend"]}>
+              {sorted.map((r) => (
+                <tr key={r.asset_id} className="hover:bg-slate-50/60">
+                  <Td className="font-medium text-slate-900">{r.name}</Td>
                   <Td>
-                    <Badge tone={v.type === "material" ? "blue" : "gray"}>{v.type}</Badge>
+                    <Badge tone={r.type === "material" ? "blue" : "gray"}>{r.type}</Badge>
                   </Td>
-                  <Td>{v.projects}</Td>
-                  <Td>{v.units || "—"}</Td>
-                  <Td>{v.area ? v.area.toFixed(1) : "—"}</Td>
+                  <Td>{r.projects}</Td>
+                  <Td>{r.units || "—"}</Td>
+                  <Td>{r.area_m2 ? Number(r.area_m2).toFixed(1) : "—"}</Td>
+                  <Td>{r.quotes || "—"}</Td>
+                  <Td>
+                    <Sparkline points={seriesByAsset.get(r.asset_id) ?? []} />
+                  </Td>
                 </tr>
               ))}
             </Table>
           ) : (
             <Empty>
-              No usage in this range yet. Numbers appear once architects insert your products in
-              SketchUp and the snapshots arrive.
+              No products yet. Add them under <Link href="/vendor/assets" className="text-brand-600">Products</Link>.
             </Empty>
           )}
+          <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 px-5 py-3 text-xs text-slate-500">
+            <span className="font-medium">Sort by</span>
+            {SORTS.map((s) => (
+              <Link
+                key={s}
+                href={rangeHref({ sort: s })}
+                className={`rounded-full px-2.5 py-0.5 ${
+                  sort === s ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                {s}
+              </Link>
+            ))}
+          </div>
         </Card>
 
         <div className="space-y-6">
@@ -188,12 +294,17 @@ export default async function VendorHome({
                 <>
                   <Badge tone={statusTone(subscription.status)}>{subscription.status}</Badge>
                   <p className="mt-2 text-slate-700">
-                    {(subscription as any).plans?.name ?? "No plan"} · renews{" "}
+                    {subscription.plans?.name ?? "No plan"} · renews{" "}
                     {formatDate(subscription.current_period_end)}
                   </p>
                 </>
               ) : (
-                <p className="text-slate-500">No plan yet.</p>
+                <p className="text-slate-500">
+                  No plan yet.{" "}
+                  <Link href="/vendor/subscription" className="text-brand-600">
+                    Choose one →
+                  </Link>
+                </p>
               )}
             </div>
           </Card>
@@ -207,17 +318,16 @@ export default async function VendorHome({
                 </Link>
               }
             />
-            {leads?.length ? (
+            {leadsRes.data?.length ? (
               <ul className="divide-y divide-slate-50">
-                {leads.map((l: any) => (
+                {leadsRes.data.map((l: any) => (
                   <li key={l.id} className="px-5 py-3">
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-sm font-medium text-slate-800">{l.project_name ?? "—"}</p>
                       <Badge tone={statusTone(l.status)}>{l.status}</Badge>
                     </div>
                     <p className="text-xs text-slate-500">
-                      {l.city ?? ""} · {(l.items ?? []).length} items ·{" "}
-                      {formatDate(l.created_at)}
+                      {l.city ?? ""} · {(l.items ?? []).length} items · {formatDate(l.created_at)}
                     </p>
                   </li>
                 ))}
