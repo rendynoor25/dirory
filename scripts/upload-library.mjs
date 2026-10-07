@@ -233,6 +233,15 @@ function scan(base) {
       if (override.brand) item.brand = String(override.brand);
       if (override.name) item.name = String(override.name);
       if (override.category) item.category = String(override.category);
+      if (override.sku) item.sku = String(override.sku);
+      if (override.product_url) item.productUrl = String(override.product_url);
+      // A thumbnail from outside the library — for a catalogue whose images
+      // live on the brand's website rather than beside the .skp.
+      if (override.thumbnail) {
+        const thumb = path.resolve(String(override.thumbnail));
+        if (fs.existsSync(thumb)) item.thumbnailAbs = thumb;
+        else console.warn(`  ! thumbnail not found for ${item.legacyKey}: ${thumb}`);
+      }
     }
     const dedupe = item.legacyKey.toLowerCase();
     if (seen.has(dedupe)) return;
@@ -473,6 +482,8 @@ async function main() {
           name: item.name,
           category_id: categoryId,
           tags: item.tags,
+          sku: item.sku ?? null,
+          product_url: item.productUrl ?? null,
           tile_w_cm: item.tile?.w ?? null,
           tile_h_cm: item.tile?.h ?? null,
           status: assetStatus,

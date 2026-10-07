@@ -28,6 +28,11 @@ supabase/.temp/
 .DS_Store
 *.log
 
+# Downloaded brand/product thumbnails and other scratch files. They are fetched
+# by a script when needed and uploaded to Supabase Storage; they are third-party
+# product images, so they are not committed to this public repository.
+.cache/
+
 # local type-check scaffolding
 .tmpcheck/
 

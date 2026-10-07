@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.9.10 — the Materium catalogue, plus generic Indonesian materials
+
+**19 MATERIUM models** uploaded from `sample_library/Model/3D MATERIUM 2020
+CATALOGUE/` under a new **MATERIUM** brand, with categories Accessories,
+Cabinetry, Lighting, Partition, Seating, Table and Workstation. The catalogue is
+now **1,354 assets / 30 models**.
+
+The `.skp` files shipped without previews, so the thumbnails were fetched from
+the brand's product pages on malka.co.id by a new script,
+`scripts/fetch-materium-thumbnails.mjs` (the site rejects requests without a
+browser User-Agent). `library-overrides.json` grew a **`thumbnail`** field
+pointing at an image outside the library, plus `sku` and `product_url`, so the
+uploader can attach a preview and a product link without the source folder
+having to change. The brand logo was set from the same site, into the public
+`brands` bucket.
+
+The catalogue folder nests category under a catalogue name, so without the
+overrides the scanner would have read the category as "3D MATERIUM 2020
+CATALOGUE" and the brand as the sub-folder. **`D:\Dirory` was not modified.**
+
+**Malka retired.** Polonium Credenza and Ottium existed twice (they are Materium
+products): the old Malka copies and their stored files were removed and the
+Malka vendor deleted, so each product appears once.
+
+**26 generic Indonesian materials** (Roof, Stone, Tile, Wood, Metal, Brick,
+Concrete, Paint) were uploaded too. They live in the category folders under
+`Materials/` with `meta.json` setting `brand: "Generic"` — they had simply never
+been uploaded. Note: `Materials/Dirory_Free_Indonesian_Materials` itself is
+**empty**, so if that folder was meant to hold a different set, it needs
+re-checking.
+
+**Verified:** catalogue returns 1,354 items with the MATERIUM brand logo; every
+Materium model has a thumbnail and a SketchUp version (2013, or 2018 for the
+workstations); `dirory.com/library` lists MATERIUM and no Malka; a product page
+and its thumbnail both return 200. No web code changed, so no redeploy was
+needed — the catalogue is served live and the site picks changes up within its
+5-minute cache.
+
 ## 0.9.9 — vendor dashboard that works, and subscription payments
 
 **Why the old dashboard showed nothing.** `/vendor` read `daily_asset_usage`, the

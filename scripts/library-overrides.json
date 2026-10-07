@@ -1,5 +1,34 @@
 {
-  "_comment": "Manual corrections for the sample library, keyed by the item's path relative to the library root. Use when a folder or its meta.json would produce a misleading brand or name. Pass with --overrides. Fields not listed are left as scanned.",
+  "_comment": "Manual corrections for the sample library, keyed by the item's path relative to the library root. Use when a folder or its meta.json would produce a misleading brand, name or category, or when the thumbnail lives outside the library. Pass with --overrides. Fields not listed are left as scanned.",
+
   "Model/Doors/ALPHAMAX- MAX 1/ALPHAMAX- MAX 1.skp": { "brand": "ALPHAMAX", "name": "MAX 1" },
-  "Model/Doors/ALPHAMAX - MAX 2/ALPHAMAX- MAX 2.skp": { "brand": "ALPHAMAX", "name": "MAX 2" }
+  "Model/Doors/ALPHAMAX - MAX 2/ALPHAMAX- MAX 2.skp": { "brand": "ALPHAMAX", "name": "MAX 2" },
+
+  "_materium": "The '3D MATERIUM 2020 CATALOGUE' tree nests category under a catalogue folder, so the scanner would read the category as the catalogue name and the brand as the sub-folder. These entries set brand=MATERIUM, the real category, and a thumbnail downloaded from malka.co.id by scripts/fetch-materium-thumbnails.mjs.",
+
+  "Model/3D MATERIUM 2020 CATALOGUE/Accessories/AC-02 & AC-03_DOMINIUM (ROLLING DRAWER & CPU STORAGE).skp": { "brand": "MATERIUM", "category": "Accessories", "name": "Dominium Rolling Drawer & CPU Storage", "thumbnail": ".cache/materium-thumbs/Dominium_Desk.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Accessories/MATERIUM ACCESSORIES.skp": { "brand": "MATERIUM", "category": "Accessories", "name": "Materium Accessories", "thumbnail": ".cache/materium-thumbs/Bookend.jpg" },
+
+  "Model/3D MATERIUM 2020 CATALOGUE/Cabinetry/CG-01_FOLIUM.skp": { "brand": "MATERIUM", "category": "Cabinetry", "name": "Folium", "thumbnail": ".cache/materium-thumbs/Folium.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Cabinetry/CG-03_POLONIUM (CREDENZA).skp": { "brand": "MATERIUM", "category": "Cabinetry", "name": "Polonium Credenza", "thumbnail": ".cache/materium-thumbs/Polonium_Credenza.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Cabinetry/CG-05_POLONIUM (CABINET).skp": { "brand": "MATERIUM", "category": "Cabinetry", "name": "Polonium Cabinet", "thumbnail": ".cache/materium-thumbs/Polonium_Cabinet.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Cabinetry/CG-07_POLONIUM (LOCKER).skp": { "brand": "MATERIUM", "category": "Cabinetry", "name": "Polonium Locker", "thumbnail": ".cache/materium-thumbs/Polonium_Locker.jpg" },
+
+  "Model/3D MATERIUM 2020 CATALOGUE/Lighting/MT-01 & MT-02_LUXIUM.skp": { "brand": "MATERIUM", "category": "Lighting", "name": "Luxium Lamp", "thumbnail": ".cache/materium-thumbs/Luxium_Lamp.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Lighting/MT-03 - MT-05_LUXIUM.skp": { "brand": "MATERIUM", "category": "Lighting", "name": "Luxium Lamp (wide)", "thumbnail": ".cache/materium-thumbs/Luxium_Lamp.jpg" },
+
+  "Model/3D MATERIUM 2020 CATALOGUE/Partition/MT-06 & MT-07_PARTIUM & ACCESSORIES.skp": { "brand": "MATERIUM", "category": "Partition", "name": "Partium Partition", "thumbnail": ".cache/materium-thumbs/Partium_Partition.jpg" },
+
+  "Model/3D MATERIUM 2020 CATALOGUE/Seating/ST-01 - ST-04_PEOPONIUM.skp": { "brand": "MATERIUM", "category": "Seating", "name": "Peponium", "thumbnail": ".cache/materium-thumbs/Peponium.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Seating/ST-05_FRANCIUM.skp": { "brand": "MATERIUM", "category": "Seating", "name": "Francium Chair", "thumbnail": ".cache/materium-thumbs/Francium_Chair.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Seating/ST-06 & ST-07_SOLATIUM.skp": { "brand": "MATERIUM", "category": "Seating", "name": "Solatium", "thumbnail": ".cache/materium-thumbs/Solatium_Privacy_Sofa.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Seating/ST-08_OTTIUM.skp": { "brand": "MATERIUM", "category": "Seating", "name": "Otium Ottoman", "thumbnail": ".cache/materium-thumbs/Otium_Ottoman.jpg" },
+
+  "Model/3D MATERIUM 2020 CATALOGUE/Table/TL-01_IMPERIUM.skp": { "brand": "MATERIUM", "category": "Table", "name": "Imperium Meeting Table", "thumbnail": ".cache/materium-thumbs/Imperium_Meeting_Table.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Table/TL-02 & TL-03_EXILIUM (ROUND TABLE & COFFEE TABLE).skp": { "brand": "MATERIUM", "category": "Table", "name": "Exilium Round & Coffee Table", "thumbnail": ".cache/materium-thumbs/Exilium_Coffee_Table.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Table/TL-04_LEVISIUM.skp": { "brand": "MATERIUM", "category": "Table", "name": "Levisium Side Table", "thumbnail": ".cache/materium-thumbs/Levisium_Side_Table.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Table/TL-05_DOMINIUM DESK.skp": { "brand": "MATERIUM", "category": "Table", "name": "Dominium Desk", "thumbnail": ".cache/materium-thumbs/Dominium_Desk.jpg" },
+
+  "Model/3D MATERIUM 2020 CATALOGUE/Workstation/OT-01_DOMINIUM DOUBLE WORKSTATION.skp": { "brand": "MATERIUM", "category": "Workstation", "name": "Dominium Double Workstation", "thumbnail": ".cache/materium-thumbs/Dominium_Desk.jpg" },
+  "Model/3D MATERIUM 2020 CATALOGUE/Workstation/OT-02_DOMINIUM SINGLE WORKSTATION.skp": { "brand": "MATERIUM", "category": "Workstation", "name": "Dominium Single Workstation", "thumbnail": ".cache/materium-thumbs/Dominium_Desk.jpg" }
 }
