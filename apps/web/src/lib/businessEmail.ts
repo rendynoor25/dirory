@@ -78,3 +78,35 @@ export function isFreemail(email: string | null | undefined): boolean {
 export function isBusinessEmail(email: string | null | undefined): boolean {
   return emailDomain(email) !== "" && !isFreemail(email);
 }
+
+/**
+ * Accounts allowed past the company-email gate whatever their domain.
+ *
+ * The founder's own address is listed so the team can review the pricing page
+ * without a separate corporate mailbox. Extend the list with
+ * `PRICING_ALLOWED_EMAILS` (comma-separated) on the server - useful for a
+ * colleague, or for a demo account.
+ *
+ * This is an allowlist, not a secret: the address is meant to be recognisable,
+ * and nothing here protects data.
+ */
+const DEFAULT_ALLOWED_EMAILS = ["rendynoorchandra@gmail.com"];
+
+function allowedEmails(): string[] {
+  const extra = (process.env.PRICING_ALLOWED_EMAILS ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  return [...DEFAULT_ALLOWED_EMAILS, ...extra];
+}
+
+/**
+ * Whether this account may see company pricing: a company domain, or an
+ * explicitly allowed address.
+ */
+export function canViewCompanyPricing(email: string | null | undefined): boolean {
+  const value = String(email ?? "").trim().toLowerCase();
+  if (!value) return false;
+  if (allowedEmails().includes(value)) return true;
+  return isBusinessEmail(value);
+}

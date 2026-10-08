@@ -4,7 +4,7 @@ import { getSession } from "@/lib/auth";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { isBusinessEmail } from "@/lib/businessEmail";
+import { canViewCompanyPricing } from "@/lib/businessEmail";
 import { formatIDR } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +28,7 @@ export const metadata = {
 export default async function PricingPage() {
   const [{ supabase, user }, locale] = await Promise.all([getSession(), getLocale()]);
 
-  const allowed = isBusinessEmail(user?.email);
+  const allowed = canViewCompanyPricing(user?.email);
 
   const { data: plans } = allowed
     ? await supabase

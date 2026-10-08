@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.14.1 — full payment list, and the founder's pricing exception
+
+**Payment methods stay on the full list.** `MIDTRANS_ENABLED_PAYMENTS` is left
+empty, so Snap offers everything the merchant account has enabled. BCA Virtual
+Account (`bca_va`) is included by default, which is what most Indonesian payers
+will use. Setting `bsi_va` remains available if BSI-only is ever wanted.
+
+**Company-pricing exception.** `canViewCompanyPricing()` in
+`lib/businessEmail.ts` now allows an allowlist on top of the company-domain rule.
+The founder's address (`rendynoorchandra@gmail.com`) is built in so the team can
+review `/pricing` without a corporate mailbox; `PRICING_ALLOWED_EMAILS`
+(comma-separated) extends it for colleagues or a demo account.
+
+Worth recording: the **vendor portal itself has no email-domain restriction** -
+`/vendor` only requires a signed-in account with a vendor membership. The only
+domain gate in the app is `/pricing`, and it is a soft gate that shapes who sees
+the page rather than protecting anything.
+
+**Verified:** `scripts/test-business-email.mts` - 26 checks covering domain
+parsing (`a@`, `@b.com`, a domain with no dot, mixed case, null), the freemail
+list, and the allowlist, including that the founder's gmail is allowed while an
+unlisted gmail is not. `tsc` clean, `next build` clean.
+
 ## 0.14.0 — live migrations, optional geography, brand pricing page, BSI and dynamic QRIS
 
 **Migrations applied to the live database.** `0013`-`0018` are now pushed and

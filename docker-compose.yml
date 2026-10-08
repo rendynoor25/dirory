@@ -40,6 +40,8 @@ services:
       BILLING_BANK_NAME: ${BILLING_BANK_NAME:-}
       BILLING_BANK_ACCOUNT: ${BILLING_BANK_ACCOUNT:-}
       BILLING_BANK_HOLDER: ${BILLING_BANK_HOLDER:-}
+      # Extra accounts allowed to see /pricing whatever their domain
+      PRICING_ALLOWED_EMAILS: ${PRICING_ALLOWED_EMAILS:-}
     expose:
       - "3000"
     healthcheck:
