@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.17.2 — plugin 0.9.8: one clear prompt instead of a window per failure
+
+Following the 0.9.7 token fix, the failure still produced **two** prompts: a modal
+message box from `main.rb` *and* the account dialog from the panel. The modal is
+now gone.
+
+- `Cloud.unauthorized!` returns an empty message always and relies on the panel:
+  it opens the account dialog on its sign-in view with a toast explaining why.
+  `main.rb` already skips an empty message. With no panel open, a message box is
+  still shown, because that is the only way to reach the architect.
+- The Extension Manager description was stale — "Browse and insert 3D models and
+  materials from your local Dirory product library" — which described the old
+  local-folder build. Now: "Browse the Dirory product library inside SketchUp:
+  search, insert models and paint materials from real Indonesian brands."
+
+**The auth chain was verified end to end** with a throwaway account, because the
+server had to be ruled in or out:
+
+| Step | Result |
+|---|---|
+| `auth-device/start` | 200, device code issued |
+| Browser approval through RLS | **updated 1 row** |
+| `auth-device/poll` | **approved, token issued** |
+| `GET /download` with that token | **200, signed URL** |
+
+The test user and its tokens were deleted afterwards. Only `auth-device/revoke`
+(sign-out) deletes a token; nothing expires them. So a stale token means a sign-out
+happened or a sign-in never completed — not a server fault.
+
+**Release round-trip proven:** `DiroryLibrary-0.9.8.rbz` was published by upload
+alone, and `GET /plugin-release` now reports `0.9.8` with no code change, which is
+the whole point of deriving the version from the bucket.
+
+**Not verified:** the in-SketchUp apply step has still not run on a real machine.
+
 ## 0.17.1 — self-update repaired: the release version is now derived, not hardcoded
 
 The plugin already had a self-update path — background version check, a pulsing

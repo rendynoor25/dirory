@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.9.7'.freeze
+      PLUGIN_VERSION = '0.9.8'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -486,9 +486,9 @@ module Dirory
         Dirory::Library.push_account
       end
 
-      # Returns the message to show, or '' when the prompt was already given
-      # recently — callers treat an empty message as "nothing more to say", which
-      # stops a row of failed clicks from stacking one dialog per click.
+      # Returns '' always: the panel is the right place to ask for a sign-in, and
+      # showing a modal message box as well produced two prompts for one failure.
+      # Callers treat an empty message as "nothing more to say".
       def self.unauthorized!(reason = 'Your Dirory session has expired. Please sign in again.')
         now = Time.now
         return '' if @unauthorized_at && now - @unauthorized_at < 10
@@ -497,11 +497,14 @@ module Dirory
         forget_token
         payload = { 'action' => 'load', 'reason' => 'expired', 'message' => reason }.to_json
         if @dialog
+          # Opens the account dialog on its sign-in view, with a toast explaining
+          # why. One prompt, in the place where the fix actually is.
           @dialog.execute_script("window.diroryNeedSignIn && window.diroryNeedSignIn(#{payload});")
         else
+          # No panel open: a message box is the only way to reach the architect.
           UI.messagebox(reason)
         end
-        reason
+        ''
       end
 
       def self.set_share_usage(on)
