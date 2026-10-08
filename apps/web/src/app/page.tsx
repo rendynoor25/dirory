@@ -69,6 +69,9 @@ export default async function Home() {
           <a href="#brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             {t(locale, "nav.brands")}
           </a>
+          <a href="#for-brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
+            {t(locale, "nav.forBrands")}
+          </a>
           <Link href="/how-to-install" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             {t(locale, "nav.howToInstall")}
           </Link>
@@ -240,7 +243,7 @@ export default async function Home() {
       </section>
 
       {/* ---- For brands (vendor section) -------------------------------- */}
-      <section className="border-y border-slate-200 bg-white">
+      <section id="for-brands" className="scroll-mt-24 border-y border-slate-200 bg-white">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-2 lg:items-center lg:px-10 lg:py-20">
           <div>
             <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">

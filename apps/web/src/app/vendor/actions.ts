@@ -29,21 +29,27 @@ export async function registerVendor(formData: FormData) {
   });
   if (!parsed.success) return;
 
-  const { data: vendor, error } = await supabase
-    .from("vendors")
-    .insert({ ...parsed.data, status: "pending" })
-    .select("id")
-    .single();
-  if (error || !vendor) return;
-
-  // The bootstrap policy lets the creator claim ownership of their pending row.
-  await supabase.from("vendor_members").insert({
-    vendor_id: vendor.id,
-    profile_id: user.id,
-    role: "owner",
+  // One call creates the vendor AND the owner membership atomically.
+  //
+  // It used to be two inserts, with the id read back from the first - which RLS
+  // refused, because a brand-new `pending` vendor is not visible to its own
+  // creator until the membership exists. The read failed, the action returned,
+  // and the membership was never created: the form looked like it did nothing.
+  const { error } = await supabase.rpc("register_vendor", {
+    p_name: parsed.data.name,
+    p_brand_name: parsed.data.brand_name,
+    p_email: parsed.data.email,
+    p_whatsapp: parsed.data.whatsapp,
+    p_website: parsed.data.website || null,
+    p_npwp: parsed.data.npwp || null,
   });
+  if (error) {
+    console.error("registerVendor failed", error);
+    return;
+  }
 
   revalidatePath("/vendor");
+  revalidatePath("/vendor", "layout");
 }
 
 const AssetSchema = z.object({

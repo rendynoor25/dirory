@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.14.2 — vendor registration bug fix, and a "For brands" nav link
+
+**Vendor registration was broken, and this fixes it.** `registerVendor()` inserted
+the vendor and then read the new row back to get its id for the membership insert.
+The `vendors_public_read` policy only allows reading a vendor that is *visible*
+(approved, the platform brand, or subscribed) or that the caller is already a
+member of. A brand-new `pending` vendor is none of those, so the read returned no
+row, `.single()` raised, and the action returned **before creating the
+membership**. The form therefore appeared to do nothing, and the database was
+left with a `pending` vendor that had no members.
+
+Migration `0019` moves both inserts into one `SECURITY DEFINER` function,
+`register_vendor(...)`, which needs no read-back and is atomic — a failure cannot
+leave a vendor without an owner. It is idempotent per account, so a double submit
+returns the existing vendor instead of creating a second one. The same migration
+deletes the orphaned `pending` vendors the bug produced (pending, not the
+platform brand, no members at all — a state only this failure could create).
+
+The read policy was deliberately **not** loosened: letting every signed-in user
+read every pending vendor would expose the registration pipeline (brand names,
+contact details, NPWP) to anyone, which is a worse outcome than the bug.
+
+**"For brands" in the top navigation.** The vendor section on the landing page
+now has an anchor (`#for-brands`) and a nav link, so a brand can reach the
+benefits summary from the header. Its CTA still goes to the gated `/pricing`.
+
+**Verified:** migration `0019` applied to the live database and re-checked (the
+function exists and refuses an anonymous caller with "not signed in"; no orphaned
+pending vendors remain — the 15 vendors listed are all approved). `tsc` clean,
+`next build` clean, migration lint clean over 19 files.
+
+**Still to do on your side:** the live site is serving an older build —
+`dirory.com/pricing` returns 404 and the landing page has no vendor section. A
+redeploy is required for any of this to appear.
+
 ## 0.14.1 — full payment list, and the founder's pricing exception
 
 **Payment methods stay on the full list.** `MIDTRANS_ENABLED_PAYMENTS` is left
