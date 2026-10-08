@@ -235,6 +235,12 @@ const en: Record<string, string> = {
   "download.howToInstall": "How to install",
   "download.privacy": "Privacy Policy",
   "download.footerNote": "Free for architects and designers.",
+  "download.consentTitle": "Before you download",
+  "download.consentBody":
+    "The plugin can send Dirory anonymous usage reports: which Dirory products are used in your model (names, quantities and painted area), and searches that return nothing. It never sends geometry, your SketchUp file, or file paths. Sharing the project name is a separate choice and stays off unless you turn it on. You can switch all of this off at any time in the plugin's account dialog.",
+  "download.consentAgree":
+    "I have read the Privacy Policy and agree to these reports.",
+  "download.consentButton": "Agree and download",
 
   // ---- login --------------------------------------------------------------
   "login.title": "Sign in",
@@ -488,6 +494,12 @@ const id: Record<string, string> = {
   "download.howToInstall": "Cara memasang",
   "download.privacy": "Kebijakan Privasi",
   "download.footerNote": "Gratis untuk arsitek dan desainer.",
+  "download.consentTitle": "Sebelum mengunduh",
+  "download.consentBody":
+    "Plugin dapat mengirim laporan pemakaian anonim ke Dirory: produk Dirory apa yang dipakai di model Anda (nama, jumlah, dan luas yang dicat), serta pencarian yang tidak menemukan apa pun. Plugin tidak pernah mengirim geometri, berkas SketchUp, atau lokasi berkas. Membagikan nama proyek adalah pilihan terpisah dan tetap mati kecuali Anda menyalakannya. Anda dapat mematikan semuanya kapan saja di dialog akun plugin.",
+  "download.consentAgree":
+    "Saya telah membaca Kebijakan Privasi dan menyetujui laporan ini.",
+  "download.consentButton": "Setuju dan unduh",
 
   // ---- login --------------------------------------------------------------
   "login.title": "Masuk",

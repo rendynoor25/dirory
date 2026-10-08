@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.11.0 — vendor packages, download consent, and the .env answer
+
+**Pricing: the founder chose the package model** from the metrics document
+(Table B) over PRD Q4's flat-tier hypothesis.
+
+- Migration `0014`: Starter (Rp 5.000.000/year, 20 products) and Growth
+  (Rp 25.000.000/year, 30 products) are the self-serve packages. Full Range is a
+  negotiated quote, so it is stored **inactive** and cannot be bought online.
+  The two old monthly tiers are deactivated, not deleted, so existing
+  subscriptions keep their history. The vendor subscription page reads plans
+  from the database, so it picks this up with no code change.
+- Still not modelled, because they are one-off invoices rather than
+  subscriptions: the per-product digitization fee (Table A), annual listing as a
+  percentage of it (Table C) and the add-ons (Table D).
+- PRD Q4 still says "flat tiers"; it now disagrees with the database and needs
+  updating to record this decision.
+
+**Consent before the plugin download (UU 27/2022).**
+
+- Migration `0015` adds `profiles.plugin_consent_at` and
+  `profiles.plugin_consent_version`.
+- `/download` now shows the privacy summary and requires an explicit,
+  check-boxed agreement before offering the RBZ. The agreement is recorded
+  against the profile with the policy version.
+- `/api/download/rbz` re-checks the consent version, so a direct link to the file
+  cannot skip the dialog. Bumping `PLUGIN_CONSENT_VERSION`
+  (`apps/web/src/lib/consent.ts`) requires everyone to agree again.
+- The privacy page gained a "Consent before download" section and was rewritten
+  in plain ASCII: an earlier edit had mojibake in it (a mangled arrow and middle
+  dot).
+
+**Verified:** `tsc --noEmit` clean, `next build` clean, migration lint clean over
+15 files, `node scripts/check-ruby.mjs` clean. **Not verified:** migrations
+`0014` and `0015` are not applied to the live database, and the consent flow has
+not been clicked through in a browser.
+
 ## 0.10.0 — Midtrans Snap payments, plus revenue and catalog metrics
 
 **Payment gateway (Midtrans Snap).** A vendor can now pay an invoice online —
