@@ -1,73 +1,70 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { publicOrigin } from "@/lib/site-url";
 
 /**
- * OAuth / magic-link return path.
+ * Supabase sends the user back here after they click the email link.
  *
- * Google (and the email link) come back here with `?code=`. We exchange it for a
- * session and then send the user to `next`, or home by default.
- *
- * A subtlety that caused a "sign in does nothing" report: the previous default
- * was `/vendor`, so an architect who signed in from the public site was dumped
- * on a vendor page that then bounced them back to /login — it looked like the
- * sign-in had failed. The default is now the home page.
+ * Three shapes arrive, and each needs a different message:
+ *   1. `?code=...`                              → exchange it for a session
+ *   2. `?error=...&error_code=...`              → Supabase refused the link
+ *      (an expired or already-used one-time link is the common case)
+ *   3. no `code` and no `error`                 → the link was opened on the
+ *      wrong host, or the Site URL is misconfigured, so the code never came
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const origin = publicOrigin(request);
   const code = url.searchParams.get("code");
-  const candidate = url.searchParams.get("next") ?? "/";
-  // Do not turn the callback into an open redirect. Only accept local paths.
-  const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/";
+  const errorCode = url.searchParams.get("error_code") ?? url.searchParams.get("error");
+  const errorDescription = url.searchParams.get("error_description");
 
-  // Google (or Supabase) can return a provider error instead of a code.
-  const providerError = url.searchParams.get("error_description") ?? url.searchParams.get("error");
-  if (providerError) {
-    return NextResponse.redirect(
-      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(providerError)}`, origin),
-    );
+  // Only accept local paths, so this route cannot be used as an open redirect.
+  const candidate = url.searchParams.get("next") ?? "/vendor";
+  const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/vendor";
+
+  const failure = (message: string) =>
+    NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, url.origin));
+
+  if (errorCode) {
+    if (errorCode === "otp_expired" || /expired/i.test(errorDescription ?? "")) {
+      return failure(
+        "That sign-in link has expired or was already used. Request a new one — links work once and only for a few minutes.",
+      );
+    }
+    if (errorCode === "access_denied") {
+      return failure("That sign-in link was refused. Request a new one.");
+    }
+    return failure(errorDescription || `Sign-in failed (${errorCode}). Request a new link.`);
   }
 
   if (!code) {
-    return NextResponse.redirect(new URL("/login?error=Missing+code", origin));
+    return failure(
+      "No sign-in code was received. Open the link from the same device, or request a new one. " +
+        "If this keeps happening, the Supabase Site URL is probably still set to localhost.",
+    );
   }
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    return NextResponse.redirect(
-      new URL(`/login?next=${encodeURIComponent(next)}&error=${encodeURIComponent(error.message)}`, origin),
-    );
+    return failure(error.message);
   }
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Send admins straight to the back-office unless they were heading elsewhere.
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role, occupation")
+      .select("role")
       .eq("id", user.id)
       .maybeSingle();
-
-    // An admin who landed on the default destination goes to the dashboard.
-    // Everyone else continues to `next` (their original target).
-    if (profile?.role === "admin" && next === "/") {
-      return NextResponse.redirect(new URL("/admin", origin));
-    }
-
-    // Ask the one-time "what best describes you?" question, once, on the first
-    // sign-in. /welcome itself redirects straight on if it is already answered,
-    // so this cannot loop.
-    if (profile && !profile.occupation) {
-      const welcome = new URL("/welcome", origin);
-      welcome.searchParams.set("next", next);
-      return NextResponse.redirect(welcome);
+    if (profile?.role === "admin" && next === "/vendor") {
+      return NextResponse.redirect(new URL("/admin", url.origin));
     }
   }
 
-  return NextResponse.redirect(new URL(next, origin));
+  return NextResponse.redirect(new URL(next, url.origin));
 }

@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.9.11 — mobile-friendly admin and vendor shell, clearer sign-in errors
+
+The admin and vendor layouts rendered a fixed 256px sidebar at every screen
+width, so on a phone the content had almost no room. Replaced `Sidebar`/`Topbar`
+with a responsive `Shell`:
+
+- `lg` and up: the sidebar stays exactly as it was.
+- below `lg`: navigation moves into a slide-over drawer opened from a hamburger
+  in the top bar. It closes on navigation, backdrop click and Escape, and locks
+  background scrolling while open. Adds `aria-current`, `aria-expanded` and a
+  labelled close button.
+- Content padding is now `p-4 sm:p-6` instead of a fixed `p-6`, and the top bar
+  is sticky.
+
+Also:
+- The auth callback now distinguishes an expired/used one-time link from a
+  missing code, instead of always reporting "Missing code". An expired link now
+  says to request a new one; a missing code points at the Supabase Site URL.
+- Added a `/no-access` page. A signed-in non-admin who opens `/admin` is sent
+  there with an explanation instead of being bounced into vendor onboarding,
+  which read as a broken login.
+
+Verified: `tsc --noEmit` clean, `next build` clean. Not verified on a physical
+phone, and not deployed from this session.
+
 ## 0.9.10 — the Materium catalogue, plus generic Indonesian materials
 
 **19 MATERIUM models** uploaded from `sample_library/Model/3D MATERIUM 2020

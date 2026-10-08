@@ -1,4 +1,4 @@
-import { Sidebar, Topbar } from "@/components/Sidebar";
+import { BareTopbar, Shell } from "@/components/Shell";
 import { getSession, requireVendor } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -11,9 +11,9 @@ export default async function VendorLayout({ children }: { children: React.React
   // No vendor yet → onboarding. The page itself renders the registration form.
   if (!membership) {
     return (
-      <div className="flex min-h-screen flex-col">
-        <Topbar>Vendor onboarding</Topbar>
-        <main className="mx-auto w-full max-w-3xl flex-1 p-8">{children}</main>
+      <div className="flex min-h-screen flex-col bg-slate-50">
+        <BareTopbar>Vendor onboarding</BareTopbar>
+        <main className="mx-auto w-full max-w-3xl flex-1 p-4 sm:p-8">{children}</main>
       </div>
     );
   }
@@ -25,27 +25,24 @@ export default async function VendorLayout({ children }: { children: React.React
     .eq("status", "new");
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar
-        title={membership.vendor.brand_name}
-        subtitle={
-          membership.vendor.status === "approved"
-            ? "Vendor portal"
-            : `Status: ${membership.vendor.status}`
-        }
-        items={[
-          { href: "/vendor", label: "Dashboard" },
-          { href: "/vendor/assets", label: "Products" },
-          { href: "/vendor/leads", label: "Leads inbox", badge: newLeads ?? undefined },
-          { href: "/vendor/subscription", label: "Subscription" },
-          { href: "/vendor/team", label: "Team" },
-        ]}
-        footer={user?.email ?? ""}
-      />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar>{membership.vendor.brand_name}</Topbar>
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
-      </div>
-    </div>
+    <Shell
+      title={membership.vendor.brand_name}
+      subtitle={
+        membership.vendor.status === "approved"
+          ? "Vendor portal"
+          : `Status: ${membership.vendor.status}`
+      }
+      topbarTitle={membership.vendor.brand_name}
+      items={[
+        { href: "/vendor", label: "Dashboard" },
+        { href: "/vendor/assets", label: "Products" },
+        { href: "/vendor/leads", label: "Leads inbox", badge: newLeads ?? undefined },
+        { href: "/vendor/subscription", label: "Subscription" },
+        { href: "/vendor/team", label: "Team" },
+      ]}
+      footer={user?.email ?? ""}
+    >
+      {children}
+    </Shell>
   );
 }

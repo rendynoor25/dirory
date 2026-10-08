@@ -45,10 +45,15 @@ const warnings = [];
 const tables = [];
 const indexes = [];
 
-for (const file of files) {
+for (const [fileIndex, file] of files.entries()) {
   const full = path.join(dir, file);
   const raw = fs.readFileSync(full, "utf8");
   const lines = raw.split(/\r?\n/);
+  // Migrations run in filename order, so "before" must be judged across files,
+  // not by line number alone: line 300 of 0001 is still earlier than line 1 of
+  // 0007. Comparing raw line numbers across files produced a false positive
+  // (0007 referencing profiles appeared to reference a table created "later").
+  const order = (lineNumber) => fileIndex * 1_000_000 + lineNumber;
 
   // --- 4. encoding ---------------------------------------------------------
   // Reported as a warning, not a failure: non-ASCII in a comment (an arrow, a
@@ -76,7 +81,7 @@ for (const file of files) {
   lines.forEach((line, i) => {
     // --- 1. collect declarations -------------------------------------------
     let m = line.match(/create\s+table\s+(?:if\s+not\s+exists\s+)?public\.(\w+)/i);
-    if (m) tables.push({ file, line: i + 1, name: m[1].toLowerCase(), refs: [] });
+    if (m) tables.push({ file, line: i + 1, order: order(i + 1), name: m[1].toLowerCase(), refs: [] });
 
     m = line.match(/create\s+index\s+(?:if\s+not\s+exists\s+)?(\w+)/i);
     if (m) indexes.push({ file, line: i + 1, name: m[1].toLowerCase() });
@@ -107,7 +112,8 @@ for (const [kind, list] of [["table", tables], ["index", indexes]]) {
 // --- 2. forward references -------------------------------------------------
 for (const t of tables) {
   const declaredBefore = new Set(
-    tables.filter((o) => o.line < t.line || (o.line === t.line && o.name !== t.name))
+    tables
+      .filter((o) => o.order < t.order || (o.order === t.order && o.name !== t.name))
       .map((o) => o.name),
   );
   for (const ref of new Set(t.refs)) {

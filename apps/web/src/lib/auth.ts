@@ -57,7 +57,9 @@ export async function getSession() {
 export async function requireAdmin() {
   const session = await getSession();
   if (!session.user) redirect("/login?next=/admin");
-  if (session.profile?.role !== "admin") redirect("/vendor");
+  // A signed-in non-admin gets an explicit "no access" page rather than being
+  // bounced into the vendor onboarding flow, which looked like a broken login.
+  if (session.profile?.role !== "admin") redirect("/no-access");
   return session;
 }
 
