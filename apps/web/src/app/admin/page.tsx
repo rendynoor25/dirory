@@ -71,7 +71,8 @@ export default async function AdminOverview() {
     {},
   );
 
-  const [{ data: topMissing }, { data: recentAudit }, { data: pending }] = await Promise.all([
+  const [{ data: topMissing }, { data: recentAudit }, { data: pending }, { data: health }] =
+    await Promise.all([
     supabase
       .from("missing_requests")
       .select("id, query_norm, miss_count, distinct_installs, status")
@@ -89,7 +90,22 @@ export default async function AdminOverview() {
       .eq("review_status", "pending")
       .order("created_at", { ascending: true })
       .limit(5),
+    // Plugin health (migration 0016). Admin-only rollup; empty until plugin
+    // 0.9.6 reports, because earlier versions never sent these counters.
+    supabase.rpc("plugin_health_summary", { p_days: 7 }),
   ]);
+
+  const healthRows = (health ?? []) as {
+    plugin_version: string;
+    installs: number;
+    load_attempts: number;
+    load_failures: number;
+    load_failure_pct: number;
+    avg_load_ms: number;
+    insert_failures: number;
+    paint_failures: number;
+    cloud_failures: number;
+  }[];
 
   return (
     <div className="space-y-6">
@@ -153,6 +169,33 @@ export default async function AdminOverview() {
               </Table>
             ) : (
               <Empty>Nothing waiting for review.</Empty>
+            )}
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Plugin health"
+              subtitle="Last 7 days, per plugin version. Counters only — no project, geometry or file data. Empty until plugin 0.9.6 reports."
+            />
+            {healthRows.length ? (
+              <Table head={["Version", "Installs", "Loads", "Fail %", "Avg load", "Insert", "Paint", "Cloud"]}>
+                {healthRows.map((h) => (
+                  <tr key={h.plugin_version}>
+                    <Td className="font-medium text-slate-900">{h.plugin_version}</Td>
+                    <Td>{h.installs}</Td>
+                    <Td>{h.load_attempts}</Td>
+                    <Td className={Number(h.load_failure_pct) > 10 ? "text-rose-700" : ""}>
+                      {Number(h.load_failure_pct)}%
+                    </Td>
+                    <Td>{h.avg_load_ms ? `${Number(h.avg_load_ms).toLocaleString("id-ID")} ms` : "—"}</Td>
+                    <Td>{h.insert_failures}</Td>
+                    <Td>{h.paint_failures}</Td>
+                    <Td>{h.cloud_failures}</Td>
+                  </tr>
+                ))}
+              </Table>
+            ) : (
+              <Empty>No health reports yet.</Empty>
             )}
           </Card>
         </div>

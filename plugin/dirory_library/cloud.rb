@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.9.5'.freeze
+      PLUGIN_VERSION = '0.9.6'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -61,6 +61,10 @@ module Dirory
       @last_error = nil
       @last_snapshot_at = nil
       @inflight = []     # keeps in-flight HTTP requests alive (see new_request)
+      # Plugin-health counters since the last report (see report_health). These
+      # describe the plugin's own operation - failed loads, timings - never the
+      # architect's project, geometry or file paths.
+      @health = {}
 
       # --------------------------------------------------------------
       # HTTP requests
@@ -625,12 +629,14 @@ module Dirory
             @last_error = nil
           else
             @last_error = "Server answered HTTP #{code}"
+            health_bump('cloud_failures')
           end
         end
         true
       rescue StandardError => e
         @sending = false
         @last_error = "#{e.class}: #{e.message}"
+        health_bump('cloud_failures')
         false
       end
 
@@ -1040,8 +1046,44 @@ module Dirory
         @started = true
         watch(Sketchup.active_model)
         Sketchup.add_observer(AppWatcher.new)
-        UI.start_timer(FLUSH_INTERVAL_SECONDS, true) { safely { flush } }
+        UI.start_timer(FLUSH_INTERVAL_SECONDS, true) { safely { report_health; flush } }
         UI.start_timer(snapshot_minutes * 60, true) { safely { snapshot } }
+      end
+
+      # --------------------------------------------------------------
+      # Plugin health (FR-M7; the dashboard "Plugin health" area)
+      #
+      # Counters only, and only while the architect has sharing on. Failed model
+      # loads and load timings let the team see whether the extension is working
+      # on real machines, which no amount of local testing replaces.
+      # --------------------------------------------------------------
+      HEALTH_KEYS = %w[
+        load_attempts load_failures load_ms_total
+        insert_failures paint_failures cloud_failures
+      ].freeze
+
+      # Add to a counter. Unknown keys are ignored so a typo cannot invent a
+      # field the server would reject.
+      def self.health_bump(key, amount = 1)
+        return unless share_usage?
+        k = key.to_s
+        return unless HEALTH_KEYS.include?(k)
+        @health[k] = @health.fetch(k, 0).to_i + amount.to_i
+      rescue StandardError
+        nil
+      end
+
+      # Queue the counters, then clear them. Clearing on enqueue is safe because
+      # the outbox entry is durable and a resent event id is deduplicated by the
+      # server's ingest log.
+      def self.report_health
+        return false unless share_usage?
+        counts = {}
+        HEALTH_KEYS.each { |k| counts[k] = @health.fetch(k, 0).to_i }
+        return false if counts.values.all? { |v| v.zero? }
+        @health.clear
+        enqueue('plugin_health', counts)
+        true
       end
 
       # --------------------------------------------------------------

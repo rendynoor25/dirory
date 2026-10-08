@@ -637,10 +637,12 @@ module Dirory
 
     def self.insert_model_file(data, path)
       unless File.extname(path).downcase == '.skp'
+        Cloud.health_bump('insert_failures')
         UI.messagebox("This card does not point to a SketchUp model (.skp):\n#{path}")
         return
       end
       unless File.file?(path) && File.size(path) > 0
+        Cloud.health_bump('insert_failures')
         UI.messagebox("This model file is missing or empty:\n#{path}")
         return
       end
@@ -662,6 +664,8 @@ module Dirory
       begin
         Sketchup.set_status_text('Dirory: loading SketchUp model…', SB_PROMPT)
         comp_def = nil
+        Cloud.health_bump('load_attempts')
+        load_started = Time.now
         begin
           model.start_operation('Load Dirory Model', true)
           started = true
@@ -672,9 +676,15 @@ module Dirory
         rescue StandardError
           model.abort_operation if started
           started = false
+          Cloud.health_bump('load_failures')
           raise
+        ensure
+          # Counts the time spent whether or not the load succeeded, so the
+          # dashboard average reflects what architects actually wait for.
+          Cloud.health_bump('load_ms_total', ((Time.now - load_started) * 1000).round)
         end
         unless comp_def
+          Cloud.health_bump('load_failures')
           UI.messagebox("SketchUp could not load this model:\n#{path}")
           Sketchup.set_status_text('')
           return
@@ -1039,6 +1049,7 @@ module Dirory
           model.abort_operation if started
         rescue StandardError
         end
+        Cloud.health_bump('paint_failures')
         UI.messagebox("Couldn't prepare material:\n#{e.message}")
       end
     end

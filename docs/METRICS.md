@@ -54,8 +54,9 @@ then the `plans` rows and the public pricing page follow from that.
 | Growth | DAU / WAU / MAU | **Possible** — `usage_snapshots.taken_at` per install |
 | Growth | Install-to-first-use rate | **Possible** — installs with ≥1 snapshot |
 | Growth | 30-day retention | **Possible** — installs active in two windows |
-| Plugin health | SketchUp / plugin version distribution | **Possible** — `installs.su_version`, `plugin_version` |
-| Plugin health | Error/crash rate, failed model loads, avg load time | **Blocked** — never transmitted. The plugin sends no error or timing data |
+| Plugin health | SketchUp / plugin version distribution | **Live** — `installs` + `plugin_health_events` |
+| Plugin health | Failed model loads, insert/paint failures, average load time | **Live since plugin 0.9.6** — `plugin_health_summary()` on Admin → Overview. Empty until 0.9.6 reports; earlier versions never sent it |
+| Plugin health | Crash rate | **Partial** — failures are counted, but a hard SketchUp crash cannot report itself. A session that never sends its next beacon is the only signal |
 | Library usage | Inserts per model, searches/day, top terms, top categories | **Possible** — `usage_snapshot_items`, `search_misses` |
 | Library usage | Zero-result searches | **Live** — Admin → Missing requests |
 | Content | Models published vs the 250 target | **Possible** |
@@ -102,13 +103,24 @@ PRD, and it means:
 
 ## Suggested next step
 
-Build the metrics marked **Possible**, in this order:
+Done so far:
 
-1. Admin revenue + vendor pipeline (the founder's own numbers, no privacy risk).
-2. Admin growth and content coverage.
-3. Vendor catalog status and category share.
-4. Decide C1 and C2 before touching demand insights or pricing.
+1. Admin revenue + vendor pipeline (0.10.0).
+2. Vendor catalog status (0.10.0).
+3. Plugin health, end to end: migration `0016`, ingest support, plugin 0.9.6
+   counters, and the Admin → Overview card.
+4. C2 (pricing) decided: the document's packages. C1 (vendor-visible unmet
+   searches) decided: admin-only for now.
 
-The **Blocked** rows need new plugin instrumentation or new fields. They cannot be
-computed from what is stored today, and this document does not invent numbers for
-them.
+Still to build:
+
+1. Admin growth (installs per week, DAU/WAU/MAU, retention) and content coverage.
+2. Vendor category share (needs a new aggregate function).
+
+Still **Blocked**, and needing new collection rather than new queries: model tiers
+A/B/C, digitization cost vs revenue, output per student, user geography,
+insert-to-save rate, and search-success counts. This document does not invent
+numbers for them.
+
+A hard SketchUp crash cannot report itself; the nearest signal is a session that
+stops sending its next health beacon.

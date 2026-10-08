@@ -25,7 +25,23 @@ import { resolveServiceKey } from "../_shared/keys.ts";
 const MAX_BATCH = 50;
 const MAX_BODY_BYTES = 512 * 1024; // 512 KB per batch
 
-type Kind = "account" | "search_miss" | "usage_snapshot" | "quote_request";
+/**
+ * Event kinds the server understands.
+ *
+ * `Kind` is a plain string on purpose. The function must NOT reject a batch just
+ * because it contains a kind it has not learned yet: a newer plugin shipped
+ * before the server would otherwise fail every batch and stop all data
+ * collection. Unknown kinds are accepted and parked in `unhandled_events`.
+ */
+type Kind = string;
+
+const HANDLED_KINDS = new Set([
+  "account",
+  "search_miss",
+  "usage_snapshot",
+  "quote_request",
+  "plugin_health",
+]);
 
 interface EventRow {
   id: string;
@@ -52,10 +68,15 @@ function normalizeQuery(text: unknown): string {
 
 function isValid(e: EventRow): boolean {
   if (!e || !UUID_RE.test(String(e.id))) return false;
-  if (!["account", "search_miss", "usage_snapshot", "quote_request"].includes(e.kind)) {
-    return false;
-  }
+  // Any non-empty kind is accepted; unknown ones are stored, not rejected.
+  if (typeof e.kind !== "string" || !e.kind.trim()) return false;
   return true;
+}
+
+/** Coerce a counter to a non-negative integer; anything odd becomes 0. */
+function counter(value: unknown): number {
+  const n = Number(value ?? 0);
+  return Number.isFinite(n) && n > 0 ? Math.round(n) : 0;
 }
 
 Deno.serve(async (req: Request) => {
@@ -240,6 +261,37 @@ Deno.serve(async (req: Request) => {
           }
         }
       }
+      if (e.kind === "plugin_health") {
+        // Counters describe the plugin's own operation (loads, failures and
+        // timings). They carry no project name, geometry or file path.
+        await supabase.from("plugin_health_events").insert({
+          id: e.id,
+          install_id: body.install_id,
+          profile_id: profileId,
+          plugin_version: body.plugin_version ?? null,
+          su_version: body.su_version ?? null,
+          platform: body.platform ?? null,
+          load_attempts: counter(data.load_attempts),
+          load_failures: counter(data.load_failures),
+          load_ms_total: counter(data.load_ms_total),
+          insert_failures: counter(data.insert_failures),
+          paint_failures: counter(data.paint_failures),
+          cloud_failures: counter(data.cloud_failures),
+        });
+      }
+
+      // A kind this server does not handle yet. Keep it rather than lose it, and
+      // keep answering 2xx so the plugin's outbox clears and the batch is not
+      // retried forever.
+      if (!HANDLED_KINDS.has(e.kind)) {
+        await supabase.from("unhandled_events").insert({
+          id: e.id,
+          install_id: body.install_id,
+          kind: e.kind,
+          payload: data,
+        });
+      }
+
       // kind === 'account' needs no storage beyond installs.last_seen.
     }
 

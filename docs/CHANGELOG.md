@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.12.0 — plugin health metrics, and a forward-compatible ingest
+
+**Plugin 0.9.6** adds the counters behind the dashboard's "Plugin health" area.
+Until now those numbers never left the architect's machine, which is why that
+area could not be built.
+
+- `cloud.rb`: `health_bump` / `report_health` keep counters for load attempts,
+  load failures, cumulative load time, insert failures, paint failures and API
+  failures, and queue a `plugin_health` event on the existing flush timer. They
+  are gated on the same sharing switch as usage snapshots.
+- `main.rb`: counts a model load attempt, its duration (whether it succeeds or
+  not) and its failures; counts failed inserts and failed material preparation.
+- `cloud.rb`: a failed call to the Dirory API counts as a cloud failure.
+- Only counters are sent: no project name, geometry or file path.
+
+**Ingest is now forward-compatible (important).** The `/events` function used to
+reject a whole batch if any event had an unknown kind. That is a rollout trap:
+shipping a newer plugin before the server knew its new kind would fail every
+batch and stop all data collection. Unknown kinds are now accepted and stored in
+`unhandled_events`, so the batch succeeds and nothing is lost while the server
+catches up.
+
+**Schema** (migration `0016`): `plugin_health_events`, `unhandled_events` (both
+admin-readable only) and `plugin_health_summary(p_days)` for the rollup.
+
+**Admin → Overview** gains a "Plugin health" card: per plugin version, installs,
+loads, failure percentage, average load time, and insert/paint/cloud failures.
+It stays empty until 0.9.6 reports, because earlier versions never sent it.
+
+**Verified:** `node scripts/check-ruby.mjs` clean (all five Ruby files parse, and
+every `Cloud.*` used in `main.rb` is defined), Edge Functions typecheck clean,
+`tsc` clean, `next build` clean, migration lint clean over 16 files. The packaged
+`DiroryLibrary-0.9.6.rbz` was opened and confirmed to contain the new health code.
+**Not verified:** none of this has run inside SketchUp. The health counters are
+the one part of this change that only a real SketchUp session can prove.
+
 ## 0.11.0 — vendor packages, download consent, and the .env answer
 
 **Pricing: the founder chose the package model** from the metrics document
