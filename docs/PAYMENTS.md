@@ -90,16 +90,123 @@ Until it is applied, the webhook cannot settle an invoice.
 
 ### 5. Test in sandbox
 
-With `MIDTRANS_IS_PRODUCTION=false` and sandbox keys, Midtrans provides test
-payment instruments (for example a QRIS simulator and test VA numbers). Pay one
-invoice, then confirm:
+Two scripts ship with the repo. Neither is imported by the app.
+
+**Prove the signature logic (no credentials needed):**
+
+```bash
+node --experimental-strip-types scripts/test-midtrans.mts
+```
+
+It uses a made-up key and checks that a correctly signed notification is
+accepted while a tampered amount, order id, status code or foreign signature is
+rejected, plus the status mapping. All checks pass today.
+
+**Create a real sandbox transaction:**
+
+```bash
+node scripts/midtrans-sandbox-test.mjs
+```
+
+Reads `MIDTRANS_SERVER_KEY` / `MIDTRANS_CLIENT_KEY` from the environment or
+`.env.local`, refuses to run when `MIDTRANS_IS_PRODUCTION=true`, and prints a
+Snap payment URL. Pay with a sandbox instrument, then confirm the invoice became
+paid.
+
+**Simulate the webhook without waiting for a payment:**
+
+```bash
+node scripts/midtrans-sandbox-test.mjs \
+  --notify https://dirory.com/api/payments/midtrans/webhook \
+  --order DRY-xxxxxxxxxxxx-1700000000 \
+  --amount 5000000
+```
+
+It signs the payload exactly as Midtrans does, so it exercises the real signature
+check and the settle path. **Run it twice**: the second run must change nothing,
+which is the idempotency guarantee.
+
+**What to check after any of these:**
 
 - the invoice shows **paid** in the vendor portal and in **Admin → Payments**;
 - `payment_events` has a row for the notification;
 - the subscription's `current_period_end` moved forward one period.
 
-Replaying the same notification must change nothing — that is the idempotency
-guarantee.
+
+## Choosing the payment methods
+
+### Restrict Snap to BSI Virtual Account
+
+Set one variable on the server:
+
+```bash
+MIDTRANS_ENABLED_PAYMENTS=bsi_va
+```
+
+`bsi_va` is Midtrans' code for **BSI Virtual Account** (confirmed in their docs).
+When only one method is listed, Snap skips its method list and goes straight to
+that flow. Leave the variable empty to offer everything the merchant account has
+enabled (QRIS, cards, GoPay, OVO, DANA, ShopeePay, other banks' VA).
+
+**Important:** BSI VA can only be paid through the **BYOND by BSI** app. That is
+Midtrans' rule, not a Dirory limitation. Because that excludes most payers, keep
+the manual transfer option switched on alongside it rather than making BSI the
+only way to pay.
+
+### Where the money actually goes
+
+This distinction matters for reconciliation:
+
+| Method | Payer pays into | Reaches your BSI account |
+|---|---|---|
+| BSI VA via Midtrans | Midtrans' BSI collection account | **After** Midtrans settles, to the bank account registered in your Midtrans profile |
+| Snap QRIS / card / e-wallet | Midtrans' merchant account | Same — on settlement |
+| Manual transfer | **Your account directly** | Immediately |
+
+So `MIDTRANS_ENABLED_PAYMENTS=bsi_va` gives the payer a BSI virtual account, but
+it is **not** your account number, and the money does not land in it instantly.
+Register your BSI account as the settlement destination in the Midtrans
+dashboard, or use the manual transfer path below.
+
+### Use your own BSI account directly (no gateway, no fee)
+
+This is the manual bank transfer already on every unpaid invoice. Set three
+server variables — they are read at runtime, so only a restart is needed:
+
+```bash
+BILLING_BANK_NAME="Bank Syariah Indonesia (BSI)"
+BILLING_BANK_ACCOUNT=2511199205
+BILLING_BANK_HOLDER="Rendy Noor Chandra"
+```
+
+The invoice page then shows those details and the vendor uploads proof, which an
+admin confirms in **Admin → Payments**. No transaction fee, money arrives
+directly, and it works today.
+
+Note that these values are **shown to every vendor** — that is what a payment
+destination is for. Do not put anything secret in them. Because this is a
+personal account, check the tax and bookkeeping treatment with your accountant
+before invoicing businesses at scale.
+
+### Dynamic QRIS, unique per payment
+
+Every invoice gets **its own QR**, with the amount fixed and an expiry — a
+"dynamic" QRIS in Bank Indonesia's terms, not a static code. It is created with
+Midtrans Core API (`payment_type: "qris"`), which returns a hosted PNG in
+`actions[]` plus the `qr_string` payload.
+
+- The QR is stored on the invoice (`qr_string`, `qr_url`, `qr_expires_at`).
+- A still-valid QR is **reused** when the page reloads, rather than minting a new
+  Midtrans transaction each time.
+- It settles through the same webhook as Snap, because both set `gateway_ref` to
+  the same order id.
+- The QR is unique to one invoice, so a leaked screenshot can only ever pay that
+  invoice, never a different one.
+
+Set `MIDTRANS_SERVER_KEY` and the QRIS card appears on unpaid invoices
+automatically. Snap also offers QRIS, so if you only want one route to payment,
+you can leave the dedicated QR off — but it is the only way to show a scannable
+code without redirecting the payer.
 
 ## Safety properties
 

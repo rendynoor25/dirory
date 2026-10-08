@@ -239,6 +239,78 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ---- For brands (vendor section) -------------------------------- */}
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-2 lg:items-center lg:px-10 lg:py-20">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">
+              {t(locale, "vendor.tag")}
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+              {t(locale, "vendor.title")}
+            </h2>
+            <p className="mt-4 text-sm leading-6 text-slate-600">{t(locale, "vendor.lead")}</p>
+            <ul className="mt-6 space-y-3 text-sm text-slate-700">
+              {["vendor.point1", "vendor.point2", "vendor.point3"].map((key) => (
+                <li key={key} className="flex gap-3">
+                  <span className="mt-0.5 text-brand-600" aria-hidden="true">
+                    &#10003;
+                  </span>
+                  <span>{t(locale, key)}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/pricing"
+              className="mt-7 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
+            >
+              {t(locale, "vendor.cta")} <span className="ml-2" aria-hidden="true">→</span>
+            </Link>
+            <p className="mt-3 text-xs text-slate-500">{t(locale, "vendor.note")}</p>
+          </div>
+
+          {/* A small mock of the vendor dashboard, to make the promise concrete. */}
+          <div className="relative">
+            <div className="absolute -right-6 -top-8 h-40 w-40 rounded-full bg-brand-100/70 blur-2xl" />
+            <div className="relative rounded-[2rem] border border-slate-200 bg-[#fbfcff] p-6 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Brand dashboard
+              </p>
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                {[
+                  ["Inserts", "1,284"],
+                  ["Projects", "216"],
+                  ["Quotes", "38"],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-xl border border-slate-200 bg-white p-3">
+                    <p className="text-[10px] uppercase tracking-wide text-slate-500">{label}</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-900">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 space-y-2">
+                {[
+                  ["CW 630 PJ", "412"],
+                  ["CE9", "287"],
+                  ["Ottium", "156"],
+                ].map(([name, units]) => (
+                  <div
+                    key={name}
+                    className="flex items-center justify-between rounded-xl border border-slate-100 bg-white px-4 py-3 text-sm"
+                  >
+                    <span className="font-medium text-slate-800">{name}</span>
+                    <span className="text-slate-500">{units} units</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-[11px] leading-5 text-slate-400">
+                Illustrative figures. A brand sees only its own numbers and anonymous benchmarks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-20">
         <div className="relative overflow-hidden rounded-[2rem] bg-brand-900 px-7 py-10 text-white sm:px-12 sm:py-14">
           <div className="absolute -right-12 -top-24 h-72 w-72 rounded-full border-[42px] border-white/5" />

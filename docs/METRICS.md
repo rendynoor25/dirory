@@ -69,8 +69,8 @@ then the `plans` rows and the public pricing page follow from that.
 | Vendors | Pipeline stage, contract value, renewal, outstanding invoices | **Partial** — status + subscriptions + invoices exist; "contract value" is not a field |
 | Revenue | MRR / ARR, revenue per vendor, revenue by tier | **Possible** — `invoices` + `subscriptions` + `plans` |
 | Revenue | Digitization cost vs revenue (margin) | **Blocked** — no cost field |
-| Users | Total, by occupation | **Live-ish** — `profiles.occupation`, `user_occupation_counts()` |
-| Users | By city / province | **Blocked** — no city on a profile; only on quote requests |
+| Users | Total, by occupation | **Live** — `profiles.occupation`, `user_occupation_counts()` |
+| Users | By city / province | **Live, optional** — migration `0018` adds nullable `city`/`province`, asked once after the occupation question. Only answered accounts are counted; the rest show as "unknown" |
 | Users | Repeat-use rate | **Possible** — installs with >1 snapshot day |
 | Derived | Insert-to-save rate | **Blocked** — snapshots show current state, not saves |
 

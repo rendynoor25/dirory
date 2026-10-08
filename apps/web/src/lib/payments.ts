@@ -1,51 +1,74 @@
+import { buildOrderId, createMidtransQrisCharge, midtransConfigured } from "@/lib/midtrans";
+
 /**
- * Payment gateway adapter — dynamic QRIS.
+ * Dynamic QRIS for an invoice.
  *
- * Note: Midtrans is wired up separately, through **Snap** (`lib/midtrans.ts`).
- * Snap's hosted page already includes QRIS, so this file only covers a *direct*
- * dynamic-QRIS charge, which needs Xendit. Do not treat `MIDTRANS_SERVER_KEY`
- * as enabling this path — it would show a "scan this QR" box with no QR in it.
+ * "Dynamic" is Bank Indonesia's term for a QR that is minted per transaction,
+ * carries the amount, and expires - as opposed to a static QR the payer types an
+ * amount into. Each Dirory invoice therefore gets its OWN QR, tied to one order
+ * id, which is what makes it safe to show on a public-ish page: paying it can
+ * only ever settle that one invoice.
  *
- * To switch direct QRIS on:
- *   1. Set `XENDIT_SECRET_KEY` in the server `.env`.
- *   2. Implement `createQrisCharge` below:
- *        POST https://api.xendit.co/qr_codes
- *        { external_id, type:"DYNAMIC", callback_url, amount }
- *        -> { qr_string, id, expires_at }
- *   3. Point Xendit's webhook at a route that verifies its callback token.
+ * Implemented with Midtrans Core API (`payment_type: "qris"`). Snap also offers
+ * QRIS, but Snap is a redirect; this path exists so the payer can scan in place
+ * without leaving the page.
  *
- * Until then `createQrisCharge` throws a clear error rather than doing nothing.
+ * Xendit is a possible alternative but is not implemented: `createQrisCharge`
+ * throws rather than pretending.
  */
 
 export type QrisCharge = {
-  /** EMVCo payload the client renders as a QR. */
+  /** EMVCo payload, when the gateway returns one. */
   qrString: string | null;
-  /** Or a gateway-hosted QR image URL. */
+  /** Hosted PNG of the QR. This is what the page renders. */
   qrUrl: string | null;
-  expiresAt: string;
+  /** ISO timestamp, or null when the gateway did not state one. */
+  expiresAt: string | null;
+  /** The order id stored on the invoice; the webhook matches on it. */
   gatewayRef: string;
 };
 
-export function qrisGateway(): "xendit" | null {
+/** Which gateway can mint a QR right now. Only Midtrans is implemented. */
+export function qrisGateway(): "midtrans" | "xendit" | null {
+  if (midtransConfigured()) return "midtrans";
   if (process.env.XENDIT_SECRET_KEY) return "xendit";
   return null;
 }
 
+/**
+ * True only when QRIS can actually be created. Deliberately narrower than
+ * `qrisGateway()`: Xendit is listed so the label is honest, but it would throw,
+ * and the invoice page must not offer a button that cannot work.
+ */
 export function qrisConfigured(): boolean {
-  return qrisGateway() !== null;
+  return midtransConfigured();
 }
 
 /** Human label for the invoice page. */
 export function qrisLabel(): string {
-  return qrisGateway() === "xendit" ? "Xendit" : "";
+  return qrisConfigured() ? "Midtrans" : "";
 }
 
-export async function createQrisCharge(_input: {
+export async function createQrisCharge(input: {
   invoiceId: string;
   amountIdr: number;
   description: string;
 }): Promise<QrisCharge> {
+  if (midtransConfigured()) {
+    const orderId = buildOrderId(input.invoiceId);
+    const charge = await createMidtransQrisCharge({
+      orderId,
+      amountIdr: input.amountIdr,
+    });
+    return {
+      qrString: charge.qrString,
+      qrUrl: charge.qrUrl,
+      expiresAt: charge.expiresAt,
+      gatewayRef: charge.orderId,
+    };
+  }
+
   throw new Error(
-    "Dynamic QRIS is not configured yet. Set XENDIT_SECRET_KEY or MIDTRANS_SERVER_KEY and implement createQrisCharge().",
+    "Dynamic QRIS is not configured. Set MIDTRANS_SERVER_KEY (Xendit is not implemented yet).",
   );
 }

@@ -9,6 +9,7 @@ import { midtransConfig, midtransConfigured, snapScriptUrl } from "@/lib/midtran
 import { setPaymentMethod, submitPayment } from "../../../actions";
 import { PaymentProof } from "./PaymentProof";
 import { MidtransPay } from "./MidtransPay";
+import { QrisPay } from "./QrisPay";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const { data: invoice } = await supabase
     .from("invoices")
     .select(
-      "id, vendor_id, amount_idr, status, gateway, payment_method, proof_path, proof_reference, due_at, paid_at, created_at, subscriptions(plans(name, period))",
+      "id, vendor_id, amount_idr, status, gateway, payment_method, proof_path, proof_reference, qr_url, qr_string, qr_expires_at, due_at, paid_at, created_at, subscriptions(plans(name, period))",
     )
     .eq("id", id)
     .maybeSingle();
@@ -150,27 +151,26 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                   QRIS {qrisLabel() ? `· ${qrisLabel()}` : ""}
                 </p>
                 {qrisConfigured() ? (
-                  <p className="mt-3 text-xs text-slate-500">
-                    Scan the QR with any e-wallet or bank app. A fresh QR is created for this invoice.
-                  </p>
+                  unpaid ? (
+                    <div className="mt-3">
+                      <QrisPay
+                        invoiceId={invoice.id}
+                        qrUrl={(invoice as any).qr_url ?? null}
+                        expiresAt={(invoice as any).qr_expires_at ?? null}
+                        amountLabel={formatIDR(invoice.amount_idr)}
+                      />
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-xs text-slate-500">
+                      This invoice is {invoice.status}.
+                    </p>
+                  )
                 ) : (
                   <p className="mt-3 text-xs text-slate-500">
                     Dynamic QRIS is not switched on yet — the gateway keys still need adding. Pay by
                     bank transfer for now; the QR will appear here once it is connected.
                   </p>
                 )}
-                {unpaid && qrisConfigured() ? (
-                  <form action={setPaymentMethod} className="mt-4">
-                    <input type="hidden" name="invoice_id" value={invoice.id} />
-                    <input type="hidden" name="method" value="qris" />
-                    <button
-                      disabled={method === "qris"}
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
-                    >
-                      {method === "qris" ? "Selected" : "Pay by QRIS"}
-                    </button>
-                  </form>
-                ) : null}
               </div>
             </div>
           </Card>

@@ -242,6 +242,43 @@ const en: Record<string, string> = {
     "I have read the Privacy Policy and agree to these reports.",
   "download.consentButton": "Agree and download",
 
+  // ---- vendor section + pricing ------------------------------------------
+  "vendor.tag": "For brands",
+  "vendor.title": "Put your products in architects' hands",
+  "vendor.lead":
+    "Dirory publishes Indonesian building products inside SketchUp, so designers place your real models and materials in live projects instead of guessing.",
+  "vendor.point1": "Your catalogue inside SketchUp, where the design decisions happen.",
+  "vendor.point2": "See which products are actually used, and how much.",
+  "vendor.point3": "Receive quote requests from architects who picked your product.",
+  "vendor.cta": "See brand pricing",
+  "vendor.note": "Pricing is for companies. It opens once you sign in with your company email.",
+
+  "pricing.tag": "Brand pricing",
+  "pricing.title": "Packages and digitization",
+  "pricing.lead":
+    "Digitize your catalogue once, then keep it listed. Prices are a starting point for a conversation, not a fixed rate card.",
+  "pricing.gateTitle": "Pricing is for company accounts",
+  "pricing.gateBody":
+    "Sign in with your company email to see brand pricing. Personal addresses like gmail.com are not accepted here.",
+  "pricing.gateCta": "Sign in with a company email",
+  "pricing.personalTitle": "This looks like a personal address",
+  "pricing.personalBody":
+    "You are signed in as {email}. Brand pricing is shown to company accounts. Sign in with your work address, or contact us and we will help.",
+  "pricing.packagesTitle": "Packages",
+  "pricing.packagesLead": "Includes digitization and one year of listing.",
+  "pricing.includes": "Includes",
+  "pricing.perYear": "per year",
+  "pricing.customQuote": "Custom quote",
+  "pricing.products": "products",
+  "pricing.digitizationTitle": "One-time digitization",
+  "pricing.digitizationLead": "Per product, paid once. Annual listing is 15-20% of this per year.",
+  "pricing.tierMaterials": "Materials",
+  "pricing.tierStandard": "Standard",
+  "pricing.tierAdvanced": "Advanced",
+  "pricing.addonsTitle": "Add-ons",
+  "pricing.addonsLead": "Optional, priced when you need them.",
+  "pricing.contact": "Prices are negotiable, especially for a first pilot. Tell us what you sell and we will quote.",
+
   // ---- login --------------------------------------------------------------
   "login.title": "Sign in",
   "login.leadGoogle": "Continue with Google, or use an email link. No password to remember.",
@@ -278,6 +315,16 @@ const en: Record<string, string> = {
   "welcome.error": "Could not save that. Please try again.",
   "welcome.continue": "Continue",
   "welcome.askedInSketchUp": "One quick question before you go back to SketchUp.",
+  "welcome.geoTag": "Optional",
+  "welcome.geoTitle": "Where do you mostly work?",
+  "welcome.geoLead":
+    "Optional, and used only in aggregate to see which cities and provinces use Dirory. It is never shown to a brand. Leave it blank to skip.",
+  "welcome.city": "City",
+  "welcome.province": "Province",
+  "welcome.geoSave": "Save and continue",
+  "welcome.geoSkip": "Skip this",
+  "welcome.geoSaved": "Saved.",
+  "welcome.geoError": "Could not save that. Please try again.",
 
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Language",
@@ -501,6 +548,43 @@ const id: Record<string, string> = {
     "Saya telah membaca Kebijakan Privasi dan menyetujui laporan ini.",
   "download.consentButton": "Setuju dan unduh",
 
+  // ---- vendor section + pricing ------------------------------------------
+  "vendor.tag": "Untuk brand",
+  "vendor.title": "Tempatkan produk Anda di tangan arsitek",
+  "vendor.lead":
+    "Dirory menampilkan produk bangunan Indonesia di dalam SketchUp, sehingga desainer memakai model dan material asli Anda di proyek nyata.",
+  "vendor.point1": "Katalog Anda di dalam SketchUp, tempat keputusan desain terjadi.",
+  "vendor.point2": "Lihat produk mana yang benar-benar dipakai, dan seberapa banyak.",
+  "vendor.point3": "Terima permintaan penawaran dari arsitek yang memilih produk Anda.",
+  "vendor.cta": "Lihat harga untuk brand",
+  "vendor.note": "Harga untuk perusahaan. Terbuka setelah Anda masuk dengan email kantor.",
+
+  "pricing.tag": "Harga untuk brand",
+  "pricing.title": "Paket dan digitalisasi",
+  "pricing.lead":
+    "Digitalkan katalog Anda sekali, lalu tetap tayang. Harga ini titik awal diskusi, bukan daftar tarif tetap.",
+  "pricing.gateTitle": "Harga untuk akun perusahaan",
+  "pricing.gateBody":
+    "Masuk dengan email kantor untuk melihat harga brand. Alamat pribadi seperti gmail.com tidak diterima di sini.",
+  "pricing.gateCta": "Masuk dengan email kantor",
+  "pricing.personalTitle": "Ini sepertinya alamat pribadi",
+  "pricing.personalBody":
+    "Anda masuk sebagai {email}. Harga brand ditampilkan untuk akun perusahaan. Masuk dengan alamat kantor Anda, atau hubungi kami.",
+  "pricing.packagesTitle": "Paket",
+  "pricing.packagesLead": "Termasuk digitalisasi dan satu tahun tayang.",
+  "pricing.includes": "Termasuk",
+  "pricing.perYear": "per tahun",
+  "pricing.customQuote": "Penawaran khusus",
+  "pricing.products": "produk",
+  "pricing.digitizationTitle": "Digitalisasi sekali bayar",
+  "pricing.digitizationLead": "Per produk, bayar sekali. Tayang tahunan 15-20% dari ini per tahun.",
+  "pricing.tierMaterials": "Material",
+  "pricing.tierStandard": "Standar",
+  "pricing.tierAdvanced": "Lanjutan",
+  "pricing.addonsTitle": "Tambahan",
+  "pricing.addonsLead": "Opsional, dihitung saat dibutuhkan.",
+  "pricing.contact": "Harga bisa dinegosiasi, terutama untuk pilot pertama. Beri tahu kami produk Anda dan kami akan memberi penawaran.",
+
   // ---- login --------------------------------------------------------------
   "login.title": "Masuk",
   "login.leadGoogle": "Lanjutkan dengan Google, atau pakai tautan email. Tidak perlu kata sandi.",
@@ -537,6 +621,16 @@ const id: Record<string, string> = {
   "welcome.error": "Tidak dapat menyimpan. Silakan coba lagi.",
   "welcome.continue": "Lanjutkan",
   "welcome.askedInSketchUp": "Satu pertanyaan singkat sebelum kembali ke SketchUp.",
+  "welcome.geoTag": "Opsional",
+  "welcome.geoTitle": "Anda biasanya bekerja di mana?",
+  "welcome.geoLead":
+    "Opsional, dan hanya dipakai secara agregat untuk melihat kota dan provinsi mana yang memakai Dirory. Tidak pernah ditampilkan ke brand. Kosongkan untuk melewati.",
+  "welcome.city": "Kota",
+  "welcome.province": "Provinsi",
+  "welcome.geoSave": "Simpan dan lanjutkan",
+  "welcome.geoSkip": "Lewati ini",
+  "welcome.geoSaved": "Tersimpan.",
+  "welcome.geoError": "Tidak dapat menyimpan. Silakan coba lagi.",
 
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Bahasa",

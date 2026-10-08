@@ -61,6 +61,24 @@ export type SnapItem = {
   quantity: number;
 };
 
+/**
+ * Payment methods to offer, from `MIDTRANS_ENABLED_PAYMENTS` (comma-separated).
+ *
+ * Empty means "everything the merchant account has enabled" (Snap's default).
+ * Set it to a single value such as `bsi_va` to send the payer straight to BSI
+ * Virtual Account: Snap skips its method list when only one is specified.
+ *
+ * The code for BSI Virtual Account is `bsi_va`, per Midtrans' docs. It can only
+ * be paid through the BYOND by BSI app, so pair it with the manual transfer
+ * option rather than making it the only way to pay.
+ */
+export function midtransEnabledPayments(): string[] {
+  return (process.env.MIDTRANS_ENABLED_PAYMENTS ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 export type SnapCustomer = {
   first_name?: string;
   last_name?: string;
@@ -115,6 +133,12 @@ export async function createSnapTransaction(input: {
 
   if (input.customer && Object.values(input.customer).some(Boolean)) {
     body.customer_details = input.customer;
+  }
+
+  // Restrict the offered methods when the operator asked for a specific one.
+  const enabled = midtransEnabledPayments();
+  if (enabled.length) {
+    body.enabled_payments = enabled;
   }
 
   const res = await fetch(`${snapApiBase(isProduction)}/snap/v1/transactions`, {
@@ -201,4 +225,100 @@ export function mapMidtransStatus(status: string | undefined): MidtransOutcome {
 export function buildOrderId(invoiceId: string, now = new Date()): string {
   const stamp = Math.floor(now.getTime() / 1000);
   return `DRY-${invoiceId.replace(/-/g, "").slice(0, 12)}-${stamp}`;
+}
+
+// ---------------------------------------------------------------------------
+// Dynamic QRIS (Core API)
+//
+// Snap already includes QRIS, but a dedicated charge gives ONE QR for ONE
+// invoice with a fixed amount and an expiry - a "dynamic" QRIS, per Bank
+// Indonesia's terms - which is what the invoice page shows when the payer wants
+// to scan rather than be redirected.
+//
+// Core API base differs from Snap's: api.sandbox.midtrans.com / api.midtrans.com
+// ---------------------------------------------------------------------------
+function coreApiBase(isProduction: boolean): string {
+  return isProduction ? "https://api.midtrans.com" : "https://api.sandbox.midtrans.com";
+}
+
+export type QrisChargeResult = {
+  orderId: string;
+  transactionId: string | null;
+  /** EMVCo payload, if Midtrans returned it. */
+  qrString: string | null;
+  /** PNG of the QR, hosted by Midtrans. This is what the page renders. */
+  qrUrl: string | null;
+  /** ISO timestamp, or null when Midtrans did not state one. */
+  expiresAt: string | null;
+};
+
+/**
+ * Create a dynamic QRIS charge for one invoice.
+ *
+ * Midtrans returns the QR as an image URL in `actions[]`; the payload itself may
+ * also come back as `qr_string`. The QR is unique to this order and expires.
+ */
+export async function createMidtransQrisCharge(input: {
+  orderId: string;
+  amountIdr: number;
+  acquirer?: "gopay" | "airpay_shopee";
+}): Promise<QrisChargeResult> {
+  const { serverKey, isProduction } = midtransConfig();
+  if (!serverKey) throw new Error("MIDTRANS_SERVER_KEY is not set.");
+
+  const auth = Buffer.from(`${serverKey}:`).toString("base64");
+
+  const res = await fetch(`${coreApiBase(isProduction)}/v2/charge`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Basic ${auth}`,
+    },
+    body: JSON.stringify({
+      payment_type: "qris",
+      transaction_details: {
+        order_id: input.orderId,
+        gross_amount: Math.round(input.amountIdr),
+      },
+      qris: { acquirer: input.acquirer ?? "gopay" },
+    }),
+    signal: AbortSignal.timeout(15_000),
+  });
+
+  const text = await res.text();
+  if (!res.ok) {
+    throw new Error(`Midtrans rejected the QRIS charge (HTTP ${res.status}): ${text.slice(0, 300)}`);
+  }
+
+  let parsed: {
+    transaction_id?: string;
+    qr_string?: string;
+    expiry_time?: string;
+    actions?: { name?: string; url?: string }[];
+  };
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error("Midtrans returned a QRIS response that was not JSON.");
+  }
+
+  const qrUrl = parsed.actions?.find((a) => a.name === "generate-qr-code")?.url ?? null;
+
+  // Midtrans states expiry in Jakarta time without a zone, e.g.
+  // "2026-10-09 11:46:13". Parse it as +07:00 rather than letting the server's
+  // own timezone decide, which would shift the expiry.
+  let expiresAt: string | null = null;
+  if (parsed.expiry_time) {
+    const d = new Date(`${parsed.expiry_time.replace(" ", "T")}+07:00`);
+    expiresAt = Number.isNaN(d.getTime()) ? null : d.toISOString();
+  }
+
+  return {
+    orderId: input.orderId,
+    transactionId: parsed.transaction_id ?? null,
+    qrString: parsed.qr_string ?? null,
+    qrUrl,
+    expiresAt,
+  };
 }

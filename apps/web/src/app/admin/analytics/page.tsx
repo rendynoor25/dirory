@@ -18,13 +18,16 @@ export default async function AdminAnalytics() {
   const { supabase } = await requireAdmin();
 
   const TARGET = 250;
-  const [growthRes, weeklyRes, contentRes, catRes, searchRes] = await Promise.all([
-    supabase.rpc("admin_growth_summary"),
-    supabase.rpc("admin_installs_weekly", { p_weeks: 12 }),
-    supabase.rpc("admin_content_coverage", { p_target: TARGET }),
-    supabase.rpc("admin_top_categories", { p_days: 30 }),
-    supabase.rpc("admin_searches_daily", { p_days: 30 }),
-  ]);
+  const [growthRes, weeklyRes, contentRes, catRes, searchRes, geoRes, cityRes] =
+    await Promise.all([
+      supabase.rpc("admin_growth_summary"),
+      supabase.rpc("admin_installs_weekly", { p_weeks: 12 }),
+      supabase.rpc("admin_content_coverage", { p_target: TARGET }),
+      supabase.rpc("admin_top_categories", { p_days: 30 }),
+      supabase.rpc("admin_searches_daily", { p_days: 30 }),
+      supabase.rpc("admin_users_by_geography"),
+      supabase.rpc("admin_users_by_city", { p_limit: 20 }),
+    ]);
 
   type Growth = {
     installs_total: number;
@@ -63,6 +66,10 @@ export default async function AdminAnalytics() {
   }[];
   const searches = (searchRes.data ?? []) as { day: string; misses: number }[];
   const totalMisses = searches.reduce((s, d) => s + Number(d.misses), 0);
+
+  const byProvince = (geoRes.data ?? []) as { province: string; users: number; answered: number }[];
+  const byCity = (cityRes.data ?? []) as { city: string; province: string | null; users: number }[];
+  const answered = byProvince.find((p) => p.province === "unknown")?.answered ?? 0;
 
   const thumbTotal = content ? Number(content.with_thumbnail) + Number(content.without_thumbnail) : 0;
   const thumbPct = thumbTotal ? Math.round((100 * Number(content!.with_thumbnail)) / thumbTotal) : 0;
@@ -136,6 +143,47 @@ export default async function AdminAnalytics() {
           <Empty>Not available yet. Apply migration 0017 to enable these metrics.</Empty>
         )}
       </Card>
+
+      {/* ---- Users by location -------------------------------------------- */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader
+            title="Users by province"
+            subtitle={`Optional, self-reported. ${answered} of ${
+              byProvince.reduce((s, p) => s + Number(p.users), 0)
+            } accounts answered.`}
+          />
+          {byProvince.length ? (
+            <Table head={["Province", "Users"]}>
+              {byProvince.map((p) => (
+                <tr key={p.province}>
+                  <Td className="font-medium text-slate-900">{p.province}</Td>
+                  <Td>{p.users}</Td>
+                </tr>
+              ))}
+            </Table>
+          ) : (
+            <Empty>No accounts yet.</Empty>
+          )}
+        </Card>
+
+        <Card>
+          <CardHeader title="Users by city" subtitle="Top 20, optional and self-reported." />
+          {byCity.length ? (
+            <Table head={["City", "Province", "Users"]}>
+              {byCity.map((c, i) => (
+                <tr key={`${c.city}-${i}`}>
+                  <Td className="font-medium text-slate-900">{c.city}</Td>
+                  <Td className="text-slate-500">{c.province ?? "—"}</Td>
+                  <Td>{c.users}</Td>
+                </tr>
+              ))}
+            </Table>
+          ) : (
+            <Empty>Nobody has added a city yet. It is optional.</Empty>
+          )}
+        </Card>
+      </div>
 
       {/* ---- Library usage ------------------------------------------------ */}
       <Card>

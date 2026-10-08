@@ -65,6 +65,17 @@ export default function PrivacyPage() {
         </section>
 
         <section>
+          <h2 className="text-lg font-semibold text-slate-900">Optional details</h2>
+          <p>
+            You may optionally tell us your occupation, city and province. These are used only in
+            aggregate, so we can see which kinds of designers use Dirory and where they work. They
+            are never shown to a brand, they are never guessed, and you can leave them blank or
+            change them later. A city is personal data, so it is collected only because you
+            volunteered it.
+          </p>
+        </section>
+
+        <section>
           <h2 className="text-lg font-semibold text-slate-900">Quotes and vendors</h2>
           <p>
             Your contact information and project details are shared with a vendor only when you

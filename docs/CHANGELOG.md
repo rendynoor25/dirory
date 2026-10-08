@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.14.0 — live migrations, optional geography, brand pricing page, BSI and dynamic QRIS
+
+**Migrations applied to the live database.** `0013`-`0018` are now pushed and
+verified against the project: the payment tables and functions exist, `plans`
+holds Starter (Rp 5.000.000/year, 20 products) and Growth (Rp 25.000.000/year, 30
+products), and the profile consent and geography columns are present. Everything
+built in 0.10.0-0.13.0 is live as a result.
+
+**Optional user geography** (migration `0018`): nullable `city` and `province` on
+`profiles`, asked once right after the occupation question as a skippable second
+step. Admin → Analytics shows users by province and by city. Collected only if
+volunteered, never guessed, never shown to a vendor, and the privacy page now
+says so.
+
+**Brand section and pricing page.** The landing page has a "For brands" section
+with a CTA. `/pricing` shows the packages (read from `plans`, so it cannot quote
+a different price from the vendor portal) plus digitization and add-on rates. It
+is gated behind a **company email**: personal domains such as gmail.com see an
+explanation instead. This is a soft gate that shapes who sees the page and
+protects nothing — no RLS policy depends on it.
+
+**BSI Virtual Account.** `MIDTRANS_ENABLED_PAYMENTS=bsi_va` restricts Snap to BSI
+VA, confirmed against Midtrans' docs. Because BSI VA is payable only through the
+BYOND by BSI app, the docs recommend keeping the manual transfer alongside it.
+`docs/PAYMENTS.md` also spells out that a Midtrans VA pays into Midtrans, not
+directly into your own BSI account — the manual path is the one that pays you
+directly, configured with `BILLING_BANK_*`.
+
+**Dynamic QRIS, unique per invoice.** Midtrans Core API `payment_type: "qris"`
+returns a hosted QR per order. Stored on the invoice (`qr_string`, `qr_url`,
+`qr_expires_at`), reused while still valid, and settled by the same webhook as
+Snap.
+
+**Testing.** `scripts/test-midtrans.mts` runs under Node's type stripping and
+checks the signature verification (accepts a correct signature; rejects a
+tampered amount, order id, status code, foreign signature, empty and short
+signatures), the status mapping, order-id generation and method parsing — 26
+checks, all passing. `scripts/midtrans-sandbox-test.mjs` creates a real sandbox
+Snap transaction, or signs and posts a settlement notification to a running
+webhook.
+
+**Verified:** migrations applied and re-checked against the live database; `tsc`
+clean; `next build` clean; migration lint clean over 18 files; Midtrans unit
+tests pass. **Not verified:** no live sandbox payment was made (no merchant keys
+here), and the QRIS charge and BSI VA have not been exercised against Midtrans.
+
 ## 0.13.0 — admin analytics and the vendor category benchmark
 
 The remaining computable metrics from the founder's document.
