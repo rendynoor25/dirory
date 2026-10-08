@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.17.0 — plugin 0.9.7: a rejected token now heals itself
+
+**Symptom:** the panel showed the architect signed in, but every download
+answered "Please sign in to Dirory to download this item." — and because each
+click produced its own dialog, a row of cards became a wall of windows.
+
+**Diagnosis, with evidence rather than a guess.** The message came from the
+`download` Edge Function answering **401**, so the request was reaching the
+server and being refused. Two checks settled it:
+
+1. Calling `/download/<asset>` with a *non-JWT* bearer returned the function's own
+   `{"error":"sign in required"}` — not a gateway rejection — so `verify_jwt` was
+   not the cause.
+2. Creating a `plugin_tokens` row with a token I chose, then calling
+   `/download/<asset>` with it, returned **200 with a signed URL**. The whole
+   server path works.
+
+So the stored token was stale: the server no longer recognised it, yet the panel
+still reported the architect as signed in. The two states disagreed.
+
+**Fix (plugin 0.9.7):**
+
+- `Cloud.unauthorized!` — on a 401, forget the token, flip the panel back to
+  signed-out and open the sign-in dialog. Rate-limited to one prompt per 10
+  seconds, returning an empty message afterwards.
+- `Cloud.forget_token` — clears the token without calling the revoke endpoint,
+  since it is already invalid server-side.
+- `main.rb` no longer shows a message box for an empty message, so a burst of
+  failed clicks produces one prompt, not one per click.
+- Applied to the download path and the update check.
+
+Also recorded, and **corrected**: `config.toml` declared `verify_jwt = false` for
+only `events`, `catalog` and `favourites`. `download`, `auth-device`, `quotes` and
+`plugin-release` all authenticate the plugin's opaque token themselves and each
+document `--no-verify-jwt`, so the declaration was added for all four. This was
+not the cause of the reported 401, but a plain `supabase functions deploy` would
+have broken them.
+
+**Verified:** `scripts/check-ruby.mjs` clean (all five files parse; every
+`Cloud.*` used in `main.rb` is defined). The rebuilt
+`DiroryLibrary-0.9.7.rbz` was opened and confirmed to contain `forget_token`,
+`unauthorized!` and the `main.rb` guard. The server path was proven end to end
+with a diagnostic token, which was then deleted.
+
+**Not verified:** the plugin has not been run inside SketchUp, so the recovery
+flow itself is untested on a real machine. Existing installs must sign out and
+sign in once to mint a fresh token.
+
 ## 0.16.0 — "Kerikil Sungai" material, answering a real search miss
 
 An architect searched **kerikil** / **batu** in the plugin and got zero results.

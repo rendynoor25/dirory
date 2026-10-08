@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.9.6'.freeze
+      PLUGIN_VERSION = '0.9.7'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -61,6 +61,8 @@ module Dirory
       @last_error = nil
       @last_snapshot_at = nil
       @inflight = []     # keeps in-flight HTTP requests alive (see new_request)
+      # When the server last rejected our token, so a burst of 401s prompts once.
+      @unauthorized_at = nil
       # Plugin-health counters since the last report (see report_health). These
       # describe the plugin's own operation - failed loads, timings - never the
       # architect's project, geometry or file paths.
@@ -211,7 +213,7 @@ module Dirory
               ok = stage_update_bytes(body)
               push_update_result(dialog, ok, ok ? nil : 'could not write the staged update')
             elsif code == 401
-              push_update_result(dialog, false, 'sign in first')
+              push_update_result(dialog, false, unauthorized!)
             else
               push_update_result(dialog, false, "HTTP #{code}")
             end
@@ -462,6 +464,44 @@ module Dirory
         stop_device_poll
         %w[plugin_token account_name account_email account_phone account_firm].each { |k| write(k, '') }
         result
+      end
+
+      # --------------------------------------------------------------
+      # A rejected token must heal itself
+      #
+      # If the server answers 401, the stored token is stale, revoked, or was
+      # issued by a different project. Before this, the panel kept showing the
+      # architect as signed in while every action failed with "please sign in",
+      # and clicking a row of cards stacked one message box per card.
+      #
+      # So: forget the token (which flips the panel back to signed-out and opens
+      # the sign-in dialog) and say so once, not once per failed call.
+      # --------------------------------------------------------------
+      def self.forget_token
+        write('plugin_token', '')
+        @pending_device = nil
+        stop_device_poll
+        @dirty.clear
+        @last_hash.clear
+        Dirory::Library.push_account
+      end
+
+      # Returns the message to show, or '' when the prompt was already given
+      # recently — callers treat an empty message as "nothing more to say", which
+      # stops a row of failed clicks from stacking one dialog per click.
+      def self.unauthorized!(reason = 'Your Dirory session has expired. Please sign in again.')
+        now = Time.now
+        return '' if @unauthorized_at && now - @unauthorized_at < 10
+        @unauthorized_at = now
+
+        forget_token
+        payload = { 'action' => 'load', 'reason' => 'expired', 'message' => reason }.to_json
+        if @dialog
+          @dialog.execute_script("window.diroryNeedSignIn && window.diroryNeedSignIn(#{payload});")
+        else
+          UI.messagebox(reason)
+        end
+        reason
       end
 
       def self.set_share_usage(on)
@@ -864,7 +904,8 @@ module Dirory
                 yield(nil, 'The server did not return a download link.')
               end
             elsif code == 401
-              yield(nil, 'Please sign in to Dirory to download this item.')
+              # Stale token: forget it and ask to sign in again, once.
+              yield(nil, unauthorized!)
             else
               yield(nil, "Download server answered HTTP #{code}")
             end

@@ -529,7 +529,7 @@ module Dirory
       return unless Cloud.require_sign_in(@dialog, 'load')
       data = parse_payload(payload)
       resolve_asset_path(data) do |path, error|
-        if error
+        if error && !error.to_s.empty?
           # UI calls must run on the main thread, not inside the HTTP callback.
           run_on_main_thread { UI.messagebox(error) }
         else

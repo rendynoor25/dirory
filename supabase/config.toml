@@ -38,3 +38,32 @@ verify_jwt = false
 
 [functions.favourites]
 verify_jwt = false
+
+# ---------------------------------------------------------------------------
+# Every plugin-facing function must have verify_jwt = false.
+#
+# The plugin does NOT hold a Supabase JWT. It holds an opaque token issued by
+# /auth-device, and each function validates that token itself against
+# `plugin_tokens` (see _shared/plugin-auth.ts). Supabase's gateway defaults to
+# verify_jwt = true, which tries to parse the opaque token as a JWT, fails, and
+# answers 401 BEFORE the function runs.
+#
+# That was a live bug: the panel showed the architect signed in, but every
+# download returned 401 and popped "Please sign in to Dirory to download this
+# item." The same gate silently broke quotes, the device login itself and the
+# update check.
+#
+# Declaring it here (rather than relying on `--no-verify-jwt` at deploy time)
+# means a plain `supabase functions deploy` is correct by default.
+# ---------------------------------------------------------------------------
+[functions.download]
+verify_jwt = false
+
+[functions.auth-device]
+verify_jwt = false
+
+[functions.quotes]
+verify_jwt = false
+
+[functions.plugin-release]
+verify_jwt = false
