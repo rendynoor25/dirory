@@ -51,8 +51,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
       </div>
 
       {invoice.status === "paid" ? (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
-          Paid on {formatDateTime(invoice.paid_at)}. Your subscription is active.
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          <span>Paid on {formatDateTime(invoice.paid_at)}. Your subscription is active.</span>
+          <Link
+            href={`/receipt/${invoice.id}`}
+            className="rounded-lg bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-800"
+          >
+            Kuitansi (PDF)
+          </Link>
         </div>
       ) : awaiting ? (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">

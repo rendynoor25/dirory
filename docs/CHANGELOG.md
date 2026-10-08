@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.15.0 — Kuitansi (receipt) after payment, with print-to-PDF
+
+A paid invoice now produces a Kuitansi in Bahasa Indonesia at `/receipt/[id]`,
+linked from the paid banner on the invoice and from the invoice list.
+
+- Numbered `KWT/DIR/<year>/<invoice prefix>`, dated in long Indonesian form.
+- States the amount **in words as well as figures** — `lib/terbilang.ts`
+  implements the Indonesian rules, including the irregular forms (sebelas,
+  seratus, seribu) that naive versions get wrong.
+- Shows the vendor and brand, what was paid for, the period covered, the method
+  and the gateway reference.
+- Signed with the supplied signature at `apps/web/public/signature.jpg`. Replace
+  the file to change it; if it is absent the receipt still reads correctly.
+- **PDF via the browser's print dialog.** No PDF library and no headless browser,
+  so nothing new in the image. The page sets `@page { size: A4; margin: 18mm }`
+  and hides its own toolbar when printing.
+- The route sits **outside the vendor layout** so it prints without a sidebar, so
+  it repeats the authorisation check itself: the signed-in user must be a member
+  of the invoice's vendor, and RLS limits the query to their own invoices anyway.
+
+**Verified:** `scripts/test-terbilang.mts` — 36 checks, all passing, covering
+`sebelas`/`seratus`/`seribu`, the thousand and million groups, the receipt
+sentence form, negatives, decimals and NaN. `tsc` clean, `next build` clean (the
+`/receipt/[id]` route is registered). Local production smoke test: `/signature.jpg`
+returns 200 with the 17,458-byte file, and `/receipt/<uuid>` returns 404 for an
+unauthenticated request rather than a 500.
+
+**Not verified:** no real paid invoice has been rendered — the live database has
+no paid invoices yet, so the receipt has not been seen with real data.
+
 ## 0.14.2 — vendor registration bug fix, and a "For brands" nav link
 
 **Vendor registration was broken, and this fixes it.** `registerVendor()` inserted

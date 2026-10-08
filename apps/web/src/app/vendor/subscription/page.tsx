@@ -102,12 +102,22 @@ export default async function VendorSubscription() {
                         Pay
                       </Link>
                     ) : (
-                      <Link
-                        href={`/vendor/subscription/invoice/${i.id}`}
-                        className="text-xs font-medium text-brand-600"
-                      >
-                        View
-                      </Link>
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/vendor/subscription/invoice/${i.id}`}
+                          className="text-xs font-medium text-brand-600"
+                        >
+                          View
+                        </Link>
+                        {i.status === "paid" ? (
+                          <Link
+                            href={`/receipt/${i.id}`}
+                            className="text-xs font-medium text-emerald-700"
+                          >
+                            Kuitansi
+                          </Link>
+                        ) : null}
+                      </div>
                     )}
                   </Td>
                 </tr>

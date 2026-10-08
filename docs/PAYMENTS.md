@@ -208,6 +208,33 @@ automatically. Snap also offers QRIS, so if you only want one route to payment,
 you can leave the dedicated QR off — but it is the only way to show a scannable
 code without redirecting the payer.
 
+## Kuitansi (receipt) after payment
+
+Once an invoice is **paid**, the vendor can open a Kuitansi in Bahasa Indonesia:
+
+- From the paid banner on the invoice: **Kuitansi (PDF)**
+- From the invoice list: the **Kuitansi** link on any paid row
+- Direct: `/receipt/<invoice-id>`
+
+**PDF is the browser's print dialog** (Print → *Save as PDF*). That keeps the
+receipt a plain HTML document — no PDF library, no headless browser, nothing
+extra in the image — and it prints exactly what is on screen. The page carries
+`@page { size: A4; margin: 18mm }` and hides its own toolbar when printing.
+
+What it contains: receipt number (`KWT/DIR/<year>/<invoice prefix>`), the vendor
+and brand, the **amount in words** as well as figures (`terbilang`, the Indonesian
+convention), what the payment was for, the period covered, the method and the
+gateway reference, and the signature block.
+
+**The signature** is a file: `apps/web/public/signature.jpg`. Replace it to change
+the signature; no code change is needed. If the file is missing the receipt still
+reads correctly, just without the image.
+
+**Authorisation:** the receipt lives at `/receipt/[id]`, deliberately *outside*
+the vendor layout so it prints without a sidebar. It therefore repeats the check
+itself — the signed-in user must be a member of the invoice's vendor — and RLS
+limits the query to the vendor's own invoices regardless.
+
 ## Safety properties
 
 - **Signature.** Every notification is verified with SHA-512 over
