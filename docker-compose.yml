@@ -29,6 +29,11 @@ services:
       PORT: "3000"
       # Runtime-only secret (server-side; never sent to the browser).
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:?set in .env}
+      # Payments (server-side, read at runtime). Empty is fine: the invoice page
+      # then hides the online option and offers the manual transfer instead.
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY:-}
+      MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY:-}
+      MIDTRANS_IS_PRODUCTION: ${MIDTRANS_IS_PRODUCTION:-false}
     expose:
       - "3000"
     healthcheck:

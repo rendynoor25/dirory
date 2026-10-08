@@ -5,8 +5,10 @@ import { getSession } from "@/lib/auth";
 import { formatDate, formatDateTime, formatIDR } from "@/lib/format";
 import { BANK, bankConfigured, periodNoun } from "@/lib/billing";
 import { qrisConfigured, qrisLabel } from "@/lib/payments";
+import { midtransConfig, midtransConfigured, snapScriptUrl } from "@/lib/midtrans";
 import { setPaymentMethod, submitPayment } from "../../../actions";
 import { PaymentProof } from "./PaymentProof";
+import { MidtransPay } from "./MidtransPay";
 
 export const dynamic = "force-dynamic";
 
@@ -86,9 +88,29 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         </Card>
 
         <div className="space-y-6 lg:col-span-2">
+          {unpaid && midtransConfigured() ? (
+            <Card>
+              <CardHeader
+                title="Pay online"
+                subtitle="Card, QRIS, bank transfer (VA), GoPay, OVO, DANA or ShopeePay. The invoice is marked paid automatically once the gateway confirms it."
+              />
+              <div className="p-5">
+                <MidtransPay
+                  invoiceId={invoice.id}
+                  clientKey={midtransConfig().clientKey}
+                  scriptUrl={snapScriptUrl(midtransConfig().isProduction)}
+                  amountLabel={formatIDR(invoice.amount_idr)}
+                />
+                <p className="mt-3 text-xs text-slate-500">
+                  Prefer to pay by bank transfer and send us the proof? Use the manual options below.
+                </p>
+              </div>
+            </Card>
+          ) : null}
+
           <Card>
             <CardHeader
-              title="How to pay"
+              title="How to pay manually"
               subtitle="Choose a method, pay the exact amount, then attach your proof below."
             />
 

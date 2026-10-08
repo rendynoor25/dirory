@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.10.0 — Midtrans Snap payments, plus revenue and catalog metrics
+
+**Payment gateway (Midtrans Snap).** A vendor can now pay an invoice online —
+QRIS, bank transfer (VA), GoPay, OVO, DANA, ShopeePay or card — instead of only
+sending transfer proof. See `docs/PAYMENTS.md`.
+
+- `POST /api/payments/midtrans/token` mints a Snap token for one of the vendor's
+  own unpaid invoices and records the order id on it.
+- `POST /api/payments/midtrans/webhook` verifies the SHA-512 signature, records
+  the notification, and settles the invoice only when the amount matches.
+- `public.mark_invoice_paid()` (migration `0013`) is now the single settlement
+  path, so the admin "Mark paid" button and the webhook cannot diverge. It is
+  idempotent: a retry cannot extend a subscription twice.
+- `public.payment_events` (migration `0013`) logs every notification with a
+  unique `(gateway, order_id, transaction_status)` key for idempotency and
+  reconciliation. Admin-readable, service-role-writable.
+- `apps/web/src/lib/midtrans.ts` holds the adapter, the constant-time signature
+  check and the status mapping. `MIDTRANS_*` are read at runtime, so the client
+  key is not baked into the browser bundle.
+- The manual bank-transfer path is unchanged and still works.
+
+**Metrics** (`docs/METRICS.md` reconciles the founder's document against the
+schema, metric by metric):
+
+- Admin → Overview: a **Revenue** card (MRR, ARR, collected, overdue, revenue by
+  plan) and a **Vendor pipeline** card (pending / approved / suspended).
+- Vendor → Dashboard: a **Catalog status** card (live / in review / draft /
+  rejected).
+- `lib/payments.ts` no longer treats `MIDTRANS_SERVER_KEY` as enabling the
+  direct-QRIS path, which would have shown a "scan this QR" box with no QR in it.
+  Snap already covers QRIS; that path is Xendit-only.
+
+**Two conflicts with the PRD are recorded, not silently built** (`docs/METRICS.md`):
+the document asks vendors to see unmet searches, which PRD §241 and Q12 forbid in
+v1; and it proposes a different pricing model from PRD Q4/Q5. Both need a
+decision before implementation.
+
+**Verified:** `tsc --noEmit` clean, `next build` clean (both payment routes
+registered), migration lint clean over 13 files. **Not verified:** no Midtrans
+sandbox transaction was run from here, and migration `0013` has not been applied
+to the live database.
+
 ## 0.9.11 — mobile-friendly admin and vendor shell, clearer sign-in errors
 
 The admin and vendor layouts rendered a fixed 256px sidebar at every screen

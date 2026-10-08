@@ -139,6 +139,13 @@ export default async function VendorHome({
   });
 
   const published = (assetsRes.data ?? []).filter((a) => a.status === "approved").length;
+  const catalog = (assetsRes.data ?? []).reduce(
+    (acc: Record<string, number>, a) => {
+      acc[a.status] = (acc[a.status] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
   const subscription = subRes.data as { status: string; current_period_end: string | null; plans: { name: string } | null } | null;
 
   const rangeHref = (over: Record<string, string | undefined>) => {
@@ -311,6 +318,24 @@ export default async function VendorHome({
 
           <Card>
             <CardHeader
+              title="Catalog status"
+              subtitle="Where your products sit in the review flow."
+              action={
+                <Link href="/vendor/assets" className="text-xs font-medium text-brand-600">
+                  Manage →
+                </Link>
+              }
+            />
+            <div className="grid grid-cols-2 gap-3 p-5 text-sm">
+              <CatalogStat label="Live" value={catalog.approved ?? 0} />
+              <CatalogStat label="In review" value={catalog.pending_review ?? 0} />
+              <CatalogStat label="Draft" value={catalog.draft ?? 0} />
+              <CatalogStat label="Rejected" value={catalog.rejected ?? 0} />
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader
               title="Latest leads"
               action={
                 <Link href="/vendor/leads" className="text-xs font-medium text-brand-600">
@@ -362,6 +387,15 @@ function Field({
         required={required}
         className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
       />
+    </div>
+  );
+}
+
+function CatalogStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div>
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
+      <p className="mt-1 text-lg font-semibold text-slate-900">{value}</p>
     </div>
   );
 }

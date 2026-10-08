@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
-import { addPeriod } from "@/lib/billing";
 import { z } from "zod";
 
 const StatusSchema = z.object({
@@ -108,56 +107,26 @@ export async function createPlan(formData: FormData) {
   revalidatePath("/admin/plans");
 }
 
-/** FR-M5 — confirm a manual bank transfer. */
+/** FR-M5 — confirm a manual bank transfer.
+ *
+ * Delegates to `mark_invoice_paid()`, the same function the Midtrans webhook
+ * calls, so the two paths cannot drift: both mark the invoice paid and extend
+ * the subscription by exactly one period, idempotently.
+ */
 export async function markInvoicePaid(formData: FormData) {
-  const { supabase, user } = await requireAdmin();
+  const { supabase } = await requireAdmin();
   const invoiceId = String(formData.get("invoice_id") ?? "");
   if (!invoiceId) return;
 
-  const { data: invoice } = await supabase
-    .from("invoices")
-    .select("id, subscription_id, vendor_id")
-    .eq("id", invoiceId)
-    .maybeSingle();
-  if (!invoice) return;
-
-  await supabase
-    .from("invoices")
-    .update({ status: "paid", paid_at: new Date().toISOString() })
-    .eq("id", invoiceId);
-
-  // Extend the subscription by one billing period (FR-V6 / FR-M8). The length
-  // comes from the plan (monthly or yearly), and it extends from the later of
-  // now and the current period end — so renewing early keeps the paid days and
-  // renewing late does not start the new period in the past.
-  if (invoice.subscription_id) {
-    const { data: sub } = await supabase
-      .from("subscriptions")
-      .select("id, current_period_end, plans(period)")
-      .eq("id", invoice.subscription_id)
-      .maybeSingle();
-    if (sub) {
-      const now = new Date();
-      const currentEnd = sub.current_period_end ? new Date(sub.current_period_end) : null;
-      const base = currentEnd && currentEnd > now ? currentEnd : now;
-      const until = addPeriod(base, (sub as any).plans?.period);
-      await supabase
-        .from("subscriptions")
-        .update({
-          status: "active",
-          current_period_start: now.toISOString(),
-          current_period_end: until.toISOString(),
-        })
-        .eq("id", sub.id);
-    }
-  }
-
-  await supabase.from("audit_log").insert({
-    actor_id: user!.id,
-    action: "invoice.marked_paid",
-    entity: "invoices",
-    entity_id: invoiceId,
+  const { error } = await supabase.rpc("mark_invoice_paid", {
+    p_invoice: invoiceId,
+    p_gateway: "manual",
+    p_reference: null,
   });
+  if (error) {
+    console.error("markInvoicePaid failed", error);
+    return;
+  }
 
   revalidatePath("/admin/payments");
 }

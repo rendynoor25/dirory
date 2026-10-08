@@ -1,4 +1,5 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 export function isSupabaseConfigured(): boolean {
@@ -34,3 +35,23 @@ export async function createSupabaseServerClient() {
     },
   );
 }
+
+/**
+ * Service-role client for the payment webhook.
+ *
+ * The webhook has no user session — Midtrans calls it directly — so RLS cannot
+ * scope the work. This key **bypasses every policy**, so it must only ever be
+ * used in a server route that has already verified the gateway signature. Never
+ * import this into a client component or a page.
+ */
+export function createSupabaseServiceClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set; the payment webhook cannot run.");
+  }
+  return createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}
+

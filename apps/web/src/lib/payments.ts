@@ -1,26 +1,20 @@
 /**
- * Payment gateway adapter (QRIS).
+ * Payment gateway adapter — dynamic QRIS.
  *
- * QRIS is **dynamic**: a fresh QR per invoice, minted by a payment gateway. That
- * needs a merchant account and API keys, which are not configured yet — so
- * `qrisConfigured()` is false, the invoice page offers the bank transfer, and it
- * says the QR is coming. Bank transfer needs no credentials and works today.
+ * Note: Midtrans is wired up separately, through **Snap** (`lib/midtrans.ts`).
+ * Snap's hosted page already includes QRIS, so this file only covers a *direct*
+ * dynamic-QRIS charge, which needs Xendit. Do not treat `MIDTRANS_SERVER_KEY`
+ * as enabling this path — it would show a "scan this QR" box with no QR in it.
  *
- * To switch QRIS on:
- *   1. Set the gateway key in the server `.env`:
- *        XENDIT_SECRET_KEY=...            (or)   MIDTRANS_SERVER_KEY=...
- *   2. Implement `createQrisCharge` below for that gateway:
- *        Xendit   POST https://api.xendit.co/qr_codes
- *                 { external_id, type:"DYNAMIC", callback_url, amount }
- *                 -> { qr_string, id, expires_at }
- *        Midtrans POST <core-api>/v2/charge
- *                 { payment_type:"qris", transaction_details:{order_id,gross_amount} }
- *                 -> actions[] { name:"generate-qr-code", url }
- *   3. Point the gateway's webhook at /api/payments/webhook/<gateway> and
- *      verify its signature/callback token there before marking an invoice paid.
+ * To switch direct QRIS on:
+ *   1. Set `XENDIT_SECRET_KEY` in the server `.env`.
+ *   2. Implement `createQrisCharge` below:
+ *        POST https://api.xendit.co/qr_codes
+ *        { external_id, type:"DYNAMIC", callback_url, amount }
+ *        -> { qr_string, id, expires_at }
+ *   3. Point Xendit's webhook at a route that verifies its callback token.
  *
- * Until then `createQrisCharge` throws a clear error rather than silently doing
- * nothing.
+ * Until then `createQrisCharge` throws a clear error rather than doing nothing.
  */
 
 export type QrisCharge = {
@@ -32,9 +26,8 @@ export type QrisCharge = {
   gatewayRef: string;
 };
 
-export function qrisGateway(): "xendit" | "midtrans" | null {
+export function qrisGateway(): "xendit" | null {
   if (process.env.XENDIT_SECRET_KEY) return "xendit";
-  if (process.env.MIDTRANS_SERVER_KEY) return "midtrans";
   return null;
 }
 
@@ -44,10 +37,7 @@ export function qrisConfigured(): boolean {
 
 /** Human label for the invoice page. */
 export function qrisLabel(): string {
-  const g = qrisGateway();
-  if (g === "xendit") return "Xendit";
-  if (g === "midtrans") return "Midtrans";
-  return "";
+  return qrisGateway() === "xendit" ? "Xendit" : "";
 }
 
 export async function createQrisCharge(_input: {

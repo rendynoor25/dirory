@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Badge, Card, CardHeader, Empty, Kpi, Table, Td, statusTone } from "@/components/ui";
 import { requireAdmin } from "@/lib/auth";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, formatIDR } from "@/lib/format";
 
 export default async function AdminOverview() {
   const { supabase } = await requireAdmin();
@@ -31,6 +31,45 @@ export default async function AdminOverview() {
     const price = Number(row.plans?.price_idr ?? 0);
     return sum + (row.plans?.period === "yearly" ? Math.round(price / 12) : price);
   }, 0);
+
+  // --- Revenue and vendor pipeline (document §1: Revenue, Vendors) ----------
+  // Everything here is aggregate money or counts; no architect data is involved.
+  const [{ data: invoiceRows }, { data: subRows }, { data: vendorRows }] = await Promise.all([
+    supabase.from("invoices").select("amount_idr, status, due_at, paid_at"),
+    supabase.from("subscriptions").select("status, plans(name, price_idr, period)"),
+    supabase.from("vendors").select("status, is_platform"),
+  ]);
+
+  const now = new Date();
+  const invoices = (invoiceRows ?? []) as { amount_idr: number; status: string; due_at: string | null; paid_at: string | null }[];
+  const collected = invoices
+    .filter((i) => i.status === "paid")
+    .reduce((s, i) => s + Number(i.amount_idr), 0);
+  const unpaid = invoices.filter((i) => i.status === "unpaid");
+  const overdue = unpaid.filter((i) => i.due_at && new Date(i.due_at) < now);
+
+  // Revenue by plan, and how many vendors sit on each. Yearly is normalised to a
+  // monthly figure so the column is comparable.
+  const byPlan = new Map<string, { vendors: number; mrr: number }>();
+  for (const s of (subRows ?? []) as any[]) {
+    if (!["active", "trial", "grace"].includes(s.status)) continue;
+    const name = s.plans?.name ?? "(no plan)";
+    const price = Number(s.plans?.price_idr ?? 0);
+    const monthly = s.plans?.period === "yearly" ? Math.round(price / 12) : price;
+    const cur = byPlan.get(name) ?? { vendors: 0, mrr: 0 };
+    cur.vendors += 1;
+    cur.mrr += monthly;
+    byPlan.set(name, cur);
+  }
+
+  const pipeline = (vendorRows ?? []).reduce(
+    (acc: Record<string, number>, v: any) => {
+      if (v.is_platform) return acc;
+      acc[v.status] = (acc[v.status] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
 
   const [{ data: topMissing }, { data: recentAudit }, { data: pending }] = await Promise.all([
     supabase
@@ -119,7 +158,55 @@ export default async function AdminOverview() {
         </div>
 
         <div className="space-y-6">
-          <Kpi label="MRR (from subscriptions)" value={`Rp ${new Intl.NumberFormat("id-ID").format(mrr)}`} hint="monthly-normalised" />
+          <Card>
+            <CardHeader
+              title="Revenue"
+              subtitle="MRR is monthly-normalised, so yearly plans count as 1/12."
+            />
+            <div className="grid grid-cols-2 gap-3 p-5">
+              <Stat label="MRR" value={formatIDR(mrr)} />
+              <Stat label="ARR" value={formatIDR(mrr * 12)} />
+              <Stat label="Collected (all time)" value={formatIDR(collected)} />
+              <Stat
+                label="Overdue"
+                value={`${overdue.length}${unpaid.length ? ` / ${unpaid.length}` : ""}`}
+                tone={overdue.length ? "bad" : undefined}
+              />
+            </div>
+            {byPlan.size ? (
+              <Table head={["Plan", "Vendors", "MRR"]}>
+                {[...byPlan.entries()]
+                  .sort((a, b) => b[1].mrr - a[1].mrr)
+                  .map(([name, v]) => (
+                    <tr key={name}>
+                      <Td className="font-medium text-slate-900">{name}</Td>
+                      <Td>{v.vendors}</Td>
+                      <Td>{formatIDR(v.mrr)}</Td>
+                    </tr>
+                  ))}
+              </Table>
+            ) : (
+              <Empty>No active subscriptions yet.</Empty>
+            )}
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Vendor pipeline"
+              subtitle="Approval status. A vendor's products are visible once approved and subscribed."
+              action={
+                <Link href="/admin/vendors" className="text-xs font-medium text-brand-600">
+                  Open →
+                </Link>
+              }
+            />
+            <div className="grid grid-cols-3 gap-3 p-5">
+              <Stat label="Pending" value={pipeline.pending ?? 0} />
+              <Stat label="Approved" value={pipeline.approved ?? 0} />
+              <Stat label="Suspended" value={pipeline.suspended ?? 0} />
+            </div>
+          </Card>
+
           <Card>
             <CardHeader title="Audit log" subtitle="Every admin action is recorded" />
             {recentAudit?.length ? (
@@ -139,6 +226,26 @@ export default async function AdminOverview() {
           </Card>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** A compact label/value pair for the metric cards. */
+function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string | number;
+  tone?: "bad";
+}) {
+  return (
+    <div>
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
+      <p className={`mt-1 text-lg font-semibold ${tone === "bad" ? "text-rose-700" : "text-slate-900"}`}>
+        {value}
+      </p>
     </div>
   );
 }
