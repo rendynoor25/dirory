@@ -19,6 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       topbarTitle="Admin back-office"
       items={[
         { href: "/admin", label: "Overview" },
+        { href: "/admin/analytics", label: "Analytics" },
         { href: "/admin/vendors", label: "Vendors", badge: pendingVendors ?? undefined },
         { href: "/admin/reviews", label: "Review queue", badge: pendingAssets ?? undefined },
         { href: "/admin/products", label: "Products" },

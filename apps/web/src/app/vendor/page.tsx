@@ -79,7 +79,7 @@ export default async function VendorHome({
     ? (sp.sort as Sort)
     : "units";
 
-  const [totalsRes, byAssetRes, dailyRes, leadsRes, subRes, assetsRes] = await Promise.all([
+  const [totalsRes, byAssetRes, dailyRes, leadsRes, subRes, assetsRes, shareRes] = await Promise.all([
     supabase.rpc("vendor_usage_totals", { p_vendor: vendorId, p_from: from, p_to: to }),
     supabase.rpc("vendor_usage_by_asset", { p_vendor: vendorId, p_from: from, p_to: to }),
     supabase.rpc("vendor_usage_daily", { p_vendor: vendorId, p_from: from, p_to: to }),
@@ -95,6 +95,9 @@ export default async function VendorHome({
       .eq("vendor_id", vendorId)
       .maybeSingle(),
     supabase.from("assets").select("id, status").eq("vendor_id", vendorId),
+    // Category benchmark: the vendor's own units plus a category total, never a
+    // competitor's figures (migration 0017).
+    supabase.rpc("vendor_category_share", { p_vendor: vendorId, p_from: from, p_to: to }),
   ]);
 
   const totals = (totalsRes.data?.[0] ?? {
@@ -139,6 +142,13 @@ export default async function VendorHome({
   });
 
   const published = (assetsRes.data ?? []).filter((a) => a.status === "approved").length;
+  const categoryShare = (shareRes.data ?? []) as {
+    category: string;
+    type: string;
+    vendor_units: number;
+    category_units: number;
+    share_pct: number;
+  }[];
   const catalog = (assetsRes.data ?? []).reduce(
     (acc: Record<string, number>, a) => {
       acc[a.status] = (acc[a.status] ?? 0) + 1;
@@ -314,6 +324,35 @@ export default async function VendorHome({
                 </p>
               )}
             </div>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Category share"
+              subtitle="Your share of all usage in the categories you sell into, for the selected range. Aggregate only — never another brand's figures."
+            />
+            {categoryShare.length ? (
+              <Table head={["Category", "You", "Category", "Share"]}>
+                {categoryShare.map((c, i) => (
+                  <tr key={`${c.category}-${c.type}-${i}`}>
+                    <Td className="font-medium text-slate-900">
+                      {c.category}
+                      <span className="ml-1 text-xs text-slate-400">{c.type}</span>
+                    </Td>
+                    <Td>{Number(c.vendor_units).toFixed(0)}</Td>
+                    <Td className="text-slate-500">{Number(c.category_units).toFixed(0)}</Td>
+                    <Td>
+                      <span className="font-medium text-slate-800">{Number(c.share_pct)}%</span>
+                    </Td>
+                  </tr>
+                ))}
+              </Table>
+            ) : (
+              <Empty>
+                No comparable usage yet. This fills in once architects use products in your
+                categories.
+              </Empty>
+            )}
           </Card>
 
           <Card>

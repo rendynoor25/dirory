@@ -101,23 +101,22 @@ PRD, and it means:
   total, never another vendor's figures;
 - `usage_snapshots.project` and `profile_id` stay admin-only.
 
-## Suggested next step
+## Status
 
-Done so far:
+Built:
 
 1. Admin revenue + vendor pipeline (0.10.0).
 2. Vendor catalog status (0.10.0).
 3. Plugin health, end to end: migration `0016`, ingest support, plugin 0.9.6
-   counters, and the Admin → Overview card.
-4. C2 (pricing) decided: the document's packages. C1 (vendor-visible unmet
-   searches) decided: admin-only for now.
+   counters, and the Admin → Overview card (0.12.0).
+4. Admin growth and engagement, content coverage and library usage — a new
+   **Admin → Analytics** page backed by migration `0017` (0.13.0).
+5. Vendor category share, on the vendor dashboard (0.13.0).
 
-Still to build:
+Decided: C2 pricing = the document's packages; C1 vendor-visible unmet searches
+= admin-only for now.
 
-1. Admin growth (installs per week, DAU/WAU/MAU, retention) and content coverage.
-2. Vendor category share (needs a new aggregate function).
-
-Still **Blocked**, and needing new collection rather than new queries: model tiers
+Still **Blocked**, needing new collection rather than new queries: model tiers
 A/B/C, digitization cost vs revenue, output per student, user geography,
 insert-to-save rate, and search-success counts. This document does not invent
 numbers for them.

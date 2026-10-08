@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.13.0 — admin analytics and the vendor category benchmark
+
+The remaining computable metrics from the founder's document.
+
+**Migration `0017`** adds five functions, all `SECURITY DEFINER` and each
+authorising itself:
+
+- `admin_growth_summary()` — installs, new installs, DAU/WAU/MAU, first-use rate
+  and 30-day retention. "Active" means the install sent a usage snapshot in the
+  window, which is the only activity signal the plugin provides.
+- `admin_installs_weekly(weeks)` — new installs per week, for the trend line.
+- `admin_content_coverage(target)` — published, samples, in review, draft,
+  rejected, thumbnail coverage, and published-but-idle-for-30-days.
+- `admin_top_categories(days)` — inserts and painted area per category.
+- `admin_searches_daily(days)` — zero-result searches per day.
+- `vendor_category_share(vendor, from, to)` — the vendor's own units, the
+  category total and its share. **Aggregate only**: it returns no competitor's
+  figures, no project and no person. Models and materials are kept apart,
+  because counting models and square metres in one column would be meaningless.
+
+**Admin → Analytics**, a new page: growth and engagement, new installs per week,
+searches with no results over time, content coverage against the 250 target, and
+top categories.
+
+**Vendor → Dashboard** gains a "Category share" card.
+
+**Verified:** `tsc --noEmit` clean, `next build` clean, migration lint clean over
+17 files.
+
+**Important, checked against the live database:** migrations `0013` through
+`0017` are **not applied**. `payment_events`, `plugin_health_events` and
+`unhandled_events` do not exist, `mark_invoice_paid` and `plugin_health_summary`
+are absent, `plans` still holds the original seed prices, and
+`profiles.plugin_consent_at` does not exist. So none of the payment gateway, the
+consent gate, the new packages, plugin health or analytics is live yet — the site
+will show their empty states until `npx supabase db push` is run.
+
 ## 0.12.0 — plugin health metrics, and a forward-compatible ingest
 
 **Plugin 0.9.6** adds the counters behind the dashboard's "Plugin health" area.
