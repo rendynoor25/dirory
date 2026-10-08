@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.17.1 — self-update repaired: the release version is now derived, not hardcoded
+
+The plugin already had a self-update path — background version check, a pulsing
+badge, an **Update** button, then download → extract → swap at the next SketchUp
+launch. It was broken in one place:
+
+`plugin-release/index.ts` hardcoded `PLUGIN_VERSION = "0.9.4"`, with a comment
+saying to keep it in step with `apps/web/src/lib/pluginRelease.ts`. It had drifted
+to 0.9.7. So the update check advertised a **stale** version, and a newer build
+was never offered — while `scripts/upload-plugin-release.mjs` claimed that
+uploading the archive was all that was needed.
+
+- The function now lists the `plugin-release` bucket, parses
+  `DiroryLibrary-<version>.rbz`, and serves the **highest** version found
+  (numeric-aware, so 0.9.10 sorts above 0.9.9). Publishing a release is now just
+  the upload, exactly as the script says.
+- An empty bucket returns a loud 404 with the upload command, rather than a
+  stale version that points at a missing object.
+- `DiroryLibrary-0.9.7.rbz` uploaded to the bucket and the function redeployed.
+
+**Verified end to end against the live project:**
+
+- `GET /plugin-release` → `{"version":"0.9.7","filename":"DiroryLibrary-0.9.7.rbz"}`
+- `GET /plugin-release/download` with no token → 401
+- with a valid token → **200, 184,453 bytes, byte-identical to the local archive**,
+  `X-Plugin-Version: 0.9.7`
+
+**Not verified:** the in-SketchUp apply step (extract, loader, restart) has not
+been exercised on a real machine.
+
 ## 0.17.0 — plugin 0.9.7: a rejected token now heals itself
 
 **Symptom:** the panel showed the architect signed in, but every download
