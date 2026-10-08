@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.16.0 — "Kerikil Sungai" material, answering a real search miss
+
+An architect searched **kerikil** / **batu** in the plugin and got zero results.
+The catalogue had stone, andesite, limestone and even a "Quarry Pebble" paint
+colour, but no gravel for hardscape — so the demand had nothing to match.
+
+Added **Kerikil Sungai** as a **Dirory free sample** in the **Stone** category,
+tagged `kerikil`, `batu`, `batu kali`, `river stone`, `gravel`, `pebble`,
+`small rocks`, `hardscape`, `split stone`, `kerikil sungai`, `landscape`,
+`exterior`.
+
+The plugin's search matches **name, category, brand and tags**, so "kerikil"
+matches the name and "batu" matches the tags — both searches now resolve.
+
+- `scripts/generate-kerikil-texture.mjs` writes the texture directly as a PNG
+  (zlib + CRC32, no image library) and is deterministic, so re-running produces
+  the identical file. It is a **placeholder texture, not a product photograph**;
+  `library-additions/README.md` says how to replace it.
+- `library-additions/` holds post-import source files so they can be re-uploaded
+  or regenerated. Upload with `node scripts/upload-library.mjs --root library-additions`.
+
+**Verified against the live system:** the asset is `approved`, under the platform
+vendor (brand "Dirory"), category "Stone", with an approved version row and the
+file at `<vendor>/<asset>/Kerikil Sungai.png`. The deployed `catalog` Edge
+Function now returns **1,355 items** including it, as
+`{ name: "Kerikil Sungai", brand: "Dirory", category: "Stone", type: "material", sample: true }`.
+
 ## 0.15.0 — Kuitansi (receipt) after payment, with print-to-PDF
 
 A paid invoice now produces a Kuitansi in Bahasa Indonesia at `/receipt/[id]`,
