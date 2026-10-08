@@ -69,12 +69,14 @@ declare
   v_until    timestamptz;
   v_gateway  invoice_gateway;
 begin
-  -- A caller without the service role must be an admin of this invoice's vendor.
-  select * into inv from public.invoices where id = p_invoice for update;
-  if inv is null then raise exception 'invoice not found'; end if;
+  -- Authorise FIRST. Doing it before the SELECT avoids taking a row lock and
+  -- avoids revealing whether an invoice exists to a caller who may not read it.
   if not (public.is_admin() or auth.role() = 'service_role') then
     raise exception 'not allowed';
   end if;
+
+  select * into inv from public.invoices where id = p_invoice for update;
+  if inv is null then raise exception 'invoice not found'; end if;
 
   -- Already settled: return unchanged (idempotent).
   if inv.status = 'paid' then return inv; end if;
