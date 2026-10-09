@@ -266,9 +266,13 @@ const en: Record<string, string> = {
   "pricing.personalBody":
     "You are signed in as {email}. Brand pricing is shown to company accounts. Sign in with your work address, or contact us and we will help.",
   "pricing.packagesTitle": "Packages",
-  "pricing.packagesLead": "Includes digitization and one year of listing.",
+  "pricing.packagesLead":
+    "Sized by how many products stay live, so a material range of hundreds of colours fits. Monthly or yearly.",
   "pricing.includes": "Includes",
   "pricing.perYear": "per year",
+  "pricing.perMonth": "per month",
+  "pricing.or": "or",
+  "pricing.monthsFree": "months free",
   "pricing.customQuote": "Custom quote",
   "pricing.products": "products",
   "pricing.digitizationTitle": "One-time digitization",
@@ -573,9 +577,13 @@ const id: Record<string, string> = {
   "pricing.personalBody":
     "Anda masuk sebagai {email}. Harga brand ditampilkan untuk akun perusahaan. Masuk dengan alamat kantor Anda, atau hubungi kami.",
   "pricing.packagesTitle": "Paket",
-  "pricing.packagesLead": "Termasuk digitalisasi dan satu tahun tayang.",
+  "pricing.packagesLead":
+    "Dihitung dari jumlah produk yang tayang, sehingga satu katalog material berisi ratusan warna tetap muat. Bulanan atau tahunan.",
   "pricing.includes": "Termasuk",
   "pricing.perYear": "per tahun",
+  "pricing.perMonth": "per bulan",
+  "pricing.or": "atau",
+  "pricing.monthsFree": "bulan gratis",
   "pricing.customQuote": "Penawaran khusus",
   "pricing.products": "produk",
   "pricing.digitizationTitle": "Digitalisasi sekali bayar",

@@ -132,7 +132,7 @@ export default async function VendorSubscription() {
       <Card>
         <CardHeader
           title="Choose a plan"
-          subtitle="FR-M4 / Q4 · flat tiers with a product limit. Choosing a plan creates an invoice to pay."
+          subtitle="Monthly or yearly (yearly = 10 months). Choosing a plan creates an invoice to pay."
         />
         <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
           {(plans ?? []).map((p) => {
@@ -144,7 +144,9 @@ export default async function VendorSubscription() {
                   isCurrent ? "border-brand-400 bg-brand-50/40" : "border-slate-200"
                 }`}
               >
-                <p className="text-sm font-semibold text-slate-900">{p.name}</p>
+                <p className="text-sm font-semibold text-slate-900">
+                  {p.name} · {p.period === "yearly" ? "Yearly" : "Monthly"}
+                </p>
                 <p className="mt-1 text-lg font-semibold text-slate-900">{formatIDR(p.price_idr)}</p>
                 <p className="text-xs text-slate-500">
                   per {periodNoun(p.period)} · up to {p.max_assets} products
