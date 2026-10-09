@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.17.8 — proposal for LIXIL Indonesia
+
+A fifth proposal, for Ms. Fitra Amalia, Specifier at LIXIL Indonesia. Unlike TOTO
+and Propan, **none of LIXIL's brands are in the catalogue yet** — American Standard
+and the group's other brands are absent — so this one uses the digitization pilot
+rather than the "already live" framing. The angle is the specifier's real scoreboard:
+a specifier wins or loses at the drawing stage, and Dirory measures precisely there,
+per brand, across a multi-brand group. `proposals/lixil-indonesia.pdf`, 11 pages.
+
 ## 0.17.7 — proposal for PT Surya Toto Indonesia Tbk
 
 A fourth personalised proposal, for Bapak Sean (Sales). TOTO is already a live
