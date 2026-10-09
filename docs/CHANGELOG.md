@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.17.11 — manual bank transfer switched on as the interim method
+
+Midtrans signup is blocked for now (the phone number is already attached to a
+merchant, and the confirmation email cannot land in a mailbox nobody can open),
+and Xendit requires a legal entity that Dirory does not have. The manual bank
+transfer path therefore becomes the way a vendor pays.
+
+It was **already implemented** — nothing new was written. It was hidden only
+because `BILLING_BANK_*` was unset:
+
+- `vendor_submit_payment()` (migration 0012) stores the reference and the proof path;
+- `PaymentProof.tsx` uploads to `materials/<vendor_id>/proofs/<invoice_id>/…`
+  (10 MB, any MIME type, permitted by the `storage_vendor_insert` policy);
+- `Admin → Payments` signs the proof and shows a **View ↓** link beside **Mark paid**.
+
+Now configured (BSI, 2511199205, Rendy Noor Chandra) in the server env, so an
+unpaid invoice shows the bank details, a "Pay by transfer" selector, and an
+"I've paid" form with a reference field and a receipt upload.
+
+**The same three variables must be set in the VPS `.env`.** They are read at
+runtime, so a restart is enough — no rebuild.
+
+Caveat recorded in `docs/PAYMENTS.md`: this is a personal account, so the tax and
+bookkeeping treatment should be checked with an accountant before invoicing
+businesses at scale.
+
 ## 0.17.10 — Midtrans: any order for an invoice can settle it
 
 Auditing the payment path before a real sandbox test turned up a way to lose a
