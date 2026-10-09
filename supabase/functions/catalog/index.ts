@@ -19,10 +19,15 @@ import { resolveServiceKey } from "../_shared/keys.ts";
  * asks /download/<asset_id> when the architect clicks (FR-A11).
  *
  * Auth: apikey / Bearer anon key (the plugin sends it from Connection Settings).
- * Browsing is anonymous (FR-A1). Only approved assets of vendors that are
- * visible (platform brand, approved vendor, or a subscription in
- * trial/active/grace) are returned. Samples from the "Dirory" platform brand are
- * always included (FR-A8).
+ * Browsing is anonymous (FR-A1). Only approved assets of visible vendors are
+ * returned, and visibility follows FR-M6: the platform brand, or an approved
+ * vendor with a subscription in trial/active/grace whose period has not ended
+ * more than 7 days ago. Samples from the "Dirory" platform brand are always
+ * included (FR-A8).
+ *
+ * This function reads with the service role, so it does NOT go through the
+ * `vendor_is_visible()` RLS function. The rule is therefore duplicated here on
+ * purpose - migration 0022 changes both, and they must stay in step.
  */
 Deno.serve(async (req: Request) => {
   if (req.method !== "GET") return json({ error: "method not allowed" }, 405);
@@ -49,7 +54,8 @@ Deno.serve(async (req: Request) => {
       select:
         "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key,sku,product_url,dimensions," +
         "categories(name)," +
-        "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path)," +
+        "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path," +
+        "subscriptions(status,current_period_end))," +
         "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status,su_version)",
       status: "eq.approved",
       order: "updated_at.asc,id.asc",
@@ -66,10 +72,27 @@ Deno.serve(async (req: Request) => {
     if (offset > 200000) break; // hard stop; no real catalogue is this large
   }
 
-  // FR-A9: only the platform brand and approved (subscription-visible) vendors.
-  const visible = rows.filter(
-    (r: any) => r.vendors?.is_platform || r.vendors?.status === "approved",
-  );
+  // FR-A9 / FR-M6: platform brand, or an approved vendor whose subscription is
+  // in trial/active/grace with the period not ended more than 7 days ago.
+  const GRACE_MS = 7 * 24 * 60 * 60 * 1000;
+  const nowMs = Date.now();
+  const vendorVisible = (v: any): boolean => {
+    if (!v) return false;
+    if (v.is_platform) return true;
+    if (v.status !== "approved") return false;
+    const subs = Array.isArray(v.subscriptions)
+      ? v.subscriptions
+      : v.subscriptions
+        ? [v.subscriptions]
+        : [];
+    return subs.some((s: any) => {
+      if (!["trial", "active", "grace"].includes(s?.status)) return false;
+      // A null end date is a non-expiring (grandfathered) subscription.
+      if (s.current_period_end == null) return true;
+      return new Date(s.current_period_end).getTime() > nowMs - GRACE_MS;
+    });
+  };
+  const visible = rows.filter((r: any) => vendorVisible(r.vendors));
 
   // FR-A24: the panel keys `brandLogos` by lower-cased brand name.
   const brandLogos: Record<string, string> = {};
