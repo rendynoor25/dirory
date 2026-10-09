@@ -171,6 +171,16 @@ function css() {
       margin: 4mm 0 3mm;
     }
     .shotwrap img { display: block; width: 100%; }
+    /* The brand dashboard is a tall portrait capture, so show it in a fixed-height
+       window instead of distorting it. */
+    .shotfill {
+      border: 1px solid #e2e6f0; border-radius: 3mm; overflow: hidden;
+      margin: 4mm 0 3mm;
+    }
+    .shotfill img {
+      display: block; width: 100%; height: 150mm;
+      object-fit: cover; object-position: top;
+    }
     .foot {
       position: absolute; left: 17mm; right: 17mm; bottom: 10mm;
       border-top: 1px solid #e2e6f0; padding-top: 2.5mm;
@@ -193,6 +203,7 @@ function rupiah(n) {
 function buildHtml(v, tanggal) {
   const shotSearch = "assets/sketchup-search.png";
   const shotUsage = "assets/sketchup-usage.png";
+  const shotDash = "assets/dashboard.png";
 
   return `<!doctype html>
 <html lang="id"><head><meta charset="utf-8"><title>Proposal Dirory — ${v.company}</title>
@@ -420,9 +431,30 @@ function buildHtml(v, tanggal) {
   ${foot("6")}
 </section>
 
+<!-- ============================ DASHBOARD BRAND ============================ -->
+<section class="page">
+  <p class="tag">06 · Dashboard brand</p>
+  <div class="rule"></div>
+  <h2>Angka yang Anda lihat setiap hari.</h2>
+  <p class="lead">
+    Setelah arsitek memakai produk Anda, data pemakaiannya masuk ke dashboard brand:
+    berapa unit terpasang, berapa luas tercat, di berapa proyek, dan permintaan
+    penawaran yang masuk.
+  </p>
+  <div class="shotfill">
+    <img src="${shotDash}" alt="Contoh dashboard brand Dirory">
+  </div>
+  <p class="small muted">
+    Tampilan dashboard dengan data contoh — angka Anda akan terisi begitu produk Anda
+    mulai dipakai. Angka pada tangkapan layar SketchUp di halaman sebelumnya adalah
+    data nyata.
+  </p>
+  ${foot("7")}
+</section>
+
 <!-- ============================ HARGA ============================ -->
 <section class="page">
-  <p class="tag">06 · Paket & harga</p>
+  <p class="tag">07 · Paket & harga</p>
   <div class="rule"></div>
   <h2>Paket berlangganan.</h2>
   <p class="small muted">
@@ -485,12 +517,12 @@ function buildHtml(v, tanggal) {
           <td class="price">Rp 1.000.000 / laporan</td></tr>
     </tbody>
   </table>
-  ${foot("7")}
+  ${foot("8")}
 </section>
 
 <!-- ============================ BERHENTI ============================ -->
 <section class="page">
-  <p class="tag">07 · Jika berhenti berlangganan</p>
+  <p class="tag">08 · Jika berhenti berlangganan</p>
   <div class="rule"></div>
   <h2>Disembunyikan, bukan dihapus.</h2>
   <p class="lead">
@@ -542,12 +574,12 @@ function buildHtml(v, tanggal) {
           <td>Tidak terpengaruh sama sekali.</td></tr>
     </tbody>
   </table>
-  ${foot("8")}
+  ${foot("9")}
 </section>
 
 <!-- ============================ BERLANGGANAN ============================ -->
 <section class="page">
-  <p class="tag">08 · Cara berlangganan</p>
+  <p class="tag">09 · Cara berlangganan</p>
   <div class="rule"></div>
   <h2>Enam langkah, selesai dalam hitungan hari.</h2>
 
@@ -593,12 +625,12 @@ function buildHtml(v, tanggal) {
     digitalisasi gratis hingga <strong>10 produk</strong> dan <strong>6 bulan tayang gratis</strong>,
     sebagai ganti izin memakai logo, satu studi kasus singkat, data dimensi resmi dan daftar SKU.
   </div>
-  ${foot("9")}
+  ${foot("10")}
 </section>
 
 <!-- ============================ PENUTUP ============================ -->
 <section class="page">
-  <p class="tag">09 · Langkah selanjutnya</p>
+  <p class="tag">10 · Langkah selanjutnya</p>
   <div class="rule"></div>
   <h2>Mari kita mulai dari satu percakapan.</h2>
   <p class="lead">
@@ -635,10 +667,11 @@ function buildHtml(v, tanggal) {
 
   <p class="small muted" style="margin-top:8mm">
     Proposal ini disiapkan untuk ${v.contact} — ${v.role}, ${v.company}.
-    Tangkapan layar diambil langsung dari plugin Dirory yang berjalan di SketchUp,
-    bukan mockup. Rincian harga dapat berubah setelah diskusi pertama.
+    Tangkapan layar plugin diambil langsung dari Dirory yang berjalan di SketchUp;
+    gambar dashboard hanyalah ilustrasi. Rincian harga dapat berubah setelah diskusi
+    pertama.
   </p>
-  ${foot("10")}
+  ${foot("11")}
 </section>
 
 </body></html>`;
@@ -652,7 +685,19 @@ function chromePath() {
   return null;
 }
 
+/**
+ * Render the HTML to `pdfPath`, then replace the target file.
+ *
+ * Chrome is told to write a `.new.pdf` first. On Windows a PDF viewer holding the
+ * target open (Nitro, Acrobat, a browser tab) denies the rename, and Chrome would
+ * otherwise leave the old file in place while still exiting 0 — which silently
+ * ships a stale proposal. So the swap is explicit and its failure is reported.
+ *
+ * Returns `{ ok: true }` on success, or `{ ok: false, tmpPath }` when the target
+ * is locked and the fresh file was left beside it.
+ */
 function pdfFromHtml(chrome, htmlPath, pdfPath) {
+  const tmpPath = pdfPath.replace(/\.pdf$/i, ".new.pdf");
   execFileSync(
     chrome,
     [
@@ -661,11 +706,24 @@ function pdfFromHtml(chrome, htmlPath, pdfPath) {
       "--no-pdf-header-footer",
       "--no-sandbox",
       `--user-data-dir=${path.join(OUT_DIR, ".chrome-profile")}`,
-      `--print-to-pdf=${pdfPath}`,
+      `--print-to-pdf=${tmpPath}`,
       `file:///${htmlPath.replace(/\\/g, "/")}`,
     ],
     { stdio: "pipe" },
   );
+
+  try {
+    fs.renameSync(tmpPath, pdfPath);
+    return { ok: true };
+  } catch {
+    try {
+      fs.copyFileSync(tmpPath, pdfPath);
+      fs.rmSync(tmpPath, { force: true });
+      return { ok: true };
+    } catch {
+      return { ok: false, tmpPath };
+    }
+  }
 }
 
 function main() {
@@ -691,9 +749,16 @@ function main() {
     const htmlPath = path.join(OUT_DIR, `${v.slug}.html`);
     const pdfPath = path.join(OUT_DIR, `${v.slug}.pdf`);
     fs.writeFileSync(htmlPath, buildHtml(v, tanggal), "utf8");
-    pdfFromHtml(chrome, htmlPath, pdfPath);
-    const kb = Math.round(fs.statSync(pdfPath).size / 1024);
-    console.log(`  ${v.company.padEnd(30)} ${path.basename(pdfPath)}  (${kb} KB)`);
+    const res = pdfFromHtml(chrome, htmlPath, pdfPath);
+    if (res.ok) {
+      const kb = Math.round(fs.statSync(pdfPath).size / 1024);
+      console.log(`  ${v.company.padEnd(30)} ${path.basename(pdfPath)}  (${kb} KB)`);
+    } else {
+      console.log(
+        `  ${v.company.padEnd(30)} ${path.basename(pdfPath)}  LOCKED — wrote ` +
+          `${path.basename(res.tmpPath)} instead. Close the open PDF and re-run.`,
+      );
+    }
   }
   console.log("\nDone. Open the PDFs in proposals/.");
 }

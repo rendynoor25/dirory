@@ -40,6 +40,10 @@ supabase/.temp/
 # proposal HTML to PDF. Regenerated on every run; never committed.
 proposals/.chrome-profile/
 
+# A freshly rendered PDF waiting behind a locked target (a viewer has the real
+# file open). scripts/build-proposals.mjs swaps it in on the next run.
+proposals/*.new.pdf
+
 # ---------------------------------------------------------------------------
 # Build output
 #

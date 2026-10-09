@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.17.6 — the brand dashboard is back in the vendor proposals
+
+0.17.4 replaced the mock vendor dashboard with the real SketchUp screenshots, but
+it **replaced** it instead of adding alongside — so the proposals lost the brand
+web dashboard entirely, which is the thing a brand actually logs into. Restored as
+page 6, "Dashboard brand", with the demo capture (still labelled as an illustration
+so it is never confused with the real plugin data on the pages before it). The
+proposals are now 11 pages.
+
+The build also stopped failing silently. `scripts/build-proposals.mjs` renders to a
+`.new.pdf` and swaps it in; if a viewer holds the target open (Nitro, Acrobat, a
+browser tab) the swap is reported as `LOCKED` instead of leaving the previous PDF
+in place while Chrome exits 0. That is how the stale Propan file was found: its
+timestamp was hours older than the other two.
+
 ## 0.17.5 — Dirory pitch deck
 
 Khairun (CEO, Sanbercode) asked for an updated pitch deck and offered to put it in
