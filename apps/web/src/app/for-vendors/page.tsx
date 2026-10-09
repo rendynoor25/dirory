@@ -4,7 +4,9 @@ import { AccountMenu } from "@/components/AccountMenu";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
-import { isSupabaseConfigured, createSupabaseServerClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
+import { getSession } from "@/lib/auth";
+import { canViewCompanyPricing } from "@/lib/businessEmail";
 import { formatIDR } from "@/lib/format";
 import { DIRORY_EMAIL, formatWhatsApp, whatsAppLink } from "@/lib/contact";
 
@@ -45,8 +47,14 @@ export default async function ForVendors() {
   let categoryCount = 0;
   let tiers: { name: string; monthly?: PlanRow; yearly?: PlanRow; max: number }[] = [];
 
+  // Prices are for company addresses only. A @gmail.com visitor still gets the
+  // whole page — brand wall, numbers, how it works — but not the numbers on the
+  // plans. Same gate as /pricing, so the two can never disagree.
+  let userEmail: string | null = null;
+
   if (isSupabaseConfigured()) {
-    const supabase = await createSupabaseServerClient();
+    const { supabase, user } = await getSession();
+    userEmail = user?.email ?? null;
     const [vendorRes, productRes, categoryRes, planRes] = await Promise.all([
       supabase
         .from("vendors")
@@ -91,6 +99,8 @@ export default async function ForVendors() {
         Number(b.monthly?.price_idr ?? b.yearly?.price_idr ?? 0),
     );
   }
+
+  const showPricing = canViewCompanyPricing(userEmail);
 
   const demoLink = whatsAppLink(
     locale === "id"
@@ -301,7 +311,7 @@ export default async function ForVendors() {
           {tiers.map((tier) => (
             <article key={tier.name} className="rounded-2xl border border-slate-200 bg-white p-6">
               <p className="text-sm font-semibold text-slate-900">{tier.name}</p>
-              {tier.monthly ? (
+              {showPricing && tier.monthly ? (
                 <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
                   {formatIDR(Number(tier.monthly.price_idr))}
                   <span className="ml-1 text-sm font-normal text-slate-500">
@@ -309,7 +319,7 @@ export default async function ForVendors() {
                   </span>
                 </p>
               ) : null}
-              {tier.yearly ? (
+              {showPricing && tier.yearly ? (
                 <p className="mt-1 text-sm text-slate-600">
                   {formatIDR(Number(tier.yearly.price_idr))} {t(locale, "pricing.perYear")}
                   <span className="ml-2 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
@@ -332,12 +342,35 @@ export default async function ForVendors() {
             </p>
           </article>
         </div>
-        <Link
-          href="/pricing"
-          className="mt-7 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
-        >
-          {t(locale, "fv.plansCta")} <span className="ml-2" aria-hidden="true">→</span>
-        </Link>
+        {showPricing ? (
+          <Link
+            href="/pricing"
+            className="mt-7 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
+          >
+            {t(locale, "fv.plansCta")} <span className="ml-2" aria-hidden="true">→</span>
+          </Link>
+        ) : (
+          <div className="mt-6 rounded-2xl border border-brand-100 bg-brand-50/50 p-5">
+            <p className="text-sm font-semibold text-slate-900">{t(locale, "fv.gateTitle")}</p>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
+              {t(locale, "fv.gateText")}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href="/login?next=%2Fpricing"
+                className="rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-800"
+              >
+                {t(locale, "fv.gateCta")}
+              </Link>
+              <a
+                href={demoLink}
+                className="rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
+              >
+                {t(locale, "fv.ctaTalk")}
+              </a>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* ---- Demo + CTA --------------------------------------------------- */}

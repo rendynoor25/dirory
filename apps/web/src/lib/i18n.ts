@@ -399,6 +399,10 @@ const en: Record<string, string> = {
     "Monthly or yearly — yearly is ten months, so two months free. Every plan includes the vendor dashboard.",
   "fv.planProducts": "products",
   "fv.plansCta": "Compare plans",
+  "fv.gateTitle": "Pricing is for company accounts",
+  "fv.gateText":
+    "The plans above show what each package covers. Prices are shown to company addresses — sign in with your work email to see them. Everything else on this page is open to everyone.",
+  "fv.gateCta": "Sign in with your company email",
 
   "fv.demoHeading": "See the vendor dashboard",
   "fv.demoText":
@@ -787,6 +791,10 @@ const id: Record<string, string> = {
     "Bulanan atau tahunan — tahunan setara sepuluh bulan, jadi dua bulan gratis. Semua paket termasuk dashboard vendor.",
   "fv.planProducts": "produk",
   "fv.plansCta": "Bandingkan paket",
+  "fv.gateTitle": "Harga untuk akun perusahaan",
+  "fv.gateText":
+    "Paket di atas menunjukkan cakupan setiap paket. Harga ditampilkan untuk alamat perusahaan — masuk dengan email kantor Anda untuk melihatnya. Bagian lain di halaman ini terbuka untuk semua.",
+  "fv.gateCta": "Masuk dengan email kantor",
 
   "fv.demoHeading": "Lihat dashboard vendor",
   "fv.demoText":

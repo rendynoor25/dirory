@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.17.14 — vendor page: prices gated; home page: one vendor story, plugin first
+
+Three small content corrections.
+
+**`/for-vendors` hides prices from personal addresses.** A `@gmail.com` visitor
+sees the brand wall, the real numbers, the four values and how it works — but the
+**plans show coverage, not prices**. The gate is `canViewCompanyPricing()`, the
+same helper `/pricing` uses, so the two pages can never disagree about who may see
+what. Company addresses see the numbers. The page grows three strings
+(`fv.gateTitle` / `fv.gateText` / `fv.gateCta`) in both languages.
+
+**The "For brands" section is gone from the home page.** It duplicated
+`/for-vendors`, and a half-version of the vendor story on the marketing page was
+worse than none. The nav item still points at `/for-vendors`, so the path in is
+unchanged.
+
+**The home hero's primary button is now "Get the plugin".** It was "Browse the
+library", which points an architect at a catalogue they cannot use until they
+have the plugin. The order is now: install, then browse.
+
 ## 0.17.13 — paying an invoice never extended the subscription
 
 Found by running the first real end-to-end payment test, and it would have been

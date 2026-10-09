@@ -92,11 +92,11 @@ export default async function Home() {
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">{t(locale, "home.lead")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/library" className="rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/15 transition hover:-translate-y-0.5 hover:bg-brand-800">
-              {t(locale, "home.browse")} <span aria-hidden="true">→</span>
+            <Link href="/login?next=%2Fdownload" className="rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/15 transition hover:-translate-y-0.5 hover:bg-brand-800">
+              {t(locale, "home.getPlugin")} <span aria-hidden="true">→</span>
             </Link>
-            <Link href="/login?next=%2Fdownload" className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400">
-              {t(locale, "home.getPlugin")}
+            <Link href="/library" className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400">
+              {t(locale, "home.browse")}
             </Link>
           </div>
           <p className="mt-4 text-xs text-slate-500">{t(locale, "home.freeNote")}</p>
@@ -242,77 +242,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ---- For brands (vendor section) -------------------------------- */}
-      <section id="for-brands" className="scroll-mt-24 border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-2 lg:items-center lg:px-10 lg:py-20">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">
-              {t(locale, "vendor.tag")}
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              {t(locale, "vendor.title")}
-            </h2>
-            <p className="mt-4 text-sm leading-6 text-slate-600">{t(locale, "vendor.lead")}</p>
-            <ul className="mt-6 space-y-3 text-sm text-slate-700">
-              {["vendor.point1", "vendor.point2", "vendor.point3"].map((key) => (
-                <li key={key} className="flex gap-3">
-                  <span className="mt-0.5 text-brand-600" aria-hidden="true">
-                    &#10003;
-                  </span>
-                  <span>{t(locale, key)}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/pricing"
-              className="mt-7 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
-            >
-              {t(locale, "vendor.cta")} <span className="ml-2" aria-hidden="true">→</span>
-            </Link>
-            <p className="mt-3 text-xs text-slate-500">{t(locale, "vendor.note")}</p>
-          </div>
-
-          {/* A small mock of the vendor dashboard, to make the promise concrete. */}
-          <div className="relative">
-            <div className="absolute -right-6 -top-8 h-40 w-40 rounded-full bg-brand-100/70 blur-2xl" />
-            <div className="relative rounded-[2rem] border border-slate-200 bg-[#fbfcff] p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Brand dashboard
-              </p>
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                {[
-                  ["Inserts", "1,284"],
-                  ["Projects", "216"],
-                  ["Quotes", "38"],
-                ].map(([label, value]) => (
-                  <div key={label} className="rounded-xl border border-slate-200 bg-white p-3">
-                    <p className="text-[10px] uppercase tracking-wide text-slate-500">{label}</p>
-                    <p className="mt-1 text-lg font-semibold text-slate-900">{value}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 space-y-2">
-                {[
-                  ["CW 630 PJ", "412"],
-                  ["CE9", "287"],
-                  ["Ottium", "156"],
-                ].map(([name, units]) => (
-                  <div
-                    key={name}
-                    className="flex items-center justify-between rounded-xl border border-slate-100 bg-white px-4 py-3 text-sm"
-                  >
-                    <span className="font-medium text-slate-800">{name}</span>
-                    <span className="text-slate-500">{units} units</span>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-4 text-[11px] leading-5 text-slate-400">
-                Illustrative figures. A brand sees only its own numbers and anonymous benchmarks.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* The "For brands" section lives on /for-vendors now — one place, not two. */}
 
       <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-20">
         <div className="relative overflow-hidden rounded-[2rem] bg-brand-900 px-7 py-10 text-white sm:px-12 sm:py-14">
