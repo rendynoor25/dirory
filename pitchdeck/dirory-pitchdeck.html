@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><title>Dirory — Pitch Deck</title>
+<style>
+    @page { size: 1280px 720px; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0f172a;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .slide {
+      width: 1280px; height: 720px; padding: 52px 68px 62px;
+      position: relative; overflow: hidden; page-break-after: always; background: #fff;
+    }
+    .slide:last-child { page-break-after: auto; }
+    .kicker {
+      display: inline-block; font-size: 14px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: #2f3f96; margin: 0 0 6px;
+    }
+    .rule { height: 5px; width: 64px; background: #2f3f96; border-radius: 3px; margin: 0 0 20px; }
+    h1 { font-size: 46px; line-height: 1.1; margin: 6px 0 18px; letter-spacing: -0.8px; }
+    h2 { font-size: 35px; line-height: 1.14; margin: 4px 0 18px; letter-spacing: -0.5px; }
+    h3 { font-size: 20px; margin: 0 0 8px; color: #2f3f96; }
+    p { margin: 0 0 12px; font-size: 19px; line-height: 1.5; }
+    .lead { font-size: 23px; line-height: 1.5; color: #414a60; }
+    .small { font-size: 15px; }
+    .muted { color: #5b6478; }
+    .foot {
+      position: absolute; left: 68px; right: 68px; bottom: 22px;
+      border-top: 1px solid #eceef5; padding-top: 10px;
+      display: flex; justify-content: space-between; font-size: 13px; color: #9aa1b2;
+    }
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+    .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+    .card { border: 1px solid #e2e6f0; border-radius: 14px; padding: 22px 24px; background: #fbfcff; }
+    .card p { font-size: 16px; margin: 0; color: #3c4457; line-height: 1.5; }
+    ul { margin: 0; padding-left: 22px; }
+    li { font-size: 19px; line-height: 1.5; margin-bottom: 9px; }
+    li.small { font-size: 16px; }
+    .callout {
+      border-left: 4px solid #2f3f96; background: #f5f7fd; padding: 16px 20px;
+      border-radius: 0 12px 12px 0;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+      color: #5b6478; border-bottom: 1px solid #e2e6f0; padding: 9px 12px;
+    }
+    td { padding: 12px; border-bottom: 1px solid #f0f2f8; font-size: 17px; vertical-align: top; }
+    .price { font-weight: 700; white-space: nowrap; }
+    .stat { border: 1px solid #e2e6f0; border-radius: 14px; padding: 20px 22px; background: #fbfcff; }
+    .stat .n { font-size: 46px; font-weight: 700; color: #2f3f96; line-height: 1; letter-spacing: -1px; }
+    .stat .l { font-size: 15px; color: #5b6478; margin-top: 8px; line-height: 1.35; }
+    .shot { border: 1px solid #e2e6f0; border-radius: 12px; overflow: hidden; }
+    .shot img { display: block; width: 100%; }
+    .cover { display: flex; flex-direction: column; justify-content: space-between;
+             background: linear-gradient(160deg, #ffffff 0%, #f2f4fc 100%); }
+    .cover-foot { font-size: 17px; color: #1f2b6b; font-weight: 600; }
+    .ask { border: 1px solid #dfe4f4; border-radius: 16px; padding: 24px 26px; background: #f7f9ff; }
+    .pill {
+      display: inline-block; font-size: 14px; font-weight: 700; color: #2f3f96;
+      background: #eef1fb; border-radius: 999px; padding: 6px 14px; margin: 0 8px 8px 0;
+    }
+  </style></head><body>
+<section class="slide cover">
+    <div>
+      <img src="assets/logo-vertical.png" alt="Dirory" style="width:200px">
+    </div>
+    <div>
+      <p class="kicker" style="margin-bottom:10px">Pitch deck · Oktober 2026</p>
+      <h1>Katalog produk bangunan Indonesia,<br>di dalam software desain arsitek.</h1>
+      <p class="lead" style="max-width:820px">
+        Arsitek memakai produk asli produsen Indonesia langsung di SketchUp.<br>
+        Brand melihat produk mana yang benar-benar dipakai — bukan sekadar diunduh.
+      </p>
+    </div>
+    <div class="cover-foot">
+      dirory.com &nbsp;·&nbsp; hello@dirory.com &nbsp;·&nbsp; +62 857-1008-6041
+    </div>
+    </section>
+<section class="slide ">
+    <p class="kicker">Masalah</p>
+    <div class="rule"></div>
+    <h2>Arsitek mencari produk dengan cara yang melelahkan.</h2>
+    <div class="cols" style="margin-top:10px">
+      <div>
+        <h3>Yang dialami arsitek</h3>
+        <ul>
+          <li class="small">Membuka puluhan katalog PDF, situs brand, dan grup WhatsApp hanya untuk menemukan dimensi dan tekstur yang benar.</li>
+          <li class="small">Model 3D di pustaka umum tidak mencerminkan produk yang benar-benar dijual di Indonesia.</li>
+          <li class="small">Hasilnya: spesifikasi "kira-kira", revisi berulang, dan anggaran yang meleset.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Yang dialami brand</h3>
+        <ul>
+          <li class="small">Katalog masih berupa PDF dan cetakan. Produk tidak bisa langsung dipakai di gambar.</li>
+          <li class="small">Brand tidak tahu produk mana yang benar-benar masuk ke proyek — hanya tahu berapa kali katalog diunduh.</li>
+          <li class="small">Anggaran pemasaran keluar sebagai iklan, tanpa data pemakaian nyata.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:22px">
+      <strong>Unduhan bukan pemakaian.</strong> Sampai hari ini tidak ada cara bagi brand material
+      Indonesia untuk tahu produk mana yang benar-benar masuk ke file proyek arsitek.
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>2</span></div></section>
+<section class="slide ">
+    <p class="kicker">Solusi</p>
+    <div class="rule"></div>
+    <h2>Satu pustaka produk asli, di dalam SketchUp.</h2>
+    <div class="cols3" style="margin-top:14px">
+      <div class="card">
+        <h3>Arsitek</h3>
+        <p>Mencari dan memakai produk <strong>gratis</strong>. Cari, klik, dan produk masuk ke gambar — tanpa keluar dari software desainnya.</p>
+      </div>
+      <div class="card">
+        <h3>Brand</h3>
+        <p>Katalognya tayang di dalam SketchUp, dan setiap pemakaian <strong>tercatat</strong>: luas tercat, unit terpasang, dan permintaan penawaran.</p>
+      </div>
+      <div class="card">
+        <h3>Dirory</h3>
+        <p>Mengkurasi isi pustaka, menjaga mutu model, dan mengelola langganan brand.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:26px">
+      <strong>Yang membedakan Dirory:</strong> kami tidak menjual iklan atau tayangan.
+      Kami mengukur <em>pemakaian</em> — berapa meter persegi material brand yang benar-benar
+      tercat di proyek nyata.
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>3</span></div></section>
+<section class="slide ">
+    <p class="kicker">Produk · sisi arsitek</p>
+    <div class="rule"></div>
+    <h2>Yang dilihat arsitek saat mencari produk.</h2>
+    <div class="cols" style="grid-template-columns: 0.85fr 1.4fr; align-items:center; margin-top:8px">
+      <div>
+        <ul>
+          <li class="small">Panel Dirory hidup di dalam SketchUp — arsitek tidak berpindah aplikasi.</li>
+          <li class="small">Filter per kategori dan brand; material dan model dalam satu tempat.</li>
+          <li class="small">Logo dan nama brand tampil di setiap kartu produk.</li>
+          <li class="small">Katalog nyata, berisi produk brand yang sudah tayang.</li>
+        </ul>
+        <p class="small muted" style="margin-top:14px">Tangkapan layar asli dari plugin Dirory.</p>
+      </div>
+      <div class="shot" style="height:425px">
+        <img src="assets/sketchup-search.png" alt="Panel pencarian Dirory di SketchUp" style="margin-top:-44px">
+      </div>
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>4</span></div></section>
+<section class="slide ">
+    <p class="kicker">Produk · pengukuran</p>
+    <div class="rule"></div>
+    <h2>Setiap pemakaian menjadi angka.</h2>
+    <div class="cols" style="grid-template-columns: 0.85fr 1.4fr; align-items:center; margin-top:8px">
+      <div>
+        <ul>
+          <li class="small"><strong>Luas tercat (m²)</strong> — berapa meter persegi material brand yang dipakai di proyek nyata.</li>
+          <li class="small"><strong>Unit terpasang</strong> — berapa unit produk yang masuk ke gambar, per tipe.</li>
+          <li class="small"><strong>Proyek &amp; kota</strong> — sebaran pemakaian.</li>
+          <li class="small"><strong>Permintaan penawaran</strong> — arsitek yang siap membeli, hanya yang ia setujui bagikan.</li>
+        </ul>
+        <p class="small muted" style="margin-top:14px">Tangkapan layar asli: 21,82 m² tercat dari 3 brand dalam satu file.</p>
+      </div>
+      <div class="shot" style="height:419px">
+        <img src="assets/sketchup-usage.png" alt="Tab Usage Dirory di SketchUp" style="margin-top:-44px">
+      </div>
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>5</span></div></section>
+<section class="slide ">
+    <p class="kicker">Produk · sisi brand</p>
+    <div class="rule"></div>
+    <h2>Untuk brand: dari katalog menjadi bukti.</h2>
+    <div class="cols" style="grid-template-columns: 1.15fr 1fr; align-items:start; margin-top:8px">
+      <div class="shot" style="height:352px">
+        <img src="assets/dashboard.png" alt="Ilustrasi dashboard brand Dirory">
+      </div>
+      <div>
+        <ul>
+          <li class="small">Dashboard pemakaian: agregat dan anonim. Brand tidak melihat nama proyek atau identitas arsitek.</li>
+          <li class="small">Kotak masuk permintaan penawaran, bisa diekspor ke tim sales.</li>
+          <li class="small">Pangsa kategori: berapa persen pemakaian kategori yang memakai produknya.</li>
+          <li class="small">Laporan bulanan siap diteruskan ke manajemen.</li>
+        </ul>
+        <p class="small muted" style="margin-top:12px">Dashboard di atas adalah ilustrasi; angka pada tangkapan layar SketchUp adalah data nyata.</p>
+      </div>
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>6</span></div></section>
+<section class="slide ">
+    <p class="kicker">Traksi</p>
+    <div class="rule"></div>
+    <h2>Yang sudah berjalan.</h2>
+    <div class="cols" style="grid-template-columns: repeat(2, 1fr); gap: 22px; margin-top:6px">
+      <div class="stat"><div class="n">15</div><div class="l">brand material Indonesia sudah tayang</div></div>
+      <div class="stat"><div class="n">1.355</div><div class="l">produk disetujui, siap dipakai arsitek</div></div>
+      <div class="stat"><div class="n">36</div><div class="l">kategori produk — dari cat, keramik, HPL hingga sanitari dan pintu</div></div>
+      <div class="stat"><div class="n">53</div><div class="l">akun arsitek terdaftar</div></div>
+    </div>
+    <div class="cols" style="grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top:22px">
+      <div class="stat"><div class="n">7</div><div class="l">instalasi plugin aktif</div></div>
+      <div class="stat"><div class="n">62</div><div class="l">snapshot pemakaian tercatat</div></div>
+      <div class="stat"><div class="n">100%</div><div class="l">organik — tanpa iklan berbayar</div></div>
+    </div>
+    <p class="small muted" style="margin-top:20px">
+      Data per 9 Oktober 2026, dibaca langsung dari basis data Dirory. Sisi pasokan sudah terbangun;
+      fokus berikutnya menumbuhkan sisi arsitek.
+    </p>
+    <div class="foot"><span>Dirory — pitch deck</span><span>7</span></div></section>
+<section class="slide ">
+    <p class="kicker">Model bisnis</p>
+    <div class="rule"></div>
+    <h2>Arsitek gratis. Brand berlangganan.</h2>
+    <table style="margin-top:6px">
+      <thead><tr><th>Paket brand</th><th>Untuk</th><th>Bulanan</th><th>Tahunan</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Starter</strong></td><td>Brand kecil, atau katalog awal — hingga 100 produk</td>
+            <td class="price">Rp 500.000</td><td class="price">Rp 5.000.000</td></tr>
+        <tr><td><strong>Growth</strong></td><td>Brand material dengan ratusan warna — hingga 500 produk</td>
+            <td class="price">Rp 2.500.000</td><td class="price">Rp 25.000.000</td></tr>
+        <tr><td><strong>Full Range</strong></td><td>Brand nasional — 500+ produk, prioritas penempatan</td>
+            <td class="price" colspan="2">Penawaran khusus</td></tr>
+      </tbody>
+    </table>
+    <div class="cols" style="margin-top:20px">
+      <div class="card">
+        <h3>Layanan digitalisasi (sekali bayar)</h3>
+        <p>Material Rp 25.000–50.000 per produk (makin murah bila banyak); model Rp 400.000–2.500.000. Untuk brand yang belum punya file siap pakai.</p>
+      </div>
+      <div class="card">
+        <h3>Mengapa berkelanjutan</h3>
+        <p>Pendapatan berulang dari langganan tahunan. Semakin banyak brand tayang, semakin dalam katalognya, semakin bernilai bagi arsitek.</p>
+      </div>
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>8</span></div></section>
+<section class="slide ">
+    <p class="kicker">Peluang</p>
+    <div class="rule"></div>
+    <h2>Kategorinya sudah ada. Brandnya baru sebagian.</h2>
+    <p class="lead" style="max-width:940px">
+      Dirory tidak perlu menciptakan kategori baru. Dari 36 kategori yang sudah terisi,
+      sebagian besar masih diisi satu atau dua brand.
+    </p>
+    <div class="cols3" style="margin-top:22px">
+      <div class="card">
+        <h3>Yang sudah dalam</h3>
+        <p>Cat, keramik, HPL, sanitari, granit, dan plywood — beberapa brand dengan katalog terdalam sudah tayang.</p>
+      </div>
+      <div class="card">
+        <h3>Ruang tumbuh</h3>
+        <p>Setiap kategori punya puluhan brand material Indonesia yang belum masuk. Menambah brand berarti memperdalam katalog yang sama.</p>
+      </div>
+      <div class="card">
+        <h3>Efek jaringan</h3>
+        <p>Semakin lengkap katalog, semakin sering arsitek membuka Dirory. Semakin sering dipakai, semakin menarik bagi brand berikutnya.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:24px">
+      <strong>Posisi hari ini:</strong> sisi pasokan (brand &amp; produk) sudah terbangun secara organik.
+      Yang perlu dipercepat adalah sisi permintaan: arsitek dan desainer yang memakai Dirory setiap hari.
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>9</span></div></section>
+<section class="slide ">
+    <p class="kicker">Mengapa sekarang</p>
+    <div class="rule"></div>
+    <h2>Tiga hal yang membuat ini mungkin hari ini.</h2>
+    <div class="cols3" style="margin-top:16px">
+      <div class="card">
+        <h3>1. Alatnya sudah dipakai</h3>
+        <p>SketchUp sudah menjadi alat kerja sehari-hari bagi arsitek dan desainer interior di Indonesia. Dirory masuk ke alur kerja yang sudah ada, bukan menuntut alat baru.</p>
+      </div>
+      <div class="card">
+        <h3>2. Brand menuntut data</h3>
+        <p>Anggaran pemasaran material bergeser dari cetak dan iklan ke saluran yang bisa diukur. Dirory memberi angka yang selama ini tidak ada.</p>
+      </div>
+      <div class="card">
+        <h3>3. Belum ada yang mengukur</h3>
+        <p>Pustaka 3D umum berisi model generik tanpa brand. Dirory adalah katalog produk asli yang sekaligus mengukur pemakaiannya.</p>
+      </div>
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>10</span></div></section>
+<section class="slide ">
+    <p class="kicker">Diferensiasi</p>
+    <div class="rule"></div>
+    <h2>Bukan pustaka 3D biasa.</h2>
+    <table style="margin-top:6px">
+      <thead><tr><th>Alternatif</th><th>Kuat di</th><th>Lemah di</th></tr></thead>
+      <tbody>
+        <tr><td>Pustaka 3D umum</td><td>Banyak model gratis</td><td>Model generik, bukan produk Indonesia, tanpa data pemakaian</td></tr>
+        <tr><td>Katalog PDF brand</td><td>Lengkap secara visual</td><td>Tidak bisa dimasukkan ke gambar; tidak ada data</td></tr>
+        <tr><td>Maket / material board</td><td>Meyakinkan secara fisik</td><td>Terbatas, tidak terukur, tidak terhubung ke gambar kerja</td></tr>
+        <tr style="background:#f5f7fd">
+          <td><strong>Dirory</strong></td>
+          <td><strong>Produk asli masuk ke gambar + data pemakaian</strong></td>
+          <td>Katalog perlu terus diperdalam</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="foot"><span>Dirory — pitch deck</span><span>11</span></div></section>
+<section class="slide ">
+    <p class="kicker">Cara kami tumbuh</p>
+    <div class="rule"></div>
+    <h2>Dua sisi yang saling menguatkan.</h2>
+    <div class="cols" style="margin-top:14px">
+      <div>
+        <h3>Sisi pasokan — brand</h3>
+        <ul>
+          <li class="small">Onboarding brand secara organik dan melalui kemitraan.</li>
+          <li class="small">Pilot gratis untuk brand pertama: digitalisasi dan masa tayang tanpa biaya.</li>
+          <li class="small">Fokus pada brand dengan katalog dalam (ratusan SKU).</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sisi permintaan — arsitek</h3>
+        <ul>
+          <li class="small">Komunitas arsitek dan desainer interior.</li>
+          <li class="small">Kampus dan program pendidikan desain.</li>
+          <li class="small">Katalog yang makin lengkap menarik pemakaian berulang.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:24px">
+      <strong>Inilah bagian yang paling terbantu oleh kemitraan.</strong> Pembukaan pintu ke
+      brand dan komunitas arsitek jauh lebih cepat daripada menjangkau satu per satu.
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>12</span></div></section>
+<section class="slide ">
+    <p class="kicker">Yang kami butuhkan</p>
+    <div class="rule"></div>
+    <h2>Perkenalan, bukan pendanaan.</h2>
+    <p class="lead" style="max-width:980px">
+      Dirory sedang mencari mitra yang dapat membuka pintu — bukan investor.
+    </p>
+    <div style="margin-top:18px">
+      <span class="pill">Perkenalan ke brand material</span>
+      <span class="pill">Asosiasi &amp; komunitas arsitek</span>
+      <span class="pill">Kampus desain</span>
+      <span class="pill">Mitra distribusi</span>
+      <span class="pill">Event industri</span>
+    </div>
+    <div class="cols" style="margin-top:24px">
+      <div class="ask">
+        <h3>Idealnya brand seperti apa</h3>
+        <p class="small" style="margin:0;color:#3c4457">Brand material bangunan dengan katalog dalam (ratusan SKU) — cat, keramik, HPL, sanitari, pintu, granit — yang ingin tahu produknya benar-benar dipakai di proyek.</p>
+      </div>
+      <div class="ask">
+        <h3>Yang kami siapkan</h3>
+        <p class="small" style="margin:0;color:#3c4457">Demo langsung di SketchUp, pilot tanpa biaya untuk brand pertama, dan laporan pemakaian yang bisa dibawa ke rapat manajemen.</p>
+      </div>
+    </div>
+    <div class="foot"><span>Dirory — pitch deck</span><span>13</span></div></section>
+<section class="slide ">
+    <p class="kicker">Terima kasih</p>
+    <div class="rule"></div>
+    <h2>Mari mulai dari satu percakapan.</h2>
+    <p class="lead" style="max-width:880px">
+      Kami dapat mendemonstrasikan Dirory langsung di SketchUp dalam 30 menit,
+      memakai produk brand yang relevan.
+    </p>
+    <div style="margin-top:26px; font-size:22px; line-height:1.9">
+      <div><strong>WhatsApp</strong> &nbsp; +62 857-1008-6041</div>
+      <div><strong>Email</strong> &nbsp; hello@dirory.com</div>
+      <div><strong>Situs</strong> &nbsp; dirory.com &nbsp;·&nbsp; dirory.com/vendor</div>
+    </div>
+    <p class="small muted" style="margin-top:34px">
+      Dirory — katalog produk bangunan Indonesia, di dalam software desain arsitek.
+      Data traksi per 9 Oktober 2026.
+    </p>
+    <div class="foot"><span>Dirory — pitch deck</span><span>14</span></div></section>
+</body></html>
