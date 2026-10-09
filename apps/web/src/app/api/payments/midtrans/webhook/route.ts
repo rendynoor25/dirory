@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServiceClient } from "@/lib/supabase/server";
-import { mapMidtransStatus, midtransConfigured, verifyMidtransSignature } from "@/lib/midtrans";
+import {
+  invoiceIdFromOrderId,
+  mapMidtransStatus,
+  midtransConfigured,
+  verifyMidtransSignature,
+} from "@/lib/midtrans";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -53,11 +58,32 @@ export async function POST(request: Request) {
   const supabase = createSupabaseServiceClient();
 
   // Find the invoice this order belongs to.
-  const { data: invoice } = await supabase
-    .from("invoices")
-    .select("id, amount_idr, status")
-    .eq("gateway_ref", orderId)
-    .maybeSingle();
+  //
+  // `gateway_ref` is the primary link, but it only holds the *latest* order for
+  // an invoice: a vendor can click "Pay" twice, or mint a QRIS charge after a
+  // Snap attempt. The order id embeds the full invoice id, so fall back to that.
+  // Without the fallback, paying an earlier order would take the money and never
+  // apply it ("unmatched").
+  let invoice = (
+    await supabase
+      .from("invoices")
+      .select("id, amount_idr, status")
+      .eq("gateway_ref", orderId)
+      .maybeSingle()
+  ).data;
+
+  if (!invoice) {
+    const fallbackId = invoiceIdFromOrderId(orderId);
+    if (fallbackId) {
+      invoice = (
+        await supabase
+          .from("invoices")
+          .select("id, amount_idr, status")
+          .eq("id", fallbackId)
+          .maybeSingle()
+      ).data;
+    }
+  }
 
   // Idempotency: the unique key means a duplicate notification inserts nothing.
   const { data: recorded, error: recordError } = await supabase

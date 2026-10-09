@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.17.10 — Midtrans: any order for an invoice can settle it
+
+Auditing the payment path before a real sandbox test turned up a way to lose a
+payment. `buildOrderId()` embedded only the first 12 hex digits of the invoice id,
+and both `POST /token` (Snap) and `POST /qris` **overwrite** `invoices.gateway_ref`.
+So a vendor who clicked "Pay online" twice — or minted a QRIS after a Snap
+attempt — and then paid the **first** page would have money taken against an order
+the webhook could no longer match: the invoice stayed unpaid and the notification
+landed as `unmatched`.
+
+Now:
+
+- `buildOrderId()` embeds the **full** invoice id: `DRY-<32 hex>-<epoch>`, 47
+  characters (Midtrans caps order_id at 50).
+- New `invoiceIdFromOrderId()` parses it back.
+- The webhook falls back to that when `gateway_ref` points at a newer order, so an
+  older order still settles its invoice. The old 12-hex format parses to `null`
+  and behaves exactly as before.
+
+`scripts/test-midtrans.mts` covers the round trip, the 50-char limit, a foreign
+order id and the retired format; all 20 checks pass. `docs/PAYMENTS.md` also
+stopped claiming the grace/expiry job is unimplemented — migration 0022 shipped it.
+
 ## 0.17.9 — proposal for Dekkson
 
 A sixth proposal, for Mrs. Zahra at Dekkson — legally **PT Fajar Lestari Sejati

@@ -220,11 +220,30 @@ export function mapMidtransStatus(status: string | undefined): MidtransOutcome {
 
 /**
  * A stable, unique order id. Midtrans requires uniqueness across all attempts,
- * so the epoch is included; the invoice id makes it easy to trace back.
+ * so the epoch is included.
+ *
+ * The **whole** invoice id is embedded, not a prefix. A vendor can mint more than
+ * one order for the same invoice — a Snap attempt, another after going back, or a
+ * QRIS charge — but `invoices.gateway_ref` holds only the latest. Embedding the
+ * full id lets the webhook recover the invoice from *any* of those orders, so
+ * paying an older one settles instead of being lost as "unmatched". Midtrans caps
+ * order_id at 50 characters; this format is 47.
  */
 export function buildOrderId(invoiceId: string, now = new Date()): string {
   const stamp = Math.floor(now.getTime() / 1000);
-  return `DRY-${invoiceId.replace(/-/g, "").slice(0, 12)}-${stamp}`;
+  return `DRY-${invoiceId.replace(/-/g, "").toLowerCase()}-${stamp}`;
+}
+
+/**
+ * Recover the invoice id from an order id built by `buildOrderId`, or null when
+ * the id was not built by us. The webhook uses this as a fallback when
+ * `gateway_ref` has moved on to a newer order for the same invoice.
+ */
+export function invoiceIdFromOrderId(orderId: string): string | null {
+  const m = /^DRY-([0-9a-f]{32})-\d+$/i.exec(orderId);
+  if (!m) return null;
+  const h = m[1].toLowerCase();
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
 // ---------------------------------------------------------------------------

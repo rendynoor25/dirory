@@ -17,6 +17,7 @@ process.env.MIDTRANS_IS_PRODUCTION = "false";
 import { createHash } from "node:crypto";
 import {
   buildOrderId,
+  invoiceIdFromOrderId,
   mapMidtransStatus,
   midtransConfigured,
   midtransEnabledPayments,
@@ -69,6 +70,13 @@ const b = buildOrderId("11111111-2222-3333-4444-555555555555", new Date(1_700_00
 check("starts with DRY-", a.startsWith("DRY-"), true);
 check("contains no dashes from the uuid", a.slice(4, 16).includes("-"), false);
 check("two attempts at different times differ", a !== b, true);
+check("fits Midtrans' 50-character order_id limit", a.length <= 50, true);
+// The full invoice id is embedded so the webhook can settle an order whose
+// gateway_ref has been overwritten by a newer one for the same invoice.
+check("recovers the invoice id round-trip", invoiceIdFromOrderId(a), "11111111-2222-3333-4444-555555555555");
+check("recovers it from the later attempt too", invoiceIdFromOrderId(b), "11111111-2222-3333-4444-555555555555");
+check("returns null for a foreign order id", invoiceIdFromOrderId("ORDER-123-456"), null);
+check("returns null for the old short format", invoiceIdFromOrderId("DRY-1111111122-1700000000"), null);
 
 console.log("\nconfiguration");
 check("midtransConfigured with both keys", midtransConfigured(), true);

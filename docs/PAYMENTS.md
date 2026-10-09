@@ -12,6 +12,7 @@ How a vendor pays a Dirory subscription, and how the invoice becomes paid.
 | "Pay online" button | `apps/web/src/app/vendor/subscription/invoice/[id]/MidtransPay.tsx` |
 | Single "invoice paid" operation | `public.mark_invoice_paid()` — migration `0013` |
 | Gateway event log (idempotency + audit) | `public.payment_events` — migration `0013` |
+| Grace/expiry (7 days, then hidden) | `public.expire_subscriptions()` + `public.vendor_is_visible()` — migration `0022` |
 
 Snap is Midtrans' hosted payment page. It offers **QRIS, bank transfer (VA),
 GoPay, OVO, DANA, ShopeePay and cards** behind one redirect, so Dirory does not
@@ -249,6 +250,11 @@ limits the query to the vendor's own invoices regardless.
   is confined to `webhook/route.ts`; the browser never receives it.
 - **One settlement path.** The admin "Mark paid" button and the webhook both call
   `mark_invoice_paid()`, so manual and automatic confirmation cannot diverge.
+- **Any order settles its invoice.** The order id embeds the **full** invoice id
+  (`DRY-<32 hex>-<epoch>`, 47 chars), and the webhook falls back to parsing it when
+  `invoices.gateway_ref` points at a newer order. A vendor who mints a second
+  payment — or a QRIS charge after a Snap attempt — and then pays the first is
+  still credited, instead of the payment landing as `unmatched`.
 
 ## Not implemented (deliberately)
 
@@ -257,8 +263,5 @@ limits the query to the vendor's own invoices regardless.
   renews by paying the next invoice.
 - **Refunds.** A `refund`/`partial_refund` notification is logged and ignored; it
   does not reverse a subscription. Handle these manually until needed.
-- **The grace/expiry job.** PRD §174 (7-day grace, then hidden) still needs a
-  scheduled job; paying an invoice activates the subscription, but nothing
-  currently downgrades an expired one.
 - **Direct dynamic QRIS via Xendit.** `lib/payments.ts` still throws; Snap already
   covers QRIS, so this is only needed if you move off Midtrans.
