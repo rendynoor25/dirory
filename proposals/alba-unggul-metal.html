@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><title>Proposal Dirory — PT Alba Unggul Metal</title>
+<style>
+    @page { size: A4; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0f172a;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      width: 210mm; min-height: 297mm;
+      padding: 18mm 17mm 16mm;
+      page-break-after: always;
+      position: relative;
+    }
+    .page:last-child { page-break-after: auto; }
+    h1 { font-size: 26pt; line-height: 1.15; margin: 0 0 6mm; letter-spacing: -0.4pt; }
+    h2 { font-size: 15pt; margin: 0 0 3mm; letter-spacing: -0.2pt; }
+    h3 { font-size: 11pt; margin: 0 0 1.5mm; }
+    p  { margin: 0 0 3mm; }
+    .lead { font-size: 12pt; color: #5b6478; line-height: 1.6; }
+    .muted { color: #5b6478; }
+    .small { font-size: 9pt; }
+    .tag {
+      display: inline-block; font-size: 8.5pt; font-weight: 700;
+      letter-spacing: 1.2pt; text-transform: uppercase; color: #2f3f96;
+      margin-bottom: 3mm;
+    }
+    .rule { height: 3px; background: #2f3f96; width: 42px; border-radius: 2px; margin: 0 0 6mm; }
+    .cover { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+    .cover-logo img { width: 62mm; }
+    .cover-foot { border-top: 1px solid #e2e6f0; padding-top: 5mm; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5mm; }
+    .card {
+      border: 1px solid #e2e6f0; border-radius: 3mm; padding: 5mm;
+      background: #fbfcff; break-inside: avoid;
+    }
+    .card h3 { color: #2f3f96; }
+    .step { display: grid; grid-template-columns: 9mm 1fr; gap: 4mm; margin-bottom: 4mm; break-inside: avoid; }
+    .step .n {
+      width: 9mm; height: 9mm; border-radius: 50%; background: #2f3f96; color: #fff;
+      font-weight: 700; font-size: 10pt; display: flex; align-items: center; justify-content: center;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 3mm 0 4mm; }
+    th {
+      text-align: left; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.6pt;
+      color: #5b6478; border-bottom: 1px solid #e2e6f0; padding: 2mm 3mm;
+    }
+    td { padding: 2.6mm 3mm; border-bottom: 1px solid #f0f2f8; vertical-align: top; }
+    tr { break-inside: avoid; }
+    .price { font-weight: 700; white-space: nowrap; }
+    .pill {
+      display: inline-block; font-size: 8.5pt; font-weight: 700;
+      background: #eef1fb; color: #2f3f96; border-radius: 20px; padding: 1mm 3mm;
+    }
+    .callout {
+      border-left: 3px solid #2f3f96; background: #f5f7fd; padding: 4mm 5mm;
+      border-radius: 0 3mm 3mm 0; margin: 4mm 0;
+    }
+    /* A real screenshot. The wrapper crops the top strip (the SketchUp account
+       name) by giving the image a negative top margin and clipping the overflow;
+       the height is set inline per image. */
+    .shotwrap {
+      border: 1px solid #e2e6f0; border-radius: 3mm; overflow: hidden;
+      margin: 4mm 0 3mm;
+    }
+    .shotwrap img { display: block; width: 100%; }
+    .foot {
+      position: absolute; left: 17mm; right: 17mm; bottom: 10mm;
+      border-top: 1px solid #e2e6f0; padding-top: 2.5mm;
+      font-size: 8pt; color: #5b6478; display: flex; justify-content: space-between;
+    }
+  </style></head><body>
+
+<!-- ============================ COVER ============================ -->
+<section class="page">
+  <div class="cover">
+    <div>
+      <div class="cover-logo"><img src="assets/logo-vertical.png" alt="Dirory"></div>
+      <div class="rule" style="margin-top:10mm"></div>
+      <p class="tag">Proposal kerja sama</p>
+      <h1>Katalog Alba, langsung<br>di dalam software desain arsitek.</h1>
+      <p class="lead">
+        Dirory adalah pustaka produk bangunan yang berjalan di dalam SketchUp —
+        software desain yang dipakai arsitek Indonesia setiap hari. Arsitek memakai
+        model dan material Anda di proyek nyata, dan Anda melihat datanya.
+      </p>
+    </div>
+    <div class="cover-foot">
+      <table style="margin:0">
+        <tr><td style="border:0;padding:1mm 0;width:32mm" class="muted">Disiapkan untuk</td>
+            <td style="border:0;padding:1mm 0"><strong>Siti Lina</strong><br>
+            <span class="muted small">Sales & Marketing Specialist · PT Alba Unggul Metal</span></td></tr>
+        <tr><td style="border:0;padding:1mm 0" class="muted">Tanggal</td>
+            <td style="border:0;padding:1mm 0">9 Oktober 2026</td></tr>
+        <tr><td style="border:0;padding:1mm 0" class="muted">Fokus</td>
+            <td style="border:0;padding:1mm 0">Pintu & komponen</td></tr>
+        
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ APA ITU ============================ -->
+<section class="page">
+  <p class="tag">01 · Apa itu Dirory</p>
+  <div class="rule"></div>
+  <h2>Satu pustaka produk, di dalam SketchUp.</h2>
+  <p class="lead">
+    Arsitek Indonesia menghabiskan waktu mencari model pintu, saniter, cat dan material yang
+    benar-benar sesuai produk di pasaran. Dirory menghadirkan produk asli produsen Indonesia
+    langsung di panel SketchUp: cari, klik, dan produk masuk ke gambar.
+  </p>
+
+  <div class="grid3" style="margin-top:6mm">
+    <div class="card">
+      <h3>Arsitek</h3>
+      <p class="small">Mencari dan memakai produk <strong>gratis</strong>. Tanpa akun untuk
+      mencari; akun diperlukan untuk memasukkan produk ke gambar.</p>
+    </div>
+    <div class="card">
+      <h3>Brand</h3>
+      <p class="small">Menayangkan katalog, melihat <strong>bagaimana produknya dipakai</strong>,
+      dan menerima permintaan penawaran dari arsitek.</p>
+    </div>
+    <div class="card">
+      <h3>Dirory</h3>
+      <p class="small">Mengkurasi isi pustaka, menjaga mutu model, dan mengelola
+      langganan brand.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Yang membedakan Dirory:</strong> kami tidak menjual iklan atau tayangan.
+    Kami mengukur <em>pemakaian</em> — berapa unit produk Anda yang benar-benar masuk ke
+    file proyek, dan berapa luas material Anda yang tercat.
+  </div>
+
+  <h3 style="margin-top:6mm">Untuk PT Alba Unggul Metal secara khusus</h3>
+  <p>Pintu adalah produk yang dipilih berulang kali di setiap proyek. Dirory menghitung berapa unit pintu Alba yang benar-benar terpasang di file SketchUp arsitek — bukan berapa kali halaman dilihat — sehingga Anda tahu produk mana yang jadi andalan dan mana yang perlu didorong.</p>
+  <p class="small muted">Metrik utama untuk Anda: <strong>Unit terpasang per tipe pintu, dan jumlah proyek yang memakainya</strong>.</p>
+  
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>2</span></div>
+</section>
+
+<!-- ============================ CARA KERJA ============================ -->
+<section class="page">
+  <p class="tag">02 · Cara kerja</p>
+  <div class="rule"></div>
+  <h2>Dari katalog Anda ke proyek arsitek.</h2>
+
+  <div style="margin-top:5mm">
+    <div class="step"><div class="n">1</div><div>
+      <h3>Anda mengunggah produk</h3>
+      <p class="small">Model <code>.skp</code> atau gambar material, beserta nama, kategori dan
+      tag. Unggah satu per satu atau borongan. Tim Dirory dapat membantu proses digitalisasi
+      bila Anda belum punya file 3D-nya.</p></div></div>
+
+    <div class="step"><div class="n">2</div><div>
+      <h3>Tim Dirory memeriksa</h3>
+      <p class="small">Setiap produk diperiksa: skala benar, nama dan kategori wajar, tidak ada
+      merek lain yang menempel. Setelah disetujui, produk tayang.</p></div></div>
+
+    <div class="step"><div class="n">3</div><div>
+      <h3>Arsitek memakainya</h3>
+      <p class="small">Produk muncul di panel Dirory dalam SketchUp. Arsitek mencari, lalu
+      memasukkan model atau mengecat material langsung ke gambar kerja.</p></div></div>
+
+    <div class="step"><div class="n">4</div><div>
+      <h3>Data kembali ke dashboard Anda</h3>
+      <p class="small">Sistem mencatat produk apa yang dipakai, berapa jumlahnya, dan di berapa
+      proyek. Dashboard Anda memperbarui angkanya.</p></div></div>
+
+    <div class="step"><div class="n">5</div><div>
+      <h3>Permintaan penawaran</h3>
+      <p class="small">Bila arsitek ingin membeli, ia mengirim permintaan penawaran. Anda
+      menerima nama proyek, kota, jumlah item dan catatannya — hanya yang arsitek setujui
+      untuk dibagikan.</p></div></div>
+  </div>
+
+  <div class="callout small">
+    <strong>Privasi dijaga di tingkat sistem.</strong> Anda tidak pernah melihat nama proyek,
+    identitas arsitek, atau data brand lain kecuali arsitek mengirimkannya sendiri melalui
+    permintaan penawaran. Ini bukan sekadar janji — pembatasannya ada di basis data.
+  </div>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>3</span></div>
+</section>
+
+<!-- ============================ MANFAAT ============================ -->
+<section class="page">
+  <p class="tag">03 · Manfaat untuk brand</p>
+  <div class="rule"></div>
+  <h2>Enam hal yang Anda dapatkan.</h2>
+
+  <div class="grid2" style="margin-top:5mm">
+    <div class="card">
+      <h3>1. Jangkauan yang terukur</h3>
+      <p class="small">Produk Anda masuk ke file proyek arsitek. Anda melihat jumlah proyek dan
+      jumlah unit yang terpasang — bukan sekadar jumlah kunjungan halaman.</p>
+    </div>
+    <div class="card">
+      <h3>2. Data pemakaian material</h3>
+      <p class="small">Untuk material, Dirory mengukur <strong>luas tercat dalam m²</strong>.
+      Angka ini yang relevan untuk cat, HPL, keramik dan material lembaran.</p>
+    </div>
+    <div class="card">
+      <h3>3. Permintaan penawaran (leads)</h3>
+      <p class="small">Permintaan langsung dari arsitek yang sudah memilih produk Anda, lengkap
+      dengan jumlah item dan kota proyek. Bisa diekspor ke CSV dan diteruskan ke tim sales.</p>
+    </div>
+    <div class="card">
+      <h3>4. Pangsa kategori</h3>
+      <p class="small">Berapa persen pemakaian di kategori Anda yang memakai produk Anda.
+      Agregat dan anonim: Anda tidak melihat angka pesaing, pesaing tidak melihat angka Anda.</p>
+    </div>
+    <div class="card">
+      <h3>5. Katalog yang terkendali</h3>
+      <p class="small">Setiap produk punya status jelas: draf, menunggu review, tayang, atau
+      ditolak dengan alasan. Memperbarui produk yang sudah tayang membuat versi baru tanpa
+      menghilangkan versi lama.</p>
+    </div>
+    <div class="card">
+      <h3>6. Laporan bulanan</h3>
+      <p class="small">Ringkasan performa katalog Anda dalam PDF/CSV, siap diteruskan ke tim
+      marketing dan manajemen.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:6mm">
+    <strong>Yang tidak perlu Anda khawatirkan:</strong> tidak ada biaya per tayangan, tidak ada
+    lelang iklan, dan tidak ada biaya per lead. Langganan tetap, berapa pun pemakaiannya.
+  </div>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>4</span></div>
+</section>
+
+<!-- ============================ CARI (screenshot) ============================ -->
+<section class="page">
+  <p class="tag">04 · Di dalam SketchUp</p>
+  <div class="rule"></div>
+  <h2>Yang dilihat arsitek saat mencari produk Anda.</h2>
+  <p class="lead">
+    Panel Dirory hidup di dalam SketchUp. Arsitek menyaring berdasarkan kategori dan
+    brand, lalu memasukkan material atau model langsung ke gambar kerja — tanpa keluar
+    dari software desainnya.
+  </p>
+  <div class="shotwrap" style="height:108.6mm">
+    <img src="assets/sketchup-search.png" alt="Panel pencarian Dirory di SketchUp" style="margin-top:-11.2mm">
+  </div>
+  <p class="small muted">
+    Tangkapan layar asli dari plugin Dirory yang berjalan di SketchUp. Katalog di panel
+    ini nyata — bukan mockup — dan berisi produk brand yang sudah tayang.
+  </p>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>5</span></div>
+</section>
+
+<!-- ============================ USAGE (screenshot) ============================ -->
+<section class="page">
+  <p class="tag">05 · Yang tercatat</p>
+  <div class="rule"></div>
+  <h2>Setiap pemakaian menjadi angka.</h2>
+  <p class="lead">
+    Tab Usage mencatat berapa material Anda yang benar-benar dipakai — bukan berapa kali
+    halaman dilihat. Angka inilah yang mengalir ke dashboard brand Anda.
+  </p>
+  <div class="shotwrap" style="height:107mm">
+    <img src="assets/sketchup-usage.png" alt="Tab Usage Dirory di SketchUp" style="margin-top:-11.2mm">
+  </div>
+  <div class="grid2" style="margin-top:2mm">
+    <div class="card">
+      <h3>Luas tercat (m²)</h3>
+      <p class="small">Untuk material, Dirory mengukur berapa meter persegi yang tercat di
+      proyek nyata. Angka ini yang relevan untuk cat, HPL, keramik dan material lembaran.</p>
+    </div>
+    <div class="card">
+      <h3>Permintaan penawaran</h3>
+      <p class="small">Tombol <em>Ask for a Quote</em> mengirim permintaan langsung ke brand,
+      lengkap dengan item dan kota proyek — hanya yang arsitek setujui untuk dibagikan.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>6</span></div>
+</section>
+
+<!-- ============================ HARGA ============================ -->
+<section class="page">
+  <p class="tag">06 · Paket & harga</p>
+  <div class="rule"></div>
+  <h2>Paket berlangganan.</h2>
+  <p class="small muted">
+    Paket dihitung dari <strong>jumlah produk yang tayang</strong>, sehingga satu katalog
+    material berisi ratusan warna tetap muat. Bayar bulanan, atau tahunan dan hemat dua
+    bulan. Harga adalah titik awal diskusi, bukan daftar tarif tetap.
+  </p>
+
+  <table>
+    <thead><tr><th>Paket</th><th>Untuk</th><th>Termasuk</th><th>Bulanan</th><th>Tahunan</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Starter</strong></td><td>Brand kecil, atau katalog awal</td>
+          <td>Tayang hingga <strong>100 produk</strong>, dashboard pemakaian</td>
+          <td class="price">Rp 500.000</td>
+          <td class="price">Rp 5.000.000<br><span class="muted small">2 bulan gratis</span></td></tr>
+      <tr><td><strong>Growth</strong></td><td>Brand material — cat, HPL, keramik</td>
+          <td>Tayang hingga <strong>500 produk</strong>, dashboard, laporan bulanan</td>
+          <td class="price">Rp 2.500.000</td>
+          <td class="price">Rp 25.000.000<br><span class="muted small">2 bulan gratis</span></td></tr>
+      <tr><td><strong>Full Range</strong></td><td>Brand nasional</td>
+          <td>500+ produk, prioritas penempatan, laporan bulanan, review kuartalan</td>
+          <td class="price" colspan="2">Penawaran khusus</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:6mm">Digitalisasi produk (sekali bayar)</h3>
+  <p class="small muted">
+    Hanya bila Anda belum memiliki file yang siap pakai. Material dihitung berbeda dari
+    model: satu warna cat adalah sebuah gambar tekstur — ringan dan cepat disiapkan — 
+    sedangkan satu pintu atau kloset adalah model 3D dengan dimensi yang harus akurat.
+  </p>
+  <table>
+    <thead><tr><th>Tingkat</th><th>Contoh</th><th>Harga per produk</th></tr></thead>
+    <tbody>
+      <tr><td>Material</td><td>Kode warna cat, HPL, keramik, andesit</td>
+          <td class="price">
+            Rp 50.000 <span class="muted">(1–49)</span><br>
+            Rp 35.000 <span class="muted">(50–199)</span><br>
+            Rp 25.000 <span class="muted">(200+)</span>
+          </td></tr>
+      <tr><td>Standar</td><td>Handle pintu, engsel, downlight, atap, cladding</td>
+          <td class="price">Rp 400.000 – 750.000</td></tr>
+      <tr><td>Lanjutan</td><td>Toilet, wastafel, AC dengan zona bebas, cooker hood, kusen aluminium</td>
+          <td class="price">Rp 1.000.000 – 2.500.000</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">
+    Sudah punya file 3D atau tekstur sendiri? Digitalisasi tidak diperlukan — cukup
+    berlangganan.
+  </p>
+
+  <h3 style="margin-top:6mm">Tambahan opsional</h3>
+  <table>
+    <tbody>
+      <tr><td>Memperbarui model yang sudah ada (versi baru / ubah dimensi)</td>
+          <td class="price">30% dari biaya awal</td></tr>
+      <tr><td>Prioritas penempatan di pencarian kategori</td>
+          <td class="price">Rp 2.000.000 – 5.000.000 / bulan</td></tr>
+      <tr><td>Laporan khusus atau ekspor data</td>
+          <td class="price">Rp 1.000.000 / laporan</td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>7</span></div>
+</section>
+
+<!-- ============================ BERHENTI ============================ -->
+<section class="page">
+  <p class="tag">07 · Jika berhenti berlangganan</p>
+  <div class="rule"></div>
+  <h2>Disembunyikan, bukan dihapus.</h2>
+  <p class="lead">
+    Langganan mengatur <em>penemuan</em> produk Anda, bukan kepemilikan katalognya. Bila
+    langganan berakhir, produk Anda disembunyikan dari pencarian arsitek — tetap
+    tersimpan, dan tayang kembali begitu Anda memperpanjang. Sampel Dirory tidak
+    terpengaruh sama sekali.
+  </p>
+
+  <h3 style="margin-top:6mm">Apa yang terjadi, dan kapan</h3>
+  <table>
+    <thead><tr><th>Waktu</th><th>Dashboard Anda</th><th>Pencarian arsitek</th></tr></thead>
+    <tbody>
+      <tr><td>Hari 0 — jatuh tempo</td>
+          <td>Status menjadi <em>grace</em>. Tagihan muncul di halaman Langganan; semua data
+          tetap terbuka.</td>
+          <td>Tidak berubah. Produk masih muncul.</td></tr>
+      <tr><td>Hari 1–7 — masa tenggang</td>
+          <td>Anda masih dapat memperpanjang dari dashboard. Kuitansi dan riwayat tetap ada.</td>
+          <td>Tidak berubah. Tidak ada gangguan.</td></tr>
+      <tr><td>Setelah hari ke-7</td>
+          <td>Status menjadi <em>expired</em>. Akun dan riwayat Anda tetap tersimpan — Anda
+          berhenti menayangkan, bukan kehilangan akun.</td>
+          <td>Produk Alba tidak lagi muncul dan tidak dapat dimasukkan ke gambar baru.</td></tr>
+      <tr><td>Kapan pun Anda memperpanjang</td>
+          <td>Status kembali <em>active</em>. Periode baru berjalan dari tanggal pembayaran.</td>
+          <td>Produk tayang kembali. Katalog, versi, dan metrik lama tidak berubah.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Yang sudah terpasang tetap terpasang.</strong> Produk yang sudah dimasukkan
+    arsitek ke dalam file gambarnya tetap ada di file itu. Yang berhenti hanyalah penemuan
+    produk baru.
+  </div>
+
+  <h3 style="margin-top:6mm">Singkatnya</h3>
+  <table>
+    <tbody>
+      <tr><td class="muted" style="width:46mm">Katalog &amp; file Anda</td>
+          <td>Tetap utuh. Tidak dihapus.</td></tr>
+      <tr><td class="muted">Riwayat &amp; data dashboard</td>
+          <td>Tetap tersimpan dan dapat dibuka.</td></tr>
+      <tr><td class="muted">Kuitansi &amp; tagihan</td>
+          <td>Tetap tersedia untuk arsip Anda.</td></tr>
+      <tr><td class="muted">Pencarian arsitek</td>
+          <td>Ditutup setelah masa tenggang 7 hari, dibuka lagi saat Anda kembali.</td></tr>
+      <tr><td class="muted">Sampel Dirory</td>
+          <td>Tidak terpengaruh sama sekali.</td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>8</span></div>
+</section>
+
+<!-- ============================ BERLANGGANAN ============================ -->
+<section class="page">
+  <p class="tag">08 · Cara berlangganan</p>
+  <div class="rule"></div>
+  <h2>Enam langkah, selesai dalam hitungan hari.</h2>
+
+  <div style="margin-top:5mm">
+    <div class="step"><div class="n">1</div><div>
+      <h3>Daftar di dirory.com/vendor</h3>
+      <p class="small">Gunakan <strong>email kantor</strong> (bukan Gmail/Yahoo) agar akun
+      langsung dikenali sebagai akun perusahaan. Isi nama perusahaan, nama brand, logo,
+      kontak, dan NPWP bila ada.</p></div></div>
+
+    <div class="step"><div class="n">2</div><div>
+      <h3>Pilih paket</h3>
+      <p class="small">Starter atau Growth — <strong>bulanan atau tahunan</strong> — atau minta
+      penawaran Full Range. Sistem langsung membuat tagihan untuk paket yang Anda
+      pilih.</p></div></div>
+
+    <div class="step"><div class="n">3</div><div>
+      <h3>Bayar</h3>
+      <p class="small">Tiga pilihan: <strong>transfer bank ke rekening Dirory</strong>,
+      <strong>QRIS</strong> (satu kode khusus untuk tagihan Anda), atau
+      <strong>Virtual Account</strong> lewat BCA, BNI, BRI, Mandiri, Permata dan bank lain.
+      Untuk QRIS dan Virtual Account, tagihan otomatis lunas begitu pembayaran masuk.</p></div></div>
+
+    <div class="step"><div class="n">4</div><div>
+      <h3>Verifikasi &amp; kuitansi</h3>
+      <p class="small">Tim Dirory memverifikasi. Untuk transfer manual, cukup unggah bukti
+      transfer di halaman tagihan. Kuitansi resmi tersedia otomatis dan bisa dicetak atau
+      disimpan sebagai PDF.</p></div></div>
+
+    <div class="step"><div class="n">5</div><div>
+      <h3>Unggah produk</h3>
+      <p class="small">Anda dapat mengunggah sendiri, atau memakai layanan digitalisasi Dirory.
+      Produk yang disetujui langsung tayang untuk seluruh arsitek pengguna Dirory.</p></div></div>
+
+    <div class="step"><div class="n">6</div><div>
+      <h3>Pantau hasilnya</h3>
+      <p class="small">Dashboard dan laporan bulanan mulai terisi. Tim Dirory siap membantu
+      membaca angkanya bersama tim Anda.</p></div></div>
+  </div>
+
+  <div class="callout">
+    <strong>Tidak yakin?</strong> Kami menawarkan <em>pilot</em> untuk brand pertama:
+    digitalisasi gratis hingga <strong>10 produk</strong> dan <strong>6 bulan tayang gratis</strong>,
+    sebagai ganti izin memakai logo, satu studi kasus singkat, data dimensi resmi dan daftar SKU.
+  </div>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>9</span></div>
+</section>
+
+<!-- ============================ PENUTUP ============================ -->
+<section class="page">
+  <p class="tag">09 · Langkah selanjutnya</p>
+  <div class="rule"></div>
+  <h2>Mari kita mulai dari satu percakapan.</h2>
+  <p class="lead">
+    Kami dapat mendemonstrasikan Dirory langsung di SketchUp — memakai produk Alba
+    sendiri, bila Anda mengizinkan kami menyiapkan beberapa contoh terlebih dahulu.
+  </p>
+
+  <div class="grid2" style="margin-top:6mm">
+    <div class="card">
+      <h3>Demo 30 menit</h3>
+      <p class="small">Kami perlihatkan panel Dirory di SketchUp, dashboard brand, dan alur
+      permintaan penawaran. Cukup satu laptop dengan Zoom/Meet.</p>
+    </div>
+    <div class="card">
+      <h3>Pilot 10 produk</h3>
+             <p class="small">Kami digitalkan 10 produk Alba tanpa biaya, tayang 6 bulan.
+             Anda menilai hasilnya sebelum berlangganan.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:8mm">Hubungi</h3>
+  <table>
+    <tr><td style="width:38mm" class="muted">WhatsApp</td><td><strong>+62 857-1008-6041</strong></td></tr>
+    <tr><td class="muted">Email</td><td>hello@dirory.com</td></tr>
+    <tr><td class="muted">Situs</td><td>dirory.com · dirory.com/vendor</td></tr>
+  </table>
+
+  <p class="small muted" style="margin-top:8mm">
+    Proposal ini disiapkan untuk Siti Lina — Sales & Marketing Specialist, PT Alba Unggul Metal.
+    Tangkapan layar diambil langsung dari plugin Dirory yang berjalan di SketchUp,
+    bukan mockup. Rincian harga dapat berubah setelah diskusi pertama.
+  </p>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>10</span></div>
+</section>
+
+</body></html>

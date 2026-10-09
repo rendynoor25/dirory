@@ -1,4 +1,5 @@
 ﻿import Link from "next/link";
+import { formatWhatsApp, whatsAppLink } from "@/lib/contact";
 
 export const metadata = {
   title: "Privacy Policy",
@@ -93,6 +94,10 @@ export default function PrivacyPage() {
             Singapore. To request access, correction or deletion, contact{" "}
             <a className="underline" href="mailto:hello@dirory.com">
               hello@dirory.com
+            </a>{" "}
+            or WhatsApp{" "}
+            <a className="underline" href={whatsAppLink("Privacy request — Dirory")}>
+              {formatWhatsApp()}
             </a>{" "}
             with the subject &quot;Privacy request&quot;. Retention and deletion automation are
             still being implemented; this is a draft, not a final legal notice.

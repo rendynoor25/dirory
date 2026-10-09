@@ -36,6 +36,10 @@ supabase/.temp/
 # local type-check scaffolding
 .tmpcheck/
 
+# Throwaway Chrome profile used by scripts/build-proposals.mjs to render the
+# proposal HTML to PDF. Regenerated on every run; never committed.
+proposals/.chrome-profile/
+
 # ---------------------------------------------------------------------------
 # Build output
 #

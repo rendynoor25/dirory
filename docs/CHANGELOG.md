@@ -1,5 +1,107 @@
 # Changelog
 
+## 0.17.4 — FR-M6 enforced, monthly plans, real screenshots in the proposals
+
+Three changes that all came out of the same question: what actually happens to a
+brand that stops paying?
+
+**FR-M6 was not enforced. It is now (migration 0022).** The rule says: on expiry,
+7 days of grace, then the vendor's assets are hidden (not deleted) and return on
+renewal. In practice nothing was gated, for two reasons:
+
+1. `vendor_is_visible()` returned true for any vendor whose `status` was
+   `'approved'`, so the subscription branch was dead code.
+2. The catalogue Edge Function reads with the **service role** and filters in
+   TypeScript (`status === 'approved'`), so it bypassed RLS entirely. A SQL-only
+   fix would never have reached the plugin.
+
+Both now use the same rule — platform brand, or an approved vendor with a
+subscription in trial/active/grace whose period ended no more than 7 days ago (or
+never ends). The date window is deliberate: visibility does not depend on the
+expiry job running. `expire_subscriptions()` only keeps the status *label* honest
+(grace, then expired) and is scheduled best-effort with pg_cron.
+
+**Grandfathering.** Every vendor had `NONE` subscriptions, so enforcing the rule
+would have hidden the whole catalogue. The launch brands (Propan, TACO, Nippon,
+NIRO GRANITE, …) each got a non-expiring active subscription, so they stay live.
+When one later buys a plan, `vendor_request_subscription()` reuses that row and
+`mark_invoice_paid()` gives it a real end date. Verified after applying: all 16
+vendors visible, catalogue still **1,355** items from both the SQL side and the
+deployed function. `supabase/tests/vendor_visibility_test.sql` pins the rule down,
+including the 7-day boundary; it passed against the linked database.
+
+**Monthly plans (migration 0023).** Starter and Growth are sold monthly as well as
+yearly, and the numbers are rational: twelve months at the monthly rate is 1.2x the
+yearly price, i.e. the yearly plan is "pay 10, get 12".
+
+| | Monthly | Yearly |
+|---|---|---|
+| Starter (100 products) | Rp 500.000 | Rp 5.000.000 (2 bulan gratis) |
+| Growth (500 products) | Rp 2.500.000 | Rp 25.000.000 (2 bulan gratis) |
+
+Capacity is identical across the two periods, so the vendor is choosing a
+commitment, not a different product. `/pricing` groups the rows by tier and shows
+both prices; the vendor plan chooser labels each row Monthly/Yearly.
+
+**Real screenshots in the proposals.** The mock dashboard is gone. The proposals
+now use the founder's actual SketchUp captures (`proposals/assets/sketchup-*.png`):
+the search panel with live products, and the Usage tab showing 21.82 m² painted,
+Propan 5.36 m² and the *Ask for a Quote* button. The top strip is cropped in CSS so
+the founder's SketchUp account name does not travel to a vendor, and the closing
+disclaimer now says the screenshots are real rather than an illustration.
+
+A new page, "Jika berhenti berlangganan", states the FR-M6 behaviour honestly in
+Bahasa Indonesia: hidden, not deleted; account and history retained; back on
+renewal; already-inserted geometry is unaffected. Proposals are now 10 pages.
+
+## 0.17.3 — vendor proposals, WhatsApp contact, business-email auto-approval, material pricing
+
+Three things shipped together because they all touch the same vendor conversation.
+
+**Personalised proposals.** `scripts/build-proposals.mjs` renders an eight-page
+proposal in Bahasa Indonesia for each of PT Propan Raya ICC, PT Alba Unggul Metal
+and PT Trilliun Prima Sukses, then prints it with headless Chrome. Output lives in
+`proposals/`. The copy is data-driven per vendor:
+
+- **Propan is already live** — 160 approved materials are in the catalogue. The
+  proposal opens by saying so, and the closing offer is "activate the dashboard and
+  reporting", not "let us digitize 10 products". Offering digitization to a brand
+  already in the library was simply wrong.
+- Alba is not in the catalogue, so the pilot digitization offer stays.
+- Trilliun is left as a pilot: a brand **"Trilliunware"** with 3 models exists in the
+  catalogue, but it has not been confirmed as the same company. The founder must
+  confirm before any proposal claims it.
+
+The headline no longer uses the "meja gambar" framing; SketchUp is described as
+*software desain*.
+
+**WhatsApp contact.** `apps/web/src/lib/contact.ts` holds the Dirory number
+(`+62 857-1008-6041`), a formatter and a `wa.me` link helper. It is used on
+`/pricing`, `/privacy` and in every proposal.
+
+**Vendor auto-approval (migration 0020).** `register_vendor` takes
+`p_auto_approve`. The vendor signup action passes `isBusinessEmail(user.email)`, so
+an official company domain is approved on the spot while a freemail signup still
+waits for review. Verified: `auto_approve=true` → `approved`, `false` → `pending`.
+The founder's gmail is allowlisted. This is a **soft gate** and protects nothing.
+
+**Pricing adjusted for material-heavy brands (migration 0021).** The first package
+sizes were wrong for real catalogues: Starter capped at 20 products and Growth at 30,
+but Propan has 160 materials and TACO has 634, and a material priced at
+Rp 50.000–150.000 puts 160 colours at Rp 8–24 million. Listing and digitization are
+now separated:
+
+| | Before | Now |
+|---|---|---|
+| Starter (Rp 5jt/yr) | 20 products | **100 products** |
+| Growth (Rp 25jt/yr) | 30 products | **500 products** |
+| Full Range | 50+ | **500+**, quote |
+| Material digitization | Rp 50.000–150.000 flat | **Rp 50.000 (1–49) · Rp 35.000 (50–199) · Rp 25.000 (200+)** |
+
+Models keep the standard (Rp 400.000–750.000) and advanced (Rp 1.000.000–2.500.000)
+rates. A material is a texture image — light and quick; a model is real 3D work.
+Prices are proposals for the founder to confirm, not validated numbers.
+
 ## 0.17.2 — plugin 0.9.8: one clear prompt instead of a window per failure
 
 Following the 0.9.7 token fix, the failure still produced **two** prompts: a modal

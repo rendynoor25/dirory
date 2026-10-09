@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
+import { isBusinessEmail } from "@/lib/businessEmail";
 
 /** FR-V1 — vendor registration. Creates a `pending` vendor + owner membership. */
 const RegisterSchema = z.object({
@@ -35,6 +36,11 @@ export async function registerVendor(formData: FormData) {
   // refused, because a brand-new `pending` vendor is not visible to its own
   // creator until the membership exists. The read failed, the action returned,
   // and the membership was never created: the form looked like it did nothing.
+  //
+  // A company email auto-approves the VENDOR ACCOUNT, so a brand is not stuck
+  // waiting for a manual approval (founder decision, 9 Oct 2026). Products are
+  // unaffected: uploaded assets still go through the admin review queue, which
+  // is the review that actually protects catalogue quality.
   const { error } = await supabase.rpc("register_vendor", {
     p_name: parsed.data.name,
     p_brand_name: parsed.data.brand_name,
@@ -42,6 +48,7 @@ export async function registerVendor(formData: FormData) {
     p_whatsapp: parsed.data.whatsapp,
     p_website: parsed.data.website || null,
     p_npwp: parsed.data.npwp || null,
+    p_auto_approve: isBusinessEmail(user.email),
   });
   if (error) {
     console.error("registerVendor failed", error);
