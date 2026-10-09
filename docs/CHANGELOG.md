@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.17.13 — paying an invoice never extended the subscription
+
+Found by running the first real end-to-end payment test, and it would have been
+expensive to hit in production.
+
+`mark_invoice_paid()` guarded its extension block with `if sub is not null then`,
+where `sub` is a **composite-typed** variable (`public.subscriptions`). For
+composite variables, PL/pgSQL's `IS NOT NULL` is *not* the complement of
+`IS NULL`. Against the live database, for a fully-populated row:
+
+```
+sub IS NULL                -> false
+sub IS NOT NULL            -> false      <-- both false
+sub IS DISTINCT FROM NULL  -> true
+```
+
+So the branch was never taken. An invoice could be confirmed — by the Midtrans
+webhook or the admin "Mark paid" button — and become **paid**, while the
+subscription stayed `trial` with a NULL `current_period_end`. Since 0022 that is
+worse than a missing renewal: a vendor is only visible while it has an
+active/grace subscription with a future period end, so a vendor that paid would
+have been hidden again seven days later, having received nothing.
+
+Fix: `IF FOUND THEN`, which PL/pgSQL sets from the `SELECT INTO` itself and which
+does not depend on row-comparison semantics.
+
+Verified against the live site: settle → invoice `paid`, subscription `active`,
+`current_period_end` exactly one year out; a second delivery is a no-op.
+`supabase/tests/mark_invoice_paid_test.sql` guards it.
+
+The lesson: the webhook answered `{"ok":true,"settled":…}` and the invoice looked
+correct the entire time. Only checking the subscription revealed it — which is why
+the test asserted on the period, not just the invoice status.
+
 ## 0.17.12 — a vendor landing page, and a public-catalogue bug it exposed
 
 **`/for-vendors`** is a dedicated page for the supply side, built on the content
