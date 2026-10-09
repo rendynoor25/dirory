@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { publicOrigin } from "@/lib/site-url";
 
 /**
  * Supabase sends the user back here after they click the email link.
@@ -21,8 +22,13 @@ export async function GET(request: Request) {
   const candidate = url.searchParams.get("next") ?? "/vendor";
   const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/vendor";
 
+  // NOT `url.origin`: behind Caddy, `request.url` is the container's bind address
+  // (http://0.0.0.0:3000), so this used to redirect the browser to
+  // https://0.0.0.0:3000/login — unreachable. Every signed-in user hit it after
+  // clicking an email link. `publicOrigin()` is the helper the rest of the app
+  // already uses for exactly this.
   const failure = (message: string) =>
-    NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, url.origin));
+    NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, publicOrigin(request)));
 
   if (errorCode) {
     if (errorCode === "otp_expired" || /expired/i.test(errorDescription ?? "")) {
@@ -62,9 +68,9 @@ export async function GET(request: Request) {
       .eq("id", user.id)
       .maybeSingle();
     if (profile?.role === "admin" && next === "/vendor") {
-      return NextResponse.redirect(new URL("/admin", url.origin));
+      return NextResponse.redirect(new URL("/admin", publicOrigin(request)));
     }
   }
 
-  return NextResponse.redirect(new URL(next, url.origin));
+  return NextResponse.redirect(new URL(next, publicOrigin(request)));
 }
