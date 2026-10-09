@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.17.9 — proposal for Dekkson
+
+A sixth proposal, for Mrs. Zahra at Dekkson — legally **PT Fajar Lestari Sejati
+(Dekkson Group)**, Indonesia's architectural-hardware brand since 1994 (door
+handles, hinges, closers, locks; newer sanitary, furniture and smart-living lines).
+Not in the catalogue, so the new-vendor framing with the digitization pilot.
+
+The angle is specific to hardware: it is the product most often dropped at the
+drawing stage — the architect writes "handle standar" and leaves the choice to the
+contractor. Dirory turns that into a number, per type, which is exactly what a
+hardware brand cannot see once a project is built.
+`proposals/dekkson.pdf`, 11 pages.
+
 ## 0.17.8 — proposal for LIXIL Indonesia
 
 A fifth proposal, for Ms. Fitra Amalia, Specifier at LIXIL Indonesia. Unlike TOTO
