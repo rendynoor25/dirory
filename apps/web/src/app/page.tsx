@@ -69,9 +69,9 @@ export default async function Home() {
           <a href="#brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             {t(locale, "nav.brands")}
           </a>
-          <a href="#for-brands" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
+          <Link href="/for-vendors" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             {t(locale, "nav.forBrands")}
-          </a>
+          </Link>
           <Link href="/how-to-install" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             {t(locale, "nav.howToInstall")}
           </Link>

@@ -331,6 +331,85 @@ const en: Record<string, string> = {
   "welcome.geoSaved": "Saved.",
   "welcome.geoError": "Could not save that. Please try again.",
 
+  // ---- for-vendors landing page (/for-vendors) ----------------------------
+  // Structure mirrors business.bimobject.com: hero, trust wall, values, real
+  // numbers, how it works, plans, demo, one call to action.
+  "fv.navPricing": "Plans & pricing",
+  "fv.navHow": "How it works",
+  "fv.navBrands": "Brands",
+  "fv.navCta": "Book a demo",
+
+  "fv.kicker": "Dirory for vendors",
+  "fv.h1a": "Put your products",
+  "fv.h1b": "where architects decide.",
+  "fv.lead":
+    "Dirory is the product library inside SketchUp. Architects find, insert and specify your products while they design — and you see exactly which ones they used.",
+  "fv.ctaPricing": "See plans & pricing",
+  "fv.ctaTalk": "Talk to us",
+  "fv.ctaRegister": "Register as a vendor",
+  "fv.heroNote":
+    "Free for architects. You pay only to publish — no cost per view, per click or per lead.",
+
+  "fv.trustTag": "Already publishing",
+  "fv.trustHeading": "Brands on Dirory today",
+  "fv.trustNote": "Real brands, live in the library.",
+
+  "fv.whyTag": "What you get",
+  "fv.whyHeading": "Four things a catalogue alone cannot do",
+  "fv.whyLead":
+    "A PDF tells the architect your product exists. Dirory puts it in the file — and tells you what happened next.",
+  "fv.p1Title": "Publish",
+  "fv.p1Text":
+    "Your models and materials, inside the panel architects already have open. We can digitize them for you.",
+  "fv.p2Title": "Be found",
+  "fv.p2Text":
+    "Search, category and brand filters put your product in front of the architect at the moment of choosing.",
+  "fv.p3Title": "Measure",
+  "fv.p3Text":
+    "Units inserted and square metres applied, per product, per project, per city — not page views.",
+  "fv.p4Title": "Get asked",
+  "fv.p4Text":
+    "Quote requests from architects who already picked your product, with the items and the project city.",
+
+  "fv.statsTag": "The catalogue today",
+  "fv.statsHeading": "Where your products need to be",
+  "fv.statsLead":
+    "Architects search for products inside SketchUp. If your product is not there, it is not in the drawing.",
+  "fv.statProducts": "products published",
+  "fv.statBrands": "brands live",
+  "fv.statCategories": "categories covered",
+
+  "fv.howTag": "How it works",
+  "fv.howHeading": "From your catalogue to the drawing",
+  "fv.step1Title": "Register",
+  "fv.step1Text": "Sign up with your company email. Approved vendors are live the same day.",
+  "fv.step2Title": "Upload, or let us digitize",
+  "fv.step2Text":
+    "Send your files, or use Dirory's digitization service. Materials are quick and cheap to prepare.",
+  "fv.step3Title": "We review",
+  "fv.step3Text":
+    "Correct scale, sensible names and tags, no competing brand marks. Then it goes live.",
+  "fv.step4Title": "Watch the numbers",
+  "fv.step4Text":
+    "Your dashboard fills in as architects use your products. A monthly report is included.",
+
+  "fv.plansTag": "Plans",
+  "fv.plansHeading": "Sized by how many products you keep live",
+  "fv.plansLead":
+    "Monthly or yearly — yearly is ten months, so two months free. Every plan includes the vendor dashboard.",
+  "fv.planProducts": "products",
+  "fv.plansCta": "Compare plans",
+
+  "fv.demoHeading": "See the vendor dashboard",
+  "fv.demoText":
+    "A working demo of what a vendor sees: usage, projects and quote requests — aggregate and anonymous, with no competitor figures.",
+  "fv.demoCta": "Open the demo",
+
+  "fv.ctaHeading": "Let's get your products into the drawing.",
+  "fv.ctaText":
+    "A 30-minute demo in SketchUp, using your own products. No cost, no obligation.",
+  "fv.ctaButton": "Book a demo",
+
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Language",
 };
@@ -641,6 +720,83 @@ const id: Record<string, string> = {
   "welcome.geoSkip": "Lewati ini",
   "welcome.geoSaved": "Tersimpan.",
   "welcome.geoError": "Tidak dapat menyimpan. Silakan coba lagi.",
+
+  // ---- for-vendors landing page (/for-vendors) ----------------------------
+  "fv.navPricing": "Paket & harga",
+  "fv.navHow": "Cara kerja",
+  "fv.navBrands": "Brand",
+  "fv.navCta": "Minta demo",
+
+  "fv.kicker": "Dirory untuk vendor",
+  "fv.h1a": "Tempatkan produk Anda",
+  "fv.h1b": "di titik keputusan arsitek.",
+  "fv.lead":
+    "Dirory adalah pustaka produk di dalam SketchUp. Arsitek mencari, memasukkan, dan menetapkan produk Anda saat merancang — dan Anda melihat persis produk mana yang dipakai.",
+  "fv.ctaPricing": "Lihat paket & harga",
+  "fv.ctaTalk": "Hubungi kami",
+  "fv.ctaRegister": "Daftar sebagai vendor",
+  "fv.heroNote":
+    "Gratis untuk arsitek. Anda hanya membayar untuk tayang — tanpa biaya per tayangan, per klik, atau per lead.",
+
+  "fv.trustTag": "Sudah tayang",
+  "fv.trustHeading": "Brand yang sudah ada di Dirory",
+  "fv.trustNote": "Brand nyata, tayang di pustaka.",
+
+  "fv.whyTag": "Yang Anda dapatkan",
+  "fv.whyHeading": "Empat hal yang tidak bisa dilakukan katalog saja",
+  "fv.whyLead":
+    "PDF memberi tahu arsitek bahwa produk Anda ada. Dirory memasukkannya ke dalam file — lalu memberi tahu Anda apa yang terjadi setelahnya.",
+  "fv.p1Title": "Tayangkan",
+  "fv.p1Text":
+    "Model dan material Anda, di dalam panel yang sudah dibuka arsitek. Kami dapat mendigitalkannya untuk Anda.",
+  "fv.p2Title": "Ditemukan",
+  "fv.p2Text":
+    "Pencarian serta filter kategori dan brand menempatkan produk Anda di depan arsitek tepat saat memilih.",
+  "fv.p3Title": "Ukur",
+  "fv.p3Text":
+    "Unit terpasang dan meter persegi terpakai, per produk, per proyek, per kota — bukan kunjungan halaman.",
+  "fv.p4Title": "Diminta",
+  "fv.p4Text":
+    "Permintaan penawaran dari arsitek yang sudah memilih produk Anda, lengkap dengan item dan kota proyek.",
+
+  "fv.statsTag": "Katalog hari ini",
+  "fv.statsHeading": "Di mana produk Anda harus berada",
+  "fv.statsLead":
+    "Arsitek mencari produk di dalam SketchUp. Bila produk Anda tidak ada di sana, produk Anda tidak ada di gambar.",
+  "fv.statProducts": "produk tayang",
+  "fv.statBrands": "brand tayang",
+  "fv.statCategories": "kategori terisi",
+
+  "fv.howTag": "Cara kerja",
+  "fv.howHeading": "Dari katalog Anda ke gambar",
+  "fv.step1Title": "Daftar",
+  "fv.step1Text": "Daftar dengan email kantor. Vendor yang disetujui langsung tayang pada hari yang sama.",
+  "fv.step2Title": "Unggah, atau biar kami digitalkan",
+  "fv.step2Text":
+    "Kirim file Anda, atau pakai layanan digitalisasi Dirory. Material cepat dan murah disiapkan.",
+  "fv.step3Title": "Kami periksa",
+  "fv.step3Text":
+    "Skala benar, nama dan tag wajar, tanpa merek lain. Setelah itu produk langsung tayang.",
+  "fv.step4Title": "Pantau angkanya",
+  "fv.step4Text":
+    "Dashboard Anda terisi begitu arsitek memakai produk Anda. Laporan bulanan sudah termasuk.",
+
+  "fv.plansTag": "Paket",
+  "fv.plansHeading": "Dihitung dari jumlah produk yang Anda tayangkan",
+  "fv.plansLead":
+    "Bulanan atau tahunan — tahunan setara sepuluh bulan, jadi dua bulan gratis. Semua paket termasuk dashboard vendor.",
+  "fv.planProducts": "produk",
+  "fv.plansCta": "Bandingkan paket",
+
+  "fv.demoHeading": "Lihat dashboard vendor",
+  "fv.demoText":
+    "Demo nyata dari apa yang dilihat vendor: pemakaian, proyek, dan permintaan penawaran — agregat dan anonim, tanpa angka pesaing.",
+  "fv.demoCta": "Buka demo",
+
+  "fv.ctaHeading": "Mari masukkan produk Anda ke dalam gambar.",
+  "fv.ctaText":
+    "Demo 30 menit di SketchUp, memakai produk Anda sendiri. Tanpa biaya, tanpa kewajiban.",
+  "fv.ctaButton": "Minta demo",
 
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Bahasa",

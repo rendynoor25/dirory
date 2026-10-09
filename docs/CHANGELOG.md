@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.17.12 — a vendor landing page, and a public-catalogue bug it exposed
+
+**`/for-vendors`** is a dedicated page for the supply side, built on the content
+principles of business.bimobject.com with "manufacturer" reading as "vendor" —
+the word Dirory uses everywhere else:
+
+- a hero addressed to the supplier, not the architect;
+- a trust wall of the **real** brands in the catalogue, read from the database;
+- the four things a catalogue alone cannot do: publish, be found, measure, get asked;
+- the real numbers (products, brands, categories) rather than invented ones;
+- how it works in four steps;
+- plans read from the `plans` table, so the page cannot quote a different price
+  from `/pricing`;
+- a link to the working demo dashboard, then one call to action.
+
+Bilingual via the existing dictionaries (~45 `fv.*` keys each). The home page's
+"For brands" nav item now points at it.
+
+### The bug
+
+Rendering the page as an anonymous visitor showed **2 of 1,355 products and zero
+brands**. Migration 0022 had made visibility depend on a subscription but left
+`vendor_is_visible` as an ordinary invoker function, so its `subscriptions`
+lookup was itself filtered by RLS — and anon has no policy on `subscriptions`. The
+plugin never noticed, because it reads through the catalogue Edge Function with
+the service role, and a service-role read bypasses RLS.
+
+Migration **0024** makes `vendor_is_visible` SECURITY DEFINER, like every other
+predicate in 0002, which is what that pattern exists for. Verified afterwards:
+anon sees **15 brands and 1,355 products** again.
+
 ## 0.17.11 — manual bank transfer switched on as the interim method
 
 Midtrans signup is blocked for now (the phone number is already attached to a
