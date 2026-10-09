@@ -3,7 +3,7 @@
 ## 0.17.5 — Dirory pitch deck
 
 Khairun (CEO, Sanbercode) asked for an updated pitch deck and offered to put it in
-front of people while travelling. `scripts/build-pitchdeck.mjs` renders a 14-slide
+front of people while travelling. `scripts/build-pitchdeck.mjs` renders a 15-slide
 16:9 deck to `pitchdeck/dirory-pitchdeck.pdf`, the same way the vendor proposals
 are built (HTML + headless Chrome, no PDF library).
 
@@ -12,8 +12,9 @@ brands and to architect communities. Bahasa Indonesia, for an Indonesian audienc
 
 Slides: cover, problem (two sides — the architect's search, the brand's blindness),
 solution, the real plugin screenshots (search, then usage/measurement), the brand
-dashboard, traction, business model, opportunity, why now, differentiation, growth
-plan, the ask, and contact.
+dashboard, traction, business model, opportunity, why now, differentiation, **team**
+(Rendy Noor Chandra — solo founder, architect and BIM specialist, with his
+headshot), growth plan, the ask, and contact.
 
 Figures are read from the live database and stamped with the date (9 Oct 2026):
 15 brands, 1,355 products, 36 categories, 53 architect accounts, 7 installs, 62
