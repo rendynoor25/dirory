@@ -1,132 +1,12 @@
-#!/usr/bin/env node
-/**
- * Build a personalised vendor proposal as HTML and PDF.
- *
- *   node scripts/build-proposals.mjs            # every vendor in the list
- *   node scripts/build-proposals.mjs propan     # one, by slug
- *
- * The PDF is produced by headless Chrome (`--print-to-pdf`), so there is no PDF
- * library and no new dependency. Output lands in `proposals/`.
- *
- * The proposal is written in Bahasa Indonesia: the recipients are Indonesian
- * sales and marketing directors, and the pricing document itself notes that a
- * Bahasa version is worth preparing for Indonesian brands.
- *
- * Every figure quoted in the pricing pages comes from
- * `docs/` + the founder's pricing document. The two screenshots in
- * `proposals/assets/sketchup-*.png` are real captures from the plugin running in
- * SketchUp (supplied by the founder), not mockups. Their top strip is cropped in
- * CSS so the founder's SketchUp account name does not travel to a vendor.
- */
-
-import fs from "node:fs";
-import path from "node:path";
-import process from "node:process";
-import { execFileSync } from "node:child_process";
-
-const ROOT = process.cwd();
-const OUT_DIR = path.join(ROOT, "proposals");
-const ASSETS = path.join(OUT_DIR, "assets");
-
-const CHROME_CANDIDATES = [
-  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-  "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
-  "/usr/bin/google-chrome",
-  "/usr/bin/chromium",
-];
-
-const VENDORS = [
-  {
-    slug: "propan-raya",
-    company: "PT Propan Raya ICC",
-    short: "Propan Raya",
-    contact: "Thenny Gunawan",
-    role: "Corporate Communication Officer",
-    focus: "Cat & material",
-    // Already in the catalogue: 160 approved Propan materials. The proposal must
-    // acknowledge that rather than offer to digitize products they already have.
-    existing: { count: 160, type: "material" },
-    // Why this brand specifically: a paint maker sells colour, and Dirory's
-    // material metric is painted area in m² — the number a paint brand wants.
-    relevance:
-      "Propan Raya menjual warna. Di Dirory, satu warna bukan sekadar gambar di katalog: " +
-      "setiap kali arsitek mengecat permukaan dengan material Propan, sistem mencatat berapa " +
-      "meter persegi yang tercat di proyek nyata. Itu angka yang bisa Anda bawa ke rapat " +
-      "manajemen dan ke agensi.",
-    metric: "Luas tercat (m²) per warna, per proyek, per kota",
-  },
-  {
-    slug: "alba-unggul-metal",
-    company: "PT Alba Unggul Metal",
-    short: "Alba",
-    contact: "Siti Lina",
-    role: "Sales & Marketing Specialist",
-    focus: "Pintu & komponen",
-    // Not in the catalogue yet, so the digitization offer is the right hook.
-    existing: null,
-    relevance:
-      "Pintu adalah produk yang dipilih berulang kali di setiap proyek. Dirory menghitung " +
-      "berapa unit pintu Alba yang benar-benar terpasang di file SketchUp arsitek — bukan " +
-      "berapa kali halaman dilihat — sehingga Anda tahu produk mana yang jadi andalan dan " +
-      "mana yang perlu didorong.",
-    metric: "Unit terpasang per tipe pintu, dan jumlah proyek yang memakainya",
-  },
-  {
-    slug: "trilliun-prima-sukses",
-    company: "PT Trilliun Prima Sukses",
-    short: "Trilliun",
-    contact: "Ronald Wahyudi Djie",
-    role: "Sales & Marketing",
-    focus: "Sanitari",
-    // A brand "Trilliunware" with 3 models is in the catalogue; the founder must
-    // confirm whether that is this company before claiming it in writing.
-    existing: null,
-    relevance:
-      "Sanitari adalah kategori paling ramai di Dirory. Selain jumlah unit dan proyek, Anda " +
-      "melihat pangsa kategori: berapa persen dari seluruh pemakaian sanitari di Dirory yang " +
-      "memakai produk Trilliun. Angkanya agregat dan anonim — Anda tidak melihat angka " +
-      "pesaing, dan pesaing tidak melihat angka Anda.",
-    metric: "Pangsa kategori (anonim), unit terpasang, dan permintaan penawaran",
-  },
-  {
-    slug: "surya-toto",
-    company: "PT Surya Toto Indonesia Tbk",
-    short: "TOTO",
-    contact: "Bapak Sean",
-    role: "Sales",
-    focus: "Sanitari & perlengkapan kamar mandi",
-    // Already in the catalogue: CE9 and CW 630 PJ (closets) and U104 (urinoir)
-    // are approved and live. Acknowledge them rather than offer to digitize
-    // products TOTO already has — the gap is depth and data, not a listing.
-    existing: { count: 3, type: "model" },
-    // Sanitari is the busiest category in Dirory. For a brand this established,
-    // the interesting number is not presence but share.
-    relevance:
-      "TOTO adalah nama yang sudah dikenal luas. Di Dirory pertanyaannya berbeda: berapa " +
-      "persen dari seluruh pemakaian sanitari yang benar-benar memakai produk TOTO. Dirory " +
-      "mengukurnya sebagai pangsa kategori — angka agregat dan anonim. Anda tidak melihat " +
-      "angka pesaing, dan pesaing tidak melihat angka Anda.",
-    metric: "Pangsa kategori (anonim), unit terpasang per tipe, dan permintaan penawaran",
-  },
-];
-
-// ---------------------------------------------------------------------------
-// Shared fragments
-// ---------------------------------------------------------------------------
-const BRAND = "#2f3f96";
-const INK = "#0f172a";
-const MUTED = "#5b6478";
-
-function css() {
-  return `
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><title>Proposal Dirory — PT Surya Toto Indonesia Tbk</title>
+<style>
     @page { size: A4; margin: 0; }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
       font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      color: ${INK};
+      color: #0f172a;
       font-size: 10.5pt;
       line-height: 1.55;
       -webkit-print-color-adjust: exact;
@@ -143,15 +23,15 @@ function css() {
     h2 { font-size: 15pt; margin: 0 0 3mm; letter-spacing: -0.2pt; }
     h3 { font-size: 11pt; margin: 0 0 1.5mm; }
     p  { margin: 0 0 3mm; }
-    .lead { font-size: 12pt; color: ${MUTED}; line-height: 1.6; }
-    .muted { color: ${MUTED}; }
+    .lead { font-size: 12pt; color: #5b6478; line-height: 1.6; }
+    .muted { color: #5b6478; }
     .small { font-size: 9pt; }
     .tag {
       display: inline-block; font-size: 8.5pt; font-weight: 700;
-      letter-spacing: 1.2pt; text-transform: uppercase; color: ${BRAND};
+      letter-spacing: 1.2pt; text-transform: uppercase; color: #2f3f96;
       margin-bottom: 3mm;
     }
-    .rule { height: 3px; background: ${BRAND}; width: 42px; border-radius: 2px; margin: 0 0 6mm; }
+    .rule { height: 3px; background: #2f3f96; width: 42px; border-radius: 2px; margin: 0 0 6mm; }
     .cover { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
     .cover-logo img { width: 62mm; }
     .cover-foot { border-top: 1px solid #e2e6f0; padding-top: 5mm; }
@@ -161,26 +41,26 @@ function css() {
       border: 1px solid #e2e6f0; border-radius: 3mm; padding: 5mm;
       background: #fbfcff; break-inside: avoid;
     }
-    .card h3 { color: ${BRAND}; }
+    .card h3 { color: #2f3f96; }
     .step { display: grid; grid-template-columns: 9mm 1fr; gap: 4mm; margin-bottom: 4mm; break-inside: avoid; }
     .step .n {
-      width: 9mm; height: 9mm; border-radius: 50%; background: ${BRAND}; color: #fff;
+      width: 9mm; height: 9mm; border-radius: 50%; background: #2f3f96; color: #fff;
       font-weight: 700; font-size: 10pt; display: flex; align-items: center; justify-content: center;
     }
     table { width: 100%; border-collapse: collapse; margin: 3mm 0 4mm; }
     th {
       text-align: left; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.6pt;
-      color: ${MUTED}; border-bottom: 1px solid #e2e6f0; padding: 2mm 3mm;
+      color: #5b6478; border-bottom: 1px solid #e2e6f0; padding: 2mm 3mm;
     }
     td { padding: 2.6mm 3mm; border-bottom: 1px solid #f0f2f8; vertical-align: top; }
     tr { break-inside: avoid; }
     .price { font-weight: 700; white-space: nowrap; }
     .pill {
       display: inline-block; font-size: 8.5pt; font-weight: 700;
-      background: #eef1fb; color: ${BRAND}; border-radius: 20px; padding: 1mm 3mm;
+      background: #eef1fb; color: #2f3f96; border-radius: 20px; padding: 1mm 3mm;
     }
     .callout {
-      border-left: 3px solid ${BRAND}; background: #f5f7fd; padding: 4mm 5mm;
+      border-left: 3px solid #2f3f96; background: #f5f7fd; padding: 4mm 5mm;
       border-radius: 0 3mm 3mm 0; margin: 4mm 0;
     }
     /* A real screenshot. The wrapper crops the top strip (the SketchUp account
@@ -204,30 +84,9 @@ function css() {
     .foot {
       position: absolute; left: 17mm; right: 17mm; bottom: 10mm;
       border-top: 1px solid #e2e6f0; padding-top: 2.5mm;
-      font-size: 8pt; color: ${MUTED}; display: flex; justify-content: space-between;
+      font-size: 8pt; color: #5b6478; display: flex; justify-content: space-between;
     }
-  `;
-}
-
-function foot(page) {
-  return `<div class="foot"><span>Dirory — proposal kerja sama</span><span>${page}</span></div>`;
-}
-
-function rupiah(n) {
-  return "Rp " + n.toLocaleString("id-ID");
-}
-
-// ---------------------------------------------------------------------------
-// The document
-// ---------------------------------------------------------------------------
-function buildHtml(v, tanggal) {
-  const shotSearch = "assets/sketchup-search.png";
-  const shotUsage = "assets/sketchup-usage.png";
-  const shotDash = "assets/dashboard.png";
-
-  return `<!doctype html>
-<html lang="id"><head><meta charset="utf-8"><title>Proposal Dirory — ${v.company}</title>
-<style>${css()}</style></head><body>
+  </style></head><body>
 
 <!-- ============================ COVER ============================ -->
 <section class="page">
@@ -236,7 +95,7 @@ function buildHtml(v, tanggal) {
       <div class="cover-logo"><img src="assets/logo-vertical.png" alt="Dirory"></div>
       <div class="rule" style="margin-top:10mm"></div>
       <p class="tag">Proposal kerja sama</p>
-      <h1>Katalog ${v.short}, langsung<br>di dalam software desain arsitek.</h1>
+      <h1>Katalog TOTO, langsung<br>di dalam software desain arsitek.</h1>
       <p class="lead">
         Dirory adalah pustaka produk bangunan yang berjalan di dalam SketchUp —
         software desain yang dipakai arsitek Indonesia setiap hari. Arsitek memakai
@@ -246,18 +105,14 @@ function buildHtml(v, tanggal) {
     <div class="cover-foot">
       <table style="margin:0">
         <tr><td style="border:0;padding:1mm 0;width:32mm" class="muted">Disiapkan untuk</td>
-            <td style="border:0;padding:1mm 0"><strong>${v.contact}</strong><br>
-            <span class="muted small">${v.role} · ${v.company}</span></td></tr>
+            <td style="border:0;padding:1mm 0"><strong>Bapak Sean</strong><br>
+            <span class="muted small">Sales · PT Surya Toto Indonesia Tbk</span></td></tr>
         <tr><td style="border:0;padding:1mm 0" class="muted">Tanggal</td>
-            <td style="border:0;padding:1mm 0">${tanggal}</td></tr>
+            <td style="border:0;padding:1mm 0">9 Oktober 2026</td></tr>
         <tr><td style="border:0;padding:1mm 0" class="muted">Fokus</td>
-            <td style="border:0;padding:1mm 0">${v.focus}</td></tr>
-        ${
-          v.existing
-            ? `<tr><td style="border:0;padding:1mm 0" class="muted">Status katalog</td>
-                 <td style="border:0;padding:1mm 0"><strong>${v.existing.count} produk sudah tayang di Dirory</strong></td></tr>`
-            : ""
-        }
+            <td style="border:0;padding:1mm 0">Sanitari & perlengkapan kamar mandi</td></tr>
+        <tr><td style="border:0;padding:1mm 0" class="muted">Status katalog</td>
+                 <td style="border:0;padding:1mm 0"><strong>3 produk sudah tayang di Dirory</strong></td></tr>
       </table>
     </div>
   </div>
@@ -298,20 +153,16 @@ function buildHtml(v, tanggal) {
     file proyek, dan berapa luas material Anda yang tercat.
   </div>
 
-  <h3 style="margin-top:6mm">Untuk ${v.company} secara khusus</h3>
-  <p>${v.relevance}</p>
-  <p class="small muted">Metrik utama untuk Anda: <strong>${v.metric}</strong>.</p>
-  ${
-    v.existing
-      ? `<div class="callout">
-           <strong>${v.existing.count} produk ${v.short} sudah tayang di Dirory.</strong>
+  <h3 style="margin-top:6mm">Untuk PT Surya Toto Indonesia Tbk secara khusus</h3>
+  <p>TOTO adalah nama yang sudah dikenal luas. Di Dirory pertanyaannya berbeda: berapa persen dari seluruh pemakaian sanitari yang benar-benar memakai produk TOTO. Dirory mengukurnya sebagai pangsa kategori — angka agregat dan anonim. Anda tidak melihat angka pesaing, dan pesaing tidak melihat angka Anda.</p>
+  <p class="small muted">Metrik utama untuk Anda: <strong>Pangsa kategori (anonim), unit terpasang per tipe, dan permintaan penawaran</strong>.</p>
+  <div class="callout">
+           <strong>3 produk TOTO sudah tayang di Dirory.</strong>
            Katalognya sudah ada di dalam SketchUp dan sudah dipakai arsitek. Yang belum
            Anda lihat adalah <em>datanya</em> — berapa yang dipakai, di proyek mana, dan
            berapa permintaan penawaran yang masuk. Proposal ini tentang bagian itu.
-         </div>`
-      : ""
-  }
-  ${foot("2")}
+         </div>
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>2</span></div>
 </section>
 
 <!-- ============================ CARA KERJA ============================ -->
@@ -354,7 +205,7 @@ function buildHtml(v, tanggal) {
     identitas arsitek, atau data brand lain kecuali arsitek mengirimkannya sendiri melalui
     permintaan penawaran. Ini bukan sekadar janji — pembatasannya ada di basis data.
   </div>
-  ${foot("3")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>3</span></div>
 </section>
 
 <!-- ============================ MANFAAT ============================ -->
@@ -401,7 +252,7 @@ function buildHtml(v, tanggal) {
     <strong>Yang tidak perlu Anda khawatirkan:</strong> tidak ada biaya per tayangan, tidak ada
     lelang iklan, dan tidak ada biaya per lead. Langganan tetap, berapa pun pemakaiannya.
   </div>
-  ${foot("4")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>4</span></div>
 </section>
 
 <!-- ============================ CARI (screenshot) ============================ -->
@@ -415,13 +266,13 @@ function buildHtml(v, tanggal) {
     dari software desainnya.
   </p>
   <div class="shotwrap" style="height:108.6mm">
-    <img src="${shotSearch}" alt="Panel pencarian Dirory di SketchUp" style="margin-top:-11.2mm">
+    <img src="assets/sketchup-search.png" alt="Panel pencarian Dirory di SketchUp" style="margin-top:-11.2mm">
   </div>
   <p class="small muted">
     Tangkapan layar asli dari plugin Dirory yang berjalan di SketchUp. Katalog di panel
     ini nyata — bukan mockup — dan berisi produk brand yang sudah tayang.
   </p>
-  ${foot("5")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>5</span></div>
 </section>
 
 <!-- ============================ USAGE (screenshot) ============================ -->
@@ -434,7 +285,7 @@ function buildHtml(v, tanggal) {
     halaman dilihat. Angka inilah yang mengalir ke dashboard brand Anda.
   </p>
   <div class="shotwrap" style="height:107mm">
-    <img src="${shotUsage}" alt="Tab Usage Dirory di SketchUp" style="margin-top:-11.2mm">
+    <img src="assets/sketchup-usage.png" alt="Tab Usage Dirory di SketchUp" style="margin-top:-11.2mm">
   </div>
   <div class="grid2" style="margin-top:2mm">
     <div class="card">
@@ -448,7 +299,7 @@ function buildHtml(v, tanggal) {
       lengkap dengan item dan kota proyek — hanya yang arsitek setujui untuk dibagikan.</p>
     </div>
   </div>
-  ${foot("6")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>6</span></div>
 </section>
 
 <!-- ============================ DASHBOARD BRAND ============================ -->
@@ -462,14 +313,14 @@ function buildHtml(v, tanggal) {
     penawaran yang masuk.
   </p>
   <div class="shotfill">
-    <img src="${shotDash}" alt="Contoh dashboard brand Dirory">
+    <img src="assets/dashboard.png" alt="Contoh dashboard brand Dirory">
   </div>
   <p class="small muted">
     Tampilan dashboard dengan data contoh — angka Anda akan terisi begitu produk Anda
     mulai dipakai. Angka pada tangkapan layar SketchUp di halaman sebelumnya adalah
     data nyata.
   </p>
-  ${foot("7")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>7</span></div>
 </section>
 
 <!-- ============================ HARGA ============================ -->
@@ -488,12 +339,12 @@ function buildHtml(v, tanggal) {
     <tbody>
       <tr><td><strong>Starter</strong></td><td>Brand kecil, atau katalog awal</td>
           <td>Tayang hingga <strong>100 produk</strong>, dashboard pemakaian</td>
-          <td class="price">${rupiah(500000)}</td>
-          <td class="price">${rupiah(5000000)}<br><span class="muted small">2 bulan gratis</span></td></tr>
+          <td class="price">Rp 500.000</td>
+          <td class="price">Rp 5.000.000<br><span class="muted small">2 bulan gratis</span></td></tr>
       <tr><td><strong>Growth</strong></td><td>Brand material — cat, HPL, keramik</td>
           <td>Tayang hingga <strong>500 produk</strong>, dashboard, laporan bulanan</td>
-          <td class="price">${rupiah(2500000)}</td>
-          <td class="price">${rupiah(25000000)}<br><span class="muted small">2 bulan gratis</span></td></tr>
+          <td class="price">Rp 2.500.000</td>
+          <td class="price">Rp 25.000.000<br><span class="muted small">2 bulan gratis</span></td></tr>
       <tr><td><strong>Full Range</strong></td><td>Brand nasional</td>
           <td>500+ produk, prioritas penempatan, laporan bulanan, review kuartalan</td>
           <td class="price" colspan="2">Penawaran khusus</td></tr>
@@ -537,7 +388,7 @@ function buildHtml(v, tanggal) {
           <td class="price">Rp 1.000.000 / laporan</td></tr>
     </tbody>
   </table>
-  ${foot("8")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>8</span></div>
 </section>
 
 <!-- ============================ BERHENTI ============================ -->
@@ -566,7 +417,7 @@ function buildHtml(v, tanggal) {
       <tr><td>Setelah hari ke-7</td>
           <td>Status menjadi <em>expired</em>. Akun dan riwayat Anda tetap tersimpan — Anda
           berhenti menayangkan, bukan kehilangan akun.</td>
-          <td>Produk ${v.short} tidak lagi muncul dan tidak dapat dimasukkan ke gambar baru.</td></tr>
+          <td>Produk TOTO tidak lagi muncul dan tidak dapat dimasukkan ke gambar baru.</td></tr>
       <tr><td>Kapan pun Anda memperpanjang</td>
           <td>Status kembali <em>active</em>. Periode baru berjalan dari tanggal pembayaran.</td>
           <td>Produk tayang kembali. Katalog, versi, dan metrik lama tidak berubah.</td></tr>
@@ -594,7 +445,7 @@ function buildHtml(v, tanggal) {
           <td>Tidak terpengaruh sama sekali.</td></tr>
     </tbody>
   </table>
-  ${foot("9")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>9</span></div>
 </section>
 
 <!-- ============================ BERLANGGANAN ============================ -->
@@ -645,7 +496,7 @@ function buildHtml(v, tanggal) {
     digitalisasi gratis hingga <strong>10 produk</strong> dan <strong>6 bulan tayang gratis</strong>,
     sebagai ganti izin memakai logo, satu studi kasus singkat, data dimensi resmi dan daftar SKU.
   </div>
-  ${foot("10")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>10</span></div>
 </section>
 
 <!-- ============================ PENUTUP ============================ -->
@@ -654,7 +505,7 @@ function buildHtml(v, tanggal) {
   <div class="rule"></div>
   <h2>Mari kita mulai dari satu percakapan.</h2>
   <p class="lead">
-    Kami dapat mendemonstrasikan Dirory langsung di SketchUp — memakai produk ${v.short}
+    Kami dapat mendemonstrasikan Dirory langsung di SketchUp — memakai produk TOTO
     sendiri, bila Anda mengizinkan kami menyiapkan beberapa contoh terlebih dahulu.
   </p>
 
@@ -665,16 +516,10 @@ function buildHtml(v, tanggal) {
       permintaan penawaran. Cukup satu laptop dengan Zoom/Meet.</p>
     </div>
     <div class="card">
-      ${
-        v.existing
-          ? `<h3>Aktifkan dashboard &amp; laporan</h3>
-             <p class="small">${v.existing.count} produk ${v.short} sudah tayang. Yang belum
+      <h3>Aktifkan dashboard &amp; laporan</h3>
+             <p class="small">3 produk TOTO sudah tayang. Yang belum
              aktif adalah dashboard pemakaian dan laporan bulanannya. Kami dapat
-             mengaktifkannya tanpa mengubah katalog Anda.</p>`
-          : `<h3>Pilot 10 produk</h3>
-             <p class="small">Kami digitalkan 10 produk ${v.short} tanpa biaya, tayang 6 bulan.
-             Anda menilai hasilnya sebelum berlangganan.</p>`
-      }
+             mengaktifkannya tanpa mengubah katalog Anda.</p>
     </div>
   </div>
 
@@ -686,101 +531,12 @@ function buildHtml(v, tanggal) {
   </table>
 
   <p class="small muted" style="margin-top:8mm">
-    Proposal ini disiapkan untuk ${v.contact} — ${v.role}, ${v.company}.
+    Proposal ini disiapkan untuk Bapak Sean — Sales, PT Surya Toto Indonesia Tbk.
     Tangkapan layar plugin diambil langsung dari Dirory yang berjalan di SketchUp;
     gambar dashboard hanyalah ilustrasi. Rincian harga dapat berubah setelah diskusi
     pertama.
   </p>
-  ${foot("11")}
+  <div class="foot"><span>Dirory — proposal kerja sama</span><span>11</span></div>
 </section>
 
-</body></html>`;
-}
-
-// ---------------------------------------------------------------------------
-// Build
-// ---------------------------------------------------------------------------
-function chromePath() {
-  for (const c of CHROME_CANDIDATES) if (fs.existsSync(c)) return c;
-  return null;
-}
-
-/**
- * Render the HTML to `pdfPath`, then replace the target file.
- *
- * Chrome is told to write a `.new.pdf` first. On Windows a PDF viewer holding the
- * target open (Nitro, Acrobat, a browser tab) denies the rename, and Chrome would
- * otherwise leave the old file in place while still exiting 0 — which silently
- * ships a stale proposal. So the swap is explicit and its failure is reported.
- *
- * Returns `{ ok: true }` on success, or `{ ok: false, tmpPath }` when the target
- * is locked and the fresh file was left beside it.
- */
-function pdfFromHtml(chrome, htmlPath, pdfPath) {
-  const tmpPath = pdfPath.replace(/\.pdf$/i, ".new.pdf");
-  execFileSync(
-    chrome,
-    [
-      "--headless=new",
-      "--disable-gpu",
-      "--no-pdf-header-footer",
-      "--no-sandbox",
-      `--user-data-dir=${path.join(OUT_DIR, ".chrome-profile")}`,
-      `--print-to-pdf=${tmpPath}`,
-      `file:///${htmlPath.replace(/\\/g, "/")}`,
-    ],
-    { stdio: "pipe" },
-  );
-
-  try {
-    fs.renameSync(tmpPath, pdfPath);
-    return { ok: true };
-  } catch {
-    try {
-      fs.copyFileSync(tmpPath, pdfPath);
-      fs.rmSync(tmpPath, { force: true });
-      return { ok: true };
-    } catch {
-      return { ok: false, tmpPath };
-    }
-  }
-}
-
-function main() {
-  const only = process.argv[2];
-  const chrome = chromePath();
-  if (!chrome) {
-    console.error("No Chrome or Edge found; cannot produce a PDF.");
-    process.exit(1);
-  }
-  if (!fs.existsSync(ASSETS)) {
-    console.error(`Missing ${ASSETS}. Copy the logo and dashboard image there first.`);
-    process.exit(1);
-  }
-
-  const tanggal = new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(new Date());
-  const vendors = only ? VENDORS.filter((v) => v.slug === only) : VENDORS;
-  if (!vendors.length) {
-    console.error(`No vendor matches "${only}". Try one of: ${VENDORS.map((v) => v.slug).join(", ")}`);
-    process.exit(1);
-  }
-
-  for (const v of vendors) {
-    const htmlPath = path.join(OUT_DIR, `${v.slug}.html`);
-    const pdfPath = path.join(OUT_DIR, `${v.slug}.pdf`);
-    fs.writeFileSync(htmlPath, buildHtml(v, tanggal), "utf8");
-    const res = pdfFromHtml(chrome, htmlPath, pdfPath);
-    if (res.ok) {
-      const kb = Math.round(fs.statSync(pdfPath).size / 1024);
-      console.log(`  ${v.company.padEnd(30)} ${path.basename(pdfPath)}  (${kb} KB)`);
-    } else {
-      console.log(
-        `  ${v.company.padEnd(30)} ${path.basename(pdfPath)}  LOCKED — wrote ` +
-          `${path.basename(res.tmpPath)} instead. Close the open PDF and re-run.`,
-      );
-    }
-  }
-  console.log("\nDone. Open the PDFs in proposals/.");
-}
-
-main();
+</body></html>

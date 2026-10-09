@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.7 — proposal for PT Surya Toto Indonesia Tbk
+
+A fourth personalised proposal, for Bapak Sean (Sales). TOTO is already a live
+vendor — CE9 and CW 630 PJ (closets) and U104 (urinoir) are approved — so like
+Propan's it opens by acknowledging what is already tayang and sells depth and data
+rather than a listing. The angle for an established brand is share, not presence:
+pangsa kategori, aggregate and anonymous. `proposals/surya-toto.pdf`, 11 pages.
+
 ## 0.17.6 — the brand dashboard is back in the vendor proposals
 
 0.17.4 replaced the mock vendor dashboard with the real SketchUp screenshots, but
