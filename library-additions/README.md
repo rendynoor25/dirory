@@ -52,3 +52,9 @@ Their tags carry Indonesian and English terms (`Atap`, `Seng`, `Plafon`,
 `Langit-langit`, `Papan Gipsum`), because architects search in either language.
 Tags are set after upload, since `meta.json` applies to a whole folder and these
 files need different tags each.
+
+Note that `upload-library.mjs` names a material after its **filename**. For the
+item above, the filename is already the display name. If an item needs a name that
+is not a valid filename, rename it afterwards (see
+`scripts/normalise-sample-names.mjs`, which did this in bulk for the first
+import's `snake_case` samples).
