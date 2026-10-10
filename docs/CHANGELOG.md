@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.17.17 — vendor approval is automatic, decided by the right signal
+
+Approval sat in the founder's queue for anything that was not a company email, and
+he cannot watch the admin dashboard during a working day. Migration **0028** moves
+the decision into one rule, enforced in the database rather than the app:
+
+| Registration | Result |
+|---|---|
+| Company email | **approved** |
+| Personal email **+ a website / store link** | **approved** |
+| Personal email, no website | **refused**, with a message and a WhatsApp route |
+
+The reasoning: a personal domain says nothing about whether a business exists — a
+small vendor on `@gmail.com` is indistinguishable from a curious individual. A
+company website, store link or Instagram profile *is* evidence, and it is a field
+the registration already collects. So the gate on pricing stays meaningful while
+nobody has to approve anything. (`p_auto_approve` still comes from the app; the
+website rule lives in the function, so the rule holds even if the app is bypassed.)
+
+`isFreemail()` also learned about **suffixes**: Indonesian schools use
+`<name>.sch.id`, so an exact-match list can never catch `sman1-bogor.sch.id`. A
+school is not a building-product vendor, so `.sch.id` is now treated as personal.
+
+Verified against the live database, all four paths:
+
+```
+company email, no website  -> created, status=approved
+gmail + store link         -> created, status=approved
+gmail, no website          -> REFUSED (with the message)
+school email (.sch.id)     -> REFUSED
+```
+
+The registration form now marks the website field *"Required unless you use a
+company email address"*, so nobody is refused after the fact.
+
 ## 0.17.16 — registration was silently broken; and the modelling service exists now
 
 ### The bug: vendor registration never appeared to work

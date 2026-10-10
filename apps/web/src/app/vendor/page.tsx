@@ -72,7 +72,13 @@ export default async function VendorHome({
           <Field name="brand_name" label="Brand name" required />
           <Field name="email" label="Contact email" type="email" required />
           <Field name="whatsapp" label="Phone / WhatsApp" required />
-          <Field name="website" label="Website" />
+          {/* Approve-or-refuse turns on this field for a personal address, so it
+              says so rather than leaving a vendor to be refused later. */}
+          <Field
+            name="website"
+            label="Website / store link"
+            hint="Required unless you use a company email address"
+          />
           <Field name="npwp" label="NPWP (optional)" />
           <div className="sm:col-span-2">
             <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">
@@ -512,11 +518,13 @@ function Field({
   label,
   type = "text",
   required = false,
+  hint,
 }: {
   name: string;
   label: string;
   type?: string;
   required?: boolean;
+  hint?: string;
 }) {
   return (
     <div>
@@ -527,6 +535,7 @@ function Field({
         required={required}
         className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
       />
+      {hint ? <p className="mt-1 text-[11px] leading-4 text-slate-400">{hint}</p> : null}
     </div>
   );
 }

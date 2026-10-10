@@ -69,9 +69,20 @@ export function emailDomain(email: string | null | undefined): string {
   return domain;
 }
 
+/**
+ * Domain *suffixes* that are never a company.
+ *
+ * Indonesian schools use `<name>.sch.id` — thousands of them — so an exact-match
+ * list cannot catch "sman1-jakarta.sch.id". A school is not a building-product
+ * vendor, so these count as personal.
+ */
+const FREEMAIL_SUFFIXES = [".sch.id"];
+
 export function isFreemail(email: string | null | undefined): boolean {
   const domain = emailDomain(email);
-  return domain !== "" && FREEMAIL.has(domain);
+  if (!domain) return false;
+  if (FREEMAIL.has(domain)) return true;
+  return FREEMAIL_SUFFIXES.some((suffix) => domain.endsWith(suffix));
 }
 
 /** True when we are willing to show company pricing to this address. */
