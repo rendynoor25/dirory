@@ -35,6 +35,68 @@ export async function setVendorStatus(formData: FormData) {
   revalidatePath("/admin");
 }
 
+// ---------------------------------------------------------------------------
+// Service requests — the modelling queue
+// ---------------------------------------------------------------------------
+
+const QuoteSchema = z.object({
+  request_id: z.string().uuid(),
+  quoted_idr: z.coerce.number().int().min(0).max(10_000_000_000),
+  admin_note: z.string().trim().max(2000).optional(),
+});
+
+/** Set the price on a requested job. This is what turns `requested` into `quoted`. */
+export async function quoteServiceRequest(formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const parsed = QuoteSchema.safeParse({
+    request_id: formData.get("request_id"),
+    quoted_idr: formData.get("quoted_idr"),
+    admin_note: formData.get("admin_note") ?? "",
+  });
+  if (!parsed.success) return;
+
+  await supabase
+    .from("service_requests")
+    .update({
+      quoted_idr: parsed.data.quoted_idr,
+      admin_note: parsed.data.admin_note || null,
+      status: "quoted",
+    })
+    .eq("id", parsed.data.request_id)
+    .eq("status", "requested");
+
+  revalidatePath("/admin/services");
+}
+
+const ServiceStatusSchema = z.object({
+  request_id: z.string().uuid(),
+  status: z.enum(["in_progress", "delivered", "cancelled"]),
+  admin_note: z.string().trim().max(2000).optional(),
+});
+
+/** Advance a job: start modelling, mark it delivered, or cancel it. */
+export async function setServiceStatus(formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const parsed = ServiceStatusSchema.safeParse({
+    request_id: formData.get("request_id"),
+    status: formData.get("status"),
+    admin_note: formData.get("admin_note") ?? "",
+  });
+  if (!parsed.success) return;
+
+  const patch: Record<string, unknown> = {
+    status: parsed.data.status,
+    admin_note: parsed.data.admin_note || null,
+  };
+  if (parsed.data.status === "in_progress") patch.started_at = new Date().toISOString();
+  if (parsed.data.status === "delivered") patch.delivered_at = new Date().toISOString();
+
+  await supabase.from("service_requests").update(patch).eq("id", parsed.data.request_id);
+
+  revalidatePath("/admin/services");
+  revalidatePath("/vendor/services");
+}
+
 const ReviewSchema = z.object({
   version_id: z.string().uuid(),
   decision: z.enum(["approved", "rejected"]),

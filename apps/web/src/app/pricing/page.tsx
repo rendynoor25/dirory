@@ -4,7 +4,6 @@ import { getSession } from "@/lib/auth";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { canViewCompanyPricing } from "@/lib/businessEmail";
 import { DIRORY_EMAIL, formatWhatsApp, whatsAppLink } from "@/lib/contact";
 import { formatIDR } from "@/lib/format";
 
@@ -51,9 +50,11 @@ export const metadata = {
 /**
  * Brand pricing (founder decision, 9 Oct 2026).
  *
- * Gated behind a company address: Dirory sells to brands, and a work email is a
- * cheap signal that the visitor is one. This is a **soft gate, not security** -
- * it shapes who sees the page, and protects nothing. No RLS policy depends on it.
+ * Gated behind an **approved vendor**: the prices are a commercial conversation,
+ * and Dirory shows them to brands whose registration the team has verified. This
+ * is a **soft gate, not security** — it shapes who sees the page and protects
+ * nothing. No RLS policy depends on it, and an unapproved visitor can still ask
+ * for pricing on WhatsApp or by email.
  *
  * The package rows come from `plans` (migrations 0014, 0021, 0023), so the page
  * and the vendor portal can never quote different prices. The digitization and
@@ -61,9 +62,16 @@ export const metadata = {
  * so they are listed here as published rates.
  */
 export default async function PricingPage() {
-  const [{ supabase, user }, locale] = await Promise.all([getSession(), getLocale()]);
+  const [{ supabase, user, profile, memberships }, locale] = await Promise.all([
+    getSession(),
+    getLocale(),
+  ]);
 
-  const allowed = canViewCompanyPricing(user?.email);
+  // Approved vendors only — the same rule as /for-vendors, so the two pages
+  // cannot disagree about who may see a price. A company address alone is no
+  // longer enough: the brand must have been verified.
+  const allowed =
+    profile?.role === "admin" || memberships.some((m) => m.vendor?.status === "approved");
 
   const { data: plans } = allowed
     ? await supabase
@@ -109,12 +117,12 @@ export default async function PricingPage() {
             <p className="mt-2 max-w-xl text-sm leading-6 text-amber-900">
               {t(locale, "pricing.personalBody").replace("{email}", user.email ?? "")}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
-                href="/auth/signout"
+                href="/vendor"
                 className="rounded-full bg-amber-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-amber-950"
               >
-                {t(locale, "pricing.gateCta")}
+                {t(locale, "pricing.vendorCta")}
               </Link>
               <a
                 href={whatsAppLink("Halo Dirory, saya ingin menanyakan harga untuk brand kami.")}
@@ -128,6 +136,9 @@ export default async function PricingPage() {
               >
                 {DIRORY_EMAIL}
               </a>
+              <Link href="/auth/signout" className="text-xs font-medium text-amber-800 underline">
+                {t(locale, "pricing.signOut")}
+              </Link>
             </div>
           </div>
         ) : (

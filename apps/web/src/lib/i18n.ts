@@ -262,9 +262,11 @@ const en: Record<string, string> = {
   "pricing.gateBody":
     "Sign in with your company email to see brand pricing. Personal addresses like gmail.com are not accepted here.",
   "pricing.gateCta": "Sign in with a company email",
-  "pricing.personalTitle": "This looks like a personal address",
+  "pricing.personalTitle": "Pricing is for approved vendors",
   "pricing.personalBody":
-    "You are signed in as {email}. Brand pricing is shown to company accounts. Sign in with your work address, or contact us and we will help.",
+    "You are signed in as {email}. Dirory shows brand pricing to vendors whose registration has been approved. Register your brand — once we approve it, the prices appear here.",
+  "pricing.vendorCta": "Register your brand",
+  "pricing.signOut": "Sign out",
   "pricing.packagesTitle": "Packages",
   "pricing.packagesLead":
     "Sized by how many products stay live, so a material range of hundreds of colours fits. Monthly or yearly.",
@@ -399,10 +401,10 @@ const en: Record<string, string> = {
     "Monthly or yearly — yearly is ten months, so two months free. Every plan includes the vendor dashboard.",
   "fv.planProducts": "products",
   "fv.plansCta": "Compare plans",
-  "fv.gateTitle": "Pricing is for company accounts",
+  "fv.gateTitle": "Pricing is for approved vendors",
   "fv.gateText":
-    "The plans above show what each package covers. Prices are shown to company addresses — sign in with your work email to see them. Everything else on this page is open to everyone.",
-  "fv.gateCta": "Sign in with your company email",
+    "The plans above show what each package covers. Prices are shown to brands that have registered with Dirory and been verified — register your brand, and once we approve it the prices appear here. Everything else on this page is open to everyone.",
+  "fv.gateCta": "Register or sign in as a vendor",
 
   "fv.demoHeading": "See the vendor dashboard",
   "fv.demoText":
@@ -656,9 +658,11 @@ const id: Record<string, string> = {
   "pricing.gateBody":
     "Masuk dengan email kantor untuk melihat harga brand. Alamat pribadi seperti gmail.com tidak diterima di sini.",
   "pricing.gateCta": "Masuk dengan email kantor",
-  "pricing.personalTitle": "Ini sepertinya alamat pribadi",
+  "pricing.personalTitle": "Harga untuk vendor yang sudah disetujui",
   "pricing.personalBody":
-    "Anda masuk sebagai {email}. Harga brand ditampilkan untuk akun perusahaan. Masuk dengan alamat kantor Anda, atau hubungi kami.",
+    "Anda masuk sebagai {email}. Dirory menampilkan harga brand untuk vendor yang pendaftarannya sudah disetujui. Daftarkan brand Anda — setelah disetujui, harga akan muncul di sini.",
+  "pricing.vendorCta": "Daftarkan brand Anda",
+  "pricing.signOut": "Keluar",
   "pricing.packagesTitle": "Paket",
   "pricing.packagesLead":
     "Dihitung dari jumlah produk yang tayang, sehingga satu katalog material berisi ratusan warna tetap muat. Bulanan atau tahunan.",
@@ -791,10 +795,10 @@ const id: Record<string, string> = {
     "Bulanan atau tahunan — tahunan setara sepuluh bulan, jadi dua bulan gratis. Semua paket termasuk dashboard vendor.",
   "fv.planProducts": "produk",
   "fv.plansCta": "Bandingkan paket",
-  "fv.gateTitle": "Harga untuk akun perusahaan",
+  "fv.gateTitle": "Harga untuk vendor yang sudah disetujui",
   "fv.gateText":
-    "Paket di atas menunjukkan cakupan setiap paket. Harga ditampilkan untuk alamat perusahaan — masuk dengan email kantor Anda untuk melihatnya. Bagian lain di halaman ini terbuka untuk semua.",
-  "fv.gateCta": "Masuk dengan email kantor",
+    "Paket di atas menunjukkan cakupan setiap paket. Harga ditampilkan untuk brand yang sudah mendaftar dan diverifikasi Dirory — daftarkan brand Anda, dan setelah disetujui harga akan muncul di sini. Bagian lain di halaman ini terbuka untuk semua.",
+  "fv.gateCta": "Daftar atau masuk sebagai vendor",
 
   "fv.demoHeading": "Lihat dashboard vendor",
   "fv.demoText":

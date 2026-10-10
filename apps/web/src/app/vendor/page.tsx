@@ -37,10 +37,18 @@ function dayAxis(from: string, to: string): string[] {
 export default async function VendorHome({
   searchParams,
 }: {
-  searchParams: Promise<{ range?: string; from?: string; to?: string; sort?: string }>;
+  searchParams: Promise<{
+    range?: string;
+    from?: string;
+    to?: string;
+    sort?: string;
+    error?: string;
+    registered?: string;
+  }>;
 }) {
   const { supabase, memberships } = await getSession();
   const membership = memberships[0];
+  const sp = await searchParams;
 
   // ---------------------------------------------------------------- onboarding
   if (!membership) {
@@ -50,6 +58,15 @@ export default async function VendorHome({
           title="Register your brand"
           subtitle="FR-V1 · your account stays pending until the Dirory team approves it."
         />
+        {sp.error ? (
+          <p className="mx-5 mt-5 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            {sp.error}
+          </p>
+        ) : sp.registered ? (
+          <p className="mx-5 mt-5 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+            Your registration was received. Reload this page — your details are being looked up.
+          </p>
+        ) : null}
         <form action={registerVendor} className="grid gap-4 p-5 sm:grid-cols-2">
           <Field name="name" label="Company name" required />
           <Field name="brand_name" label="Brand name" required />
@@ -68,7 +85,92 @@ export default async function VendorHome({
   }
 
   const vendorId = membership.vendor_id;
-  const sp = await searchParams;
+
+  // ---------------------------------------------------------------- status
+  // A registered vendor is `pending` until the Dirory team approves it, and used
+  // to land on a dashboard full of zeros with no explanation. The status is now
+  // the first thing the page says.
+  const { data: vendorRow } = await supabase
+    .from("vendors")
+    .select("name, brand_name, email, whatsapp, status, approved_at")
+    .eq("id", vendorId)
+    .maybeSingle();
+  const vendorStatus = vendorRow?.status ?? membership.vendor?.status ?? "pending";
+
+  if (vendorStatus === "pending") {
+    return (
+      <div className="space-y-6">
+        {sp.registered ? (
+          <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+            Registration received — thank you.
+          </p>
+        ) : null}
+        <Card>
+          <CardHeader
+            title="Your registration is being reviewed"
+            subtitle="FR-V1 · nothing else is needed from you right now."
+          />
+          <div className="space-y-4 p-5 text-sm text-slate-700">
+            <p>
+              We review every brand by hand, to keep the catalogue credible for architects. Your
+              details are with the Dirory team.
+            </p>
+            <table className="w-full text-left">
+              <tbody className="divide-y divide-slate-100">
+                <tr>
+                  <td className="py-2 text-slate-500">Company</td>
+                  <td className="py-2 font-medium">{vendorRow?.name ?? "—"}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500">Brand</td>
+                  <td className="py-2 font-medium">{vendorRow?.brand_name ?? "—"}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500">Contact</td>
+                  <td className="py-2">
+                    {vendorRow?.email ?? "—"}
+                    {vendorRow?.whatsapp ? ` · ${vendorRow.whatsapp}` : ""}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500">Status</td>
+                  <td className="py-2">
+                    <Badge tone="amber">pending review</Badge>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="rounded-lg bg-slate-50 p-4 text-slate-600">
+              <p className="font-medium text-slate-800">How you will know</p>
+              <p className="mt-1">
+                Sign in here again after we approve you: this screen becomes your dashboard. There is
+                no separate notification yet — this page is the notification.
+              </p>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (vendorStatus === "suspended") {
+    return (
+      <Card>
+        <CardHeader title="This account is suspended" subtitle="Please contact the Dirory team." />
+        <div className="p-5 text-sm text-slate-700">
+          <p>
+            Your brand <strong>{vendorRow?.brand_name ?? "—"}</strong> is suspended, so its products
+            are not shown to architects. Contact Dirory to resolve it.
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
+  // Recently approved: say so, once, so the vendor knows the wait is over.
+  const approvedRecently =
+    vendorRow?.approved_at != null &&
+    Date.now() - new Date(vendorRow.approved_at).getTime() < 30 * 864e5;
 
   const rangeDays = Number(sp.range ?? 30) || 30;
   const to = sp.to ?? isoDate(new Date());
@@ -166,11 +268,10 @@ export default async function VendorHome({
 
   return (
     <div className="space-y-6">
-      {membership.vendor.status !== "approved" ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          Your vendor account is <strong>{membership.vendor.status}</strong>. You can upload products
-          now; they become visible to architects once the Dirory team approves your account and the
-          products. Dirory&apos;s own free samples are visible either way.
+      {approvedRecently ? (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          <strong>{vendorRow?.brand_name ?? "Your brand"} is approved.</strong> This dashboard is
+          live. Upload products and each one appears to architects once it passes review.
         </div>
       ) : null}
 

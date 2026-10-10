@@ -37,6 +37,7 @@ export default async function VendorLayout({ children }: { children: React.React
         { href: "/vendor", label: "Dashboard" },
         { href: "/vendor/assets", label: "Products" },
         { href: "/vendor/leads", label: "Leads inbox", badge: newLeads ?? undefined },
+        { href: "/vendor/services", label: "Modelling" },
         { href: "/vendor/subscription", label: "Subscription" },
         { href: "/vendor/team", label: "Team" },
       ]}

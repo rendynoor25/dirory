@@ -1,5 +1,70 @@
 # Changelog
 
+## 0.17.16 — registration was silently broken; and the modelling service exists now
+
+### The bug: vendor registration never appeared to work
+
+Registering a brand looked like a no-op — the form submitted and came back empty,
+with no message. The vendor **was** being created. What failed was reading it back:
+
+```
+register_vendor        -> ok, vendor 229f9766…   (row created, pending)
+read back vendor_members -> ERROR: infinite recursion detected in policy
+```
+
+`vendor_members_owner` (a FOR ALL policy) tested ownership with a subquery on the
+table it guards, so evaluating it re-evaluated it. PostgreSQL aborts the statement.
+Every other predicate in 0002 is SECURITY DEFINER for exactly this reason; this one
+escaped the rule and nothing had exercised it until a vendor account existed.
+
+The consequence was larger than one form: `getSession()` reads `vendor_members`, so
+**the entire vendor portal was unreachable** — every signed-in vendor was treated as
+a stranger and sent back to the registration form. Migration **0026** replaces the
+subquery with `is_vendor_owner()`, a SECURITY DEFINER helper.
+
+### The flow now says what is happening
+
+- The registration action **redirects with a result** instead of returning silently,
+  so a rejected form shows why.
+- A pending vendor gets a clear **"Your registration is being reviewed"** screen with
+  their details and their status — instead of a dashboard of zeros.
+- A suspended vendor is told so.
+- Approval is announced: a vendor approved in the last 30 days sees a green
+  **"approved"** banner. That is deliberately the notification — there is no email
+  infrastructure, and this page *is* how they find out.
+
+### Prices are for approved vendors
+
+`/for-vendors` and `/pricing` now show prices only to a member of an **approved**
+vendor, or an admin. A company email is no longer enough, and the two pages use the
+same rule so they cannot disagree. Everyone else sees what each plan covers, and a
+route to register.
+
+### The modelling service exists (migration 0027)
+
+Digitization was promised on the pricing page and in every proposal but had nothing
+behind it. `service_requests` is that object:
+
+```
+requested -> quoted -> accepted -> in_progress -> delivered
+```
+
+- **Vendor** (`/vendor/services`) asks for products to be modelled, and accepts a quote.
+- **Admin** (`/admin/services`) quotes it, then has a work queue: jobs that are
+  **accepted AND paid** sit at the top as *ready to start*.
+- Accepting a quote creates the invoice, so payment runs through the existing path
+  (bank transfer or Midtrans).
+- **"Paid" is not a status** — it is read from the linked invoice, so money has one
+  source of truth and `mark_invoice_paid()` needed no change.
+- Vendors cannot write the table at all. Accepting has a side effect (an invoice), so
+  it goes through `vendor_accept_service_quote()`, which checks the caller, the status
+  and the amount in one place. Verified: a vendor's self-quote attempt changes no rows.
+
+The vendor watches a **five-step progress bar**; you get a queue with the next action
+on each job.
+
+Also: the landing page's "Brands" nav link is gone.
+
 ## 0.17.15 — catalogue corrections: TOTO's product, Dirory's samples, five new materials
 
 Four data changes, applied to the live database (no deploy needed).

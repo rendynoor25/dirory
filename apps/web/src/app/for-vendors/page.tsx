@@ -6,7 +6,6 @@ import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth";
-import { canViewCompanyPricing } from "@/lib/businessEmail";
 import { formatIDR } from "@/lib/format";
 import { DIRORY_EMAIL, formatWhatsApp, whatsAppLink } from "@/lib/contact";
 
@@ -47,14 +46,16 @@ export default async function ForVendors() {
   let categoryCount = 0;
   let tiers: { name: string; monthly?: PlanRow; yearly?: PlanRow; max: number }[] = [];
 
-  // Prices are for company addresses only. A @gmail.com visitor still gets the
-  // whole page — brand wall, numbers, how it works — but not the numbers on the
-  // plans. Same gate as /pricing, so the two can never disagree.
-  let userEmail: string | null = null;
+  // Prices are for *approved vendors* only — someone who has registered a brand
+  // and been verified by the Dirory team. Everyone else (architects, personal
+  // addresses, anyone signed out) still gets the whole page — brand wall, numbers,
+  // how it works — but the plans show coverage without the prices.
+  let canSeePrices = false;
 
   if (isSupabaseConfigured()) {
-    const { supabase, user } = await getSession();
-    userEmail = user?.email ?? null;
+    const { supabase, profile, memberships } = await getSession();
+    canSeePrices =
+      profile?.role === "admin" || memberships.some((m) => m.vendor?.status === "approved");
     const [vendorRes, productRes, categoryRes, planRes] = await Promise.all([
       supabase
         .from("vendors")
@@ -100,7 +101,7 @@ export default async function ForVendors() {
     );
   }
 
-  const showPricing = canViewCompanyPricing(userEmail);
+  const showPricing = canSeePrices;
 
   const demoLink = whatsAppLink(
     locale === "id"
@@ -357,7 +358,7 @@ export default async function ForVendors() {
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
-                href="/login?next=%2Fpricing"
+                href="/vendor"
                 className="rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-800"
               >
                 {t(locale, "fv.gateCta")}

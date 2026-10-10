@@ -18,7 +18,7 @@ const RegisterSchema = z.object({
 
 export async function registerVendor(formData: FormData) {
   const { supabase, user } = await getSession();
-  if (!user) return;
+  if (!user) redirect("/login?next=%2Fvendor");
 
   const parsed = RegisterSchema.safeParse({
     name: formData.get("name"),
@@ -28,7 +28,11 @@ export async function registerVendor(formData: FormData) {
     website: formData.get("website") ?? "",
     npwp: formData.get("npwp") ?? "",
   });
-  if (!parsed.success) return;
+  // Everything below reports back. It used to `return` silently, so a rejected
+  // form looked identical to a successful one — an empty form and no message.
+  if (!parsed.success) {
+    redirect(`/vendor?error=${encodeURIComponent("Please fill in company name, brand name, email and phone.")}`);
+  }
 
   // One call creates the vendor AND the owner membership atomically.
   //
@@ -52,11 +56,69 @@ export async function registerVendor(formData: FormData) {
   });
   if (error) {
     console.error("registerVendor failed", error);
-    return;
+    redirect(`/vendor?error=${encodeURIComponent(error.message)}`);
   }
 
   revalidatePath("/vendor");
   revalidatePath("/vendor", "layout");
+  // Land back on /vendor, which now shows either "under review" or the
+  // dashboard — so submitting always produces a visible outcome.
+  redirect("/vendor?registered=1");
+}
+
+// ---------------------------------------------------------------------------
+// Service requests — Dirory modelling / digitizing a vendor's products
+// ---------------------------------------------------------------------------
+
+const ServiceRequestSchema = z.object({
+  title: z.string().trim().min(3).max(200),
+  product_count: z.coerce.number().int().min(1).max(20000).optional(),
+  brief: z.string().trim().max(2000).optional(),
+});
+
+/** A vendor asks Dirory to model or digitize products. Lands as `requested`. */
+export async function createServiceRequest(formData: FormData) {
+  const { supabase, user, memberships } = await getSession();
+  const membership = memberships[0];
+  if (!user || !membership) redirect("/vendor");
+
+  const parsed = ServiceRequestSchema.safeParse({
+    title: formData.get("title"),
+    product_count: formData.get("product_count") || undefined,
+    brief: formData.get("brief") ?? "",
+  });
+  if (!parsed.success) {
+    redirect(`/vendor/services?error=${encodeURIComponent("Please describe what you would like modelled.")}`);
+  }
+
+  const { error } = await supabase.from("service_requests").insert({
+    vendor_id: membership.vendor_id,
+    title: parsed.data.title,
+    product_count: parsed.data.product_count ?? null,
+    brief: parsed.data.brief || null,
+    requested_by: user.id,
+    status: "requested",
+  });
+  if (error) redirect(`/vendor/services?error=${encodeURIComponent(error.message)}`);
+
+  revalidatePath("/vendor/services");
+  redirect("/vendor/services?created=1");
+}
+
+/**
+ * Accept a quote. The RPC creates the invoice and moves the job to `accepted` in
+ * one transaction — the vendor cannot write the table directly, deliberately.
+ */
+export async function acceptServiceQuote(formData: FormData) {
+  const { supabase } = await getSession();
+  const requestId = String(formData.get("request_id") ?? "");
+  const { data, error } = await supabase.rpc("vendor_accept_service_quote", {
+    p_request: requestId,
+  });
+  if (error) redirect(`/vendor/services?error=${encodeURIComponent(error.message)}`);
+
+  revalidatePath("/vendor/services");
+  redirect(`/vendor/subscription/invoice/${data}`);
 }
 
 const AssetSchema = z.object({
