@@ -173,6 +173,31 @@ const VENDORS = [
       "proyek dan per kota, langsung dari file proyek arsitek — bukan dari jumlah katalog diunduh.",
     metric: "Luas panel terpasang (m²) dan unit terpasang (pintu, handrail), sebaran proyek, permintaan penawaran",
   },
+  {
+    slug: "ykk-ap",
+    company: "PT YKK AP Indonesia",
+    short: "YKK AP",
+    contact: "Mrs. Mira Rahman",
+    role: "Sales Planning and Promotion",
+    focus: "Jendela, pintu & curtain wall",
+    // Not in the catalogue. The pitch here is stronger than "new brand": Dirory
+    // has no window or curtain-wall product at all, and the `Doors & Windows`
+    // category already exists waiting to be filled.
+    existing: null,
+    // YKK AP already tells its story through project references — photographs of
+    // finished buildings. Dirory answers the same question with a number, while
+    // the project is still being drawn: which system an architect actually put in
+    // the file, how many, and where.
+    relevance:
+      "Jendela, pintu, dan curtain wall diputuskan di tahap gambar. Dirory belum memiliki " +
+      "satu pun produk di kategori itu — YKK AP akan menjadi brand pertama yang mengisinya, " +
+      "di depan arsitek yang memang sedang mencarinya. Setiap pemakaian tercatat sebagai " +
+      "angka: berapa unit NEXSTA, MADELA, EXHIDO, FRONTERRA, atau sistem curtain wall UCW-125 " +
+      "dan KCW-75 yang benar-benar masuk ke file proyek, per tipe dan per kota. Referensi " +
+      "proyek YKK AP selama ini bercerita lewat foto bangunan jadi; Dirory melengkapinya " +
+      "dengan angka saat bangunan masih digambar.",
+    metric: "Unit terpasang per sistem (NEXSTA, MADELA, EXHIDO, FRONTERRA, UCW/KCW), sebaran proyek dan kota, permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
