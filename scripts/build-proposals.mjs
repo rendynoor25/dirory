@@ -152,6 +152,27 @@ const VENDORS = [
       "masuk ke file proyek arsitek, per tipe dan per kota. Bukan berapa kali katalog diunduh.",
     metric: "Unit terpasang per tipe (handle, engsel, closer), sebaran proyek, dan permintaan penawaran",
   },
+  {
+    slug: "marksindo",
+    company: "PT Marksindo Sukses Jaya",
+    short: "Marks",
+    contact: "Ms. Meilisya Heryanto",
+    role: "Assistant Manager",
+    focus: "ACP, panel & sistem interior",
+    // Not in the catalogue yet, so the digitization pilot is the hook.
+    existing: null,
+    // Unusual for one brand: half this range is a surface and half is a count.
+    // ACP, panel and Flexiwall are measured in m²; steel doors and handrailing in
+    // units. Dirory reports both from the same project files, which no catalogue
+    // or showroom can do.
+    relevance:
+      "Marksindo membawa dua jenis produk yang biasanya diukur berbeda. ACP, panel, dan " +
+      "Flexiwall adalah permukaan — yang relevan adalah berapa meter persegi yang benar-benar " +
+      "terpasang di fasad dan partisi. Pintu baja Marks dan handrailing Oxena adalah unit — " +
+      "yang relevan adalah berapa buah yang masuk ke gambar. Dirory melaporkan keduanya, per " +
+      "proyek dan per kota, langsung dari file proyek arsitek — bukan dari jumlah katalog diunduh.",
+    metric: "Luas panel terpasang (m²) dan unit terpasang (pintu, handrail), sebaran proyek, permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
