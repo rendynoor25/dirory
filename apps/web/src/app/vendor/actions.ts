@@ -6,6 +6,21 @@ import { z } from "zod";
 import { getSession } from "@/lib/auth";
 import { isBusinessEmail } from "@/lib/businessEmail";
 
+/**
+ * OWASP A05. `register_vendor()` raises messages written for the vendor ("Add your
+ * company website or store link…") and those should be shown verbatim. A raw
+ * Postgres error names tables, constraints and columns, and should not be.
+ */
+function userFacingError(message: string): string {
+  const internal =
+    /^(ERROR|error)\b|violates|constraint|relation|column |syntax error|permission denied for|does not exist|null value in column|duplicate key/i.test(
+      message,
+    );
+  return internal
+    ? "Something went wrong on our side. Please try again — or message us on WhatsApp +62 857-1008-6041."
+    : message;
+}
+
 /** FR-V1 — vendor registration. Creates a `pending` vendor + owner membership. */
 const RegisterSchema = z.object({
   name: z.string().min(2),
@@ -55,8 +70,11 @@ export async function registerVendor(formData: FormData) {
     p_auto_approve: isBusinessEmail(user.email),
   });
   if (error) {
+    // A05: our own `raise exception` messages are written for the vendor and are
+    // safe to show. A raw Postgres error is not — it names tables, constraints
+    // and columns. Show the one, log the other.
     console.error("registerVendor failed", error);
-    redirect(`/vendor?error=${encodeURIComponent(error.message)}`);
+    redirect(`/vendor?error=${encodeURIComponent(userFacingError(error.message))}`);
   }
 
   revalidatePath("/vendor");

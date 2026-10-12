@@ -6,6 +6,9 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 
 const nextConfig = {
   reactStrictMode: true,
+  // A05 (security misconfiguration): do not advertise the framework. Caddy also
+  // strips the Server header, so responses carry no version fingerprints.
+  poweredByHeader: false,
   // Self-contained server bundle for the Docker image (M5 / DEPLOY.md).
   // Produces .next/standalone with its own minimal node_modules.
   output: "standalone",

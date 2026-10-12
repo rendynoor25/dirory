@@ -33,9 +33,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Gateway not configured." }, { status: 503 });
   }
 
+  // This route is public by necessity (Midtrans has no Dirory session) and is
+  // protected only by the signature. A04: bound the work before parsing it. A
+  // real notification is about a kilobyte; `Content-Length` can lie, so the
+  // limit is enforced on the body that actually arrived.
+  const MAX_BYTES = 64 * 1024;
+  const raw = await request.text();
+  if (raw.length > MAX_BYTES) {
+    console.warn("midtrans webhook: oversized body rejected", { bytes: raw.length });
+    return NextResponse.json({ error: "Payload too large." }, { status: 413 });
+  }
+
   let body: Record<string, unknown>;
   try {
-    body = await request.json();
+    body = JSON.parse(raw) as Record<string, unknown>;
   } catch {
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
