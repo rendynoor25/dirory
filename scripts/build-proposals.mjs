@@ -277,6 +277,36 @@ const VENDORS = [
     metric:
       "Luas terpasang (m²) per merek dan tipe (keramik, parket, wall panel), unit terpasang (saniter), sebaran proyek dan kota, permintaan penawaran",
   },
+  {
+    // A manufacturer of premium granite tile. Not in the catalogue (only NIRO
+    // GRANITE and ROMAN match anything tile-like), so the digitization pilot is
+    // the hook. Tile is a surface: the number that matters is m² installed, per
+    // design and finish. Granito's catalogue is deep (Artile, Classic Tile,
+    // Stardust, Maison, Terrain...), so the question is which designs architects
+    // actually place — and they already run a consumer-side Visualizer, which
+    // makes the architect-side panel a natural complement rather than a foreign
+    // idea. One restrained competitive nudge: other granite brands are already
+    // live in front of architects. No figures are quoted for anyone but Granito.
+    slug: "granito-rizco",
+    company: "PT Granitoguna Building Ceramics (Granito)",
+    short: "Granito",
+    contact: "Bapak Rizco Chairy",
+    email: "rizco@granito.co.id",
+    role: "Regional Sales Manager",
+    focus: "Granit tile premium (Artile & Classic Tile)",
+    existing: null,
+    relevance:
+      "Granito menjual granit tile premium — dan tile premium dipilih berdasarkan " +
+      "desain, bukan harga per dus. Dirory mengukur tepat di titik keputusan itu: " +
+      "berapa meter persegi Stardust, Maison, atau Terrain yang benar-benar terpasang " +
+      "di file proyek arsitek — per desain, per permukaan, dan per kota. Dengan katalog " +
+      "sedalam Artile dan Classic Tile, pertanyaannya bukan apakah arsitek mengenal " +
+      "Granito, melainkan desain mana yang paling sering masuk gambar. Visualizer di " +
+      "situs Anda membantu konsumen membayangkan ruangan; Dirory melengkapinya dari " +
+      "sisi arsitek: produk yang sama, di dalam file proyek, beserta jumlahnya.",
+    metric:
+      "Luas terpasang (m²) per desain dan permukaan, sebaran proyek dan kota, permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
