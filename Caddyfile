@@ -30,7 +30,18 @@
 		X-Permitted-Cross-Domain-Policies none
 		# Keeps Google sign-in popups working, unlike plain `same-origin`.
 		Cross-Origin-Opener-Policy same-origin-allow-popups
-		Content-Security-Policy "default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
+		# NOTE: no `default-src` here, deliberately.
+		#
+		# `default-src` is the fallback for every fetch directive that is not
+		# named, so adding it silently became a script-src and style-src. Next
+		# ships ~18 inline bootstrap scripts and React writes inline styles, so
+		# `default-src 'self'` blocked hydration and the whole app went dead in
+		# the browser while still answering HTTP 200 on the server.
+		#
+		# Only the directives that cannot restrict loading are listed, so a
+		# mistake here cannot take the site down. Adding script-src/style-src is
+		# a deliberate future step, to be tested against the Midtrans Snap page.
+		Content-Security-Policy "object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
 		-Server
 	}
 
