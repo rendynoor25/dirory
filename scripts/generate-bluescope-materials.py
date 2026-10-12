@@ -44,10 +44,10 @@ OUT_ROOT = os.path.join(LIBRARY, "BlueScope")
 BRAND = "BlueScope"
 CATEGORY = "Baja Lapis Warna"
 
-ROOF_MODULE_MM = 400          # tile pitch and course height
-WALL_RIB_MM = 400             # rib centres
-WALL_LENGTH_MM = 1000         # sample length; a pan has no vertical repeat
-PX_PER_MM = 1.5               # denser than the flat-colour samples: this is a profile
+ROOF_RIB_MM = 200             # roof rib centres — not published by BlueScope
+WALL_JOINT_MM = 400           # wall pan joint centres
+SAMPLE_LENGTH_MM = 1000       # both sheets are linear, so there is no vertical repeat
+PX_PER_MM = 1.5               # denser than the flat-colour samples: these are profiles
 
 COLOURS = [
     # range, colour, hex  (Colorbond values are printed in the PDF)
@@ -78,41 +78,39 @@ def shade(base: np.ndarray, factor: np.ndarray) -> np.ndarray:
     return np.clip(out, 0, 255)
 
 
-def _smoothstep(a: float, b: float, x: np.ndarray) -> np.ndarray:
-    t = np.clip((x - a) / (b - a), 0, 1)
-    return t * t * (3 - 2 * t)
+def _wrap_gauss(U: np.ndarray, centre: float, sigma: float) -> np.ndarray:
+    """A Gaussian that wraps around the module edge, so tiles join seamlessly."""
+    d = np.minimum(np.abs(U - centre), 1 - np.abs(U - centre))
+    return np.exp(-(d ** 2) / (2 * sigma ** 2))
 
 
-def roof_tile(base: np.ndarray, w: int, h: int) -> np.ndarray:
-    """One tile module: a flat stamped tile with a lapped course above it.
+def roof_rib(base: np.ndarray, w: int, h: int) -> np.ndarray:
+    """One rib of the roof sheet: clean parallel ribs running down the slope.
 
-    On a tile-look steel roof the strongest read is the horizontal *lap* — each
-    course sits over the head of the one below, catching light on its edge and
-    dropping a shadow. The inter-tile joint is a narrow line, and the face itself
-    is nearly flat (stamped metal, not a cushion), so the profile is built from
-    those three things rather than from a dome.
+    Not a tile. The Zacs booklet describes this product as "tampilan bersih dan
+    garis yang sederhana" (clean appearance, simple lines), and its own roof
+    photograph shows narrow, evenly spaced ribs running down the slope — there is
+    no moulded tile profile anywhere in this product. The rib spacing is not
+    published, so it is set below and flagged.
     """
     u = (np.arange(w) + 0.5) / w
     v = (np.arange(h) + 0.5) / h
     U, V = np.meshgrid(u, v, indexing="xy")
     f = np.ones_like(U)
 
-    # Face: a barely-there crown, so the tile is not dead flat.
-    f += 0.045 * np.cos(2 * np.pi * (U - 0.5))
+    # One rib per module, sitting on the module edge so the repeat is even:
+    # a lit crest with a shadow down its right-hand flank.
+    f += 0.15 * _wrap_gauss(U, 0.00, 0.055)      # crest catches the light
+    f -= 0.26 * _wrap_gauss(U, 0.075, 0.040)     # shadow on the right flank
+    f -= 0.05 * _wrap_gauss(U, 0.93, 0.060)      # pan falls away on the left
 
-    # Inter-tile joint: narrow, at both edges so neighbouring tiles share one line.
-    joint = np.exp(-(U ** 2) / (2 * 0.010 ** 2)) + np.exp(-((U - 1.0) ** 2) / (2 * 0.010 ** 2))
-    f -= 0.20 * joint
-    f += 0.05 * np.exp(-((U - 0.035) ** 2) / (2 * 0.018 ** 2))
-
-    # The lap: bright top edge, shadow beneath it, then the flat tile face.
-    f += 0.20 * (1 - _smoothstep(0.0, 0.045, V))
-    f -= 0.34 * _smoothstep(0.045, 0.075, V) * (1 - _smoothstep(0.10, 0.26, V))
+    # Flat pans either side; a matt sheet, so keep any sheen very slight.
+    f += 0.015 * (0.5 - U)
 
     # Fine grain, so large flat areas do not band.
     rng = np.random.default_rng(7)
-    f += rng.normal(0, 0.005, size=f.shape)
-    return shade(base, np.clip(f, 0.35, 1.65))
+    f += rng.normal(0, 0.004, size=f.shape)
+    return shade(base, np.clip(f, 0.4, 1.6))
 
 
 def wall_pan(base: np.ndarray, w: int, h: int) -> np.ndarray:
@@ -169,26 +167,26 @@ def main() -> int:
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
 
-    roof_px = int(ROOF_MODULE_MM * PX_PER_MM)
-    wall_w = int(WALL_RIB_MM * PX_PER_MM)
-    wall_h = int(WALL_LENGTH_MM * PX_PER_MM)
-    roof_cm = "%dx%d" % (ROOF_MODULE_MM / 10, ROOF_MODULE_MM / 10)
-    wall_cm = "%dx%d" % (WALL_RIB_MM / 10, WALL_LENGTH_MM / 10)
-    print("roof module %s cm -> %dpx   wall %s cm -> %dx%dpx" % (
-        roof_cm, roof_px, wall_cm, wall_w, wall_h))
+    roof_w = int(ROOF_RIB_MM * PX_PER_MM)
+    wall_w = int(WALL_JOINT_MM * PX_PER_MM)
+    sheet_h = int(SAMPLE_LENGTH_MM * PX_PER_MM)
+    roof_cm = "%dx%d" % (ROOF_RIB_MM / 10, SAMPLE_LENGTH_MM / 10)
+    wall_cm = "%dx%d" % (WALL_JOINT_MM / 10, SAMPLE_LENGTH_MM / 10)
+    print("atap rib %s cm -> %dx%dpx   dinding %s cm -> %dx%dpx" % (
+        roof_cm, roof_w, sheet_h, wall_cm, wall_w, sheet_h))
 
     if args.preview:
         os.makedirs(OUT_ROOT, exist_ok=True)
-        save_jpeg(os.path.join(OUT_ROOT, "preview-atap.jpg"), roof_tile(rgb("#3E434C"), roof_px, roof_px))
-        save_jpeg(os.path.join(OUT_ROOT, "preview-dinding.jpg"), wall_pan(rgb("#292E2A"), wall_w, wall_h))
+        save_jpeg(os.path.join(OUT_ROOT, "preview-atap.jpg"), roof_rib(rgb("#3E434C"), roof_w, sheet_h))
+        save_jpeg(os.path.join(OUT_ROOT, "preview-dinding.jpg"), wall_pan(rgb("#292E2A"), wall_w, sheet_h))
         print("wrote preview-atap.jpg and preview-dinding.jpg to", OUT_ROOT)
         return 0
 
     written = skipped = 0
     for range_name, colour, hexcode in COLOURS:
         for kind, variant, (w, h), cm in (
-            ("atap", "Atap", (roof_px, roof_px), roof_cm),
-            ("dinding", "Dinding", (wall_w, wall_h), wall_cm),
+            ("atap", "Atap", (roof_w, sheet_h), roof_cm),
+            ("dinding", "Dinding", (wall_w, sheet_h), wall_cm),
         ):
             base = "%s %s - %s %s" % (range_name.split()[0], colour, variant, cm)
             folder = os.path.join(OUT_ROOT, base)
@@ -196,7 +194,7 @@ def main() -> int:
                 skipped += 1
                 continue
             os.makedirs(folder, exist_ok=True)
-            arr = roof_tile(rgb(hexcode), w, h) if kind == "atap" else wall_pan(rgb(hexcode), w, h)
+            arr = roof_rib(rgb(hexcode), w, h) if kind == "atap" else wall_pan(rgb(hexcode), w, h)
             save_jpeg(os.path.join(folder, base + ".jpeg"), arr)
             with open(os.path.join(folder, "meta.json"), "w", encoding="utf-8") as fh:
                 json.dump({
