@@ -56,6 +56,21 @@ docker compose build web
 log "Starting the stack"
 docker compose up -d --remove-orphans
 
+# The Caddyfile is bind-mounted as a *file*. A file bind-mount pins the inode, and
+# `git pull` replaces that file rather than editing it in place — so a running
+# Caddy keeps its old copy, and a header or routing change never applies, with no
+# error anywhere. (This is how the 0.17.18 security headers were silently absent
+# after a clean deploy.) Compare what Caddy holds against what is on disk, and
+# recreate it only when they differ.
+if [ -f Caddyfile ]; then
+  host_hash="$(sha256sum Caddyfile | cut -d' ' -f1)"
+  ctr_hash="$(docker compose exec -T caddy sha256sum /etc/caddy/Caddyfile 2>/dev/null | cut -d' ' -f1 || true)"
+  if [ -n "${ctr_hash}" ] && [ "${host_hash}" != "${ctr_hash}" ]; then
+    log "Caddyfile changed — recreating caddy"
+    docker compose up -d --force-recreate caddy
+  fi
+fi
+
 log "Waiting for the app to become healthy"
 for i in $(seq 1 30); do
   status="$(docker inspect --format '{{.State.Health.Status}}' "$(docker compose ps -q web)" 2>/dev/null || echo unknown)"
