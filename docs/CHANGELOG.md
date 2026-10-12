@@ -1,5 +1,37 @@
 # Changelog
 
+## Unreleased — Dulux: 332 colour materials
+
+Both Dulux Indonesia colour cards under `Materials/Paint/Dulux` are now in the
+catalogue, under the existing **Paint** category, brand **Dulux**.
+
+- `dulux-e-colourcard-interior-2020.pdf` — **209** swatches from the Interior
+  Wall and Interior Light & Space / Cat Kayu & Besi sections. The name and code
+  come from the text layer, so nothing was read by eye; the colour is sampled
+  from the swatch.
+- `dulux-colour-futures-2025-colour-card.pdf` — **123** more from the bitmap
+  card. That file has no text layer at all, so its captions were read off the
+  rendered pages — Windows OCR for the positions, then every caption checked
+  against its page — and committed as
+  `scripts/data/dulux-colour-futures.json`. Codes are repaired from the OCR's
+  systematic O↔0 / I↔1 / 8↔B confusions in
+  `scripts/build-dulux-futures-data.py`. Colours are still sampled, never typed.
+- De-duplicated **by code**: the two cards overlap and print the same code for
+  the same colour, so 457 raw swatches collapse to 332. Where the cards
+  disagree the 2020 card wins — its strings are exact, and it carries the names
+  these colours are actually sold under (*Power Puff 24706*, not the 2025 card's
+  *Powder Puff*).
+- Four names deliberately carry two codes — *Apple White*, *Brilliant White*
+  (2290 and LS 2290), *Beryl Green*, *Smoke Grey* — because that is what the
+  cards print. Codes containing `/` are stored with `-`: a `/` is illegal in both
+  a Storage object key and a filename.
+- Colours are print samples, not measured values; neither card states one. Six
+  shared colours print differently between the editions (by up to 34/255). Both
+  cards are uniform within themselves, so that is the printing, not the sampling.
+
+**Seeded an active subscription for Dulux** — FR-A9/FR-M6 hides a non-platform
+vendor's assets without one. Same one-row change as Jotun, Marks and BlueScope.
+
 ## Unreleased — plugin 0.9.9: Enscape-style update popup
 
 The update flow was a badge in the panel and a dead-end message. Now it mirrors
