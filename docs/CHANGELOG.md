@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.17.19 — the CSP that took the site down
+
+**A self-inflicted outage, caught and fixed.** The A05 work in 0.17.18 added the
+four directives that "cannot break rendering" — and then added `default-src 'self'`
+next to them, which is the fallback for every fetch directive *not* named. So it
+quietly became a `script-src` and `style-src` too. Next ships ~18 inline bootstrap
+scripts and React writes inline styles, so **every browser refused them and nothing
+hydrated**, while the server saw nothing wrong: HTTP 200, complete 54 KB body, all
+routes answering. `curl` is blind to this failure mode — it was only visible in
+Chrome's console (`Executing inline script violates the following Content Security
+Policy`, ×18). Removed `default-src`; the remaining four directives are safe
+precisely because none of them can restrict loading. `docs/SECURITY.md` now says so
+explicitly, and requires header changes to be verified in a real browser with zero
+`Refused to` lines — not with `curl`.
+
+Recreating Caddy rather than reloading it is what made the fix land: the config is
+bind-mounted, so its inode is pinned and `git pull` alone never reaches the running
+container. That defect was fixed in 6780c7d; this is the first change to exercise it.
+
+**Also:** `proposals/iai-jawa-barat.pdf` — an architect-facing proposal for
+Ikatan Arsitek Indonesia, Jawa Barat chapter. Deliberately not built from
+`build-proposals.mjs`: that document sells a subscription, quotes packages and
+offers a digitization pilot, and every one of those would be wrong for an
+association of architects, who pay nothing. A separate builder
+(`scripts/build-iai-proposal.mjs`) argues the two frictions an architect meets
+daily — models that are not the product actually sold in Indonesia, and quantities
+counted by hand — and asks for a working relationship with the chapter, not a sale.
+
 ## 0.17.18 — security hardening against the OWASP Top 10
 
 A pass over the ten categories, written up in `docs/SECURITY.md`. Real findings,

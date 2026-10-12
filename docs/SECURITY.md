@@ -87,10 +87,24 @@ the cookie is scoped to the site.
 - `Content-Security-Policy` with `object-src 'none'`, `base-uri 'self'`,
   `frame-ancestors 'none'`, `form-action 'self'`, `upgrade-insecure-requests`.
 
-  These directives cannot break rendering, which is why they are the ones shipped.
+  **`default-src` is deliberately absent, and must stay absent.** It is the
+  fallback for every fetch directive not named, so adding it also sets `script-src`
+  and `style-src` — silently. On 12 Oct 2026 `default-src 'self'` was shipped
+  alongside these four and took the site down for real visitors: the server happily
+  answered HTTP 200 with a full 54 KB page, while Chrome refused all ~18 of Next's
+  inline bootstrap scripts plus React's inline styles
+  (`Executing inline script violates the following Content Security Policy` ×18) and
+  nothing hydrated. The four directives above are safe to ship untested *because*
+  none of them can restrict loading; that property is what makes them safe, not the
+  individual keywords.
+
   A `script-src`/`style-src` policy is the next step and **must be tested against
   the Midtrans Snap page first** — a missing source there silently breaks paying,
   and a broken payment path is worse than a looser CSP.
+
+  Verify any header change in a real browser, not with `curl`: a CSP that kills
+  hydration still returns 200 and a complete body. Load the page in headless Chrome
+  with `--enable-logging=stderr` and require zero `Refused to` lines.
 - The `materials` bucket accepted **any** MIME type (0029). It is where payment
   proofs land, and an admin opens them from Admin → Payments. Now images and PDF
   only, with SVG excluded — it is the one image format that executes.
