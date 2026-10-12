@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function VendorTeam() {
   const { supabase, memberships, user } = await getSession();
   const membership = memberships[0];
-  if (!membership) return <Empty>Register your brand first.</Empty>;
+  if (!membership) return <Empty>Register as a vendor first.</Empty>;
 
   const { data: members } = await supabase
     .from("vendor_members")

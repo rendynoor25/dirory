@@ -145,8 +145,9 @@ After a successful send the script files a copy in the **Sent** folder over IMAP
 server has no reason to keep one — which would mean no trace of which proposals
 actually went out. Skip that with `--no-save`.
 
-Sending needs the mailbox password. Keep it **out of the repository** — put it in
-the environment:
+Sending needs the mailbox password. Keep it **out of the repository** — either put
+it in `.env` at the repo root (gitignored, read automatically, and a real
+environment variable still wins), or export it for the one command:
 
 ```powershell
 $env:SMTP_PASS = "…"                               # PowerShell
@@ -156,6 +157,11 @@ node scripts/send-email.mjs wisma-sehati --send
 ```bash
 export SMTP_PASS='…'                               # bash
 node scripts/send-email.mjs wisma-sehati --send
+```
+
+```
+# .env at the repo root — set once, works for every later send
+SMTP_PASS=…
 ```
 
 Optional overrides: `SMTP_HOST` (default `mx4.mailspace.id`), `SMTP_PORT`

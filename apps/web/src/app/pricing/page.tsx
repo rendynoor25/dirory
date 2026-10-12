@@ -43,12 +43,12 @@ function groupPlans(rows: PlanRow[]) {
 
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "Brand pricing",
+  title: "Vendor pricing",
   description: "Packages and digitization pricing for approved vendors on Dirory.",
 };
 
 /**
- * Brand pricing (founder decision, 9 Oct 2026).
+ * Vendor pricing (founder decision, 9 Oct 2026).
  *
  * Gated behind an **approved vendor**: the prices are a commercial conversation,
  * and Dirory shows them to brands whose registration the team has verified. This

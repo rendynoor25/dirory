@@ -260,11 +260,11 @@ const en: Record<string, string> = {
     "Digitize your catalogue once, then keep it listed. Prices are a starting point for a conversation, not a fixed rate card.",
   "pricing.gateTitle": "Pricing is for company accounts",
   "pricing.gateBody":
-    "Sign in with your company email to see brand pricing. Personal addresses like gmail.com are not accepted here.",
+    "Sign in with your company email to see vendor pricing. Personal addresses like gmail.com are not accepted here.",
   "pricing.gateCta": "Sign in with a company email",
   "pricing.personalTitle": "Pricing is for approved vendors",
   "pricing.personalBody":
-    "You are signed in as {email}. Dirory shows brand pricing to vendors whose registration has been approved. Register your brand — once we approve it, the prices appear here.",
+    "You are signed in as {email}. Dirory shows pricing to vendors whose registration has been approved. Register as a vendor — once we approve it, the prices appear here.",
   "pricing.vendorCta": "Register as a vendor",
   "pricing.signOut": "Sign out",
   "pricing.packagesTitle": "Packages",
@@ -656,11 +656,11 @@ const id: Record<string, string> = {
     "Digitalkan katalog Anda sekali, lalu tetap tayang. Harga ini titik awal diskusi, bukan daftar tarif tetap.",
   "pricing.gateTitle": "Harga untuk akun perusahaan",
   "pricing.gateBody":
-    "Masuk dengan email kantor untuk melihat harga brand. Alamat pribadi seperti gmail.com tidak diterima di sini.",
+    "Masuk dengan email kantor untuk melihat harga vendor. Alamat pribadi seperti gmail.com tidak diterima di sini.",
   "pricing.gateCta": "Masuk dengan email kantor",
   "pricing.personalTitle": "Harga untuk vendor yang sudah disetujui",
   "pricing.personalBody":
-    "Anda masuk sebagai {email}. Dirory menampilkan harga brand untuk vendor yang pendaftarannya sudah disetujui. Daftarkan brand Anda — setelah disetujui, harga akan muncul di sini.",
+    "Anda masuk sebagai {email}. Dirory menampilkan harga untuk vendor yang pendaftarannya sudah disetujui. Daftar sebagai vendor — setelah disetujui, harga akan muncul di sini.",
   "pricing.vendorCta": "Daftar sebagai vendor",
   "pricing.signOut": "Keluar",
   "pricing.packagesTitle": "Paket",

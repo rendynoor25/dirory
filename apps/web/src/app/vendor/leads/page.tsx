@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function VendorLeads() {
   const { supabase, memberships } = await getSession();
   const membership = memberships[0];
-  if (!membership) return <Empty>Register your brand first.</Empty>;
+  if (!membership) return <Empty>Register as a vendor first.</Empty>;
 
   const { data: leads } = await supabase
     .from("quote_requests")

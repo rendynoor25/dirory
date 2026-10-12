@@ -55,7 +55,7 @@ export default async function VendorHome({
     return (
       <Card>
         <CardHeader
-          title="Register your brand"
+          title="Register as a vendor"
           subtitle="FR-V1 · your account stays pending until the Dirory team approves it."
         />
         {sp.error ? (

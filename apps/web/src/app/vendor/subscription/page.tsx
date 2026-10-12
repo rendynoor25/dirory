@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function VendorSubscription() {
   const { supabase, memberships } = await getSession();
   const membership = memberships[0];
-  if (!membership) return <Empty>Register your brand first.</Empty>;
+  if (!membership) return <Empty>Register as a vendor first.</Empty>;
 
   const vendorId = membership.vendor_id;
 

@@ -10,7 +10,11 @@ to a login wall.
 
 - `nav.forBrands` → `nav.forVendors`, "For brands" → "For vendors" in both
   locales, and the same for the `/vendor` portal tag, the pricing tag and the
-  pricing CTA.
+  pricing CTA. A sweep of every remaining audience-facing string turned up the
+  pricing gate text, the pricing page title, and the vendor dashboard, where one
+  screen was labelled "Vendor onboarding" in the layout and "Register your brand"
+  on the card. The card's form collects a *company* name and a *brand* name —
+  which is the distinction exactly, so those now say "Register as a vendor".
 - **"brand" still means the product's brand** — the library filter, the brand
   logos, "Brands on Dirory today", the brand names themselves. The split is the
   PRD's own glossary: a **vendor** is the company (web portal, subscription);
@@ -30,6 +34,11 @@ the specification stopping at a size — so the metric is per brand *inside* the
 house, which of BDA's ten actually gets written into the drawing. None of its
 brands are in the catalogue, so the digitization pilot is the hook. Addressed to
 the marketing team, since the site publishes no marketing contact by name.
+
+**`send-email.mjs` now reads `.env`.** The mailbox password was documented as an
+environment variable you had to export in every new shell. It is now read from
+`.env` at the repo root as well — still gitignored, so it remains out of the
+repository, and a real environment variable still wins. See docs/EMAIL.md §5.
 
 ## Unreleased — /library was serving a frozen catalogue
 

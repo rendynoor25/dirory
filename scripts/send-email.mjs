@@ -18,13 +18,17 @@
  * No dependencies: SMTP is spoken directly over Node's tls/net, in keeping with the
  * rest of scripts/ (which has never added an npm package for this).
  *
- * Credentials are read from the environment, never from the repo:
+ * Credentials are read from the environment, never from the repository:
  *   SMTP_HOST (default mx4.mailspace.id — the name on the TLS certificate; see
  *              docs/EMAIL.md §2 for why mail.dirory.com fails verification)
  *   SMTP_PORT (default 465; 587 is supported and uses STARTTLS)
  *   SMTP_USER (default rendy@dirory.com)
  *   SMTP_PASS (required to send)
  *   SMTP_FROM (default "Rendy Noor Chandra <rendy@dirory.com>")
+ *
+ * A `.env` file at the repo root is read too, if present. It is gitignored, so
+ * the password still never enters the repository — this only saves exporting it
+ * by hand in every new shell. A real environment variable always wins.
  */
 
 import fs from "node:fs";
@@ -36,6 +40,38 @@ import crypto from "node:crypto";
 const ROOT = process.cwd();
 const TEMPLATE_DIR = path.join(ROOT, "proposals", "emails");
 const OUTBOX = path.join(ROOT, "proposals", "outbox");
+
+/**
+ * Read `.env` at the repo root, if it exists. It is gitignored, so the mailbox
+ * password still never enters the repository — this only saves exporting
+ * SMTP_PASS by hand in every new shell. A real environment variable always wins,
+ * so `$env:SMTP_PASS = "..."` still overrides the file.
+ *
+ * Deliberately tiny: KEY=VALUE per line, `#` comments, optional surrounding
+ * quotes. No dependency, like the rest of scripts/.
+ */
+function loadDotEnv(file = path.join(ROOT, ".env")) {
+  let text;
+  try {
+    text = fs.readFileSync(file, "utf8");
+  } catch {
+    return;                       // no .env is the normal case on a fresh clone
+  }
+  for (const line of text.split(/\r?\n/)) {
+    const m = line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
+    if (!m || line.trimStart().startsWith("#")) continue;
+    const key = m[1];
+    let value = m[2];
+    if (
+      (value.startsWith('"') && value.endsWith('"') && value.length > 1) ||
+      (value.startsWith("'") && value.endsWith("'") && value.length > 1)
+    ) {
+      value = value.slice(1, -1);
+    }
+    if (process.env[key] === undefined) process.env[key] = value;
+  }
+}
+loadDotEnv();
 
 const HELP = `
 Send a Dirory proposal from its email template.
@@ -54,7 +90,8 @@ Options
   --port <port>       SMTP port     (default $SMTP_PORT or 465; 587 = STARTTLS)
   --help              this text
 
-Credentials come from the environment: SMTP_PASS is required with --send.
+Credentials come from the environment (or .env at the repo root, if present):
+SMTP_PASS is required with --send.
 `;
 
 // ---------------------------------------------------------------------------
@@ -479,6 +516,9 @@ async function main() {
   }
   if (!pass) {
     console.error("\n  SMTP_PASS is not set, so nothing can be authenticated.");
+    console.error("  Put it in .env at the repo root (gitignored), or export it:");
+    console.error("    PowerShell:  $env:SMTP_PASS = \"...\"");
+    console.error("    bash:        export SMTP_PASS='...'");
     console.error("  dirory.com is DMARC p=reject: an unauthenticated send would be dropped,");
     console.error("  not filtered, so this refuses to try. See docs/EMAIL.md §5.\n");
     process.exit(1);

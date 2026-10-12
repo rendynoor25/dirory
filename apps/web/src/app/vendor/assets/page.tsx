@@ -10,7 +10,7 @@ export default async function VendorAssets() {
   const { supabase, memberships } = await getSession();
   const membership = memberships[0];
   if (!membership) {
-    return <Empty>Register your brand first (Dashboard → Register your brand).</Empty>;
+    return <Empty>Register as a vendor first (Dashboard → Vendor onboarding).</Empty>;
   }
 
   const vendorId = membership.vendor_id;
