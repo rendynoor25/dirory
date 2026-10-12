@@ -18,6 +18,10 @@ import { resolveServiceKey } from "../_shared/keys.ts";
  * stays in `thumbnail`. The asset file itself is not signed here — the plugin
  * asks /download/<asset_id> when the architect clicks (FR-A11).
  *
+ * `fields=browse` trims every item to the fields the website renders. The full
+ * payload outgrew Next's 2 MB per-entry data-cache limit, which silently froze
+ * the public /library page; see the note where the flag is read.
+ *
  * Auth: apikey / Bearer anon key (the plugin sends it from Connection Settings).
  * Browsing is anonymous (FR-A1). Only approved assets of visible vendors are
  * returned, and visibility follows FR-M6: the platform brand, or an approved
@@ -39,6 +43,21 @@ Deno.serve(async (req: Request) => {
   // (700 KB for 1,300 items) and expire within the hour, so a cached page would
   // show broken images. The plugin keeps the signed URLs (it loads them live).
   const thumbsPathMode = url.searchParams.get("thumbs") === "path";
+  // `fields=browse` returns only what the website's pages actually render, and
+  // drops the fields the SketchUp plugin needs. Two reasons it exists:
+  //
+  //  - Size. The full payload is 1.9 MB at today's catalogue and grows with it,
+  //    and Next's data cache refuses any single fetch entry over 2 MB
+  //    (`hasCustomCacheHandler` aside, see incremental-cache/index.js). Once the
+  //    catalogue crossed that line the site could no longer cache the response,
+  //    so /library was left rendering the last entry that still fit.
+  //  - The website never reads the dropped fields. `thumbnail` and
+  //    `material_path` alone are ~15% of the payload each, `brand_logo`,
+  //    `legacy_key`, `key`, `vendor_id` and a duplicate `id` make up most of the
+  //    rest.
+  //
+  // The plugin keeps asking for the full shape (FR-A7), so this is opt-in.
+  const browseMode = url.searchParams.get("fields") === "browse";
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = resolveServiceKey();
@@ -135,28 +154,48 @@ Deno.serve(async (req: Request) => {
     const v = Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions;
     const brand = r.vendors?.brand_name ?? "Dirory";
     const thumbKey = v?.thumbnail_path ?? null;
-    return {
-      // ---- shape preserved from scan_library (FR-A7) ----
-      id: r.id,
+
+    // Every field the website renders — the /library grid and the /product
+    // detail page — and nothing else. `fields=browse` returns exactly this.
+    const browse = {
+      asset_id: r.id,
       name: r.name,
       type: r.type,
       category: r.categories?.name ?? "",
       brand,
       sample: Boolean(r.vendors?.is_platform),
       tags: r.tags ?? [],
-      thumbnail: thumbKey,
-      // M6: a displayable URL for the card grid. In path mode this is a stable
+      // A displayable URL for the card grid. In path mode this is a stable
       // app-proxied route; otherwise a short-lived signed storage URL.
       thumbnail_url: thumbKey
         ? thumbsPathMode
           ? `/api/thumb/${r.id}`
           : signedThumbs.get(thumbKey) ?? null
         : null,
-      // The file is delivered by /download/<asset_id> on click, not here.
+      tile_size_cm: r.tile_w_cm
+        ? [Number(r.tile_w_cm), Number(r.tile_h_cm ?? r.tile_w_cm)]
+        : null,
+      // FR-V3: free-text size for models, e.g. "120 × 60 × 75 cm".
+      dimensions: r.dimensions ?? null,
+      // The SketchUp release the file was saved in ("2018", "2021+"), read from
+      // the .skp header at upload. A newer file cannot be opened by an older
+      // SketchUp, so the panel warns before inserting one.
+      su_version: v?.su_version ?? null,
+      // Inspector / product-info detail (M6).
+      sku: r.sku ?? null,
+      product_url: r.product_url ?? null,
+    };
+    if (browseMode) return browse;
+
+    return {
+      // ---- shape preserved from scan_library (FR-A7) ----
+      ...browse,
+      id: r.id,
+      // The raw storage key. The asset file itself is not signed here — the
+      // plugin asks /download/<asset_id> when the architect clicks (FR-A11).
+      thumbnail: thumbKey,
       model_path: r.type === "model" ? v?.file_path ?? null : null,
       material_path: r.type === "material" ? v?.file_path ?? null : null,
-      // ---- new fields ----
-      asset_id: r.id,
       // The panel keys favourites (and "used before") by this value. It must be
       // present or favouriting silently does nothing: the star toggles
       // `item.key`, which would be undefined. Use the asset id so favourites
@@ -164,18 +203,6 @@ Deno.serve(async (req: Request) => {
       // UUID as asset_id and anything else as a legacy local-library path).
       key: r.id,
       version: v?.version ?? 1,
-      tile_size_cm: r.tile_w_cm
-        ? [Number(r.tile_w_cm), Number(r.tile_h_cm ?? r.tile_w_cm)]
-        : null,
-      // Inspector / product-info detail (M6).
-      sku: r.sku ?? null,
-      product_url: r.product_url ?? null,
-      // FR-V3: free-text size for models, e.g. "120 × 60 × 75 cm".
-      dimensions: r.dimensions ?? null,
-      // The SketchUp release the file was saved in ("2018", "2021+"), read from
-      // the .skp header at upload. A newer file cannot be opened by an older
-      // SketchUp, so the panel warns before inserting one.
-      su_version: v?.su_version ?? null,
       // FR-A22: the plugin's local favourite key, so favourites recorded before
       // the cloud catalogue existed can be matched to this asset.
       legacy_key: r.legacy_key ?? null,

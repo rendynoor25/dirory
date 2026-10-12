@@ -1,34 +1,31 @@
 /**
  * Shared shapes for the public product catalogue.
  *
- * These mirror the fields the `catalog` Edge Function returns (the same payload
- * the SketchUp plugin consumes), so the website and the plugin always agree on
- * what a product is.
+ * `CatalogItem` is the **browse** shape: the `catalog` Edge Function returns
+ * exactly these fields when asked for `fields=browse`, which is everything the
+ * website renders. The plugin asks for the full payload instead (FR-A7) — it
+ * also needs `thumbnail`, `material_path`, `key`, `legacy_key` and `brand_logo`.
+ *
+ * The split is load-bearing. The full payload passed 2 MB, and Next's data
+ * cache refuses any single fetch entry over that, so the page could never be
+ * cached and silently kept serving a stale catalogue.
  */
 export type CatalogItem = {
-  id: string;
+  asset_id: string;
   name: string;
   type: "model" | "material";
   category: string;
   brand: string;
   sample: boolean;
   tags: string[];
-  thumbnail: string | null;
   thumbnail_url: string | null;
-  model_path: string | null;
-  material_path: string | null;
-  asset_id: string;
-  version: number;
   tile_size_cm: [number, number] | null;
-  sku: string | null;
-  product_url: string | null;
   /** Free-text size for models, e.g. "120 × 60 × 75 cm" (FR-V3). */
   dimensions: string | null;
   /** SketchUp release the file was saved in: "2018" or "2021+". Null for materials. */
   su_version: string | null;
-  legacy_key: string | null;
-  brand_logo: string | null;
-  vendor_id: string | null;
+  sku: string | null;
+  product_url: string | null;
 };
 
 export type Catalog = {
@@ -43,10 +40,17 @@ export type Catalog = {
  * approved product shows up without a redeploy, while a burst of visitors does
  * not hammer the Edge Function.
  *
+ * Two query flags, both needed for the cache to work at all:
+ *
  * `thumbs=path` asks for stable `/api/thumb/<asset_id>` URLs instead of signed
  * storage URLs. Signed URLs are ~540 characters each (~700 KB for the whole
  * catalogue) and expire within the hour, so a cached page would show broken
  * images — and the payload would exceed Next's 2 MB data-cache limit.
+ *
+ * `fields=browse` drops the fields only the SketchUp plugin reads. Without it
+ * the payload is ~1.9 MB, over Next's 2 MB per-entry cache limit, so Next
+ * refuses to store the response, the 5-minute revalidation can never replace
+ * the entry, and the page serves the last catalogue that fit.
  */
 export async function fetchCatalog(): Promise<Catalog> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -55,7 +59,7 @@ export async function fetchCatalog(): Promise<Catalog> {
     return { updated_at: new Date().toISOString(), count: 0, items: [], brand_logos: {} };
   }
   try {
-    const res = await fetch(`${url}/functions/v1/catalog?thumbs=path`, {
+    const res = await fetch(`${url}/functions/v1/catalog?thumbs=path&fields=browse`, {
       headers: { apikey: key },
       next: { revalidate: 300 },
     });

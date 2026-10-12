@@ -1,5 +1,36 @@
 # Changelog
 
+## Unreleased — /library was serving a frozen catalogue
+
+The public library page showed **1,489** products while `/for-vendors` — and the
+API itself — showed **2,015**. It was not lag; the page was stuck.
+
+- **Why.** `/library` reads the catalogue via `fetchCatalog()`, which asks for
+  `next: { revalidate: 300 }`. The response has grown to **2.95 MB**
+  uncompressed, past Next's hard-coded 2 MB per-entry fetch-cache limit
+  (`next/dist/server/lib/incremental-cache/index.js`), so every revalidation
+  write was refused:
+
+      Failed to set Next.js data cache for .../catalog?thumbs=path,
+      items over 2MB can not be cached (2627977 bytes)
+
+  The cache entry could therefore never be replaced, and the page kept rendering
+  whatever catalogue was current when it last fit — 1,489 items (30 models +
+  1,459 materials), i.e. before Jotun/Jotaplast, Marks, Roman, BlueScope and
+  Dulux. `/for-vendors` never had the problem: it is `force-dynamic` and counts
+  the `assets` table directly, so the two pages were never reading the same
+  thing.
+- **Fix.** A new `fields=browse` mode on the `catalog` Edge Function returns only
+  the fields the website renders. The payload drops from **2.95 MB to 0.70 MB**,
+  so it caches again and the 5-minute revalidation works. `thumbnail` and
+  `material_path` alone were ~15% each, and `brand_logo`, `legacy_key`, `key`,
+  `vendor_id` and a duplicate `id` most of the rest.
+- **The plugin contract is untouched (FR-A7/F7).** Called with no query string —
+  as `cloud.rb` does — `/catalog` still returns all 22 keys, verified against the
+  deployed function.
+- The website's `CatalogItem` now describes the browse shape; that is all
+  `/library` and `/product/[id]` ever read.
+
 ## Unreleased — Dulux: 332 colour materials
 
 Both Dulux Indonesia colour cards under `Materials/Paint/Dulux` are now in the
