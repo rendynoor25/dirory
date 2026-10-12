@@ -37,18 +37,32 @@ const CHROME_CANDIDATES = [
   "/usr/bin/chromium",
 ];
 
-// Read from the live catalogue on 12 Oct 2026. Kept here rather than queried, so
+// Read from the live catalogue on 13 Oct 2026. Kept here rather than queried, so
 // the document is reproducible; update when the numbers move.
+//
+// products and categories come straight from the database (assets where
+// status = approved; and the categories table). `brands` follows the same rule
+// /for-vendors uses — approved, non-platform vendors — minus the platform's own
+// "Dirory" sample brand, because that is not a producer. On 12 Oct the same rule
+// gave 12; Jotun, Marks, BlueScope and Dulux are what moved it to 16.
 const DATA = {
-  products: "1.360",
-  brands: "12",
-  categories: "38",
-  asOf: "Oktober 2026",
+  products: "2.015",
+  brands: "16",
+  categories: "41",
+  asOf: "13 Oktober 2026",
 };
 
 const RECIPIENT = {
   name: "Bapak Ar. Adrian Santoso, IAI",
   role: "Ketua",
+  org: "Ikatan Arsitek Indonesia — Jawa Barat",
+};
+
+// Tembusan: the chapter's secretary, so the request reaches the secretariat and
+// not only the chair. Named as he signs, titles included.
+const CC = {
+  name: "Ar. Eriko Mawanto, IAI, AA, GP",
+  role: "Sekretaris",
   org: "Ikatan Arsitek Indonesia — Jawa Barat",
 };
 
@@ -148,6 +162,9 @@ function buildHtml(tanggal) {
         <tr><td style="border:0;padding:1mm 0;width:32mm" class="muted">Disiapkan untuk</td>
             <td style="border:0;padding:1mm 0"><strong>${RECIPIENT.name}</strong><br>
             <span class="muted small">${RECIPIENT.role} · ${RECIPIENT.org}</span></td></tr>
+        <tr><td style="border:0;padding:1mm 0" class="muted">Tembusan</td>
+            <td style="border:0;padding:1mm 0">${CC.name}<br>
+            <span class="muted small">${CC.role} · ${CC.org}</span></td></tr>
         <tr><td style="border:0;padding:1mm 0" class="muted">Tanggal</td>
             <td style="border:0;padding:1mm 0">${tanggal}</td></tr>
         <tr><td style="border:0;padding:1mm 0" class="muted">Sifat</td>
@@ -467,6 +484,7 @@ function buildHtml(tanggal) {
 
   <p class="small muted" style="margin-top:8mm">
     Proposal ini disiapkan untuk ${RECIPIENT.name} — ${RECIPIENT.role}, ${RECIPIENT.org}.
+    Tembusan: ${CC.name} — ${CC.role}, ${CC.org}.
     Tangkapan layar diambil langsung dari plugin Dirory yang berjalan di SketchUp,
     bukan mockup. Angka pustaka per ${DATA.asOf}.
   </p>

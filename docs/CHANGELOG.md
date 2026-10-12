@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased — IAI Jawa Barat paper revised
+
+The architect-facing paper (`scripts/build-iai-proposal.mjs`) was carrying figures
+from a day earlier, when the library was much smaller. Its `DATA` block is read
+from the live catalogue again:
+
+| | was | now |
+|---|---|---|
+| produk tayang | 1.360 | **2.015** (30 models + 1.985 materials) |
+| merek | 12 | **16** |
+| kategori | 38 | **41** |
+| asOf | Oktober 2026 | **13 Oktober 2026** |
+
+`brands` keeps the previous edition's rule — approved, non-platform vendors,
+minus the platform's own "Dirory" sample brand — which is what `/for-vendors`
+counts too, and is what made the old figure 12. (Counting only the manufacturing
+brands, i.e. leaving out the MATERIUM, Ellis and Tromso sample sets as well, would
+be 13; the number is a one-line change.)
+
+**Tembusan added.** `Ar. Eriko Mawanto, IAI, AA, GP` — Sekretaris, Ikatan Arsitek
+Indonesia — Jawa Barat — appears on the cover under the chair, and again in the
+closing note. Bapak Ar. Adrian Santoso remains the primary recipient.
+
+**The PDF could not be replaced:** `proposals/iai-jawa-barat.pdf` is held open by
+another program, so the builder wrote `proposals/iai-jawa-barat.new.pdf` instead —
+its own designed behaviour for this case. The HTML is updated; the swap to the
+final filename lands once the file is closed.
+
 ## Unreleased — vendor terminology, and a proposal for BDA Group
 
 **One name for one audience: vendor.** The landing nav pointed at `/for-vendors`
