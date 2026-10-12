@@ -48,7 +48,7 @@ dirory/
 | Web apps | Next.js + TypeScript + Tailwind |
 | Plugin API | Supabase REST + Edge Functions |
 | Payments | Midtrans / Xendit + manual bank transfer |
-| Plugin | Ruby + HtmlDialog (SketchUp 2021+) |
+| Plugin | Ruby + HtmlDialog (SketchUp 2019+) |
 
 ## Quick start
 

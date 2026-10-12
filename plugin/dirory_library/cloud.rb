@@ -318,7 +318,7 @@ module Dirory
       def self.sign_in_start(dialog)
         return 'Set the server URL first (Extensions > Dirory > Connection Settings).' unless configured?
         unless defined?(Sketchup::Http::Request)
-          return 'This SketchUp version has no Sketchup::Http (needs 2021+).'
+          return 'This SketchUp version has no Sketchup::Http (needs SketchUp 2019+).'
         end
         @sign_in_dialog = dialog
         @pending_device = { 'user_code' => '', 'verification_url' => '' }
@@ -650,7 +650,7 @@ module Dirory
         return false unless configured?
         return false if @sending
         unless defined?(Sketchup::Http::Request)
-          @last_error = 'This SketchUp version has no Sketchup::Http (needs 2021+).'
+          @last_error = 'This SketchUp version has no Sketchup::Http (needs SketchUp 2019+).'
           return false
         end
         batch = load_outbox.first(BATCH_SIZE)
@@ -1170,7 +1170,7 @@ module Dirory
         lines << "API key: #{api_key.empty? ? '(empty)' : "set (#{api_key[0, 6]}â€¦, #{api_key.length} chars)"}"
         lines << "Plugin version: #{PLUGIN_VERSION}"
         lines << "SketchUp: #{Sketchup.version}"
-        lines << "Sketchup::Http available: #{defined?(Sketchup::Http::Request) ? 'yes' : 'NO (needs SketchUp 2021+)'}"
+        lines << "Sketchup::Http available: #{defined?(Sketchup::Http::Request) ? 'yes' : 'NO (needs SketchUp 2019+)'}"
 
         unless configured?
           lines << ''

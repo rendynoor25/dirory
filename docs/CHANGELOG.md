@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.17.21 — the SketchUp requirement was wrong in both directions
+
+The install page said **SketchUp 2021+**. Asked to widen it to 2014+, I checked
+before editing, and the claim turned out to be wrong — just not in the direction
+assumed.
+
+- **2014 is impossible.** `UI::HtmlDialog` and `Sketchup::Http::Request` were
+  *both* introduced in **SketchUp 2017** (Trimble's Ruby API docs, which state the
+  version on every method). On 2014 the plugin has no way to open its panel or
+  reach the cloud. 2014 also ships Ruby 2.0.
+- **2017 and 2018 are impossible too** — the part the old comment got wrong. It
+  blamed the HTTP API, which is 2017. The real obstacle is Ruby: `updater.rb` uses
+  squiggly heredocs (`<<~`, Ruby 2.3+) and `main.rb` uses `String#match?` and
+  `Array#sum` (Ruby 2.4+), while 2017 and 2018 shipped **Ruby 2.2**. That is not a
+  runtime failure but a **parse** failure, which is worse: the extension never
+  loads, so no friendly "upgrade SketchUp" message can even run.
+- **2019 is the real floor.** It is the release where Trimble upgraded Ruby to
+  2.5, and the first satisfying both the 2017 APIs and the Ruby features used.
+
+So the page now says **2019+**, which *widens* the range from 2021+ to include
+2019 and 2020 — the opposite of the feared outcome, and actually true. Also
+verified, so the two are not confused later: the `"2021+"` strings in
+`su-version.ts`, `catalog.ts` and migration 0011 are the **`.skp` file format**
+(SketchUp 2021 introduced a versionless format), which is unrelated and
+deliberately untouched.
+
+The plugin's own diagnostics in `cloud.rb` were corrected to match, but reaching
+installed copies needs a version bump, rebuild and publish — not done here.
+
 ## 0.17.20 — the Wisma Sehati proposal, and a way to send it
 
 **A proposal for a distributor, not a brand owner.** Wisma Sehati (PT Sehati Abadi,

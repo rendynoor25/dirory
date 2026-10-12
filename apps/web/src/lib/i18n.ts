@@ -69,7 +69,7 @@ const en: Record<string, string> = {
   "home.howTag": "How it works",
   "home.howHeading": "From search to placed, in three clicks.",
   "home.step1Title": "Get the plugin",
-  "home.step1Text": "Create a free account and install the Dirory extension in SketchUp 2021 or newer.",
+  "home.step1Text": "Create a free account and install the Dirory extension in SketchUp 2019 or newer.",
   "home.step2Title": "Browse real products",
   "home.step2Text":
     "Search every brand's models and materials inside SketchUp. Filter by category or brand, or star your favourites.",
@@ -162,18 +162,18 @@ const en: Record<string, string> = {
   "install.tag": "Setup guide",
   "install.title": "How to install Dirory in SketchUp",
   "install.lead":
-    "It takes about two minutes. You need SketchUp 2021 or newer on Windows or macOS, an internet connection, and a free Dirory account.",
+    "It takes about two minutes. You need SketchUp 2019 or newer on Windows or macOS, an internet connection, and a free Dirory account.",
   "install.versionQuestion": "Which SketchUp version do you have?",
   "install.versionHelp": "Find it under Help → About SketchUp (Windows) or SketchUp → About SketchUp (macOS).",
   "install.versionSelect": "Select your version…",
   "install.versionSupportedGroup": "Supported",
   "install.versionUnsupportedGroup": "Not supported",
-  "install.versionOlder": "2016 or older",
+  "install.versionOlder": "2018 or older",
   "install.versionOk": "SketchUp {version} works.",
   "install.versionOkBody": "Follow the steps below — the install is the same on Windows and macOS.",
   "install.versionBad": "SketchUp {version} is not supported.",
   "install.versionBadBody":
-    "Dirory needs SketchUp 2021 or newer: the plugin uses SketchUp's modern HTTP API to reach the cloud library, and that API does not exist in older versions. Upgrade SketchUp, then come back — your Dirory account and favourites are unaffected.",
+    "Dirory needs SketchUp 2019 or newer. The plugin relies on a version of Ruby that SketchUp only began shipping in 2019, so on 2017 and 2018 it cannot load at all. Upgrade SketchUp, then come back — your Dirory account and favourites are unaffected.",
   "install.stepByStep": "Step by step",
   "install.step1Title": "Create a free account",
   "install.step2Title": "Download the extension",
@@ -210,9 +210,9 @@ const en: Record<string, string> = {
   "install.troubleQ5": "Sign-in opens a browser page that will not load",
   "install.troubleA5":
     "The browser step must reach dirory.com. If it cannot, the panel keeps waiting — check the address in the browser window.",
-  "install.troubleQ6": "SketchUp 2020 or older",
+  "install.troubleQ6": "SketchUp 2018 or older",
   "install.troubleA6":
-    "Not supported. The plugin needs SketchUp 2021+ for its HTTP API. Upgrade SketchUp; your Dirory account stays the same.",
+    "Not supported. The plugin needs SketchUp 2019 or newer — the Ruby version it uses only ships from 2019, and on 2017/2018 it will not load. Upgrade SketchUp; your Dirory account stays the same.",
   "install.readyTitle": "Ready?",
   "install.readyBody": "Create your free account, then download the extension.",
 
@@ -222,7 +222,7 @@ const en: Record<string, string> = {
   "download.signedInAs": "Signed in as",
   "download.signedInBody": "Download the extension, then add it in SketchUp's Extension Manager.",
   "download.button": "Download RBZ",
-  "download.requires": "Requires SketchUp 2021 or newer.",
+  "download.requires": "Requires SketchUp 2019 or newer.",
   "download.requiresBody":
     "The plugin browses the cloud library inside SketchUp: search models and materials, click to place or paint, and update itself when a new version ships.",
   "download.step1": "In SketchUp, open Window → Extension Manager.",
@@ -465,7 +465,7 @@ const id: Record<string, string> = {
   "home.howTag": "Cara kerja",
   "home.howHeading": "Dari pencarian hingga terpasang, dalam tiga klik.",
   "home.step1Title": "Dapatkan plugin",
-  "home.step1Text": "Buat akun gratis dan pasang ekstensi Dirory di SketchUp 2021 atau lebih baru.",
+  "home.step1Text": "Buat akun gratis dan pasang ekstensi Dirory di SketchUp 2019 atau lebih baru.",
   "home.step2Title": "Jelajahi produk asli",
   "home.step2Text":
     "Cari model dan material setiap merek langsung di SketchUp. Saring berdasarkan kategori atau merek, atau bintangi favorit Anda.",
@@ -558,18 +558,18 @@ const id: Record<string, string> = {
   "install.tag": "Panduan pemasangan",
   "install.title": "Cara memasang Dirory di SketchUp",
   "install.lead":
-    "Hanya perlu sekitar dua menit. Anda perlu SketchUp 2021 atau lebih baru di Windows atau macOS, koneksi internet, dan akun Dirory gratis.",
+    "Hanya perlu sekitar dua menit. Anda perlu SketchUp 2019 atau lebih baru di Windows atau macOS, koneksi internet, dan akun Dirory gratis.",
   "install.versionQuestion": "Versi SketchUp mana yang Anda pakai?",
   "install.versionHelp": "Lihat di Help → About SketchUp (Windows) atau SketchUp → About SketchUp (macOS).",
   "install.versionSelect": "Pilih versi Anda…",
   "install.versionSupportedGroup": "Didukung",
   "install.versionUnsupportedGroup": "Tidak didukung",
-  "install.versionOlder": "2016 atau lebih lama",
+  "install.versionOlder": "2018 atau lebih lama",
   "install.versionOk": "SketchUp {version} bisa dipakai.",
   "install.versionOkBody": "Ikuti langkah-langkah di bawah — caranya sama di Windows dan macOS.",
   "install.versionBad": "SketchUp {version} tidak didukung.",
   "install.versionBadBody":
-    "Dirory memerlukan SketchUp 2021 atau lebih baru: plugin memakai API HTTP modern SketchUp untuk mengakses pustaka awan, dan API itu belum ada di versi lama. Perbarui SketchUp, lalu kembali — akun dan favorit Dirory Anda tidak terpengaruh.",
+    "Dirory memerlukan SketchUp 2019 atau lebih baru. Plugin bergantung pada versi Ruby yang baru tersedia sejak SketchUp 2019, sehingga di 2017 dan 2018 plugin tidak dapat dimuat sama sekali. Perbarui SketchUp, lalu kembali — akun dan favorit Dirory Anda tidak terpengaruh.",
   "install.stepByStep": "Langkah demi langkah",
   "install.step1Title": "Buat akun gratis",
   "install.step2Title": "Unduh ekstensinya",
@@ -606,9 +606,9 @@ const id: Record<string, string> = {
   "install.troubleQ5": "Proses masuk membuka halaman peramban yang tidak bisa dimuat",
   "install.troubleA5":
     "Langkah peramban harus bisa menjangkau dirory.com. Jika tidak, panel akan terus menunggu — periksa alamat di jendela peramban.",
-  "install.troubleQ6": "SketchUp 2020 atau lebih lama",
+  "install.troubleQ6": "SketchUp 2018 atau lebih lama",
   "install.troubleA6":
-    "Tidak didukung. Plugin memerlukan SketchUp 2021+ untuk API HTTP-nya. Perbarui SketchUp; akun Dirory Anda tetap sama.",
+    "Tidak didukung. Plugin memerlukan SketchUp 2019 atau lebih baru — versi Ruby yang dipakai baru tersedia sejak 2019, dan di 2017/2018 plugin tidak akan dimuat. Perbarui SketchUp; akun Dirory Anda tetap sama.",
   "install.readyTitle": "Siap?",
   "install.readyBody": "Buat akun gratis, lalu unduh ekstensinya.",
 
@@ -618,7 +618,7 @@ const id: Record<string, string> = {
   "download.signedInAs": "Masuk sebagai",
   "download.signedInBody": "Unduh ekstensinya, lalu tambahkan di Extension Manager SketchUp.",
   "download.button": "Unduh RBZ",
-  "download.requires": "Memerlukan SketchUp 2021 atau lebih baru.",
+  "download.requires": "Memerlukan SketchUp 2019 atau lebih baru.",
   "download.requiresBody":
     "Plugin menjelajahi pustaka awan di dalam SketchUp: cari model dan material, klik untuk menempatkan atau mencat, dan memperbarui dirinya saat versi baru terbit.",
   "download.step1": "Di SketchUp, buka Window → Extension Manager.",

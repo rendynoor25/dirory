@@ -6,13 +6,21 @@ import { t, type Locale } from "@/lib/i18n";
 /**
  * "Check your SketchUp version" widget.
  *
- * Dirory needs SketchUp 2021 or newer, because it uses `Sketchup::Http::Request`
- * for cloud browsing (introduced in 2021). Older versions do not expose that API,
- * so the plugin cannot reach the catalogue — better to say so up front than after
- * installing.
+ * Dirory needs SketchUp **2019 or newer**. The reason is not the HTTP API, which
+ * is commonly assumed: `Sketchup::Http::Request` and `UI::HtmlDialog` both arrived
+ * in **2017**, and the panel runs on CEF (2017 = CEF 52), which parses the modern
+ * JavaScript in `panel.js` without trouble. What rules out 2017 and 2018 is the
+ * Ruby version. `updater.rb` uses squiggly heredocs (`<<~`, Ruby 2.3+) and
+ * `main.rb` uses `String#match?` and `Array#sum` (Ruby 2.4+), while SketchUp 2017
+ * and 2018 shipped Ruby 2.2 — so on those versions the plugin is not merely
+ * unsupported, it fails to parse and does not load at all. SketchUp 2019 upgraded
+ * to Ruby 2.5, which is where these start working.
+ *
+ * Do not lower this without checking those three constructs: a syntax error means
+ * no friendly message, just Ruby noise in the console.
  */
-const SUPPORTED = ["2026", "2025", "2024", "2023", "2022", "2021"];
-const OLDER = ["2020", "2019", "2018", "2017", "older"];
+const SUPPORTED = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019"];
+const OLDER = ["2018", "2017", "older"];
 
 export function VersionCheck({ locale }: { locale: Locale }) {
   const [version, setVersion] = useState<string>("");

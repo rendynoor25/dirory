@@ -80,7 +80,7 @@ Chosen to minimise moving parts for an AI-agent build. (Assumption — confirm b
 | Web apps (vendor + admin) | **Next.js (TypeScript) + Tailwind + shadcn/ui**, one repo, routes `/vendor/*` and `/admin/*` | One codebase, role-gated. |
 | Plugin API | Supabase REST + **Edge Functions** (`/events` ingest, quote submit, payment webhook) | Thin server. |
 | Payments | **Midtrans or Xendit** invoices (VA, QRIS, cards) + **manual bank-transfer confirmation** | Local payment methods. |
-| Plugin | Existing Ruby + HtmlDialog. HTTP via `Sketchup::Http::Request` (SketchUp 2021+). | No external gems. |
+| Plugin | Existing Ruby + HtmlDialog. HTTP via `Sketchup::Http::Request` (2017+); needs SketchUp 2019+ for its Ruby. | No external gems. |
 | Email | Resend or Supabase SMTP | Approval / lead / invoice notifications. |
 
 **Monorepo layout**
@@ -290,7 +290,8 @@ audit_log(id, actor_id, action, entity, entity_id, meta jsonb, created_at)
   - **Vendors see aggregates only**; project names and architect identities reach a vendor only through a quote the architect chose to send.
   - Snapshots and search reports can be switched off by the architect; the switch and the data collected are explained in the sign-in dialog.
   - Provide a privacy policy and data-deletion path (Indonesia's Personal Data Protection Law, UU PDP). Retention: snapshot history 12 months; raw search misses 24 months.
-- **Compatibility:** SketchUp 2021+ (`Sketchup::Http`), Windows first, macOS second.
+- **Compatibility:** SketchUp 2019+ — not 2017/2018, because the Ruby those ship
+  (2.2) predates `<<~`, `String#match?` and `Array#sum`. Windows first, macOS second.
 - **Observability:** error logging in web and plugin (opt-in); "Cloud Status" menu in the plugin for support.
 - **Distribution:** signed `.rbz`, in-panel "update available" banner; later Extension Warehouse.
 
