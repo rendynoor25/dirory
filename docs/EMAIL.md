@@ -165,13 +165,24 @@ Optional overrides: `SMTP_HOST` (default `mx4.mailspace.id`), `SMTP_PORT`
 **Tested against the live mailbox on 12 Oct 2026:** TLS validates, the login is
 accepted, the message is delivered, and the copy lands in `INBOX.Sent`.
 
-One link cannot be checked from inside the domain: whether mail sent to *other*
-servers carries a DKIM signature. Local delivery never adds one, so it is
-invisible from here — the delivered copy has no `DKIM-Signature` header at all.
-That distinction matters because `p=reject` turns a missing signature into a
-silent drop rather than a spam-folder filing. Confirm it once from the outside:
-send a test to <https://www.mail-tester.com> and read the report, or to a Gmail
-address and use *Show original* to look for `dkim=pass header.d=dirory.com`.
+**Verified from outside the domain on 13 Oct 2026** (mail-tester.com, 9.2/10,
+sending the real proposal message with its PDF):
+
+- **DKIM: valid** — signature from the author's domain (`d=dirory.com`,
+  `s=default`, 2048-bit RSA). The unknown is settled: Mailspace signs outbound
+  mail, so `p=reject` works *for* us rather than against us.
+- **SPF: pass** — the message leaves via MailChannels
+  (`seashell.cherry.relay.mailchannels.net`, 23.83.223.162), which is why the SPF
+  record names `include:relay.mailchannels.net`. Good sender reputation
+  (Mailspike whitelist).
+- **DMARC: pass** under `p=reject` (`dmarc=pass, dis=none`).
+- **Not blocklisted** on any of the 20 lists checked; rDNS resolves.
+- The missing 0.8 is "no HTML version" and "no List-Unsubscribe header" — both
+  bulk-mail concerns, irrelevant to a personal proposal. Plain text is correct
+  here.
+
+Conclusion: a proposal sent this way **arrives**. The failure mode feared in §3
+(silent drop under `p=reject`) does not apply.
 
 ---
 
