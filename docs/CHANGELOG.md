@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.18.0 — JSA port: M0 spike (SketchUp for Web and iPad)
+
+New project in **`jsa/`**: a SketchUp **JavaScript API** extension so Dirory runs
+in SketchUp for Web and on iPad. The Ruby plugin is untouched. This commit is
+M0 only — the spike — and per the brief it stops here for a go-ahead.
+
+**What the spike found before it ever ran.**
+
+- **`/catalog` cannot be called from a browser with the `apikey` header.** It is
+  the one Edge Function that does not answer `OPTIONS` (405), so the CORS
+  preflight fails: reproduced in a real browser as `TypeError: Failed to fetch`,
+  with `/download` under the identical header as a passing control. The fix is
+  one `OPTIONS` branch in `supabase/functions/catalog/index.ts` — **not applied,
+  because brief §0.2 puts the backend off-limits without asking.**
+- **There is no texture-size API in the JSA.** Searched the whole 2.6 MB SDK
+  bundle; `Texture` has no size/width setter and Trimble's own capability table
+  says "size manipulation is future". The Ruby plugin's material feature is
+  *real-world scale*, and that scale is what makes the Usage tab's m² figure
+  meaningful — so this is a product-level gap, not a detail.
+- **Custom tools are still not in the production JSA**, so `MaterialPaintTool`
+  cannot be ported. Fallback order and the API calls for each are in
+  `jsa/docs/GAPS.md`.
+- Also corrected from the live backend: `/auth-device/start` does **not** return
+  `verification_url_complete` (both the brief and the Ruby client name it); it
+  returns `interval` and `expires_in`, which the client should honour instead of
+  hardcoding.
+
+Deliverables: a ready-to-upload spike bundle (`dist/dirory-spike-0.0.1.zip`, 11
+checks, dumps API members rather than guessing them), `jsa/docs/SPIKE.md` (the
+M0 table), `jsa/docs/GAPS.md`, and `jsa/docs/API.md` (the real catalogue shape,
+captured: 1360 items, 2.1 MB, signed thumbnails that expire).
+
+**M0 is not complete** — it needs a SketchUp-for-Web session to run the probe,
+which I do not have.
+
 ## 0.17.21 — the SketchUp requirement was wrong in both directions
 
 The install page said **SketchUp 2021+**. Asked to widen it to 2014+, I checked

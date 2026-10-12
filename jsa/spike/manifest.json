@@ -1,0 +1,23 @@
+{
+  "manifestFormatVersion": "1.0.0",
+  "id": "dirory-spike",
+  "name": "Dirory Spike (M0)",
+  "version": "0.0.1",
+  "description": "Throwaway M0 probe for the Dirory JSA port. Answers the eight spikable questions. Not the product.",
+  "creator": "Dirory",
+  "copyright": "2026 Dirory",
+  "baseUrl": "/",
+  "mainFile": "index.html",
+  "window": {
+    "type": "floating",
+    "width": 460,
+    "height": 780
+  },
+  "commands": {
+    "open": {
+      "title": "Dirory Spike (M0)",
+      "description": "Run the M0 capability probe."
+    }
+  },
+  "menuItems": [{ "type": "item", "commandId": "open" }]
+}
