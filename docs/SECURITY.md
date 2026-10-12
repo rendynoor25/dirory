@@ -16,7 +16,7 @@ marked **gap** is a real absence, not a formality.
 | A06 | Vulnerable components | **Improved.** Next upgraded; one build-time advisory remains |
 | A07 | Authentication failures | **Fixed.** The sign-in callback redirected to the container address |
 | A08 | Integrity failures | **Improved.** Amount checked before settling; upload types restricted |
-| A09 | Logging & monitoring | **Gap.** Actions are audited; nothing alerts anyone |
+| A09 | Logging & monitoring | **Addressed (0030).** Events recorded and emailed; needs a mail key to deliver |
 | A10 | SSRF | **In place.** No user-controlled outbound request exists |
 
 ---
@@ -138,18 +138,36 @@ unreachable host. It now uses `publicOrigin()`, as the rest of the app already d
 - The plugin release is served from a private bucket with the version derived from
   the bucket itself, so a stale token cannot fetch a mismatched build.
 
-## A09 — Logging & monitoring — **gap**
+## A09 — Logging & monitoring
 
-What exists: `write_audit()` records vendor approval, invoice payment, service
-request acceptance and similar; the webhook logs a warning on a bad signature, an
-amount mismatch and a missing invoice; the app logs action failures to stdout,
-which Docker collects.
+`write_audit()` records business actions (vendor approval, invoice payment, service
+request acceptance). Migration **0030** adds the security half.
 
-What is missing: **nothing tells anyone.** There is no alert on a failed signature,
-no alert on repeated 401s, and no view of the audit log in the admin UI. A brute
-attempt against the webhook would fill a container log nobody reads. This is the
-weakest category and needs a decision about where alerts go (email, WhatsApp,
-a log drain) before it can be closed.
+`security_events` is an append-only table written with the service role by the
+routes that see hostile input. The webhook records four things:
+
+| Event | Why it matters |
+|---|---|
+| `webhook.bad_signature` | Either someone is probing, or the gateway key was rotated and real notifications are now being discarded |
+| `webhook.oversized_body` | Not a genuine Midtrans notification |
+| `webhook.amount_mismatch` | A small payment trying to clear a larger invoice |
+| `webhook.unmatched_invoice` | A **signed** notification nobody can apply — a payment taken with nothing credited |
+
+They appear at **/admin/security**, which also states plainly whether email
+delivery is configured.
+
+**Alerts email to `SECURITY_ALERT_TO`** (default `rendynoorchandra@gmail.com`) via
+Resend, throttled to **one per kind per 15 minutes** so a flood becomes one mail
+rather than thousands — a mailbox that noisy gets filtered, which is the same as
+having none.
+
+Two deliberate properties: recording **never throws** (monitoring must not break
+what it monitors), and if `RESEND_API_KEY` is unset the event is still stored and
+the reason is logged, so nothing is silently lost.
+
+**Why not send from the VPS itself:** dirory.com publishes DMARC `p=reject`. Mail
+claiming to be from it, sent by a host with no matching DKIM, is rejected by Gmail
+outright. Delivery needs a real sender.
 
 ## A10 — Server-side request forgery
 
@@ -170,3 +188,6 @@ entry point.
 4. **A policy must not query its own table.** Use a `SECURITY DEFINER` helper, or
    you get infinite recursion — see 0026.
 5. **Never print a secret.** Not to a log, not to a user, not into a redirect.
+6. **A file bind-mount pins the inode.** Editing a mounted config is fine; *replacing*
+   it — which `git pull` does — leaves the container reading the old file. See the
+   Caddyfile check in `scripts/deploy.sh`.

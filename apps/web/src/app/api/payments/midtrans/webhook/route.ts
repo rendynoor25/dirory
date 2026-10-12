@@ -6,6 +6,7 @@ import {
   midtransConfigured,
   verifyMidtransSignature,
 } from "@/lib/midtrans";
+import { recordSecurityEvent } from "@/lib/securityAlerts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
   const raw = await request.text();
   if (raw.length > MAX_BYTES) {
     console.warn("midtrans webhook: oversized body rejected", { bytes: raw.length });
+    await recordSecurityEvent("webhook.oversized_body", { bytes: raw.length }, request);
     return NextResponse.json({ error: "Payload too large." }, { status: 413 });
   }
 
@@ -63,6 +65,9 @@ export async function POST(request: Request) {
 
   if (!verifyMidtransSignature({ orderId, statusCode, grossAmount, signatureKey })) {
     console.warn("midtrans webhook: bad signature", { orderId });
+    // The single most useful alert: either someone is probing, or the gateway key
+    // was rotated and real notifications are now being thrown away.
+    await recordSecurityEvent("webhook.bad_signature", { orderId, statusCode }, request);
     return NextResponse.json({ error: "Invalid signature." }, { status: 401 });
   }
 
@@ -122,7 +127,10 @@ export async function POST(request: Request) {
   }
 
   if (!invoice) {
-    // Signed correctly, but we have no matching invoice. Store it and stop.
+    // Signed correctly, but we have no matching invoice. Store it and stop —
+    // and say so, because a signed notification nobody can apply is a payment
+    // taken with nothing credited.
+    await recordSecurityEvent("webhook.unmatched_invoice", { orderId, grossAmount }, request);
     return NextResponse.json({ ok: true, unmatched: true });
   }
 
@@ -139,6 +147,7 @@ export async function POST(request: Request) {
   const due = Math.round(Number(invoice.amount_idr));
   if (!Number.isFinite(paid) || paid !== due) {
     console.warn("midtrans webhook: amount mismatch", { orderId, paid, due });
+    await recordSecurityEvent("webhook.amount_mismatch", { orderId, paid, due }, request);
     return NextResponse.json({ ok: true, amount_mismatch: true });
   }
 

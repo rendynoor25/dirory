@@ -10,6 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { count: newMissing },
     { count: newQuotes },
     { count: serviceQueue },
+    { count: security24h },
   ] = await Promise.all([
     supabase.from("vendors").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("asset_versions").select("id", { count: "exact", head: true }).eq("review_status", "pending"),
@@ -17,6 +18,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     supabase.from("quote_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
     // Jobs needing a quote — the first thing the vendor waits on.
     supabase.from("service_requests").select("id", { count: "exact", head: true }).eq("status", "requested"),
+    // Security events in the last day (0030). Zero is the healthy number.
+    supabase
+      .from("security_events")
+      .select("id", { count: "exact", head: true })
+      .gte("created_at", new Date(Date.now() - 86_400_000).toISOString()),
   ]);
 
   return (
@@ -39,6 +45,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         { href: "/admin/usage", label: "Usage explorer" },
         { href: "/admin/quotes", label: "Quotes", badge: newQuotes ?? undefined },
         { href: "/admin/users", label: "Users" },
+        { href: "/admin/security", label: "Security", badge: security24h ?? undefined },
       ]}
       footer="Dirory admin · PRD v1.2"
     >

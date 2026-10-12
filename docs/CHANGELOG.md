@@ -1,6 +1,53 @@
 # Changelog
 
-## 0.17.17 — vendor approval is automatic, decided by the right signal
+## 0.17.18 — security hardening against the OWASP Top 10
+
+A pass over the ten categories, written up in `docs/SECURITY.md`. Real findings,
+not header theatre:
+
+**A06, and the most consequential one.** `next` 15.5.26 carried **cache-poisoning
+advisories for SSG/ISR in self-hosted deployments** — directly applicable, since
+Dirory is self-hosted. Upgraded to **15.5.27**; `source-map-js` DoS cleared by
+`npm audit fix`. Production vulnerabilities: 3 → 2. The remainder needs Next 16
+(breaking) and is a *build-time* `postcss` issue that requires attacker-controlled
+CSS, which Dirory never compiles.
+
+**A05.** The **`materials` bucket accepted any MIME type** — and that bucket is
+where **payment proofs** land, which an admin opens from Admin → Payments. Now
+images and PDF only, SVG excluded (0029); it is the one image format that executes.
+Also: `poweredByHeader` off, and a CSP with the four directives that cannot break
+rendering — `object-src 'none'`, `base-uri 'self'`, `frame-ancestors 'none'`,
+`form-action 'self'` — plus `Cross-Origin-Opener-Policy: same-origin-allow-popups`
+(allow-popups, not `same-origin`, so Google sign-in survives).
+
+A `script-src` policy is deliberately **not** shipped: a wrong source there
+silently breaks the Midtrans Snap page, and a broken payment path is worse than a
+looser CSP. It needs a real payment test first.
+
+**A04.** The webhook — public by necessity, protected only by the signature — had
+no body limit. Now 64 KB, enforced on the bytes received rather than on
+`Content-Length`.
+
+**A09, the previous gap.** Migration **0030** adds `security_events`, written with
+the service role by the routes that see hostile input: bad signature, oversized
+body, amount mismatch, and a **signed notification with no matching invoice** (a
+payment taken with nothing credited). They surface at `/admin/security`, and email
+to `SECURITY_ALERT_TO` (default the founder's address), throttled to one per kind
+per 15 minutes so a flood becomes one mail instead of thousands.
+
+Delivery needs `RESEND_API_KEY`. The VPS cannot send mail itself: dirory.com
+publishes DMARC `p=reject`, so anything claiming to be from it without matching
+DKIM is rejected by Gmail outright. Without a key the events are still recorded and
+the reason is logged.
+
+**And a deployment bug, found only by verifying the headers.** They deployed
+successfully and did nothing: a **file bind-mount pins the inode**, and `git pull`
+*replaces* the Caddyfile rather than editing it, so the running Caddy kept reading
+the old copy. The deploy recreates `web` but never `caddy`, so **any Caddyfile
+change silently never applies**. `scripts/deploy.sh` now compares the hash Caddy
+holds against the file on disk and recreates it only when they differ.
+
+## 0.17.17 - vendor approval is automatic, decided by the right signal
 
 Approval sat in the founder's queue for anything that was not a company email, and
 he cannot watch the admin dashboard during a working day. Migration **0028** moves
