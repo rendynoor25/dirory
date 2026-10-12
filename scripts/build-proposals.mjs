@@ -198,6 +198,30 @@ const VENDORS = [
       "dengan angka saat bangunan masih digambar.",
     metric: "Unit terpasang per sistem (NEXSTA, MADELA, EXHIDO, FRONTERRA, UCW/KCW), sebaran proyek dan kota, permintaan penawaran",
   },
+  {
+    slug: "fortress",
+    company: "PT Jaya Bersama Saputra Perkasa (Fortress)",
+    short: "Fortress",
+    contact: "Mrs. Liza Khoirunnisa",
+    role: "Assistant Sales Manager",
+    focus: "Pintu baja & keamanan",
+    // Not in the catalogue. Doors are thin there in general: the one door brand
+    // present carries no published products.
+    existing: null,
+    // Fortress's problem is not awareness — it is depth. With hundreds of models
+    // and colours, the question is which ones architects actually choose, and a
+    // catalogue cannot answer it. Fortress's own testimonials come from homeowners
+    // and contractors; the specification happens earlier, on a screen.
+    relevance:
+      "Fortress punya ratusan model dan warna — dan justru karena katalognya sedalam itu, " +
+      "pertanyaannya bukan lagi apakah orang tahu Fortress, melainkan model mana yang " +
+      "benar-benar dipilih. Dirory menjawabnya per model: berapa unit Armor, Black Carbon, " +
+      "atau Fort 10 yang masuk ke file proyek arsitek, dan di kota mana. Pintu baja " +
+      "diputuskan di tahap gambar, dan di titik itulah Fortress saat ini paling tidak " +
+      "terlihat: katalog dan testimoni berbicara kepada pemilik rumah, sementara arsitek " +
+      "dan desainer interior memilih di layar.",
+    metric: "Unit terpasang per model, sebaran proyek dan kota, permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
