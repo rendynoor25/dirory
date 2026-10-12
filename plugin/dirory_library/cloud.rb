@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.9.8'.freeze
+      PLUGIN_VERSION = '0.9.9'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -148,10 +148,23 @@ module Dirory
       #
       # The plugin asks what version is published and compares it with its own.
       # The result is pushed to the panel, which decides whether to show the
-      # Update badge.
+      # Update badge — and, since 0.9.9, a native popup notification carrying
+      # the release notes (see notify_update_available).
       # --------------------------------------------------------------
       @latest_version = nil
+      # Release notes in English and Bahasa Indonesia, as published with the
+      # release (see scripts/upload-plugin-release.mjs --notes). Either may be
+      # absent on older releases; notify_update_available falls back cleanly.
+      @latest_notes = []
+      @latest_notes_id = []
       @update_checked = false
+      @update_notified = false
+      @restart_notified = false
+      # Held references: pre-2021.1 SketchUp can crash if a UI::Notification
+      # is garbage-collected while on screen, so these stay alive.
+      @update_notification = nil
+      @restart_notification = nil
+      @panel_dialog = nil
 
       def self.check_for_update(dialog = nil)
         return unless configured? && defined?(Sketchup::Http::Request)
@@ -163,8 +176,11 @@ module Dirory
             if response.status_code.to_i == 200
               data = (JSON.parse(response.body.to_s) rescue {})
               @latest_version = data['version'].to_s
+              @latest_notes = Array(data['notes']).map(&:to_s).reject(&:empty?)
+              @latest_notes_id = Array(data['notes_id']).map(&:to_s).reject(&:empty?)
               @update_checked = true
               push_update_state(dialog)
+              notify_update_available(dialog)
             end
           rescue StandardError => e
             puts "[Dirory] update check failed: #{e.message}"
@@ -183,27 +199,98 @@ module Dirory
           'latest' => @latest_version.to_s,
           'available' => update_available?,
           'checked' => @update_checked,
-          'staged' => Dirory::Library::Updater.staged?
+          'staged' => Dirory::Library::Updater.staged?,
+          'notes' => release_notes
         }
+      end
+
+      # Release notes in the panel's language, English when the translation is
+      # missing. At most 4 short lines — a popup is not a changelog page.
+      def self.release_notes
+        notes = (language.to_s == 'id' ? @latest_notes_id : @latest_notes)
+        notes = @latest_notes if notes.empty?
+        notes.first(4).map { |n| n.to_s.strip[0, 90] }.reject(&:empty?)
       end
 
       def self.push_update_state(dialog = nil)
         target = dialog || @sign_in_dialog
+        @panel_dialog = target if target
         return unless target
         target.execute_script("window.diroryUpdate && window.diroryUpdate(#{update_state.to_json});")
       rescue StandardError
         nil
       end
 
-      # Download and stage the published archive. Yields nothing; the panel is
-      # told the outcome via window.diroryUpdateResult.
+      # Enscape-style popup: a native notification with the new version and its
+      # release notes. "Update" starts the download (the panel opens so progress
+      # is visible); "Later" dismisses. Once per session — the panel badge stays
+      # for anyone who misses it.
+      def self.notify_update_available(dialog = nil)
+        return unless update_available?
+        return if @update_notified
+        return unless defined?(UI::Notification)
+        ext = Dirory::Library.extension
+        return unless ext
+        @update_notified = true
+        raw_title = dictionary['update.popup_title'] || 'New Dirory version %{version} available!'
+        title = raw_title.gsub('%{version}', @latest_version.to_s)
+        lines = release_notes.map { |n| "• #{n}" }
+        message = ([title] + lines).join("\n")
+        note = UI::Notification.new(ext, message, notification_icon)
+        @update_notification = note
+        note.on_accept(dictionary['update.button'] || 'Update now') do |_n, _t|
+          safely do
+            Dirory::Library.show_panel
+            dlg = Dirory::Library.dialog || @panel_dialog || @sign_in_dialog
+            @panel_dialog = dlg if dlg
+            download_update(dlg)
+          end
+        end
+        note.on_dismiss(dictionary['update.later'] || 'Later') { |_n, _t| nil }
+        note.show
+      rescue StandardError => e
+        puts "[Dirory] update popup failed: #{e.message}"
+        nil
+      end
+
+      def self.notification_icon
+        path = File.join(Dirory::Library::PLUGIN_ROOT, 'ui', 'logo_small.png')
+        File.file?(path) ? path : nil
+      rescue StandardError
+        nil
+      end
+
+      # Reminder after a successful download: the staged update only applies on
+      # the next launch. The panel message and toast stay as the in-panel path.
+      def self.notify_restart_required
+        return if @restart_notified
+        return unless defined?(UI::Notification)
+        ext = Dirory::Library.extension
+        return unless ext
+        @restart_notified = true
+        note = UI::Notification.new(ext, dictionary['update.restart_popup'] || 'Update downloaded. Restart SketchUp to apply it.')
+        @restart_notification = note
+        note.show
+      rescue StandardError => e
+        puts "[Dirory] restart popup failed: #{e.message}"
+        nil
+      end
+
+      # Download and stage the published archive. Progress goes to the panel via
+      # window.diroryUpdateProgress; the outcome via window.diroryUpdateResult.
       def self.download_update(dialog)
         unless configured? && signed_in? && defined?(Sketchup::Http::Request)
           push_update_result(dialog, false, 'sign in first')
           return
         end
+        @panel_dialog = dialog if dialog
         request = new_request("#{api_base_url}/plugin-release/download", Sketchup::Http::GET)
         request.headers = request_headers
+        if request.respond_to?(:set_download_progress_callback)
+          request.set_download_progress_callback do |current, total|
+            push_update_progress(dialog, current.to_i, total.to_i)
+          end
+        end
         request.start do |_req, response|
           release_request(request)
           begin
@@ -211,6 +298,7 @@ module Dirory
             if code >= 200 && code < 300
               body = response.body
               ok = stage_update_bytes(body)
+              notify_restart_required if ok
               push_update_result(dialog, ok, ok ? nil : 'could not write the staged update')
             elsif code == 401
               push_update_result(dialog, false, unauthorized!)
@@ -233,6 +321,19 @@ module Dirory
         return unless dialog
         dialog.execute_script(
           "window.diroryUpdateResult(#{ { ok: ok, error: error, restart_required: ok }.to_json });"
+        )
+      rescue StandardError
+        nil
+      end
+
+      # total is -1 when the server omits the size; the panel then shows an
+      # indeterminate spinner instead of a percentage. Our function sends
+      # Content-Length, so a real bar is the normal case.
+      def self.push_update_progress(dialog, received, total)
+        target = dialog || @panel_dialog || @sign_in_dialog
+        return unless target
+        target.execute_script(
+          "window.diroryUpdateProgress && window.diroryUpdateProgress(#{ { received: received, total: total }.to_json });"
         )
       rescue StandardError
         nil

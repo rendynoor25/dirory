@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased — plugin 0.9.9: Enscape-style update popup
+
+The update flow was a badge in the panel and a dead-end message. Now it mirrors
+the Enscape pattern from the request: a **native popup** (`UI::Notification`,
+2017+, so safe on the 2019+ floor) announcing the new version with its **release
+notes**, an **Update** button that opens the panel and downloads, a **round
+spinner plus progress bar** while it installs, and a **restart reminder**
+notification once staged.
+
+- Release notes ride with the release: `upload-plugin-release.mjs --notes/--notes-id`
+  writes a `<basename>.json` sidecar next to the `.rbz`; `/plugin-release`
+  serves them as `notes`/`notes_id` (additive — older plugins ignore the fields).
+  The bucket only allows `application/octet-stream`, so the sidecar is stored as
+  that; the function parses the body itself.
+- `set_download_progress_callback` feeds `window.diroryUpdateProgress`; unknown
+  totals show an indeterminate slide, never a fake percentage.
+- Held notification references (pre-2021.1 GC crash), once-per-session popups,
+  `defined?(UI::Notification)` guards throughout.
+- Also fixed: the update badge click wrote the literal key `update.leading` into
+  the settings message (no such i18n key existed) — it now shows the downloading
+  state. New `update.popup_title/downloading/downloading_unknown/restart_popup`
+  keys in both locales.
+- Verified without SketchUp: `rb:check` clean, deno check clean, a contract test
+  over the Ruby↔JS seam (every `window.*` push, `sketchup.*` call, `byId`, and
+  update i18n key resolves on both sides), and the live endpoint round-trip
+  (`0.9.9` + 3 en / 3 id notes). **In-SketchUp run still needed** — no Ruby
+  interpreter on this machine and no Ruby test files exist in the repo.
+
 ## 0.18.0 — JSA port: M0 spike (SketchUp for Web and iPad)
 
 New project in **`jsa/`**: a SketchUp **JavaScript API** extension so Dirory runs

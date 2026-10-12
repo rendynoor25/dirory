@@ -116,6 +116,10 @@ module Dirory
           'update.failed' => 'The update could not be downloaded (%{error}). Please try again.',
           'update.restart_now' => 'Restart SketchUp now',
           'update.later' => 'Later',
+          'update.popup_title' => 'New Dirory version %{version} available!',
+          'update.downloading' => 'Downloading update… %{percent}%',
+          'update.downloading_unknown' => 'Downloading update…',
+          'update.restart_popup' => 'Dirory update downloaded. Restart SketchUp to apply it — your settings and sign-in are kept.',
         },
         'id' => {
           'app.search_placeholder' => 'Cari nama, kategori, atau merek…',
@@ -205,6 +209,10 @@ module Dirory
           'update.failed' => 'Pembaruan tidak dapat diunduh (%{error}). Silakan coba lagi.',
           'update.restart_now' => 'Mulai ulang SketchUp sekarang',
           'update.later' => 'Nanti',
+          'update.popup_title' => 'Dirory versi %{version} tersedia!',
+          'update.downloading' => 'Mengunduh pembaruan… %{percent}%',
+          'update.downloading_unknown' => 'Mengunduh pembaruan…',
+          'update.restart_popup' => 'Pembaruan Dirory terunduh. Mulai ulang SketchUp untuk menerapkannya — pengaturan dan status masuk Anda tetap tersimpan.',
         }
       }.freeze
 

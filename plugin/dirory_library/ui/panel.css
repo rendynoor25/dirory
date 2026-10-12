@@ -427,6 +427,43 @@ h1 {
 }
 .modal-card h2 { margin: 0 0 6px; font-size: 14px; color: #39509f; }
 .modal-lead { margin: 0 0 10px; font-size: 11.5px; line-height: 1.5; color: #52525b; }
+
+/* Update download progress: a round spinner plus a bar. The bar only moves
+   when the server reports a size; otherwise the spinner says "working". */
+.update-progress { margin-top: 8px; }
+.update-progress[hidden] { display: none; }
+.update-progress-row { display: flex; align-items: center; gap: 8px; }
+.spinner {
+  flex: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 3px solid #d7d9e6;
+  border-top-color: #39509f;
+  animation: dirory-spin 0.9s linear infinite;
+}
+@keyframes dirory-spin { to { transform: rotate(360deg); } }
+.progress-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: #eceef5;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: #39509f;
+  transition: width 0.2s ease-out;
+}
+/* Unknown total: the bar slides instead of filling, so it never claims a
+   percentage it does not know. */
+.progress-track.indeterminate .progress-bar {
+  width: 30%;
+  transition: none;
+  animation: dirory-slide 1.2s ease-in-out infinite alternate;
+}
+@keyframes dirory-slide { from { margin-left: 0; } to { margin-left: 70%; } }
 .modal-close {
   position: absolute;
   top: 6px;

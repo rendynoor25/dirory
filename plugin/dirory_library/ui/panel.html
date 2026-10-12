@@ -233,6 +233,15 @@
         <p id="settingsVersion"></p>
         <button id="settingsUpdate" class="ghost-btn" data-i18n="update.button">Check for updates</button>
         <p id="settingsUpdateMsg" class="modal-sub"></p>
+        <div id="updateProgress" class="update-progress" hidden>
+          <div class="update-progress-row">
+            <div id="updateSpinner" class="spinner" aria-hidden="true"></div>
+            <div class="progress-track" role="progressbar" aria-label="Update download progress">
+              <div id="updateBar" class="progress-bar" style="width: 0%"></div>
+            </div>
+          </div>
+          <p id="updateProgressMsg" class="modal-sub"></p>
+        </div>
       </div>
     </div>
   </div>

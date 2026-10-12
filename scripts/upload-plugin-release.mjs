@@ -9,6 +9,12 @@
  * Usage:
  *   node scripts/upload-plugin-release.mjs
  *   node scripts/upload-plugin-release.mjs --file dist/DiroryLibrary-0.9.0.rbz
+ *   node scripts/upload-plugin-release.mjs --notes "Popup says what's new;Download progress bar" --notes-id "Popup berisi yang baru;Bilah kemajuan unduhan"
+ *
+ * The --notes flags publish the release-notes sidecar the update popup reads
+ * (<basename>.json next to the .rbz, e.g. DiroryLibrary-0.9.9.json).
+ * Semicolons separate lines; at most 8 are kept. Omit the flags and no sidecar
+ * is written — older releases have none, and the plugin falls back cleanly.
  */
 
 import fs from "node:fs";
@@ -78,3 +84,41 @@ if (error) {
 }
 console.log(`Uploaded plugin-release/${filename} (${fs.statSync(file).size} bytes).`);
 console.log("The plugin's Update button will now offer this version.");
+
+// Release-notes sidecar for the update popup (0.9.9+). Same basename, .json.
+function splitNotes(raw) {
+  if (typeof raw !== "string" || !raw.trim()) return [];
+  return raw
+    .split(";")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+const notes = splitNotes(arg("notes", ""));
+const notesId = splitNotes(arg("notes-id", ""));
+if (notes.length || notesId.length) {
+  const sidecar = filename.replace(/\.rbz$/i, ".json");
+  const body = { version: filename.match(/[\d.]+/)[0], published_at: new Date().toISOString() };
+  if (notes.length) body.notes = notes;
+  if (notesId.length) body.notes_id = notesId;
+  const { error: notesError } = await supabase.storage
+    .from("plugin-release")
+    .upload(sidecar, Buffer.from(JSON.stringify(body, null, 2), "utf8"), {
+      upsert: true,
+      // application/octet-stream: the bucket's allow-list rejects both
+      // application/json and text/plain. The Edge Function downloads the
+      // sidecar with the service role and parses the body itself, so the
+      // stored content type is irrelevant.
+      contentType: "application/octet-stream",
+    });
+  if (notesError) {
+    console.error(`Notes sidecar failed (${sidecar}): ${notesError.message}`);
+    process.exit(1);
+  }
+  console.log(
+    `Uploaded plugin-release/${sidecar} (${notes.length} en / ${notesId.length} id lines).`,
+  );
+} else {
+  console.log("No --notes given, so no release-notes sidecar was written.");
+}

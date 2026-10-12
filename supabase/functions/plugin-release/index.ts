@@ -57,6 +57,28 @@ async function latestRelease(): Promise<Release | null> {
   return candidates[candidates.length - 1];
 }
 
+/** Release notes for the update popup, or {} when none were published. */
+async function releaseNotes(object: string): Promise<{ notes?: string[]; notes_id?: string[] }> {
+  try {
+    const sidecar = object.replace(/\.rbz$/i, ".json");
+    const supabase = serviceClient();
+    const { data, error } = await supabase.storage.from(BUCKET).download(sidecar);
+    if (error || !data) return {};
+    const parsed = JSON.parse(await data.text()) as { notes?: unknown; notes_id?: unknown };
+    const out: { notes?: string[]; notes_id?: string[] } = {};
+    for (const key of ["notes", "notes_id"] as const) {
+      const arr = parsed[key];
+      if (Array.isArray(arr)) {
+        const clean = arr.map(String).map((s) => s.trim()).filter(Boolean).slice(0, 8);
+        if (clean.length) out[key] = clean;
+      }
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -82,6 +104,10 @@ Deno.serve(async (req: Request) => {
       version: release.version,
       filename: release.object,
       download_path: "/plugin-release/download",
+      // Release notes are an optional sidecar object, e.g.
+      // DiroryLibrary-0.9.9.json -> { notes: [...], notes_id: [...] }.
+      // Absent on older releases; the plugin falls back to a generic message.
+      ...(await releaseNotes(release.object)),
     });
   }
 

@@ -884,7 +884,12 @@ byId('languageSelect').addEventListener('change', (e) => {
 window.diroryUpdate = function (state) {
   updateState = state || {};
   const btn = byId('updateBtn');
-  if (btn) btn.hidden = !updateState.available;
+  if (btn) {
+    btn.hidden = !updateState.available;
+    if (updateState.available && updateState.latest) {
+      btn.title = t('update.latest', { version: updateState.latest });
+    }
+  }
   if (updateState.staged) {
     // An update is already downloaded and waiting for a restart.
     if (btn) btn.hidden = false;
@@ -892,7 +897,40 @@ window.diroryUpdate = function (state) {
   }
 };
 
+// Download progress from Ruby: { received, total }. total is -1 when unknown,
+// in which case the spinner alone says "working" and no percentage is shown.
+window.diroryUpdateProgress = function (p) {
+  const block = byId('updateProgress');
+  const track = block ? block.querySelector('.progress-track') : null;
+  const bar = byId('updateBar');
+  const msg = byId('updateProgressMsg');
+  if (!block) return;
+  block.hidden = false;
+  const received = (p && p.received) || 0;
+  const total = (p && p.total) || 0;
+  if (track) track.classList.toggle('indeterminate', !(total > 0));
+  if (bar && total > 0) bar.style.width = Math.min(100, Math.round((received / total) * 100)) + '%';
+  if (msg) {
+    msg.textContent =
+      total > 0
+        ? t('update.downloading', { percent: Math.min(100, Math.round((received / total) * 100)) })
+        : t('update.downloading_unknown');
+  }
+};
+
+function hideUpdateProgress() {
+  const block = byId('updateProgress');
+  if (block) {
+    block.hidden = true;
+    const track = block.querySelector('.progress-track');
+    if (track) track.classList.remove('indeterminate');
+  }
+  const bar = byId('updateBar');
+  if (bar) bar.style.width = '0%';
+}
+
 window.diroryUpdateResult = function (result) {
+  hideUpdateProgress();
   const msg = byId('settingsUpdateMsg');
   if (result && result.ok) {
     if (msg) msg.textContent = t('update.staged');
@@ -908,7 +946,10 @@ let updateState = {};
 
 byId('updateBtn').addEventListener('click', () => {
   openSettings();
-  byId('settingsUpdateMsg').textContent = t('update.leading', {}) || '';
+  hideUpdateProgress();
+  const block = byId('updateProgress');
+  if (block) block.hidden = false;
+  byId('settingsUpdateMsg').textContent = t('update.downloading_unknown');
   sketchup.downloadUpdate();
 });
 byId('settingsUpdate').addEventListener('click', () => {

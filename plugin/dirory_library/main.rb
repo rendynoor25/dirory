@@ -1242,6 +1242,14 @@ module Dirory
     # ------------------------------------------------------------------
     @dialog = nil
 
+    # The live panel dialog, if one is open. Cloud's update popup uses it to
+    # show download progress after the user clicks Update in the notification.
+    def self.dialog
+      @dialog if @dialog && @dialog.visible?
+    rescue StandardError
+      nil
+    end
+
     def self.show_panel
       if @dialog && @dialog.visible?
         @dialog.bring_to_front
