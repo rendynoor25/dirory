@@ -132,27 +132,6 @@ const VENDORS = [
     metric: "Unit terpasang per brand dan per tipe, sebaran proyek, dan permintaan penawaran",
   },
   {
-    slug: "dekkson",
-    company: "PT Fajar Lestari Sejati (Dekkson)",
-    short: "Dekkson",
-    contact: "Ibu Zahra",
-    role: "Marketing",
-    focus: "Architectural hardware",
-    // Not in the catalogue yet — the first hardware brand approached — so the
-    // digitization pilot is the hook, not an "already live" acknowledgement.
-    existing: null,
-    // Hardware is the product most often dropped at the drawing stage: the
-    // architect writes "handle standar" and leaves the choice to the contractor.
-    // Dirory turns that into a number per type, which is the whole point for a
-    // hardware brand whose competitors are invisible once a project is built.
-    relevance:
-      "Hardware arsitektural adalah produk yang paling sering 'menghilang' saat menggambar: " +
-      "arsitek menulis 'handle standar' lalu menyerahkannya ke kontraktor. Dirory mengubah itu " +
-      "menjadi angka — berapa unit handle, engsel, dan door closer Dekkson yang benar-benar " +
-      "masuk ke file proyek arsitek, per tipe dan per kota. Bukan berapa kali katalog diunduh.",
-    metric: "Unit terpasang per tipe (handle, engsel, closer), sebaran proyek, dan permintaan penawaran",
-  },
-  {
     slug: "marksindo",
     company: "PT Marksindo Sukses Jaya",
     short: "Marks",
@@ -245,10 +224,9 @@ const VENDORS = [
     metric: "Unit terpasang per brand dan per sistem (pintu, jendela, curtain wall), sebaran proyek dan kota, permintaan penawaran",
   },
   {
-    // A second contact at the same company — the one who owns specification,
-    // which is the discipline Dirory actually measures. The product insight is
-    // the same as the other Dekkson proposal; only the framing is aimed at her
-    // remit rather than at marketing in general.
+    // Dekkson's single contact: the one who owns specification, which is the
+    // discipline Dirory actually measures. The framing is aimed at her remit
+    // rather than at marketing in general.
     slug: "dekkson-dyah-ayu",
     company: "PT Fajar Lestari Sejati (Dekkson)",
     short: "Dekkson",
