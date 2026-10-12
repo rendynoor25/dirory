@@ -114,7 +114,7 @@ const VENDORS = [
     slug: "lixil-indonesia",
     company: "LIXIL Indonesia",
     short: "LIXIL",
-    contact: "Ms. Fitra Amalia",
+    contact: "Ibu Fitra Amalia",
     role: "Specifier",
     focus: "Sanitari, fittings & sistem bangunan",
     // Not in the catalogue yet. American Standard and the other LIXIL brands are
@@ -135,7 +135,7 @@ const VENDORS = [
     slug: "dekkson",
     company: "PT Fajar Lestari Sejati (Dekkson)",
     short: "Dekkson",
-    contact: "Mrs. Zahra",
+    contact: "Ibu Zahra",
     role: "Marketing",
     focus: "Architectural hardware",
     // Not in the catalogue yet — the first hardware brand approached — so the
@@ -156,7 +156,7 @@ const VENDORS = [
     slug: "marksindo",
     company: "PT Marksindo Sukses Jaya",
     short: "Marks",
-    contact: "Ms. Meilisya Heryanto",
+    contact: "Ibu Meilisya Heryanto",
     role: "Assistant Manager",
     focus: "ACP, panel & sistem interior",
     // Not in the catalogue yet, so the digitization pilot is the hook.
@@ -177,7 +177,7 @@ const VENDORS = [
     slug: "ykk-ap",
     company: "PT YKK AP Indonesia",
     short: "YKK AP",
-    contact: "Mrs. Mira Rahman",
+    contact: "Ibu Mira Rahman",
     role: "Sales Planning and Promotion",
     focus: "Jendela, pintu & curtain wall",
     // Not in the catalogue. The pitch here is stronger than "new brand": Dirory
@@ -202,7 +202,7 @@ const VENDORS = [
     slug: "fortress",
     company: "PT Jaya Bersama Saputra Perkasa (Fortress)",
     short: "Fortress",
-    contact: "Mrs. Liza Khoirunnisa",
+    contact: "Ibu Liza Khoirunnisa",
     role: "Assistant Sales Manager",
     focus: "Pintu baja & keamanan",
     // Not in the catalogue. Doors are thin there in general: the one door brand
