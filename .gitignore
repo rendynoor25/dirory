@@ -44,6 +44,10 @@ proposals/.chrome-profile/
 # file open). scripts/build-proposals.mjs swaps it in on the next run.
 proposals/*.new.pdf
 
+# Preview messages written by scripts/send-email.mjs. They are generated from
+# proposals/emails/*.md and are not deliverables — the templates are committed.
+proposals/outbox/
+
 # ---------------------------------------------------------------------------
 # Build output
 #

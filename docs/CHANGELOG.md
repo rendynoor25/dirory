@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.17.20 — the Wisma Sehati proposal, and a way to send it
+
+**A proposal for a distributor, not a brand owner.** Wisma Sehati (PT Sehati Abadi,
+building materials since 1976, seven showrooms) is not a manufacturer: it carries
+Kohler, Hansgrohe, Porcelanosa and Atlas Concorde *alongside* its own house brand,
+Sehati. That changes the argument. A brand owner worries about being unknown; a
+distributor worries about the specification stopping at a size — an architect
+writes "keramik 60x60", and the contractor buys whatever is cheapest. So the
+proposal argues that Dirory puts a *name and type* into the drawing, and counts the
+result by m² and by unit. It also means there is a missing `role`: no title for Ibu
+Dederiane Hunara is published anywhere, so the template was changed to **omit the
+title rather than invent one** — "Ibu X, · PT Y" reads as a mistake, and a wrong
+title reads as careless.
+
+**`docs/EMAIL.md` — sending as `rendy@dirory.com`,** which turned up something worth
+knowing before the next person tries it. The mail service presents a TLS certificate
+for **`mx4.mailspace.id` only**:
+
+```
+mail.dirory.com:465   CN=mx4.mailspace.id   SAN=DNS:mx4.mailspace.id
+```
+
+So `mail.dirory.com` is the right host for the *webmail website* (its HTTPS
+certificate is valid) but the wrong host for SMTP/IMAP — it connects and then fails
+on "hostname does not match certificate", which is the usual reason a mail client
+refuses to save the account. Use `mx4.mailspace.id` in clients. The document also
+records why the domain must be sent through Mailspace at all: `DMARC p=reject` means
+an unauthenticated message is **dropped, not filtered**, and the VPS cannot do it
+anyway (outbound port 25 blocked, no PTR).
+
+**`scripts/send-email.mjs` — one command per proposal.** Reads
+`proposals/emails/<slug>.md`, attaches the PDF that template names, and can preview
+(`--dry-run`, the default) or send. The point is the pairing: recipient and
+attachment come from the same file, which is the one way to be sure the Propan
+proposal does not land in Wisma Sehati's inbox. No dependencies — SMTP over Node's
+`tls`/`net`. Verified against the live server: TLS validates, EHLO is accepted, the
+AUTH exchange runs, and a deliberately wrong password returns
+`535 Incorrect authentication data`. **The only untested step is a real credential.**
+
+Also fixed a typo shipped in all ten brand proposals ("Mengkurasi" → "Mengurasi"),
+which is why every existing PDF is regenerated in this commit.
+
 ## 0.17.19 — the CSP that took the site down
 
 **A self-inflicted outage, caught and fixed.** The A05 work in 0.17.18 added the

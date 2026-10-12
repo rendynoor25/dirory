@@ -243,6 +243,40 @@ const VENDORS = [
       "bisa ditebak.",
     metric: "Unit terpasang per tipe (handle, engsel, closer), sebaran proyek, dan permintaan penawaran",
   },
+  {
+    // A distributor rather than a manufacturer, which changes the pitch. Wisma
+    // Sehati carries other people's brands (Kohler, Hansgrohe, Porcelanosa, Atlas
+    // Concorde) alongside its own house brand, Sehati. A brand owner worries about
+    // being unknown; a distributor worries about the specification stopping at a
+    // size — "keramik 60x60" — after which the contractor buys whatever is
+    // cheapest. The job here is to make the drawing name a product.
+    slug: "wisma-sehati",
+    company: "PT Sehati Abadi (Wisma Sehati)",
+    short: "Wisma Sehati",
+    contact: "Ibu Dederiane Hunara",
+    email: "dederiane.hunara@wismasehati.com",
+    // No public title for her anywhere (site, LinkedIn, press). Leave it empty
+    // rather than invent one — see contactRole/signOff in buildHtml.
+    role: "",
+    focus: "Keramik, saniter, parket & wall panel",
+    // Not in the catalogue: neither the Sehati house brand nor the distributed
+    // brands. So the digitization pilot is the hook, not an "already live" note.
+    existing: null,
+    relevance:
+      "Wisma Sehati bukan satu merek, melainkan dua hal sekaligus: brand sendiri " +
+      "(Sehati) dan merek yang Anda distribusikan. Justru karena itu, risiko " +
+      "terbesarnya bukan orang tidak mengenal Wisma Sehati — melainkan spesifikasi yang " +
+      "berhenti di ukuran. Arsitek menulis 'keramik 60x60' atau 'saniter duduk', lalu " +
+      "kontraktor membeli yang termurah. Di Dirory, yang masuk ke gambar adalah produk " +
+      "dengan merek dan tipe: Sehati Attico 60x120, Sehati Super Parket, atau saniter " +
+      "yang Anda pasarkan. Setiap pemakaian tercatat sebagai angka — berapa meter " +
+      "persegi keramik, parket dan wall panel yang benar-benar terpasang, berapa unit " +
+      "saniter, per merek, per proyek, dan per kota. Untuk distributor yang juga " +
+      "melayani arsitek lewat showroom dan jasa gambar 3D, ini mata rantai yang " +
+      "sekarang hilang: antara showroom dan file proyek.",
+    metric:
+      "Luas terpasang (m²) per merek dan tipe (keramik, parket, wall panel), unit terpasang (saniter), sebaran proyek dan kota, permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -358,6 +392,12 @@ function buildHtml(v, tanggal) {
   const shotUsage = "assets/sketchup-usage.png";
   const shotDash = "assets/dashboard.png";
 
+  // Not every contact has a published title. Inventing one is worse than omitting
+  // it: "· PT Sehati Abadi" would read as a mistake, and a wrong title reads as
+  // careless. Both lines below collapse cleanly when `role` is empty.
+  const contactRole = v.role ? `${v.role} · ${v.company}` : v.company;
+  const signOff = v.role ? `${v.contact} — ${v.role}, ${v.company}` : `${v.contact} — ${v.company}`;
+
   return `<!doctype html>
 <html lang="id"><head><meta charset="utf-8"><title>Proposal Dirory — ${v.company}</title>
 <style>${css()}</style></head><body>
@@ -380,7 +420,7 @@ function buildHtml(v, tanggal) {
       <table style="margin:0">
         <tr><td style="border:0;padding:1mm 0;width:32mm" class="muted">Disiapkan untuk</td>
             <td style="border:0;padding:1mm 0"><strong>${v.contact}</strong><br>
-            <span class="muted small">${v.role} · ${v.company}</span></td></tr>
+            <span class="muted small">${contactRole}</span></td></tr>
         <tr><td style="border:0;padding:1mm 0" class="muted">Tanggal</td>
             <td style="border:0;padding:1mm 0">${tanggal}</td></tr>
         <tr><td style="border:0;padding:1mm 0" class="muted">Fokus</td>
@@ -420,7 +460,7 @@ function buildHtml(v, tanggal) {
     </div>
     <div class="card">
       <h3>Dirory</h3>
-      <p class="small">Mengkurasi isi pustaka, menjaga mutu model, dan mengelola
+      <p class="small">Mengurasi isi pustaka, menjaga mutu model, dan mengelola
       langganan brand.</p>
     </div>
   </div>
@@ -819,7 +859,7 @@ function buildHtml(v, tanggal) {
   </table>
 
   <p class="small muted" style="margin-top:8mm">
-    Proposal ini disiapkan untuk ${v.contact} — ${v.role}, ${v.company}.
+    Proposal ini disiapkan untuk ${signOff}.
     Tangkapan layar plugin diambil langsung dari Dirory yang berjalan di SketchUp;
     gambar dashboard hanyalah ilustrasi. Rincian harga dapat berubah setelah diskusi
     pertama.
