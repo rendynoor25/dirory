@@ -526,7 +526,7 @@ function buildHtml() {
     <div style="margin-top:26px; font-size:22px; line-height:1.9">
       <div><strong>WhatsApp</strong> &nbsp; +62 857-1008-6041</div>
       <div><strong>Email</strong> &nbsp; hello@dirory.com</div>
-      <div><strong>Situs</strong> &nbsp; dirory.com &nbsp;·&nbsp; dirory.com/vendor</div>
+      <div><strong>Situs</strong> &nbsp; dirory.com &nbsp;·&nbsp; dirory.com/for-vendors</div>
     </div>
     <p class="small muted" style="margin-top:34px">
       Dirory — katalog produk bangunan Indonesia, di dalam software desain arsitek.

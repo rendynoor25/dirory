@@ -307,6 +307,51 @@ const VENDORS = [
     metric:
       "Luas terpasang (m²) per desain dan permukaan, sebaran proyek dan kota, permintaan penawaran",
   },
+  {
+    // A distributor again, and a house of ten brands rather than one: Cove, Amadeo,
+    // Zed, Qiaohui, Core and Flexible Stone (flooring & decorative), Valpra and
+    // Hansgrohe (fittings & bathroom), Icepol (sanitary ware, doors), Yoshimoto
+    // (kitchen). BDA's own pitch is that it gathers many brands in one place — one
+    // architect testimonial on the site calls it exactly that — with a showroom and
+    // downloadable e-catalogues. So the pitch is not reach; architects already know
+    // BDA. It is which brand inside the house gets written into the drawing, and for
+    // a company that already tenders into Ciputra, Summarecon and Sinarmas Land, the
+    // missing link is the one between the downloaded catalogue and the product that
+    // ends up installed.
+    //
+    // None of BDA's brands are in the catalogue (checked: no Valpra, Icepol,
+    // Hansgrohe, Yoshimoto, Amadeo, Qiaohui, Core or Flexible Stone), so the
+    // digitization pilot is the hook, not an "already live" note.
+    //
+    // The recipient is the marketing mailbox, not a named person — the site
+    // publishes no marketing contact. Leave role empty and address the team; see
+    // contactRole/signOff in buildHtml.
+    slug: "bda-group",
+    company: "PT Bangun Delta Abadi (BDA Group)",
+    short: "BDA",
+    contact: "Tim Marketing",
+    email: "marketing@bda.co.id",
+    role: "",
+    focus: "Sintered stone, keramik, saniter, kitchen & pintu",
+    existing: null,
+    relevance:
+      "BDA bukan satu merek, melainkan sepuluh — dari sintered stone COVE dan " +
+      "sanitari ICEPOL sampai fitting Hansgrohe dan kitchen sink Yoshimoto. Salah satu " +
+      "arsitek yang memberi testimoni di situs Anda menyebut BDA sebagai tempat berbagai " +
+      "brand berkumpul, dan itu memang kekuatan Anda: satu showroom, satu tim " +
+      "spesifikasi, banyak pilihan. Justru karena itu pertanyaannya bukan lagi apakah " +
+      "arsitek mengenal BDA, melainkan merek mana di dalam rumah BDA yang benar-benar " +
+      "ditulis ke dalam gambar. Arsitek menulis 'sintered stone 160x320' atau 'saniter " +
+      "duduk', lalu yang dibeli sering kali yang termurah. Di Dirory, yang masuk ke file " +
+      "proyek adalah produk dengan merek dan tipe — dan setiap pemakaian tercatat " +
+      "sebagai angka: berapa meter persegi slab dan keramik yang terpasang, berapa unit " +
+      "saniter, kitchen sink, dan pintu, per merek, per proyek, dan per kota. Untuk " +
+      "perusahaan yang sudah melayani proyek Ciputra, Summarecon, dan Sinarmas Land, ini " +
+      "mata rantai yang sekarang hilang: antara katalog yang diunduh dan produk yang " +
+      "benar-benar dipasang.",
+    metric:
+      "Luas terpasang (m²) per merek dan tipe (sintered stone, keramik, flooring), unit terpasang (saniter, kitchen sink, pintu), sebaran proyek dan kota, dan permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -809,8 +854,8 @@ function buildHtml(v, tanggal) {
   <div style="margin-top:5mm">
     <div class="step"><div class="n">1</div><div>
       <h3>Pelajari, lalu daftar</h3>
-      <p class="small">Lihat paket dan cara kerja di <strong>dirory.com/for-vendors</strong>,
-      lalu daftar di <strong>dirory.com/vendor</strong>. Gunakan <strong>email
+      <p class="small">Buka <strong>dirory.com/for-vendors</strong> — paket, cara kerja,
+      dan tombol daftar semuanya ada di satu halaman itu. Gunakan <strong>email
       kantor</strong> (bukan Gmail/Yahoo) agar akun langsung dikenali sebagai akun
       perusahaan. Isi nama perusahaan, nama brand, logo, kontak, dan NPWP bila ada.</p></div></div>
 
@@ -858,8 +903,8 @@ function buildHtml(v, tanggal) {
   <div class="rule"></div>
   <h2>Langkah demi langkah, di dalam dashboard.</h2>
   <p class="lead">
-    Semua dilakukan di <strong>dirory.com/vendor</strong> — tidak ada email bolak-balik,
-    tidak ada formulir kertas.
+    Semua dilakukan di <strong>dashboard Dirory</strong> setelah Anda masuk — tidak ada
+    email bolak-balik, tidak ada formulir kertas.
   </p>
 
   <h3 style="margin-top:5mm">Membayar tagihan</h3>
@@ -950,7 +995,7 @@ function buildHtml(v, tanggal) {
   <table>
     <tr><td style="width:38mm" class="muted">WhatsApp</td><td><strong>+62 857-1008-6041</strong></td></tr>
     <tr><td class="muted">Email</td><td>hello@dirory.com</td></tr>
-    <tr><td class="muted">Situs</td><td>dirory.com · dirory.com/for-vendors · dirory.com/vendor</td></tr>
+    <tr><td class="muted">Situs</td><td>dirory.com · dirory.com/for-vendors</td></tr>
   </table>
 
   <p class="small muted" style="margin-top:8mm">

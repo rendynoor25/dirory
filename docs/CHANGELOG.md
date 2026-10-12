@@ -1,5 +1,36 @@
 # Changelog
 
+## Unreleased — vendor terminology, and a proposal for BDA Group
+
+**One name for one audience: vendor.** The landing nav pointed at `/for-vendors`
+but was labelled "For brands", and the proposals told prospects to register at
+`dirory.com/vendor` — the signed-in portal. `requireVendor()` redirects an
+anonymous visitor to `/login?next=/vendor`, so every cold contact was being sent
+to a login wall.
+
+- `nav.forBrands` → `nav.forVendors`, "For brands" → "For vendors" in both
+  locales, and the same for the `/vendor` portal tag, the pricing tag and the
+  pricing CTA.
+- **"brand" still means the product's brand** — the library filter, the brand
+  logos, "Brands on Dirory today", the brand names themselves. The split is the
+  PRD's own glossary: a **vendor** is the company (web portal, subscription);
+  a **brand** is what it supplies. "Vendor" was already the word in the URL, the
+  portal, `fv.kicker` ("Dirory for vendors") and `pricing.personalTitle`; the nav
+  label was the one place that broke rank.
+- Every proposal and the pitchdeck now carry **dirory.com/for-vendors** only.
+  The dashboard is referred to by name rather than by its gated URL. All 12
+  existing PDFs rebuilt; none still cites `/vendor`.
+
+**New proposal: BDA Group** — `proposals/bda-group.pdf`, 12 pages, Bahasa
+Indonesia, for `marketing@bda.co.id`. PT Bangun Delta Abadi has distributed
+interior and architectural finishes since 1969 and carries ten brands (COVE,
+ICEPOL, VALPRA, Hansgrohe, Yoshimoto, Amadeo, Zed, Qiaohui, Core, Flexible
+Stone). The framing is the distributor one: the risk is not being unknown, it is
+the specification stopping at a size — so the metric is per brand *inside* the
+house, which of BDA's ten actually gets written into the drawing. None of its
+brands are in the catalogue, so the digitization pilot is the hook. Addressed to
+the marketing team, since the site publishes no marketing contact by name.
+
 ## Unreleased — /library was serving a frozen catalogue
 
 The public library page showed **1,489** products while `/for-vendors` — and the

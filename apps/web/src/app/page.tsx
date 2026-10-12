@@ -67,7 +67,7 @@ export default async function Home() {
             {t(locale, "nav.howItWorks")}
           </a>
           <Link href="/for-vendors" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
-            {t(locale, "nav.forBrands")}
+            {t(locale, "nav.forVendors")}
           </Link>
           <Link href="/how-to-install" className="hidden text-sm text-slate-600 hover:text-slate-950 sm:inline">
             {t(locale, "nav.howToInstall")}
@@ -239,7 +239,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* The "For brands" section lives on /for-vendors now — one place, not two. */}
+      {/* The "For vendors" section lives on /for-vendors now - one place, not two. */}
 
       <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-20">
         <div className="relative overflow-hidden rounded-[2rem] bg-brand-900 px-7 py-10 text-white sm:px-12 sm:py-14">

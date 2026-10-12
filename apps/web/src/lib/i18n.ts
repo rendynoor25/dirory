@@ -29,7 +29,7 @@ const en: Record<string, string> = {
   "nav.library": "Library",
   "nav.howItWorks": "How it works",
   "nav.brands": "Brands",
-  "nav.forBrands": "For brands",
+  "nav.forVendors": "For vendors",
   "nav.howToInstall": "How to install",
   "nav.signIn": "Sign in",
   "nav.getPlugin": "Get the plugin",
@@ -244,17 +244,17 @@ const en: Record<string, string> = {
   "download.consentButton": "Agree and download",
 
   // ---- vendor section + pricing ------------------------------------------
-  "vendor.tag": "For brands",
+  "vendor.tag": "For vendors",
   "vendor.title": "Put your products in architects' hands",
   "vendor.lead":
     "Dirory publishes Indonesian building products inside SketchUp, so designers place your real models and materials in live projects instead of guessing.",
   "vendor.point1": "Your catalogue inside SketchUp, where the design decisions happen.",
   "vendor.point2": "See which products are actually used, and how much.",
   "vendor.point3": "Receive quote requests from architects who picked your product.",
-  "vendor.cta": "See brand pricing",
+  "vendor.cta": "See vendor pricing",
   "vendor.note": "Pricing is for companies. It opens once you sign in with your company email.",
 
-  "pricing.tag": "Brand pricing",
+  "pricing.tag": "Vendor pricing",
   "pricing.title": "Packages and digitization",
   "pricing.lead":
     "Digitize your catalogue once, then keep it listed. Prices are a starting point for a conversation, not a fixed rate card.",
@@ -265,7 +265,7 @@ const en: Record<string, string> = {
   "pricing.personalTitle": "Pricing is for approved vendors",
   "pricing.personalBody":
     "You are signed in as {email}. Dirory shows brand pricing to vendors whose registration has been approved. Register your brand — once we approve it, the prices appear here.",
-  "pricing.vendorCta": "Register your brand",
+  "pricing.vendorCta": "Register as a vendor",
   "pricing.signOut": "Sign out",
   "pricing.packagesTitle": "Packages",
   "pricing.packagesLead":
@@ -403,7 +403,7 @@ const en: Record<string, string> = {
   "fv.plansCta": "Compare plans",
   "fv.gateTitle": "Pricing is for approved vendors",
   "fv.gateText":
-    "The plans above show what each package covers. Prices are shown to brands that have registered with Dirory and been verified — register your brand, and once we approve it the prices appear here. Everything else on this page is open to everyone.",
+    "The plans above show what each package covers. Prices are shown to vendors that have registered with Dirory and been verified — register as a vendor, and once we approve it the prices appear here. Everything else on this page is open to everyone.",
   "fv.gateCta": "Register or sign in as a vendor",
 
   "fv.demoHeading": "See the vendor dashboard",
@@ -425,7 +425,7 @@ const id: Record<string, string> = {
   "nav.library": "Pustaka",
   "nav.howItWorks": "Cara kerja",
   "nav.brands": "Merek",
-  "nav.forBrands": "Untuk brand",
+  "nav.forVendors": "Untuk vendor",
   "nav.howToInstall": "Cara memasang",
   "nav.signIn": "Masuk",
   "nav.getPlugin": "Dapatkan plugin",
@@ -640,17 +640,17 @@ const id: Record<string, string> = {
   "download.consentButton": "Setuju dan unduh",
 
   // ---- vendor section + pricing ------------------------------------------
-  "vendor.tag": "Untuk brand",
+  "vendor.tag": "Untuk vendor",
   "vendor.title": "Tempatkan produk Anda di tangan arsitek",
   "vendor.lead":
     "Dirory menampilkan produk bangunan Indonesia di dalam SketchUp, sehingga desainer memakai model dan material asli Anda di proyek nyata.",
   "vendor.point1": "Katalog Anda di dalam SketchUp, tempat keputusan desain terjadi.",
   "vendor.point2": "Lihat produk mana yang benar-benar dipakai, dan seberapa banyak.",
   "vendor.point3": "Terima permintaan penawaran dari arsitek yang memilih produk Anda.",
-  "vendor.cta": "Lihat harga untuk brand",
+  "vendor.cta": "Lihat harga untuk vendor",
   "vendor.note": "Harga untuk perusahaan. Terbuka setelah Anda masuk dengan email kantor.",
 
-  "pricing.tag": "Harga untuk brand",
+  "pricing.tag": "Harga untuk vendor",
   "pricing.title": "Paket dan digitalisasi",
   "pricing.lead":
     "Digitalkan katalog Anda sekali, lalu tetap tayang. Harga ini titik awal diskusi, bukan daftar tarif tetap.",
@@ -661,7 +661,7 @@ const id: Record<string, string> = {
   "pricing.personalTitle": "Harga untuk vendor yang sudah disetujui",
   "pricing.personalBody":
     "Anda masuk sebagai {email}. Dirory menampilkan harga brand untuk vendor yang pendaftarannya sudah disetujui. Daftarkan brand Anda — setelah disetujui, harga akan muncul di sini.",
-  "pricing.vendorCta": "Daftarkan brand Anda",
+  "pricing.vendorCta": "Daftar sebagai vendor",
   "pricing.signOut": "Keluar",
   "pricing.packagesTitle": "Paket",
   "pricing.packagesLead":
@@ -797,7 +797,7 @@ const id: Record<string, string> = {
   "fv.plansCta": "Bandingkan paket",
   "fv.gateTitle": "Harga untuk vendor yang sudah disetujui",
   "fv.gateText":
-    "Paket di atas menunjukkan cakupan setiap paket. Harga ditampilkan untuk brand yang sudah mendaftar dan diverifikasi Dirory — daftarkan brand Anda, dan setelah disetujui harga akan muncul di sini. Bagian lain di halaman ini terbuka untuk semua.",
+    "Paket di atas menunjukkan cakupan setiap paket. Harga ditampilkan untuk vendor yang sudah mendaftar dan diverifikasi Dirory — daftar sebagai vendor, dan setelah disetujui harga akan muncul di sini. Bagian lain di halaman ini terbuka untuk semua.",
   "fv.gateCta": "Daftar atau masuk sebagai vendor",
 
   "fv.demoHeading": "Lihat dashboard vendor",

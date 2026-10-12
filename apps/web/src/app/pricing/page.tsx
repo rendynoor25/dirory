@@ -44,7 +44,7 @@ function groupPlans(rows: PlanRow[]) {
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Brand pricing",
-  description: "Packages and digitization pricing for brands on Dirory.",
+  description: "Packages and digitization pricing for approved vendors on Dirory.",
 };
 
 /**
