@@ -23,10 +23,14 @@ be 13; the number is a one-line change.)
 Indonesia — Jawa Barat — appears on the cover under the chair, and again in the
 closing note. Bapak Ar. Adrian Santoso remains the primary recipient.
 
-**The PDF could not be replaced:** `proposals/iai-jawa-barat.pdf` is held open by
-another program, so the builder wrote `proposals/iai-jawa-barat.new.pdf` instead —
-its own designed behaviour for this case. The HTML is updated; the swap to the
-final filename lands once the file is closed.
+**The PDF is rebuilt too.** `proposals/iai-jawa-barat.pdf` is now the revised
+10-page edition (10 pages, 2.015 / 16 / 41, Tembusan present, no trace of 1.360).
+The first attempt could not replace it — it was held open by another program, so
+the builder wrote `iai-jawa-barat.new.pdf` instead, which is its designed
+behaviour for that case; once the file was closed the swap went through.
+
+`proposals/IAI jabar.pdf` — a copy outside the repo's naming, not byte-identical
+to any committed edition — was left untouched.
 
 ## Unreleased — vendor terminology, and a proposal for BDA Group
 
