@@ -37,7 +37,13 @@ attachment come from the same file, which is the one way to be sure the Propan
 proposal does not land in Wisma Sehati's inbox. No dependencies — SMTP over Node's
 `tls`/`net`. Verified against the live server: TLS validates, EHLO is accepted, the
 AUTH exchange runs, and a deliberately wrong password returns
-`535 Incorrect authentication data`. **The only untested step is a real credential.**
+`535 Incorrect authentication data`. Then tested for real against the live mailbox
+— **the credential works**, the message is delivered, and the script now also files
+a copy in `INBOX.Sent` over IMAP, because SMTP alone leaves no record of what went
+out. The mailbox is fully accessible, which also means it is no longer what blocks
+magic-link sign-in. The one link that stays unverifiable from inside the domain is
+whether outbound mail to *other* servers carries a DKIM signature: local delivery
+never adds one, so the delivered copy has no `DKIM-Signature` header either way.
 
 Also fixed a typo shipped in all ten brand proposals ("Mengkurasi" → "Mengurasi"),
 which is why every existing PDF is regenerated in this commit.

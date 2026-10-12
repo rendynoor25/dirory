@@ -48,6 +48,7 @@ Send a Dirory proposal from its email template.
 Options
   --send              send it. Without this the message is only written to
                       proposals/outbox/<slug>.eml and printed for review.
+  --no-save           do not file a copy in the Sent folder over IMAP
   --to <address>      override the recipient (useful to send yourself a test)
   --host <host>       SMTP host     (default $SMTP_HOST or mx4.mailspace.id)
   --port <port>       SMTP port     (default $SMTP_PORT or 465; 587 = STARTTLS)
@@ -323,6 +324,58 @@ async function smtpSend({ host, port, user, pass, from, recipients, message, log
 }
 
 // ---------------------------------------------------------------------------
+// Sent folder
+// ---------------------------------------------------------------------------
+
+/**
+ * File a copy in the Sent folder over IMAP, the way a mail client does.
+ *
+ * Sending over SMTP leaves no trace in the mailbox — the server has no reason to
+ * keep one. Without this, a founder chasing eleven proposals has no record of
+ * which ones went out. A failure here is reported but never fatal: the message
+ * has already been accepted by then.
+ */
+async function appendToSent({ host, port, user, pass, mailbox, message, log }) {
+  const socket = tls.connect({ host, port, servername: host });
+  let buf = "";
+  socket.on("data", (d) => {
+    buf += d.toString("utf8");
+  });
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const waitFor = async (re, ms = 20000) => {
+    const t0 = Date.now();
+    for (;;) {
+      const m = buf.match(re);
+      if (m) return m;
+      if (Date.now() - t0 > ms) throw new Error(`IMAP did not answer (${re})`);
+      await sleep(120);
+    }
+  };
+  const send = (line) => socket.write(line + "\r\n");
+
+  try {
+    await waitFor(/^\* OK/m);
+    send(`b1 LOGIN "${user}" "${pass}"`);
+    const login = await waitFor(/^b1 (OK|NO|BAD)/m);
+    if (!/OK/.test(login[0])) throw new Error("IMAP login was refused");
+
+    const bytes = Buffer.byteLength(message, "utf8");
+    buf = "";
+    send(`b2 APPEND "${mailbox}" (\\Seen) {${bytes}}`);
+    await waitFor(/^\+ /m); // "ready for literal data"
+    socket.write(message + "\r\n");
+    const done = await waitFor(/^b2 (OK|NO|BAD)/m, 30000);
+    if (!/OK/.test(done[0])) throw new Error(`APPEND was refused (${done[0].trim()})`);
+
+    send("b3 LOGOUT");
+    await sleep(200);
+    log(`  copy filed in ${mailbox}`);
+  } finally {
+    socket.destroy();
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -442,7 +495,26 @@ async function main() {
     message,
     log: (s) => console.log(s),
   });
-  console.log(`\n  Sent. Confirm it in the Sent folder at https://mail.dirory.com\n`);
+  console.log("");
+
+  if (!args.includes("--no-save")) {
+    try {
+      await appendToSent({
+        host,
+        port: Number(process.env.IMAP_PORT || 993),
+        user,
+        pass,
+        mailbox: process.env.SENT_MAILBOX || "INBOX.Sent",
+        message,
+        log: (s) => console.log(s),
+      });
+    } catch (err) {
+      // Not fatal: the message has already been accepted for delivery.
+      console.log(`  (sent, but no copy was filed in Sent: ${err.message})`);
+    }
+  }
+
+  console.log(`\n  Sent to ${recipients.join(", ")}.\n`);
 }
 
 main().catch((err) => {

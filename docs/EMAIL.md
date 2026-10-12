@@ -140,6 +140,11 @@ The preview mode needs no password and sends nothing — it writes
 `proposals/outbox/wisma-sehati.eml`, a complete message you can inspect (or open
 in a mail client). Use it to confirm the recipient and attachment before sending.
 
+After a successful send the script files a copy in the **Sent** folder over IMAP
+(`INBOX.Sent`), the way a mail client does. SMTP alone leaves no record — the
+server has no reason to keep one — which would mean no trace of which proposals
+actually went out. Skip that with `--no-save`.
+
 Sending needs the mailbox password. Keep it **out of the repository** — put it in
 the environment:
 
@@ -154,7 +159,19 @@ node scripts/send-email.mjs wisma-sehati --send
 ```
 
 Optional overrides: `SMTP_HOST` (default `mx4.mailspace.id`), `SMTP_PORT`
-(default `465`), `SMTP_USER` and `SMTP_FROM`.
+(default `465`), `SMTP_USER`, `SMTP_FROM`, `IMAP_PORT` (default `993`) and
+`SENT_MAILBOX` (default `INBOX.Sent`).
+
+**Tested against the live mailbox on 12 Oct 2026:** TLS validates, the login is
+accepted, the message is delivered, and the copy lands in `INBOX.Sent`.
+
+One link cannot be checked from inside the domain: whether mail sent to *other*
+servers carries a DKIM signature. Local delivery never adds one, so it is
+invisible from here — the delivered copy has no `DKIM-Signature` header at all.
+That distinction matters because `p=reject` turns a missing signature into a
+silent drop rather than a spam-folder filing. Confirm it once from the outside:
+send a test to <https://www.mail-tester.com> and read the report, or to a Gmail
+address and use *Show original* to look for `dkim=pass header.d=dirory.com`.
 
 ---
 
@@ -178,7 +195,7 @@ Optional overrides: `SMTP_HOST` (default `mx4.mailspace.id`), `SMTP_PORT`
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `535 authentication failed` | Wrong password, or username without `@dirory.com` | Username is the **full** address. If the password is lost, reset it in the Mailspace panel — this is the same login that was blocking magic-link sign-in |
+| `535 authentication failed` | Wrong password, or username without `@dirory.com` | Username is the **full** address. The password is confirmed working (12 Oct 2026); if it is ever lost, reset it in the Mailspace panel |
 | `Connection timed out` on port 465 | Network blocking that port | Try port **587** (`SMTP_PORT=587`) |
 | "hostname does not match certificate" | Host set to `mail.dirory.com` | Use `mx4.mailspace.id` — the certificate does not cover the other name (§2) |
 | `554 ... SPF` or `DMARC` on the *recipient* side | Sending from the VPS, or From set to a personal address | §3 — send through Mailspace, with From `rendy@dirory.com` |
