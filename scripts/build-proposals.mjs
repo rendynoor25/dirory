@@ -244,6 +244,27 @@ const VENDORS = [
       "dan per kota.",
     metric: "Unit terpasang per brand dan per sistem (pintu, jendela, curtain wall), sebaran proyek dan kota, permintaan penawaran",
   },
+  {
+    // A second contact at the same company — the one who owns specification,
+    // which is the discipline Dirory actually measures. The product insight is
+    // the same as the other Dekkson proposal; only the framing is aimed at her
+    // remit rather than at marketing in general.
+    slug: "dekkson-dyah-ayu",
+    company: "PT Fajar Lestari Sejati (Dekkson)",
+    short: "Dekkson",
+    contact: "Ibu Dyah Ayu Puspitasari",
+    role: "Head of Marketing & Specification",
+    focus: "Architectural hardware",
+    existing: null,
+    relevance:
+      "Hardware arsitektural adalah produk yang paling sering 'menghilang' saat menggambar: " +
+      "arsitek menulis 'handle standar' lalu menyerahkannya ke kontraktor — dan di situlah " +
+      "spesifikasi paling sering lepas. Dirory mengubahnya menjadi angka: berapa unit handle, " +
+      "engsel, dan door closer Dekkson yang benar-benar masuk ke file proyek arsitek, per tipe " +
+      "dan per kota. Untuk tim spesifikasi, ini jawaban atas pertanyaan yang selama ini hanya " +
+      "bisa ditebak.",
+    metric: "Unit terpasang per tipe (handle, engsel, closer), sebaran proyek, dan permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
