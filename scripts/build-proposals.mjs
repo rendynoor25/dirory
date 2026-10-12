@@ -222,6 +222,28 @@ const VENDORS = [
       "dan desainer interior memilih di layar.",
     metric: "Unit terpasang per model, sebaran proyek dan kota, permintaan penawaran",
   },
+  {
+    slug: "allure-industries",
+    company: "Allure Industries",
+    short: "Allure",
+    contact: "Bapak Krisna Adi Wijaya",
+    role: "National Sales Manager",
+    focus: "Fasad, pintu & jendela",
+    // Allure owns ALPHAMAX, and ALPHAMAX is already in the catalogue: MAX 1 and
+    // MAX 2, both approved doors. So this proposal opens by acknowledging what is
+    // live and argues for depth, not for a listing.
+    existing: { count: 2, type: "model" },
+    // The group is multi-brand, which is the interesting part: each brand can be
+    // compared against the others without either side seeing a competitor's numbers.
+    relevance:
+      "Dirory sudah mengenal salah satu brand Anda: ALPHAMAX tayang dengan dua model pintu, " +
+      "MAX 1 dan MAX 2 — dan itulah yang dilihat arsitek ketika mencari pintu di dalam " +
+      "SketchUp. Pertanyaannya bukan lagi apakah produk Allure bisa masuk, melainkan seberapa " +
+      "dalam: ALUPLUS, ASTRAL, dan ALLURE System seluruhnya diputuskan di tahap gambar, dan di " +
+      "situ Dirory mengukur berapa unit yang benar-benar terpasang — per brand, per proyek, " +
+      "dan per kota.",
+    metric: "Unit terpasang per brand dan per sistem (pintu, jendela, curtain wall), sebaran proyek dan kota, permintaan penawaran",
+  },
 ];
 
 // ---------------------------------------------------------------------------
