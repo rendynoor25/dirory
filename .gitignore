@@ -1,4 +1,4 @@
-# ---------------------------------------------------------------------------
+﻿# ---------------------------------------------------------------------------
 # Dirory — repository ignore rules
 #
 # Two rules of thumb here:
@@ -62,3 +62,5 @@ plugin/**/*.tmp
 # Explicitly keep the built extension.
 !dist/
 !dist/*.rbz
+# Headless-Chrome scratch profile written by the proposal builders.
+proposals/**/.chrome-profile/
