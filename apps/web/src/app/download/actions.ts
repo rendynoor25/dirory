@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { PLUGIN_CONSENT_VERSION } from "@/lib/consent";
+import { DOWNLOAD_ROUTES, type DownloadProduct } from "@/lib/pluginRelease";
 
 /**
  * Record the architect's sharing choices and acceptance of the plugin privacy
@@ -44,5 +45,8 @@ export async function acceptPluginConsent(form: FormData) {
 
   revalidatePath("/download");
   // Changing choices later is not a request for the file again.
-  redirect(form.get("stay") === "1" ? "/download" : "/api/download/rbz");
+  if (form.get("stay") === "1") redirect("/download");
+  // The file the architect picked on the form: SketchUp, Revit or both.
+  const product = String(form.get("product") ?? "sketchup");
+  redirect(DOWNLOAD_ROUTES[product as DownloadProduct] ?? DOWNLOAD_ROUTES.sketchup);
 }

@@ -37,7 +37,7 @@ export default async function HowToInstallPage() {
           <Link href="/download" className="font-medium text-brand-700 underline">
             {t(locale, "download.title")}
           </Link>{" "}
-          → <strong>{t(locale, "download.button")}</strong>
+          → <strong>{t(locale, "install.btnSketchup")}</strong>
         </>
       ),
     },
@@ -53,6 +53,21 @@ export default async function HowToInstallPage() {
     [t(locale, "install.whereTest"), t(locale, "install.whereTestValue")],
     [t(locale, "install.whereUpdate"), t(locale, "install.whereUpdateValue")],
   ];
+
+  const revitSteps = [1, 2, 3, 4, 5, 6, 7, 8].map((i) => ({
+    n: String(i).padStart(2, "0"),
+    title: t(locale, `install.revitS${i}Title`),
+    body: t(locale, `install.revitS${i}Body`),
+  }));
+  const revitWhere: [string, string][] = [
+    [t(locale, "install.revitWhereTab"), t(locale, "install.revitWhereTabValue")],
+    [t(locale, "install.revitWhereFiles"), t(locale, "install.revitWhereFilesValue")],
+    [t(locale, "install.whereSignIn"), t(locale, "install.whereSignInValue")],
+  ];
+  const revitTrouble: [string, string][] = [1, 2, 3, 4, 5].map((i) => [
+    t(locale, `install.revitTroubleQ${i}`),
+    t(locale, `install.revitTroubleA${i}`),
+  ]);
 
   const trouble: [string, string][] = [
     [t(locale, "install.troubleQ1"), t(locale, "install.troubleA1")],
@@ -89,11 +104,21 @@ export default async function HowToInstallPage() {
         <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "install.title")}</h1>
         <p className="mt-4 text-sm leading-7 text-slate-600">{t(locale, "install.lead")}</p>
 
+        {/* Two products, one page: jump to the one you need. */}
+        <nav className="mt-6 flex gap-2 text-sm" aria-label="Choose your software">
+          <a href="#sketchup" className="rounded-full border border-brand-200 bg-white px-4 py-1.5 font-semibold text-brand-700 hover:bg-brand-50">
+            {t(locale, "install.jumpSketchup")}
+          </a>
+          <a href="#revit" className="rounded-full border border-brand-200 bg-white px-4 py-1.5 font-semibold text-brand-700 hover:bg-brand-50">
+            {t(locale, "install.jumpRevit")}
+          </a>
+        </nav>
+
         <div className="mt-8">
           <VersionCheck locale={locale} />
         </div>
 
-        <h2 className="mt-12 text-xl font-semibold tracking-tight">{t(locale, "install.stepByStep")}</h2>
+        <h2 id="sketchup" className="mt-12 scroll-mt-6 text-xl font-semibold tracking-tight">{t(locale, "install.stepByStep")}</h2>
         <ol className="mt-5 space-y-4">
           {steps.map((step) => (
             <li key={step.n} className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5">
@@ -145,6 +170,63 @@ export default async function HowToInstallPage() {
               </div>
             ))}
           </dl>
+        </section>
+
+        {/* ---------------- Revit ---------------- */}
+        <section id="revit" className="mt-16 scroll-mt-6 border-t border-slate-200 pt-12">
+          <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">{t(locale, "install.jumpRevit")}</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight">{t(locale, "install.revitTitle")}</h2>
+          <p className="mt-4 text-sm leading-7 text-slate-600">{t(locale, "install.revitLead")}</p>
+
+          <ol className="mt-6 space-y-4">
+            {revitSteps.map((step) => (
+              <li key={step.n} className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                  {step.n}
+                </span>
+                <div>
+                  <h3 className="text-base font-semibold text-slate-900">{step.title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">
+                    {step.n === "02" ? (
+                      <>
+                        {step.body}{" "}
+                        <Link href="/download" className="font-medium text-brand-700 underline">
+                          {t(locale, "download.title")}
+                        </Link>
+                      </>
+                    ) : (
+                      step.body
+                    )}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <h3 className="mt-10 text-lg font-semibold tracking-tight">{t(locale, "install.whereTitle")}</h3>
+          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <table className="w-full text-left text-sm">
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {revitWhere.map(([what, whereValue]) => (
+                  <tr key={what}>
+                    <td className="px-4 py-3">{what}</td>
+                    <td className="break-all px-4 py-3 font-medium">{whereValue}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 className="mt-10 text-lg font-semibold tracking-tight">{t(locale, "install.troubleTitle")}</h3>
+          <dl className="mt-4 space-y-3">
+            {revitTrouble.map(([q, a]) => (
+              <div key={q} className="rounded-2xl border border-slate-200 bg-white p-5">
+                <dt className="text-sm font-semibold text-slate-900">{q}</dt>
+                <dd className="mt-1 text-sm leading-6 text-slate-600">{a}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-xs leading-5 text-slate-500">{t(locale, "install.revitUninstall")}</p>
         </section>
 
         <div className="mt-12 rounded-2xl border border-brand-200 bg-brand-50/60 p-6 text-center">

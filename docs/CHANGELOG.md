@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased — final privacy policy, download choice, Revit install guide
+
+- **Privacy policy v1.0** (`/privacy`, English and Bahasa Indonesia). The
+  "Draft" label and the controller placeholder are gone. Controller: Rendy Noor
+  Chandra (Dirory); privacy requests to hello@dirory.com or WhatsApp. Written
+  against UU PDP: data, purpose and legal basis per item; what vendors see
+  (aggregates from 5+ architects only); processors and the Singapore transfer
+  (Art. 56); retention matching migration 0036; the data-subject rights and how
+  to use them (3 x 24 hours); breach notice within 3 x 24 hours (Art. 46).
+  `docs/PRIVACY.md` now points to the page and lists where each claim is
+  enforced; the v0.1 draft it held described plugin v0.5.1 and is in history.
+- **Download choice.** `/download` asks SketchUp, Revit or both; the button,
+  its label and the file follow the choice, and the choice also rides the
+  first-time consent form. New `/api/download/bundle` serves both in one zip
+  (`scripts/build-download-bundle.ps1`). All three routes share one sign-in and
+  consent gate (`lib/pluginDownload.ts`); file names live in
+  `lib/pluginRelease.ts`.
+- **How to install** now has a SketchUp | Revit switch and a full Revit section:
+  eight steps (including Revit's "unsigned add-in" prompt), where things are,
+  troubleshooting and uninstall, in both languages.
+
 ## Unreleased — signed releases: the updater replaces the extension cleanly
 
 SketchUp showed Dirory as **Unsigned**. Signing is done per release in the

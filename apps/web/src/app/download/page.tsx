@@ -4,10 +4,11 @@ import { getSession } from "@/lib/auth";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { PLUGIN_VERSION } from "@/lib/pluginRelease";
+import { DOWNLOAD_ROUTES, PLUGIN_VERSION, REVIT_VERSION } from "@/lib/pluginRelease";
 import { PLUGIN_CONSENT_VERSION } from "@/lib/consent";
 import { acceptPluginConsent } from "./actions";
 import { ShareChoices } from "./ShareChoices";
+import { ProductPicker } from "./ProductPicker";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +53,29 @@ export default async function DownloadPage({
   }
   const editing = consented && sp.edit === "1";
   const onOff = (on: boolean) => t(locale, on ? "download.on" : "download.off");
+  const productOptions = [
+    {
+      id: "sketchup" as const,
+      title: t(locale, "download.optSketchup"),
+      body: t(locale, "download.optSketchupBody"),
+      button: `${t(locale, "download.btnSketchup")} (v${PLUGIN_VERSION})`,
+      href: DOWNLOAD_ROUTES.sketchup,
+    },
+    {
+      id: "revit" as const,
+      title: t(locale, "download.optRevit"),
+      body: t(locale, "download.optRevitBody"),
+      button: `${t(locale, "download.btnRevit")} (v${REVIT_VERSION})`,
+      href: DOWNLOAD_ROUTES.revit,
+    },
+    {
+      id: "both" as const,
+      title: t(locale, "download.optBoth"),
+      body: t(locale, "download.optBothBody"),
+      button: t(locale, "download.btnBoth"),
+      href: DOWNLOAD_ROUTES.both,
+    },
+  ];
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f8f9fc] px-6 py-16">
@@ -80,12 +104,10 @@ export default async function DownloadPage({
 
             {consented && !editing ? (
               <>
-                <a
-                  href="/api/download/rbz"
-                  className="mt-7 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
-                >
-                  {t(locale, "download.button")} (v{PLUGIN_VERSION})
-                </a>
+                <p className="mt-7 text-sm font-semibold text-slate-900">{t(locale, "download.pick")}</p>
+                <div className="mt-3">
+                  <ProductPicker options={productOptions} mode="link" />
+                </div>
                 <p className="mt-4 text-xs leading-5 text-slate-500">
                   {t(locale, "download.yourChoices")}: {t(locale, "download.shareUsage")}{" "}
                   {onOff(choices.usage)} · {t(locale, "download.shareProject")} {onOff(choices.project)} ·{" "}
@@ -98,6 +120,12 @@ export default async function DownloadPage({
             ) : (
               <form action={acceptPluginConsent} className="mt-6">
                 {editing ? <input type="hidden" name="stay" value="1" /> : null}
+                {!editing ? (
+                  <div className="mb-6">
+                    <p className="mb-3 text-sm font-semibold text-slate-900">{t(locale, "download.pick")}</p>
+                    <ProductPicker options={productOptions} mode="form" />
+                  </div>
+                ) : null}
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                   <p className="text-sm font-semibold text-slate-900">
                     {t(locale, "download.consentTitle")}
@@ -137,45 +165,17 @@ export default async function DownloadPage({
                 >
                   {editing
                     ? t(locale, "download.saveChoices")
-                    : `${t(locale, "download.consentButton")} (v${PLUGIN_VERSION})`}
+                    : t(locale, "download.consentButtonPick")}
                 </button>
               </form>
             )}
 
-            <div className="mt-7 rounded-xl bg-emerald-50 p-4 text-sm leading-6 text-emerald-900">
-              <strong>{t(locale, "download.requires")}</strong> {t(locale, "download.requiresBody")}
-            </div>
-
-            <ol className="mt-6 list-decimal space-y-2 pl-5 text-sm text-slate-600">
-              <li>{t(locale, "download.step1")}</li>
-              <li>
-                {t(locale, "download.step2")}{" "}
-                <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">.rbz</code>
-              </li>
-              <li>{t(locale, "download.step3")}</li>
-              <li>{t(locale, "download.step4")}</li>
-            </ol>
-
-            <p className="mt-5 text-sm">
-              <Link href="/how-to-install" className="font-medium text-brand-700 underline">
-                {t(locale, "download.fullGuide")} →
+            <p className="mt-7 rounded-xl bg-emerald-50 p-4 text-sm leading-6 text-emerald-900">
+              {t(locale, "download.requiresBody")}{" "}
+              <Link href="/how-to-install" className="font-semibold underline">
+                {t(locale, "download.installHelp")} →
               </Link>
             </p>
-
-            {/* Dirory for Revit (beta): same account, same consent, Windows only. */}
-            <div className="mt-8 rounded-xl border border-slate-200 p-5">
-              <p className="text-sm font-semibold text-slate-900">{t(locale, "download.revitTitle")}</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{t(locale, "download.revitBody")}</p>
-              {consented && !editing ? (
-                <a
-                  href="/api/download/revit"
-                  className="mt-4 inline-flex rounded-full border border-brand-700 px-5 py-2.5 text-sm font-semibold text-brand-700 transition hover:bg-brand-50"
-                >
-                  {t(locale, "download.revitButton")}
-                </a>
-              ) : null}
-              <p className="mt-3 text-xs leading-5 text-slate-500">{t(locale, "download.revitStep")}</p>
-            </div>
           </>
         ) : (
           <>
