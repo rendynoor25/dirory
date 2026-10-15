@@ -33,6 +33,14 @@ namespace Dirory.Revit
                 Panel = new PanelPage();
                 application.RegisterDockablePane(PaneId, "Dirory", Panel);
 
+                // Live cost: any change to a model, or switching to another
+                // one, marks the takeoff out of date (Bridge re-measures).
+                application.ControlledApplication.DocumentChanged += (s, e) => Panel.Bridge.MarkChanged();
+                application.ViewActivated += (s, e) =>
+                {
+                    if (e.PreviousActiveView?.Document != e.CurrentActiveView?.Document) Panel.Bridge.MarkChanged();
+                };
+
                 const string tab = "Dirory";
                 try { application.CreateRibbonTab(tab); } catch (Autodesk.Revit.Exceptions.ArgumentException) { /* exists */ }
                 RibbonPanel panel = application.CreateRibbonPanel(tab, "Library");

@@ -5,6 +5,15 @@
 //          items: [{ key, name, element, quantity_basis, unit, unit_price,
 //                    title, reference, components: [...] }] }
 //   GET /rab                -> { regions: [{ id, name, fetched }] }
+//   GET /rab?region=jakarta&live=1
+//     -> { region, name, live: true, pro, items: [{ key, element, unit, unit_price }] }
+//
+// `live` is the plugin's live cost total, shown to every signed-in architect
+// while they model: unit prices only, no analyses, titles or references. The
+// itemised RAB (breakdown, print, CSV, own prices) stays Dirory Pro; `pro`
+// tells the panel whether to offer it. These prices are public in origin
+// (Jakarta's HSP), so the total itself gives nothing away. Checking Pro here
+// never binds a project pass.
 //
 // The plugin multiplies these unit prices by the quantities of its own
 // takeoff (plugin/dirory_library/ui/rab.js); geometry never leaves SketchUp.
@@ -37,6 +46,7 @@ async function hasPro(
   supabase: ReturnType<typeof serviceClient>,
   profileId: string,
   model: string | null,
+  bind = true,
 ): Promise<boolean> {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", profileId).maybeSingle();
   if (profile?.role === "admin") return true;
@@ -59,6 +69,7 @@ async function hasPro(
   if (rows.some((r) => r.model_hash === model)) return true;
   const unused = rows.find((r) => r.model_hash === null);
   if (!unused) return false;
+  if (!bind) return true;
   // Bind the soonest-ending unused pass to this model. The `is null` guard
   // keeps two simultaneous requests from binding it twice.
   const { data: bound } = await supabase
@@ -90,6 +101,22 @@ Deno.serve(async (req: Request) => {
     return json({ regions: data ?? [] });
   }
   if (!REGION_RE.test(region)) return json({ error: "invalid region" }, 400);
+
+  if (params.get("live") === "1") {
+    const [{ data: reg }, { data: items, error }] = await Promise.all([
+      supabase.from("rab_regions").select("id, name").eq("id", region).maybeSingle(),
+      supabase.from("rab_items").select("key, element, unit, unit_price").eq("region_id", region).order("sort"),
+    ]);
+    if (error) return json({ error: "read failed" }, 500);
+    if (!reg) return json({ error: "unknown region" }, 404);
+    return json({
+      region: reg.id,
+      name: reg.name,
+      live: true,
+      pro: await hasPro(supabase, identity.profileId, model, false),
+      items: ((items ?? []) as { unit_price: number }[]).map((it) => ({ ...it, unit_price: Number(it.unit_price) })),
+    });
+  }
 
   if (!(await hasPro(supabase, identity.profileId, model))) {
     return json({ error: "pro_required", upgrade_url: `${siteUrl()}/pro` }, 402);

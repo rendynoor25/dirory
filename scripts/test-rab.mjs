@@ -144,4 +144,34 @@ eq("own prices work on architecture lines too",
 eq("MEP subtotal is its lines", mrab.subtotals.mep, mrab.lines.filter((l) => l.element === "mep").reduce((s, l) => s + l.amount, 0));
 console.log(`MEP sample: Rp ${mrab.subtotals.mep.toLocaleString("id-ID")}, ${mrab.unpriced} line(s) to price`);
 
+// Demolition: Revit phasing (masonry and concrete by volume, roofs as tile
+// and frame, doors by width) and SketchUp "Bongkar" tags (wall faces).
+const demo = {
+  rows: [], openings: [],
+  demolition: [
+    { group: "masonry", name: "Bata 1/2 batu", unit: "m3", quantity: 3.5, width_m: 0 },
+    { group: "concrete", name: "Plat 12", unit: "m3", quantity: 2, width_m: 0 },
+    { group: "roof", name: "Genteng beton", unit: "m2", quantity: 40, width_m: 0 },
+    { group: "door", name: "P1 : 90x210", unit: "unit", quantity: 2, width_m: 0.9 },
+    { group: "door", name: "P2 : 150x210", unit: "unit", quantity: 1, width_m: 1.5 },
+    { group: "plumbing_fixture", name: "Toilet-Domestic-3D", unit: "unit", quantity: 1, width_m: 0 },
+    { group: "equipment", name: "Split AC Outdoor : 1 PK", unit: "unit", quantity: 1, width_m: 0 },
+    { group: "pipe", name: "PVC", unit: "m", quantity: 12, width_m: 0 },
+    { group: "wall_area", name: "Warm White", unit: "m2", quantity: 20, width_m: 0 },
+    { group: "component", name: "Sofa 3 seater", unit: "unit", quantity: 1, width_m: 0 },
+  ],
+};
+const drab = computeRab(demo, book);
+const dline = (id) => drab.lines.find((l) => l.id === id);
+eq("demolished masonry by volume, plus SketchUp wall faces at 15 cm", dline("demo|demo_brick").quantity, 3.5 + 20 / 2 * 0.15);
+eq("demolished concrete", dline("demo|demo_concrete").quantity, 2);
+eq("roof: tiles and frame", dline("demo|demo_roof_tile").quantity + dline("demo|demo_roof_frame").quantity, 80);
+eq("single door", dline("demo|demo_door|P1 : 90x210").quantity, 2);
+eq("a door over 1.2 m wide is double", dline("demo|demo_door_double|P2 : 150x210").quantity, 1);
+eq("WC removal", dline("demo|demo_wc|Toilet-Domestic-3D").quantity, 1);
+eq("AC outdoor unit and furniture are not priced", drab.lines.filter((l) => /Outdoor|Sofa/.test(l.name)).length, 0);
+eq("pipe removal is listed for a price", dline("demo|pipe|PVC").needs_price ? 1 : 0, 1);
+eq("demolition subtotal", drab.subtotals.demolition, drab.lines.filter((l) => l.element === "demolition").reduce((s, l) => s + l.amount, 0));
+console.log(`Demolition sample: Rp ${drab.subtotals.demolition.toLocaleString("id-ID")}`);
+
 process.exit(failed ? 1 : 0);

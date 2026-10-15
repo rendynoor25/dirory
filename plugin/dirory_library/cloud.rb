@@ -1178,7 +1178,9 @@ module Dirory
       # RAB price book for a region (the `rab` Edge Function). The plugin
       # multiplies it by its own takeoff, so no geometry is sent. Answers the
       # panel with window.diroryRabBook(book) or window.diroryRabError(msg).
-      def self.fetch_rab(dialog, region)
+      # `live`: the slim price list for the live cost total (any signed-in
+      # architect; prices only, no breakdown), sent to window.diroryLiveBook.
+      def self.fetch_rab(dialog, region, live: false)
         region = region.to_s.downcase.gsub(/[^a-z0-9_-]/, '')
         region = 'jakarta' if region.empty?
         say = lambda do |fn, value|
@@ -1196,14 +1198,17 @@ module Dirory
         # model id is sent, never the id, the title or the path.
         guid = Sketchup.active_model ? Sketchup.active_model.guid.to_s : ''
         model = guid.empty? ? '' : Digest::SHA256.hexdigest(guid)
-        request = new_request("#{api_base_url}/rab?region=#{region}&model=#{model}", Sketchup::Http::GET)
+        url = "#{api_base_url}/rab?region=#{region}&model=#{model}#{live ? '&live=1' : ''}"
+        request = new_request(url, Sketchup::Http::GET)
         request.headers = request_headers
         request.start do |_req, response|
           release_request(request)
           safely do
             code = response.status_code.to_i
             if code == 200
-              say.call('diroryRabBook', (JSON.parse(response.body.to_s) rescue {}))
+              say.call(live ? 'diroryLiveBook' : 'diroryRabBook', (JSON.parse(response.body.to_s) rescue {}))
+            elsif live
+              say.call('diroryLiveBook', nil)
             elsif code == 402
               body = (JSON.parse(response.body.to_s) rescue {})
               say.call('diroryRabUpgrade', body['upgrade_url'].to_s)
@@ -1293,14 +1298,17 @@ module Dirory
       class ModelWatcher < Sketchup::ModelObserver
         def onTransactionCommit(model)
           Dirory::Library::Cloud.mark_dirty(model)
+          Dirory::Library.live_changed(model)
         end
 
         def onTransactionUndo(model)
           Dirory::Library::Cloud.mark_dirty(model)
+          Dirory::Library.live_changed(model)
         end
 
         def onTransactionRedo(model)
           Dirory::Library::Cloud.mark_dirty(model)
+          Dirory::Library.live_changed(model)
         end
       end
 
@@ -1311,10 +1319,12 @@ module Dirory
 
         def onNewModel(model)
           Dirory::Library::Cloud.watch(model)
+          Dirory::Library.live_changed(model)
         end
 
         def onOpenModel(model)
           Dirory::Library::Cloud.watch(model)
+          Dirory::Library.live_changed(model)
         end
       end
 

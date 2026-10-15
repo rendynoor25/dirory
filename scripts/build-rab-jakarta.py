@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-Build Dirory's Jakarta RAB price book - 15 architectural, 12 structural and
-87 MEP work items, each with its AHSP coefficients and Jakarta's basic prices
+Build Dirory's Jakarta RAB price book - 15 architectural, 12 structural,
+87 MEP and 17 demolition work items, each with its AHSP coefficients and Jakarta's basic prices
 (HSD), plus 4 split AC units at market prices - and the national AHSP
 coefficients the book is built on.
 
@@ -134,6 +134,31 @@ MEP = [("pipe_%s_%d" % (kind, dn), hsp, "%s DN %d" % (label, dn), "mep", "mep")
     ("diffuser", 6355, "Box diffuser 250 x 250 mm", "mep", "mep"),
 ]
 
+# Demolition (pembongkaran), for elements a Revit phase demolishes or that a
+# SketchUp model tags as demolished. rab.js maps them in demoKey.
+DEMOLITION = [
+    ("demo_brick", 3406, "Demolish brick masonry, manual", "demolition", "demolition"),
+    ("demo_concrete", 3405, "Demolish concrete 20-40 MPa, jack hammer", "demolition", "demolition"),
+    ("demo_ceiling", 1939, "Remove ceiling incl. frame (not reused)", "demolition", "demolition"),
+    ("demo_floor_tile", 3535, "Remove ceramic floor tiles", "demolition", "demolition"),
+    ("demo_roof_tile", 5670, "Remove concrete roof tiles", "demolition", "demolition"),
+    ("demo_roof_frame", 1940, "Remove roof frame, battens and rafters", "demolition", "demolition"),
+    ("demo_door", 5659, "Remove single door leaf with frame", "demolition", "demolition"),
+    ("demo_door_double", 5660, "Remove double door leaf with frame", "demolition", "demolition"),
+    ("demo_window", 5663, "Remove single window with timber frame", "demolition", "demolition"),
+    ("demo_window_double", 5665, "Remove double window with timber frame", "demolition", "demolition"),
+    ("demo_wc", 5642, "Remove close-coupled WC", "demolition", "demolition"),
+    ("demo_wc_squat", 5640, "Remove squat WC", "demolition", "demolition"),
+    ("demo_washbasin", 5643, "Remove washbasin", "demolition", "demolition"),
+    ("demo_urinal", 5644, "Remove urinal", "demolition", "demolition"),
+    ("demo_floor_drain", 5645, "Remove floor drain", "demolition", "demolition"),
+    ("demo_light", 6135, "Remove light fitting and its wiring", "demolition", "demolition"),
+    ("demo_ac", 6136, "Remove wall-mounted split AC and its installation", "demolition", "demolition"),
+]
+# Analyses Dirory uses although they are not on a current circular, because
+# none is: Jakarta still publishes this one from its 2019 e-budgeting list.
+OLDER_ANALYSES = {"demo_floor_tile"}
+
 # Items with no Jakarta analysis, at market prices: a mid-range standard split
 # AC unit plus installation with about 3 m of piping. From retail listings,
 # June-October 2026 (Erablue, Ruparupa, Transmart; installation Rp 385,000
@@ -161,6 +186,7 @@ def clean_reference(text: str) -> str:
     t = " ".join(str(text or "").split())
     t = re.sub(r"^SE DIRJEN BINKON NO\.? ?", "SE Dirjen Binkon No. ", t)
     t = t.replace("SE DIRJEN SE Dirjen", "SE Dirjen").replace("SE DIRJEN Binkon", "SE Dirjen Binkon")
+    t = t.replace("PERMEN PUPR", "Permen PUPR")
     return t.replace("No.182", "No. 182")
 
 
@@ -187,7 +213,7 @@ def main() -> int:
         pass
     items, problems = [], []
     print("%-15s %-4s %14s %14s %7s  %s" % ("item", "unit", "Dirory", "Jakarta", "diff", "reference"))
-    for key, hsp_id, name, element, quantity in ITEMS + MEP:
+    for key, hsp_id, name, element, quantity in ITEMS + MEP + DEMOLITION:
         d = fetch(hsp_id)
         components = []
         for cat in d.get("kategori_material") or []:
@@ -258,7 +284,9 @@ def main() -> int:
     with open(NATIONAL, "w", encoding="utf-8") as fh:
         json.dump(national(items), fh, ensure_ascii=False, indent=1)
     print("\n%d items -> %s, %s" % (len(items), os.path.relpath(OUT), os.path.relpath(NATIONAL)))
-    stale = [it["key"] for it in items if it["jakarta_hsp_id"] and "/SE/Dk/" not in it["reference"]]
+    current = ("/SE/Dk/", "8 Tahun 2023")
+    stale = [it["key"] for it in items if it["jakarta_hsp_id"] and it["key"] not in OLDER_ANALYSES
+             and not any(c in it["reference"] for c in current)]
     if stale:
         problems.append("not on a current SE: " + ", ".join(stale))
     for p in problems:

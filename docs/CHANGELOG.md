@@ -1,5 +1,40 @@
 # Changelog
 
+## Unreleased — Revit phasing, demolition, and live cost
+
+**Phasing.** The RAB prices one Revit phase, by default the last one ("New
+Construction"); the panel offers the others. In that phase new and temporary
+elements are counted as construction, existing ones are not counted, and
+elements the phase demolishes are priced as **demolition (pembongkaran)**
+(`revit/DiroryRevit/src/Phasing.cs`, used by all three measurers). Rooms are
+taken from the priced phase. SketchUp has no phases, so tags do the same job:
+anything on (or inside a group or component on) a tag named "Existing",
+"Eksisting" or "Lama" is not measured, and "Demolish" or "Bongkar" is listed as
+demolition (`takeoff.rb`, `phase_of`).
+
+**Demolition prices.** 17 Jakarta items: brick masonry and concrete per m³,
+ceiling with frame, roof tiles and roof frame, single and double doors and
+windows with frames, WCs, washbasin, urinal, floor drain, light fittings and
+split ACs. All on the current circulars or Permen PUPR 8/2023, except ceramic
+floor removal, which only Jakarta's 2019 list has; its line says so. SketchUp
+walls have no thickness, so demolished wall faces are taken as 15 cm walls.
+Debris haulage is not included. **Migration 0042** allows the `demolition`
+element; the Jakarta book is 135 items.
+
+**Live cost.** A strip at the bottom of the panel shows the model's estimated
+total while the architect models, for every signed-in account. The host
+re-measures 1.5 s after the last change (four times the last measurement on a
+big model): SketchUp through its model observers, Revit through
+`DocumentChanged` and a timer on the panel. The panel prices the takeoff with
+a slim price list (`GET /rab?live=1`: unit prices only, and whether the account
+has Pro; it never binds a project pass), so quantities never leave the
+computer. "Breakdown" opens the itemised RAB for Pro and the upgrade offer for
+everyone else. It can be hidden from the strip or the RAB options.
+
+- `rab` Edge Function: `live=1` mode.
+- Tests: `scripts/test-rab.mjs`, 59 checks. Not yet run in SketchUp or Revit.
+
+
 ## Unreleased — MEP in the Revit RAB; your own prices on any line
 
 **MEP takeoff (Revit).** `revit/DiroryRevit/src/MepTakeoff.cs` measures pipe

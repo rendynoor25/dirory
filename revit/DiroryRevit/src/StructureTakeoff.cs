@@ -43,7 +43,8 @@ namespace Dirory.Revit
 
         /// Rows grouped by member and type; walls with concrete in them, so the
         /// architectural takeoff does not price them again as masonry.
-        public static (List<Dictionary<string, object>> rows, HashSet<ElementId> concreteWalls) Run(Document doc)
+        /// New construction in the priced phase; demolished concrete and steel go to `ph`.
+        public static (List<Dictionary<string, object>> rows, HashSet<ElementId> concreteWalls) Run(Document doc, Phasing ph)
         {
             var rows = new Dictionary<string, Dictionary<string, object>>();
             var concreteWalls = new HashSet<ElementId>();
@@ -72,6 +73,9 @@ namespace Dirory.Revit
             {
                 double m3 = ConcreteVolume(doc, e);
                 if (m3 <= 0) return;
+                string status = ph.Status(e);
+                if (status == "demolished") ph.Demolish("concrete", TypeName(doc, e), "m3", m3);
+                if (status != "new") return;
                 var row = Row(member, TypeName(doc, e));
                 row["count"] = (int)row["count"] + 1;
                 Bump(row, "concrete_m3", m3);
@@ -84,6 +88,9 @@ namespace Dirory.Revit
             {
                 double m3 = Volume(e);
                 if (m3 <= 0) return;
+                string status = ph.Status(e);
+                if (status == "demolished") ph.Demolish("steel", TypeName(doc, e), "kg", m3 * SteelKgPerM3);
+                if (status != "new") return;
                 var row = Row("steel", member == "column" ? "Column: " + TypeName(doc, e) : "Beam: " + TypeName(doc, e));
                 row["count"] = (int)row["count"] + 1;
                 Bump(row, "steel_kg", m3 * SteelKgPerM3);

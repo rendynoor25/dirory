@@ -100,11 +100,13 @@
             <option value="brick">Red brick walls</option>
             <option value="aac">Lightweight block (AAC) walls</option>
           </select>
+          <select id="rabPhase" aria-label="Phase to price" title="Revit phase to price: new construction is counted, existing is not, demolished is priced as demolition" hidden></select>
           <select id="rabConcrete" aria-label="Concrete" hidden>
             <option value="readymix">Ready-mix concrete</option>
             <option value="site">Site-mixed concrete</option>
           </select>
           <label class="usage-option"><input type="checkbox" id="rabBothSides" checked> Walls drawn with both faces</label>
+          <label class="usage-option"><input type="checkbox" id="rabLive" checked> Show live cost while modelling</label>
           <button id="rabRun" class="primary-btn">💰 Estimate cost (RAB)</button>
         </div>
         <div id="rabBody"></div>
@@ -329,6 +331,18 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Live cost: the estimated total of the model, updated as it changes.
+       Every signed-in architect sees the total; the breakdown is Dirory Pro. -->
+  <div id="liveCost" class="live-cost" hidden>
+    <div class="live-cost-figure">
+      <span class="live-cost-label">Live cost <span id="liveCostRegion"></span></span>
+      <strong id="liveCostTotal">…</strong>
+      <span id="liveCostNote" class="live-cost-note"></span>
+    </div>
+    <button id="liveCostDetails" class="live-cost-btn">Breakdown</button>
+    <button id="liveCostClose" class="live-cost-close" aria-label="Hide live cost" title="Hide live cost">×</button>
   </div>
 
   <div id="toast" class="toast" hidden></div>

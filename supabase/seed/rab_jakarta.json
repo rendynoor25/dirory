@@ -7375,6 +7375,812 @@
    "unit_price": 451204.91
   },
   {
+   "key": "demo_brick",
+   "name": "Demolish brick masonry, manual",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m3",
+   "title": "1.6.7 Bongkar 1 m3 pasangan bata merah secara manual",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 3406,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.3,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.03,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Palu godam baja keras",
+     "unit": "buah",
+     "coef": 0.002,
+     "price": 300000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Pahat beton baja keras",
+     "unit": "buah",
+     "coef": 0.003,
+     "price": 150000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Linggis baja keras",
+     "unit": "buah",
+     "coef": 0.007,
+     "price": 200000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 91454.52
+  },
+  {
+   "key": "demo_concrete",
+   "name": "Demolish concrete 20-40 MPa, jack hammer",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m3",
+   "title": "1.6.6 Bongkar 1 m3 beton mutu sedang 20 MPa <  fc < 40 MPa dengan Jack hammer",
+   "reference": "Permen PUPR No. 8 Tahun 2023",
+   "jakarta_hsp_id": 3405,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.4,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.02,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Jack hammer /drill",
+     "unit": "Hari",
+     "coef": 0.05,
+     "price": 245000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa genset diatas 5000w",
+     "unit": "Hari",
+     "coef": 0.05,
+     "price": 350000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 146018.7
+  },
+  {
+   "key": "demo_ceiling",
+   "name": "Remove ceiling incl. frame (not reused)",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m2",
+   "title": "1.6.12 Bongkar 1 m2 Plafond termasuk rangka kayu/hollow dan ditempatkan di penyimpanan sementara (bongkaran tidak dipakai kembali",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1939,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.033,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa scaffolding",
+     "unit": "Set Hari",
+     "coef": 0.033,
+     "price": 45000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 38438.2
+  },
+  {
+   "key": "demo_floor_tile",
+   "name": "Remove ceramic floor tiles",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m2",
+   "title": "B.00058 1 M2 Pembongkaran Keramik",
+   "reference": "Bina Konstruksi e-budgeting 2019",
+   "jakarta_hsp_id": 3535,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.05,
+     "price": 220188.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 266344.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    }
+   ],
+   "unit_price": 15723.77
+  },
+  {
+   "key": "demo_roof_tile",
+   "name": "Remove concrete roof tiles",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m2",
+   "title": "1.6.35 Pembongkaran 1 m2 Atap Genteng Beton",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5670,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.0229,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.0076,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0008,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0003,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 8479.88
+  },
+  {
+   "key": "demo_roof_frame",
+   "name": "Remove roof frame, battens and rafters",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m2",
+   "title": "1.6.9 Bongkar 1 m2 rangka atap/ reng/ kaso struktur kayu dan ditempatkan di penyimpanan sementara (bongkaran tidak dipakai kembali)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1940,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.089,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.022,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 30479.73
+  },
+  {
+   "key": "demo_door",
+   "name": "Remove single door leaf with frame",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.25 Pembongkaran 1 Buah Daun Pintu Single termasuk Kusen",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5659,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.2381,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.119,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0119,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 100614.37
+  },
+  {
+   "key": "demo_door_double",
+   "name": "Remove double door leaf with frame",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.26 Pembongkaran 1 Buah Daun Pintu Double termasuk Kusen",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5660,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.3333,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.1667,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0167,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0056,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 140889.36
+  },
+  {
+   "key": "demo_window",
+   "name": "Remove single window with timber frame",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.29 Pembongkaran 1 Buah Daun Jendela Single termasuk Kusen Kayu",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5663,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.0893,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0089,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.1786,
+     "price": 229195.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 75473.7
+  },
+  {
+   "key": "demo_window_double",
+   "name": "Remove double window with timber frame",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.30 Pembongkaran 1 Buah Daun Jendela Double termasuk Kusen Kayu",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5665,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.25,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.125,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0125,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0042,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 105659.14
+  },
+  {
+   "key": "demo_wc",
+   "name": "Remove close-coupled WC",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.18 Pembongkaran 1 Buah Kloset Duduk",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5642,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.25,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang batu/tembok",
+     "unit": "OH",
+     "coef": 0.125,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0125,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0042,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 105659.14
+  },
+  {
+   "key": "demo_wc_squat",
+   "name": "Remove squat WC",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.16 Pembongkaran 1 Buah Kloset Jongkok tanpa Flushing*)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5640,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.25,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang batu/tembok",
+     "unit": "OH",
+     "coef": 0.125,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0125,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0042,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 105659.14
+  },
+  {
+   "key": "demo_washbasin",
+   "name": "Remove washbasin",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.19 Pembongkaran 1 Buah Wastafel",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5643,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.2,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang batu/tembok",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 84508.19
+  },
+  {
+   "key": "demo_urinal",
+   "name": "Remove urinal",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.20 Pembongkaran 1 Buah Urinoir",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5644,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.2,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang batu/tembok",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 84508.19
+  },
+  {
+   "key": "demo_floor_drain",
+   "name": "Remove floor drain",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "buah",
+   "title": "1.6.21 Pembongkaran 1 Buah Floor Drain",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5645,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang batu/tembok",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 22909.42
+  },
+  {
+   "key": "demo_light",
+   "name": "Remove light fitting and its wiring",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "unit",
+   "title": "1.6.46 Pembongkaran 1 Unit Lampu dan Instalasi",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 6135,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.0595,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.0595,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 34820.38
+  },
+  {
+   "key": "demo_ac",
+   "name": "Remove wall-mounted split AC and its installation",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "unit",
+   "title": "1.6.47 Pembongkaran 1 Unit AC Wall Mounted Split dan Instalasi",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 6136,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.286,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.286,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.029,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 167422.81
+  },
+  {
    "key": "ac_split_05",
    "name": "Split AC 1/2 PK, installed",
    "element": "mep",

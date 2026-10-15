@@ -1139,6 +1139,54 @@ module Dirory
       end
     end
 
+    # Live cost: while the panel asks for it, re-measure the model a moment
+    # after the last edit and send the takeoff to window.diroryLiveTakeoff.
+    # The panel prices it (rab.js) and shows the total. Nothing leaves
+    # SketchUp: the quantities stay in the panel.
+    #
+    # The wait is 1.5 s after the last change, or four times the last
+    # measurement, so a big model is not re-measured on every click.
+    LIVE_MIN_WAIT = 1.5
+
+    def self.set_live(on)
+      @live_on = on ? true : false
+      @live_last_s ||= 0.0
+      if @live_on
+        schedule_live(0.1)
+      elsif @live_timer
+        UI.stop_timer(@live_timer)
+        @live_timer = nil
+      end
+    end
+
+    # From the model observers (cloud.rb): something changed.
+    def self.live_changed(model)
+      return unless @live_on && @dialog && @dialog.visible?
+      return unless model == Sketchup.active_model
+      schedule_live(nil)
+    rescue StandardError
+      nil
+    end
+
+    def self.schedule_live(wait)
+      wait ||= [LIVE_MIN_WAIT, @live_last_s * 4].max
+      UI.stop_timer(@live_timer) if @live_timer
+      @live_timer = UI.start_timer(wait, false) do
+        @live_timer = nil
+        run_live
+      end
+    end
+
+    def self.run_live
+      return unless @live_on && @dialog && @dialog.visible? && Sketchup.active_model
+      started = Time.now
+      data = takeoff
+      @live_last_s = Time.now - started
+      @dialog.execute_script("window.diroryLiveTakeoff && window.diroryLiveTakeoff(#{data.to_json});")
+    rescue StandardError => e
+      puts "[Dirory] live cost: #{e.message}"
+    end
+
     ELEMENT_LABELS = {
       'wall' => 'Wall (dinding)', 'floor' => 'Floor (lantai)',
       'ceiling' => 'Ceiling (plafon)', 'roof' => 'Roof (atap)'
@@ -1460,6 +1508,13 @@ module Dirory
         @dialog.add_action_callback('requestRab') do |_ctx, payload|
           data = parse_payload(payload)
           Cloud.fetch_rab(@dialog, data['region'])
+        end
+        @dialog.add_action_callback('requestLiveBook') do |_ctx, payload|
+          data = parse_payload(payload)
+          Cloud.fetch_rab(@dialog, data['region'], live: true)
+        end
+        @dialog.add_action_callback('setLive') do |_ctx, payload|
+          set_live(parse_payload(payload)['on'])
         end
         @dialog.add_action_callback('printHtml') do |_ctx, payload|
           data = parse_payload(payload)

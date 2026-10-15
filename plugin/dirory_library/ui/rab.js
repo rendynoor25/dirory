@@ -69,7 +69,7 @@
   // rebar in Revit, or pass options.rebarRatio, for a real figure.
   const REBAR_RATIO = { footing: 90, tie_beam: 130, column: 180, beam: 160, slab: 110, wall: 120 };
 
-  const ELEMENTS = ['structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep'];
+  const ELEMENTS = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep'];
 
   function round2(n) {
     return Math.round((Number(n) || 0) * 100) / 100;
@@ -318,6 +318,96 @@
     }).sort((a, b) => order.indexOf(a.section) - order.indexOf(b.section));
   }
 
+  /* --------------------------------------------------------- demolition */
+  //
+  // takeoff.demolition: what the priced phase demolishes (Revit phasing, see
+  // Phasing.cs) or what a SketchUp model tags "Demolish" / "Bongkar":
+  //   { group, name, unit, quantity, width_m }
+  // Groups: masonry and concrete (m3), wall_area (m2 of SketchUp wall faces),
+  // floor / floor_tiled, ceiling, roof (m2), door, window (units, with width),
+  // and the MEP groups or `component` (SketchUp) for fixtures and fittings.
+
+  // Wall thickness for demolishing SketchUp walls, which have faces, not
+  // thickness: a plastered half-brick wall.
+  const DEMO_WALL_THICKNESS_M = 0.15;
+
+  function fixtureDemoKey(t) {
+    if (/squat|jongkok/.test(t)) return 'demo_wc_squat';
+    if (/(water ?closet|toilet|closet|kloset|\bwc\b|monoblock)/.test(t)) return 'demo_wc';
+    if (/urinal|urinoir/.test(t)) return 'demo_urinal';
+    if (/drain/.test(t)) return 'demo_floor_drain';
+    if (/lavator|basin|wastafel|vanity/.test(t)) return 'demo_washbasin';
+    return null;
+  }
+
+  // [item key, quantity factor] for a demolished row; [] when Dirory has no
+  // item (listed for a price); null when it is not priced at all (furniture
+  // in SketchUp, an AC's outdoor unit).
+  function demoKey(row, o) {
+    const t = String(row.name || '').toLowerCase();
+    const double = (Number(row.width_m) || 0) > 1.2;
+    switch (row.group) {
+      case 'masonry': return [['demo_brick', 1]];
+      case 'wall_area': return [['demo_brick', (o.wallsBothSides ? 0.5 : 1) * DEMO_WALL_THICKNESS_M]];
+      case 'concrete': return [['demo_concrete', 1]];
+      case 'floor_tiled': return [['demo_floor_tile', 1]];
+      case 'floor': return TILE_RE.test(t) ? [['demo_floor_tile', 1]] : [];
+      case 'ceiling': return [['demo_ceiling', 1]];
+      case 'roof': return [['demo_roof_tile', 1], ['demo_roof_frame', 1]];
+      case 'door': return [[double ? 'demo_door_double' : 'demo_door', 1]];
+      case 'window': return [[double ? 'demo_window_double' : 'demo_window', 1]];
+      case 'light': return [['demo_light', 1]];
+      case 'plumbing_fixture': {
+        const k = fixtureDemoKey(t);
+        return k ? [[k, 1]] : [];
+      }
+      case 'equipment':
+        if (/outdoor|condens|\bodu\b|\bcdu\b/.test(t)) return null;
+        return /split|\bac\b|air ?con|indoor|wall[\s-]?mount/.test(t) ? [['demo_ac', 1]] : [];
+      case 'component': {
+        if (/lamp|light|downlight|lampu/.test(t)) return [['demo_light', 1]];
+        if (/split|\bac\b|air ?con/.test(t)) return [['demo_ac', 1]];
+        const k = fixtureDemoKey(t);
+        return k ? [[k, 1]] : null;
+      }
+      default:
+        return [];
+    }
+  }
+
+  function demolitionLines(takeoff, items, o) {
+    const rows = (takeoff && takeoff.demolition) || [];
+    const byId = new Map();
+    const add = (id, fields, quantity) => {
+      if (!byId.has(id)) byId.set(id, Object.assign({ id: id, element: 'demolition', basis: 'demolition', quantity: 0 }, fields));
+      byId.get(id).quantity += quantity;
+    };
+    const perType = /^(door|window|plumbing_fixture|equipment|component)$/;
+    rows.forEach((row) => {
+      const qty = Number(row.quantity) || 0;
+      if (qty <= 0) return;
+      const matched = demoKey(row, o);
+      if (matched === null) return;
+      const keys = matched.filter(([k]) => items.has(k));
+      if (!keys.length) {
+        add('demo|' + row.group + '|' + row.name, {
+          key: null, name: 'Demolish: ' + row.name, unit: row.unit || 'unit', needs_price: true, reference: '', price: 0,
+        }, qty);
+        return;
+      }
+      keys.forEach(([key, factor]) => {
+        const it = items.get(key);
+        const named = perType.test(row.group);
+        add('demo|' + key + (named ? '|' + row.name : ''), {
+          key: key, unit: it.unit, reference: it.reference || '', price: Number(it.unit_price) || 0,
+          name: it.name + (named ? ' · ' + row.name : '') +
+            (row.group === 'wall_area' ? ' (' + Math.round(DEMO_WALL_THICKNESS_M * 100) + ' cm thick walls assumed)' : ''),
+        }, qty * factor);
+      });
+    });
+    return Array.from(byId.values()).map((l) => Object.assign(l, { quantity: round2(l.quantity) }));
+  }
+
   /**
    * computeRab(takeoff, book, options) ->
    *   { region, lines: [{id, element, key, name, basis, quantity, unit, unit_price, amount,
@@ -354,6 +444,7 @@
         reference: it.reference || '',
       });
     });
+    demolitionLines(takeoff, items, o).forEach((l) => lines.push(l));
     mepLines(takeoff, items).forEach((l) => lines.push(l));
 
     const prices = o.prices || {};

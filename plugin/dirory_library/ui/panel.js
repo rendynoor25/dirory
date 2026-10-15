@@ -1364,6 +1364,8 @@ window.diroryAccount = function (state) {
     byId('acctError').textContent = 'Sign-in was not completed. Please try again.';
     byId('acctError').hidden = false;
   }
+  if (state.signedIn) startLive();
+  else if (was) stopLive();
   render(); // the empty-search message depends on the share setting
 };
 
@@ -1406,6 +1408,7 @@ const ELEMENT_LABELS = {
   ceiling: 'Ceiling (plafon)',
   roof: 'Roof (atap)',
   mep: 'MEP (mekanikal, elektrikal, plumbing)',
+  demolition: 'Demolition (pembongkaran)',
 };
 
 function fmt2(n) {
@@ -1449,8 +1452,20 @@ window.diroryTakeoff = function (data) {
   const openings = data.openings || [];
   const structure = data.structure || [];
   const mep = data.mep || [];
+  const demolition = data.demolition || [];
   byId('rabConcrete').hidden = !structure.some((s) => s.concrete_m3 > 0);
-  if (!rows.length && !openings.length && !structure.length && !mep.length) {
+  // Revit phases: price one of them (the host remembers the choice).
+  const phases = data.phases || [];
+  const phaseSelect = byId('rabPhase');
+  phaseSelect.hidden = phases.length < 2;
+  phaseSelect.innerHTML = '';
+  phases.forEach((p) => {
+    const option = el('option', '', `Phase: ${p.name}`);
+    option.value = p.id;
+    option.selected = p.id === data.phase;
+    phaseSelect.appendChild(option);
+  });
+  if (!rows.length && !openings.length && !structure.length && !mep.length && !demolition.length) {
     body.appendChild(el('p', 'usage-note',
       'Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.'));
     byId('takeoffExport').hidden = true;
@@ -1492,6 +1507,15 @@ window.diroryTakeoff = function (data) {
       [fmt2(s.steel_kg) + ' kg', 'num'],
     ]);
     if (steel.length) body.appendChild(takeoffTable([['Steel member'], ['Weight', 'num']], steel));
+  }
+
+  // What the priced phase demolishes (Revit) or the "Bongkar" tag holds (SketchUp).
+  if (demolition.length) {
+    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.demolition));
+    body.appendChild(takeoffTable([['Element'], ['Quantity', 'num']], demolition.map((d) => [
+      [`${d.group.replace(/_/g, ' ')}: ${d.name}`, ''],
+      [`${d.unit === 'unit' ? d.quantity : fmt2(d.quantity)} ${d.unit === 'unit' ? '' : d.unit}`.trim(), 'num'],
+    ])));
   }
 
   // Revit only: pipe and duct runs, fixtures and devices.
@@ -1637,6 +1661,7 @@ window.diroryPrices = function (prices) {
   customPrices = prices && typeof prices === 'object' ? prices : {};
   customPricesLoaded = true;
   if (lastTakeoff && rabBook) renderRab();
+  renderLive();
 };
 
 function lineName(l) {
@@ -1659,6 +1684,7 @@ function priceInput(l) {
     else delete customPrices[l.id];
     try { sketchup.savePrices(JSON.stringify(customPrices)); } catch (e) { /* kept for this session */ }
     renderRab();
+    renderLive();
   });
   return input;
 }
@@ -1723,6 +1749,12 @@ function exportRabCsv() {
 
 window.diroryRabBook = function (book) {
   rabBook = book;
+  // The full book is served to Pro only: the live strip can offer the breakdown.
+  if (liveBook && !liveBook.pro) {
+    liveBook.pro = true;
+    byId('liveCostDetails').textContent = 'Breakdown';
+    byId('liveCostDetails').title = 'Open the itemised RAB';
+  }
   if (!customPricesLoaded) {
     try { sketchup.loadPrices(); } catch (e) { /* an older host keeps no prices */ }
   }
@@ -1762,7 +1794,109 @@ byId('rabRun').addEventListener('click', () => {
   byId('rabRun').textContent = 'Loading prices…';
   sketchup.requestRab(JSON.stringify({ region: region }));
 });
-['rabWall', 'rabConcrete', 'rabBothSides'].forEach((id) => byId(id).addEventListener('change', () => { if (rabBook) renderRab(); }));
+['rabWall', 'rabConcrete', 'rabBothSides'].forEach((id) => byId(id).addEventListener('change', () => {
+  if (rabBook) renderRab();
+  renderLive();
+}));
+byId('rabPhase').addEventListener('change', () => {
+  sketchup.requestTakeoff(JSON.stringify({ phase: byId('rabPhase').value }));
+});
+
+/* ------------------------------------------------------------------ */
+/* Live cost: the model's estimated total, updated as it changes        */
+/* ------------------------------------------------------------------ */
+//
+// Signed-in architects get a slim price list (`rab?live=1`: unit prices
+// only). The host re-measures the model a moment after each change and sends
+// the takeoff here (diroryLiveTakeoff); rab.js prices it in the panel, so the
+// quantities never leave the computer. The total is for everyone; the
+// itemised RAB - breakdown, print, CSV, own prices - is Dirory Pro.
+
+let liveBook = null;
+let liveTakeoff = null;
+let liveRequested = false;
+const LIVE_PREF = 'dirory.liveCost';
+
+function liveWanted() {
+  try { return localStorage.getItem(LIVE_PREF) !== 'off'; } catch (e) { return true; }
+}
+
+function showLive(on) {
+  byId('liveCost').hidden = !on;
+  document.body.classList.toggle('has-live-cost', on);
+}
+
+function startLive() {
+  if (liveRequested || !account.signedIn || !liveWanted()) return;
+  liveRequested = true;
+  try { sketchup.requestLiveBook(JSON.stringify({ region: byId('rabRegion').value || 'jakarta' })); } catch (e) { liveRequested = false; }
+}
+
+function stopLive() {
+  liveRequested = false;
+  liveBook = null;
+  showLive(false);
+  try { sketchup.setLive(JSON.stringify({ on: false })); } catch (e) { /* older host */ }
+}
+
+window.diroryLiveBook = function (book) {
+  if (!book || !Array.isArray(book.items)) {
+    liveBook = null;
+    showLive(false);
+    return;
+  }
+  liveBook = book;
+  byId('liveCostRegion').textContent = `· ${book.name}`;
+  byId('liveCostDetails').textContent = book.pro ? 'Breakdown' : 'Breakdown ⭐';
+  byId('liveCostDetails').title = book.pro ? 'Open the itemised RAB' : 'The itemised RAB is part of Dirory Pro';
+  byId('liveCostTotal').textContent = 'Measuring…';
+  showLive(true);
+  byId('liveCost').classList.add('updating');
+  sketchup.setLive(JSON.stringify({ on: true }));
+};
+
+window.diroryLiveTakeoff = function (data) {
+  liveTakeoff = data;
+  renderLive();
+  // Keep an open Quantities / RAB view in step with the model too.
+  if (lastTakeoff) window.diroryTakeoff(data);
+};
+
+function renderLive() {
+  if (!liveBook || !liveTakeoff) return;
+  const rab = window.DiroryRab.computeRab(liveTakeoff, liveBook, rabOptions());
+  byId('liveCostTotal').textContent = rupiah(rab.total);
+  const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  byId('liveCostNote').textContent = [
+    `updated ${time}`,
+    rab.unpriced ? `${rab.unpriced} item(s) without a price` : '',
+    'excl. PPN',
+  ].filter(Boolean).join(' · ');
+  byId('liveCost').classList.remove('updating');
+}
+
+byId('liveCostDetails').addEventListener('click', () => {
+  const usageTab = document.querySelector('.tab-usage');
+  if (usageTab && currentFilter !== 'usage') usageTab.click();
+  if (liveTakeoff) window.diroryTakeoff(liveTakeoff);
+  // Pro gets the itemised RAB; anyone else gets the upgrade offer (402).
+  byId('rabRun').click();
+  byId('rabBox').scrollIntoView({ block: 'start' });
+});
+
+byId('liveCostClose').addEventListener('click', () => {
+  try { localStorage.setItem(LIVE_PREF, 'off'); } catch (e) { /* hidden for this session only */ }
+  byId('rabLive').checked = false;
+  stopLive();
+});
+
+byId('rabLive').checked = liveWanted();
+byId('rabLive').addEventListener('change', () => {
+  const on = byId('rabLive').checked;
+  try { localStorage.setItem(LIVE_PREF, on ? 'on' : 'off'); } catch (e) { /* this session only */ }
+  if (on) startLive();
+  else stopLive();
+});
 
 /* ------------------------------------------------------------------ */
 /* Product info + Inspector                                            */

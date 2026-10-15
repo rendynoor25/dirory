@@ -26,6 +26,10 @@
 #     names a storey, not a floor finish, so tags never decide floor vs wall.
 #   * Openings are subtracted for free: SketchUp faces already have their
 #     holes cut out.
+#   * Phases, by tag (SketchUp has no phasing): anything on a tag - or inside
+#     a group or component on a tag - named "Existing" / "Eksisting" / "Lama"
+#     is already built and is not measured; "Demolish" / "Bongkar" is listed
+#     under `demolition` instead, for the RAB's pembongkaran section.
 
 module Dirory
   module Takeoff
@@ -38,6 +42,8 @@ module Dirory
     WINDOW_RE = /\b(window|jendela|bouvenlicht|bovenlicht|ventilasi)\b/i.freeze
     FRAME_RE = /\bkusen\b/i.freeze
     NO_MATERIAL = 'Unpainted'.freeze
+    EXISTING_RE = /\b(existing|eksisting|exist|lama)\b/i.freeze
+    DEMOLISH_RE = /\b(demolish\w*|demolition|bongkar\w*|dibongkar|pembongkaran)\b/i.freeze
 
     # Pure: the element a face belongs to, from the z of its world-space unit
     # normal and the tag names on its path (outermost first).
@@ -60,6 +66,14 @@ module Dirory
       nil
     end
 
+    # Pure: 'new', 'existing' or 'demolish' from the tag names on a path.
+    def self.phase_of(tags)
+      text = tags.compact.map(&:to_s).join(' ')
+      return 'demolish' if text =~ DEMOLISH_RE
+      return 'existing' if text =~ EXISTING_RE
+      'new'
+    end
+
     # The open model's takeoff. `info` returns Dirory's tag for a material or
     # definition (Library.dirory_info), or nil for anything else.
     def self.run(model, info)
@@ -68,7 +82,8 @@ module Dirory
         rows: {},             # [element, material] => row
         openings: {},         # definition name => row
         perimeter_in: 0.0,
-        components_skipped: 0
+        components_skipped: 0,
+        demolition: {}        # [group, name, width] => row
       }
       walk(model.entities, Geom::Transformation.new, nil, [], ctx)
 
@@ -87,7 +102,10 @@ module Dirory
         'totals' => totals.transform_values { |v| v.round(2) },
         'openings' => ctx[:openings].values.sort_by { |o| [o['kind'], o['name']] },
         'floor_perimeter_m' => (ctx[:perimeter_in] * IN_TO_M).round(2),
-        'components_skipped' => ctx[:components_skipped]
+        'components_skipped' => ctx[:components_skipped],
+        'demolition' => ctx[:demolition].values.map do |r|
+          r.merge('quantity' => (r['unit'] == 'm2' ? r['quantity'] * SQIN_TO_SQM : r['quantity']).round(2))
+        end
       }
     end
 
@@ -107,7 +125,7 @@ module Dirory
           walk(e.definition.entities, transform * e.transformation,
                e.material || inherited, tags + [e.layer.name], ctx)
         when Sketchup::ComponentInstance
-          count_component(e, transform, ctx)
+          count_component(e, transform, tags + [e.layer.name], ctx)
         end
       end
     end
@@ -117,11 +135,22 @@ module Dirory
       return if normal.length.zero?
       normal.normalize!
       element = classify(normal.z, tags)
+      phase = phase_of(tags)
+      return if phase == 'existing'
 
       # The painted side: front, or the back when only the back is painted
       # (a reversed face), or whatever the enclosing group carries.
       material = face.material || face.back_material || inherited
       mat_name = material ? material.display_name.to_s : NO_MATERIAL
+      if phase == 'demolish'
+        area = begin
+          face.area(transform)
+        rescue StandardError
+          face.area
+        end
+        demolish(ctx, element == 'wall' ? 'wall_area' : element, mat_name, 'm2', area)
+        return
+      end
       key = [element, mat_name]
       row = ctx[:rows][key] ||= begin
         tag = material ? ctx[:info].call(material) : nil
@@ -152,10 +181,30 @@ module Dirory
       end
     end
 
-    def self.count_component(inst, transform, ctx)
+    # A demolished element, grouped by what it is and its name.
+    def self.demolish(ctx, group, name, unit, quantity, width = 0.0)
+      key = [group, name, width.round(2)]
+      row = ctx[:demolition][key] ||= {
+        'group' => group, 'name' => name, 'unit' => unit, 'quantity' => 0.0, 'width_m' => width.round(2)
+      }
+      row['quantity'] += quantity
+    end
+
+    def self.count_component(inst, transform, tags, ctx)
+      phase = phase_of(tags)
+      return if phase == 'existing'
       defn = inst.definition
       tag = ctx[:info].call(defn)
       kind = opening_kind(defn.name, inst.name, inst.layer.name, tag && tag['category'], tag && tag['name'])
+      if phase == 'demolish'
+        width, = world_size(defn.bounds, transform * inst.transformation)
+        if %w[door window].include?(kind)
+          demolish(ctx, kind, defn.name, 'unit', 1, width)
+        else
+          demolish(ctx, 'component', [defn.name, tag && tag['category']].compact.join(' '), 'unit', 1)
+        end
+        return
+      end
       unless kind
         ctx[:components_skipped] += 1
         return

@@ -23,8 +23,59 @@ namespace Dirory.Revit
         private Dictionary<string, object> _pending;   // device sign-in in progress
         private string _pollInfo = "";
         private Dictionary<string, object> _lastTakeoff;
+        private string _phase = "";
 
-        public Bridge(PanelPage page) { _page = page; }
+        public Bridge(PanelPage page)
+        {
+            _page = page;
+            // Live cost: checked twice a second on the panel's (UI) thread.
+            _liveTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            _liveTimer.Tick += (s, e) => LiveTick();
+            _liveTimer.Start();
+        }
+
+        // ------------------------------------------------------------ live cost
+        //
+        // While the panel asks for it, the model is re-measured a moment after
+        // the last change (Application.DocumentChanged, see App.cs) and the
+        // takeoff goes to window.diroryLiveTakeoff, which prices it and shows
+        // the total. The wait is 1.5 s, or four times the last measurement, so
+        // a big model is not re-measured on every edit. Nothing is sent out.
+
+        private readonly System.Windows.Threading.DispatcherTimer _liveTimer;
+        private bool _liveOn;
+        private volatile bool _liveDirty;
+        private DateTime _lastChange = DateTime.MinValue;
+        private double _lastMeasureSeconds;
+        private bool _liveRunning;
+
+        public void MarkChanged()
+        {
+            _lastChange = DateTime.Now;
+            _liveDirty = true;
+        }
+
+        private void LiveTick()
+        {
+            if (!_liveOn || !_liveDirty || _liveRunning) return;
+            double wait = Math.Max(1.5, _lastMeasureSeconds * 4);
+            if ((DateTime.Now - _lastChange).TotalSeconds < wait) return;
+            _liveDirty = false;
+            _liveRunning = true;
+            App.Ops.Run(app =>
+            {
+                try
+                {
+                    var doc = app.ActiveUIDocument?.Document;
+                    if (doc == null || doc.IsFamilyDocument) return;
+                    var started = DateTime.Now;
+                    var takeoff = Takeoff.Run(doc, _phase);
+                    _lastMeasureSeconds = (DateTime.Now - started).TotalSeconds;
+                    _page.Call("diroryLiveTakeoff", Json.Write(takeoff));
+                }
+                finally { _liveRunning = false; }
+            });
+        }
 
         public void Toast(string text) => _page.Call("diroryToast", Json.Write(new { text, ms = 7000 }));
 
@@ -61,7 +112,8 @@ namespace Dirory.Revit
                     {
                         var doc = app.ActiveUIDocument?.Document;
                         if (doc == null) { Toast("Open a Revit project first."); return; }
-                        _lastTakeoff = Takeoff.Run(doc);
+                        if (data.ContainsKey("phase")) _phase = Json.Str(data, "phase");
+                        _lastTakeoff = Takeoff.Run(doc, _phase);
                         _page.Call("diroryTakeoff", Json.Write(_lastTakeoff));
                     });
                     break;
@@ -69,6 +121,11 @@ namespace Dirory.Revit
                 case "loadPrices": _page.Call("diroryPrices", Json.Write(CleanPrices(Json.Read(_cloud.Get("custom_prices"))))); break;
                 case "savePrices": _cloud.Set("custom_prices", Json.Write(CleanPrices(data))); break;
                 case "requestRab": _ = RequestRab(Json.Str(data, "region")); break;
+                case "requestLiveBook": _ = RequestRab(Json.Str(data, "region"), live: true); break;
+                case "setLive":
+                    _liveOn = data.TryGetValue("on", out var on) && on is bool b && b;
+                    if (_liveOn) { _lastChange = DateTime.MinValue; _liveDirty = true; }
+                    break;
                 case "requestReport":
                     _page.Call("diroryReport", Json.Write(new { models = new object[0], materials = new object[0] }));
                     break;
@@ -229,9 +286,16 @@ namespace Dirory.Revit
 
         // ------------------------------------------------------------ RAB
 
-        private async Task RequestRab(string region)
+        /// `live`: the slim price list for the live cost total (any signed-in
+        /// architect; prices only), sent to window.diroryLiveBook.
+        private async Task RequestRab(string region, bool live = false)
         {
-            if (!_cloud.SignedIn) { _page.Call("diroryRabError", Json.Write("Sign in to estimate costs.")); return; }
+            if (!_cloud.SignedIn)
+            {
+                if (live) _page.Call("diroryLiveBook", "null");
+                else _page.Call("diroryRabError", Json.Write("Sign in to estimate costs."));
+                return;
+            }
             // A project pass binds to one project: only a hash of its id is sent.
             var tcs = new TaskCompletionSource<string>();
             App.Ops.Run(app =>
@@ -241,7 +305,8 @@ namespace Dirory.Revit
             });
             string model = await tcs.Task;
             region = string.IsNullOrEmpty(region) ? "jakarta" : region;
-            var (code, body) = await _cloud.Send(HttpMethod.Get, $"/rab?region={Uri.EscapeDataString(region)}&model={model}");
+            var (code, body) = await _cloud.Send(HttpMethod.Get, $"/rab?region={Uri.EscapeDataString(region)}&model={model}{(live ? "&live=1" : "")}");
+            if (live) { _page.Call("diroryLiveBook", code == 200 ? body : "null"); return; }
             if (code == 200) _page.Call("diroryRabBook", body);
             else if (code == 402) _page.Call("diroryRabUpgrade", Json.Write(Json.Str(Json.Read(body), "upgrade_url")));
             else if (code == 401) { _cloud.Set("token", ""); PushAccount(); _page.Call("diroryRabError", Json.Write("Your session has expired. Please sign in again.")); }

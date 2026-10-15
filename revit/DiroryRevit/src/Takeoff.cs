@@ -31,11 +31,13 @@ namespace Dirory.Revit
         private const double SqFtToM2 = 0.09290304;
         private const double FtToM = 0.3048;
 
-        public static Dictionary<string, object> Run(Document doc)
+        /// `phaseId`: the phase to price (its id as text); empty for the last phase.
+        public static Dictionary<string, object> Run(Document doc, string phaseId = "")
         {
+            var ph = Phasing.For(doc, phaseId);
             var rows = new Dictionary<string, Dictionary<string, object>>();
-            var (structure, concreteWalls) = StructureTakeoff.Run(doc);
-            var mep = MepTakeoff.Run(doc);
+            var (structure, concreteWalls) = StructureTakeoff.Run(doc, ph);
+            var mep = MepTakeoff.Run(doc, ph);
 
             void Add(string element, string material, string category, double areaM2, string core = "")
             {
@@ -57,19 +59,40 @@ namespace Dirory.Revit
             }
 
             double Area(Element e) => (e.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED)?.AsDouble() ?? 0) * SqFtToM2;
+            double Volume(Element e) => (e.get_Parameter(BuiltInParameter.HOST_VOLUME_COMPUTED)?.AsDouble() ?? 0) * 0.028316846592;
 
+            // Existing elements are skipped; demolished ones go to the
+            // demolition list (a concrete wall's or slab's concrete is recorded
+            // by StructureTakeoff).
             foreach (Wall w in new FilteredElementCollector(doc).OfClass(typeof(Wall)).WhereElementIsNotElementType())
             {
                 if (w.WallType.Kind == WallKind.Curtain) continue;
+                string status = ph.Status(w);
+                if (status == "demolished" && !concreteWalls.Contains(w.Id))
+                    ph.Demolish("masonry", w.WallType.Name, "m3", Volume(w));
+                if (status != "new") continue;
                 Add("wall", w.WallType.Name, IsTiled(doc, w.WallType) ? "Tiles" : "", 2 * Area(w),
                     concreteWalls.Contains(w.Id) ? "concrete" : "");
             }
             foreach (Floor f in new FilteredElementCollector(doc).OfClass(typeof(Floor)).WhereElementIsNotElementType())
-                Add("floor", f.FloorType.Name, IsTiled(doc, f.FloorType) ? "Tiles" : "", Area(f));
+            {
+                string status = ph.Status(f);
+                bool tiled = IsTiled(doc, f.FloorType);
+                if (status == "demolished") ph.Demolish(tiled ? "floor_tiled" : "floor", f.FloorType.Name, "m2", Area(f));
+                if (status == "new") Add("floor", f.FloorType.Name, tiled ? "Tiles" : "", Area(f));
+            }
             foreach (Element c in new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Ceilings).WhereElementIsNotElementType())
-                Add("ceiling", doc.GetElement(c.GetTypeId())?.Name ?? "Ceiling", "", Area(c));
+            {
+                string status = ph.Status(c), name = doc.GetElement(c.GetTypeId())?.Name ?? "Ceiling";
+                if (status == "demolished") ph.Demolish("ceiling", name, "m2", Area(c));
+                if (status == "new") Add("ceiling", name, "", Area(c));
+            }
             foreach (RoofBase r in new FilteredElementCollector(doc).OfClass(typeof(RoofBase)).WhereElementIsNotElementType())
-                Add("roof", r.RoofType.Name, "", Area(r));
+            {
+                string status = ph.Status(r);
+                if (status == "demolished") ph.Demolish("roof", r.RoofType.Name, "m2", Area(r));
+                if (status == "new") Add("roof", r.RoofType.Name, "", Area(r));
+            }
 
             var openings = new Dictionary<string, Dictionary<string, object>>();
             void Opening(BuiltInCategory cat, string kind, BuiltInParameter wp, BuiltInParameter hp)
@@ -79,6 +102,9 @@ namespace Dirory.Revit
                     var sym = fi.Symbol;
                     double w = (sym.get_Parameter(wp)?.AsDouble() ?? sym.get_Parameter(BuiltInParameter.FAMILY_WIDTH_PARAM)?.AsDouble() ?? 0) * FtToM;
                     double h = (sym.get_Parameter(hp)?.AsDouble() ?? sym.get_Parameter(BuiltInParameter.FAMILY_HEIGHT_PARAM)?.AsDouble() ?? 0) * FtToM;
+                    string status = ph.Status(fi);
+                    if (status == "demolished") ph.Demolish(kind, sym.FamilyName + " : " + sym.Name, "unit", 1, w);
+                    if (status != "new") continue;
                     string key = kind + "|" + sym.Id;
                     if (!openings.TryGetValue(key, out var o))
                     {
@@ -95,8 +121,13 @@ namespace Dirory.Revit
             Opening(BuiltInCategory.OST_Doors, "door", BuiltInParameter.DOOR_WIDTH, BuiltInParameter.DOOR_HEIGHT);
             Opening(BuiltInCategory.OST_Windows, "window", BuiltInParameter.WINDOW_WIDTH, BuiltInParameter.WINDOW_HEIGHT);
 
+            // Rooms belong to one phase; use the rooms of the priced phase.
             double perimeter = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms)
-                .WhereElementIsNotElementType().OfType<Room>().Where(r => r.Area > 0).Sum(r => r.Perimeter) * FtToM;
+                .WhereElementIsNotElementType().OfType<Room>()
+                .Where(r => r.Area > 0 && (ph.PhaseId == ElementId.InvalidElementId ||
+                                           r.get_Parameter(BuiltInParameter.ROOM_PHASE)?.AsElementId() == ph.PhaseId))
+                .Sum(r => r.Perimeter) * FtToM;
+            var demolition = ph.Demolished();
 
             var list = rows.Values.Select(r => { r["area_m2"] = Math.Round((double)r["area_m2"], 2); return r; })
                 .OrderBy(r => Array.IndexOf(new[] { "wall", "floor", "ceiling", "roof" }, (string)r["element"]))
@@ -114,8 +145,12 @@ namespace Dirory.Revit
                 mep.Count > 0
                     ? "MEP: pipe lengths per system and size (fittings are included in the pipe rates), duct surface areas, and fixtures and devices counted per type."
                     : "No MEP elements found.",
+                ph.PhaseName != ""
+                    ? $"Phase \"{ph.PhaseName}\": new construction is priced, existing elements are not, and elements this phase demolishes are priced as demolition."
+                    : "",
                 "An estimate from the model: check it before a tender.",
             };
+            notes.RemoveAll(n => n == "");
             return new Dictionary<string, object>
             {
                 ["rows"] = list,
@@ -124,6 +159,9 @@ namespace Dirory.Revit
                 ["floor_perimeter_m"] = Math.Round(perimeter, 2),
                 ["structure"] = structure,
                 ["mep"] = mep,
+                ["demolition"] = demolition,
+                ["phase"] = ph.PhaseId == ElementId.InvalidElementId ? "" : ph.PhaseId.Value.ToString(),
+                ["phases"] = Phasing.List(doc),
                 ["components_skipped"] = 0,
                 ["notes"] = notes,
             };

@@ -39,12 +39,16 @@ namespace Dirory.Revit
             (BuiltInCategory.OST_FireAlarmDevices, "fire_alarm"),
         };
 
-        public static List<Dictionary<string, object>> Run(Document doc)
+        /// New construction in the priced phase; demolished elements go to `ph`.
+        public static List<Dictionary<string, object>> Run(Document doc, Phasing ph)
         {
             var rows = new Dictionary<string, Dictionary<string, object>>();
-            void Add(string group, string name, string system, string material, double sizeMm, string unit, double qty)
+            void Add(Element e, string group, string name, string system, string material, double sizeMm, string unit, double qty)
             {
                 if (qty <= 0) return;
+                string status = ph.Status(e);
+                if (status == "demolished") ph.Demolish(group, name, unit, qty);
+                if (status != "new") return;
                 string key = string.Join("|", group, name, system, material, sizeMm.ToString("0"));
                 if (!rows.TryGetValue(key, out var row))
                 {
@@ -65,7 +69,7 @@ namespace Dirory.Revit
                     p.get_Parameter(BuiltInParameter.RBS_PIPE_MATERIAL_PARAM)?.AsValueString(),
                     p.get_Parameter(BuiltInParameter.RBS_PIPE_SEGMENT_PARAM)?.AsValueString(),
                 }.Where(s => !string.IsNullOrWhiteSpace(s)));
-                Add("pipe", TypeName(doc, p),
+                Add(p, "pipe", TypeName(doc, p),
                     p.get_Parameter(BuiltInParameter.RBS_SYSTEM_CLASSIFICATION_PARAM)?.AsString() ?? "",
                     material,
                     (p.get_Parameter(BuiltInParameter.RBS_PIPE_DIAMETER_PARAM)?.AsDouble() ?? 0) * FtToM * 1000,
@@ -75,17 +79,17 @@ namespace Dirory.Revit
             foreach (Element d in Collect(doc, BuiltInCategory.OST_DuctCurves))
             {
                 string size = d.get_Parameter(BuiltInParameter.RBS_CALCULATED_SIZE)?.AsString() ?? "";
-                Add("duct", TypeName(doc, d) + (size != "" ? " " + size : ""),
+                Add(d, "duct", TypeName(doc, d) + (size != "" ? " " + size : ""),
                     d.get_Parameter(BuiltInParameter.RBS_SYSTEM_CLASSIFICATION_PARAM)?.AsString() ?? "", "", 0,
                     "m2", (d.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA)?.AsDouble() ?? 0) * Ft2ToM2);
             }
 
             foreach (Element t in Collect(doc, BuiltInCategory.OST_CableTray))
-                Add("cable_tray", TypeName(doc, t), "", "", 0, "m", Length(t));
+                Add(t, "cable_tray", TypeName(doc, t), "", "", 0, "m", Length(t));
 
             foreach (var (cat, group) in Counted)
                 foreach (Element e in Collect(doc, cat).OfType<FamilyInstance>())
-                    Add(group, TypeName(doc, e), "", "", 0, "unit", 1);
+                    Add(e, group, TypeName(doc, e), "", "", 0, "unit", 1);
 
             return rows.Values.Select(r =>
             {
