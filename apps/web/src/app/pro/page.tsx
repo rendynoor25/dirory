@@ -64,12 +64,30 @@ export default async function ProPage() {
           {user ? (
             <ProCheckout plans={plans ?? []} />
           ) : (
-            <Link
-              href="/login?next=%2Fpro"
-              className="inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-800"
-            >
-              Sign in to get Pro
-            </Link>
+            <>
+              {/* Prices before sign-in: nobody should have to sign up to see them. */}
+              <div className="grid gap-3 sm:grid-cols-2">
+                {(plans ?? []).map((p) => (
+                  <div key={p.id} className="rounded-xl border border-slate-200 p-4 text-sm">
+                    <span className="block font-semibold text-slate-900">{p.per_model ? "One project" : "Monthly"}</span>
+                    <span className="mt-1 block text-2xl font-semibold tracking-tight">
+                      Rp {Number(p.price_idr).toLocaleString("id-ID")}
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">
+                      {p.per_model
+                        ? `${p.days} days for one model — the first one you estimate.`
+                        : `${p.days} days, unlimited cost estimates on every model.`}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/login?next=%2Fpro"
+                className="mt-6 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-800"
+              >
+                Sign in to get Pro
+              </Link>
+            </>
           )}
         </div>
 
