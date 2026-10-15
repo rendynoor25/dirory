@@ -130,7 +130,7 @@ export default async function AdminOverview() {
               }
             />
             {topMissing?.length ? (
-              <Table head={["Query", "Searches", "Installs", "Status"]}>
+              <Table head={["Query", "Searches", "Installs (to 13 Oct)", "Status"]}>
                 {topMissing.map((m) => (
                   <tr key={m.id}>
                     <Td className="font-medium text-slate-900">{m.query_norm}</Td>

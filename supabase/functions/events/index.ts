@@ -12,18 +12,26 @@
 //   * Duplicates (same event id) are accepted and ignored — idempotent.
 //   * usage_snapshot upserts on (install_id, model_id), appends to
 //     usage_history, and an empty items list clears the project.
-//   * search_miss increments missing_requests (creates the row when new).
+//   * search_miss increments missing_requests (creates the row when new). It
+//     is stored with no install or profile, whichever envelope it arrived in;
+//     plugin 0.10.0+ sends it in an anonymous envelope (UU PDP A1).
+//   * consent_log is written only for a sign-in proven by the plugin token.
 //   * Clients never write these tables directly: this function uses the
 //     service role.
 //
 // Deploy: supabase functions deploy events --no-verify-jwt
 
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-import { corsHeaders, json, serviceHeaders } from "../_shared/cors.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
 import { resolveServiceKey } from "../_shared/keys.ts";
+import { bearerToken, resolvePluginToken } from "../_shared/plugin-auth.ts";
 
 const MAX_BATCH = 50;
 const MAX_BODY_BYTES = 512 * 1024; // 512 KB per batch
+const INSTALL_RATE_PER_MIN = 120;
+// Anonymous search-miss batches carry no install id to rate-limit on, so they
+// share one global budget instead.
+const ANON_RATE_PER_MIN = 600;
 
 /**
  * Event kinds the server understands.
@@ -41,7 +49,17 @@ const HANDLED_KINDS = new Set([
   "usage_snapshot",
   "quote_request",
   "plugin_health",
+  "consent_log",
 ]);
+
+const CONSENT_PURPOSES = new Set(["usage", "project_name", "search_miss", "quote_phone_firm"]);
+
+// consent_log purpose -> the profiles column that mirrors the latest choice.
+const CONSENT_COLUMN: Record<string, string> = {
+  usage: "share_usage",
+  project_name: "share_project",
+  search_miss: "share_search_miss",
+};
 
 interface EventRow {
   id: string;
@@ -50,7 +68,11 @@ interface EventRow {
   data?: Record<string, unknown>;
 }
 
-interface Envelope {
+/**
+ * Every plugin up to 0.9.9 sends this envelope for all kinds, search_miss
+ * included. It must keep working unchanged (AGENTS.md).
+ */
+interface StandardEnvelope {
   install_id: string;
   user?: { name?: string; email?: string; phone?: string; firm?: string } | null;
   plugin_version?: string;
@@ -59,11 +81,41 @@ interface Envelope {
   events: EventRow[];
 }
 
+/**
+ * A1 (UU PDP): from plugin 0.10.0 search misses travel in their own envelope
+ * with no install_id and no user, sent without the plugin's sign-in token.
+ */
+interface AnonymousEnvelope {
+  plugin_version?: string;
+  su_version?: string;
+  platform?: string;
+  events: EventRow[];
+}
+
+type Envelope = StandardEnvelope | AnonymousEnvelope;
+
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function normalizeQuery(text: unknown): string {
   return String(text ?? "").toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+const EMAIL_RE = /[^\s@]+@[^\s@]+\.[^\s@]+/g;
+// Indonesian mobile numbers (08…, 628…, +62 8…) with the separators people
+// type, plus any bare run of ten or more digits. Product sizes such as
+// "600 600 1200" or "60x120" must survive.
+const MOBILE_RE = /(?:\+?62|\b0)\s?8[\d\s.-]{6,}\d/g;
+const LONG_DIGITS_RE = /\d{10,}/g;
+
+/** A1: a search box sometimes receives an email or phone number. Never store one. */
+function scrubQuery(query: string): string {
+  return query
+    .replace(EMAIL_RE, " ")
+    .replace(MOBILE_RE, " ")
+    .replace(LONG_DIGITS_RE, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function isValid(e: EventRow): boolean {
@@ -77,6 +129,21 @@ function isValid(e: EventRow): boolean {
 function counter(value: unknown): number {
   const n = Number(value ?? 0);
   return Number.isFinite(n) && n > 0 ? Math.round(n) : 0;
+}
+
+/** Dotted-number version comparison; a missing or odd version counts as old. */
+function versionAtLeast(version: unknown, min: string): boolean {
+  const parse = (v: string) => v.split(".").map((n) => parseInt(n, 10) || 0);
+  if (typeof version !== "string" || !/^\d+(\.\d+)*$/.test(version)) return false;
+  const a = parse(version), b = parse(min);
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    if ((a[i] ?? 0) !== (b[i] ?? 0)) return (a[i] ?? 0) > (b[i] ?? 0);
+  }
+  return true;
+}
+
+function isStandardEnvelope(env: Envelope): env is StandardEnvelope {
+  return "install_id" in env;
 }
 
 Deno.serve(async (req: Request) => {
@@ -93,10 +160,7 @@ Deno.serve(async (req: Request) => {
     return json({ error: "invalid json" }, 400);
   }
 
-  if (!body || !UUID_RE.test(String(body.install_id))) {
-    return json({ error: "install_id must be a uuid" }, 400);
-  }
-  if (!Array.isArray(body.events) || body.events.length === 0) {
+  if (!body || !Array.isArray(body.events) || body.events.length === 0) {
     return json({ error: "events must be a non-empty array" }, 400);
   }
   if (body.events.length > MAX_BATCH) {
@@ -104,20 +168,34 @@ Deno.serve(async (req: Request) => {
   }
   if (!body.events.every(isValid)) return json({ error: "invalid event" }, 400);
 
+  const standard = isStandardEnvelope(body);
+  const std = standard ? (body as StandardEnvelope) : null;
+  const installId = std?.install_id ?? null;
+  if (standard) {
+    if (!UUID_RE.test(String(installId))) {
+      return json({ error: "install_id must be a uuid" }, 400);
+    }
+  } else if (!body.events.every((e) => e.kind === "search_miss")) {
+    return json({ error: "anonymous envelope only allows search_miss events" }, 400);
+  }
+
   const supabase: SupabaseClient = createClient(
     Deno.env.get("SUPABASE_URL")!,
     resolveServiceKey(),
     { auth: { persistSession: false } },
   );
 
-  // --- rate limit: a naive per-install cap, cheap and good enough for v1 ----
+  // --- rate limit ----------------------------------------------------------
   const since = new Date(Date.now() - 60_000).toISOString();
-  const { count } = await supabase
+  let recent = supabase
     .from("ingest_log")
     .select("id", { count: "exact", head: true })
-    .eq("install_id", body.install_id)
     .gte("received_at", since);
-  if ((count ?? 0) >= 120) return json({ error: "rate limited" }, 429);
+  recent = installId ? recent.eq("install_id", installId) : recent.is("install_id", null);
+  const { count } = await recent;
+  if ((count ?? 0) >= (installId ? INSTALL_RATE_PER_MIN : ANON_RATE_PER_MIN)) {
+    return json({ error: "rate limited" }, 429);
+  }
 
   // --- idempotency: drop ids we have already stored ------------------------
   const ids = body.events.map((e) => e.id);
@@ -126,57 +204,73 @@ Deno.serve(async (req: Request) => {
   const seenIds = new Set(((seen as { id: string }[] | null) ?? []).map((r) => r.id));
   const fresh = body.events.filter((e) => !seenIds.has(e.id));
 
-  // Resolve the signed-in architect (soft sign-in email → profile), best effort.
+  // --- who is sending -------------------------------------------------------
+  // `verifiedProfileId` comes from the plugin's own sign-in token and is the
+  // only identity a consent record may be written against. `profileId` keeps
+  // the older soft sign-in (email in the envelope) for analytics rows, so
+  // plugins without a token still attribute usage as before.
+  let verifiedProfileId: string | null = null;
   let profileId: string | null = null;
-  const email = body.user?.email?.trim().toLowerCase();
-  if (email) {
-    const { data: userRow } = await supabase
-      .schema("auth").from("users").select("id").eq("email", email).maybeSingle();
-    profileId = userRow?.id ?? null;
+  if (standard) {
+    const identity = await resolvePluginToken(bearerToken(req));
+    verifiedProfileId = identity?.profileId ?? null;
+    profileId = verifiedProfileId;
+    const email = std?.user?.email?.trim().toLowerCase();
+    if (!profileId && email) {
+      const { data: userRow } = await supabase
+        .schema("auth").from("users").select("id").eq("email", email).maybeSingle();
+      profileId = userRow?.id ?? null;
+    }
   }
 
   try {
     // Record every fresh id first so a retry of the same batch is a no-op.
+    // A search miss is never logged against an install, whichever envelope it
+    // came in: the ingest log must not become a join key back to the user.
     if (fresh.length) {
       await supabase.from("ingest_log").insert(
-        fresh.map((e) => ({ id: e.id, install_id: body.install_id, kind: e.kind })),
+        fresh.map((e) => ({
+          id: e.id,
+          install_id: e.kind === "search_miss" ? null : installId,
+          kind: e.kind,
+        })),
       );
     }
 
-    await supabase.from("installs").upsert({
-      id: body.install_id,
-      profile_id: profileId,
-      plugin_version: body.plugin_version ?? null,
-      su_version: body.su_version ?? null,
-      platform: body.platform ?? null,
-      last_seen: new Date().toISOString(),
-    }, { onConflict: "id" });
+    if (standard) {
+      await supabase.from("installs").upsert({
+        id: installId,
+        profile_id: profileId,
+        plugin_version: body.plugin_version ?? null,
+        su_version: body.su_version ?? null,
+        platform: body.platform ?? null,
+        last_seen: new Date().toISOString(),
+      }, { onConflict: "id" });
+    }
 
     for (const e of fresh) {
       const data = (e.data ?? {}) as Record<string, unknown>;
 
       if (e.kind === "search_miss") {
-        const query = normalizeQuery(data.query);
+        const query = scrubQuery(normalizeQuery(data.query));
         if (query.length < 3 || query.length > 120) continue;
 
         await supabase.from("search_misses").insert({
           id: e.id,
-          install_id: body.install_id,
-          profile_id: profileId,
           query_norm: query,
           tab: ["all", "model", "material"].includes(String(data.tab))
             ? data.tab
             : "all",
         });
 
-        // Increment the grouped demand row (FR-M10).
+        // Increment the grouped demand row (FR-M10). distinct_installs is no
+        // longer maintained: a miss carries no install id to count (A1).
         const { data: existing } = await supabase
           .from("missing_requests").select("id, miss_count").eq("query_norm", query)
           .maybeSingle();
         if (existing) {
           await supabase.from("missing_requests").update({
             miss_count: (existing.miss_count ?? 0) + 1,
-            distinct_installs: await distinctInstalls(supabase, query),
             last_seen: new Date().toISOString(),
           }).eq("id", existing.id);
         } else {
@@ -186,7 +280,12 @@ Deno.serve(async (req: Request) => {
             distinct_installs: 1,
           });
         }
+        continue;
       }
+
+      // Every other kind belongs to an install; the anonymous envelope only
+      // ever reaches this point with search misses, which are handled above.
+      if (!standard) continue;
 
       if (e.kind === "usage_snapshot") {
         const modelId = String(data.model_id ?? "");
@@ -194,13 +293,15 @@ Deno.serve(async (req: Request) => {
         if (!modelId) continue;
 
         const { data: snap } = await supabase.from("usage_snapshots").upsert({
-          install_id: body.install_id,
+          install_id: installId,
           profile_id: profileId,
           model_id: modelId,
           // v0.5.2: the plugin sends '' when the architect has NOT consented to
           // sharing the project title (UU 27/2022). Normalise that to null so
           // "opted out" is stored as absence, never as an empty string.
-          project: nonEmptyString(data.project),
+          // A2: before 0.5.2 the title went out without its own consent, so it
+          // is never stored from those versions.
+          project: versionAtLeast(std?.plugin_version, "0.5.2") ? nonEmptyString(data.project) : null,
           totals: (data.totals ?? {}) as Record<string, unknown>,
           taken_at: new Date().toISOString(),
         }, { onConflict: "install_id,model_id" }).select("id").single();
@@ -236,7 +337,7 @@ Deno.serve(async (req: Request) => {
           }
         }
         await supabase.from("usage_history").insert({
-          install_id: body.install_id, model_id: modelId, items,
+          install_id: installId, model_id: modelId, items,
         });
       }
 
@@ -250,7 +351,7 @@ Deno.serve(async (req: Request) => {
             .from("vendors").select("id, brand_name").in("brand_name", brands);
           for (const v of vendors ?? []) {
             await supabase.from("quote_requests").insert({
-              install_id: body.install_id,
+              install_id: installId,
               architect_id: profileId,
               vendor_id: v.id,
               // Same rule as the snapshot: '' means "not consented", not "blank".
@@ -261,12 +362,13 @@ Deno.serve(async (req: Request) => {
           }
         }
       }
+
       if (e.kind === "plugin_health") {
         // Counters describe the plugin's own operation (loads, failures and
         // timings). They carry no project name, geometry or file path.
         await supabase.from("plugin_health_events").insert({
           id: e.id,
-          install_id: body.install_id,
+          install_id: installId,
           profile_id: profileId,
           plugin_version: body.plugin_version ?? null,
           su_version: body.su_version ?? null,
@@ -280,13 +382,46 @@ Deno.serve(async (req: Request) => {
         });
       }
 
+      if (e.kind === "consent_log") {
+        // A4: a consent record is evidence, so it is only written against an
+        // account proven by the plugin token, never the email in the envelope.
+        // Without one the event is acknowledged and dropped.
+        const purpose = String(data.purpose ?? "");
+        const policyVersion = String(data.policy_version ?? "").slice(0, 32);
+        if (
+          !verifiedProfileId || !CONSENT_PURPOSES.has(purpose) ||
+          typeof data.granted !== "boolean" || !policyVersion
+        ) {
+          continue;
+        }
+        const { error } = await supabase.from("consent_log").insert({
+          id: e.id,
+          install_id: installId,
+          profile_id: verifiedProfileId,
+          purpose,
+          granted: data.granted,
+          policy_version: policyVersion,
+          plugin_version: body.plugin_version ?? null,
+        });
+        if (error) throw error;
+
+        // Mirror the latest choice on the profile so the server can enforce it.
+        const column = CONSENT_COLUMN[purpose];
+        if (column) {
+          await supabase.from("profiles").update({
+            [column]: data.granted,
+            consent_version: policyVersion,
+          }).eq("id", verifiedProfileId);
+        }
+      }
+
       // A kind this server does not handle yet. Keep it rather than lose it, and
       // keep answering 2xx so the plugin's outbox clears and the batch is not
       // retried forever.
       if (!HANDLED_KINDS.has(e.kind)) {
         await supabase.from("unhandled_events").insert({
           id: e.id,
-          install_id: body.install_id,
+          install_id: installId,
           kind: e.kind,
           payload: data,
         });
@@ -302,14 +437,6 @@ Deno.serve(async (req: Request) => {
     return json({ error: "ingest failed" }, 500);
   }
 });
-
-async function distinctInstalls(supabase: SupabaseClient, query: string): Promise<number> {
-  const { count } = await supabase
-    .from("search_misses")
-    .select("install_id", { count: "exact", head: true })
-    .eq("query_norm", query);
-  return count ?? 0;
-}
 
 /**
  * Treat a blank string as absent.

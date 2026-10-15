@@ -113,8 +113,9 @@ begin
   -- only the /events Edge Function does, using the service role — so inserting
   -- while impersonating the vendor is refused by RLS, which is the point.
   perform set_config('role', 'postgres', true);
-  insert into public.search_misses (install_id, query_norm)
-  values (gen_random_uuid(), 'bathtub gold');
+  -- 0031: misses carry no install or profile (UU PDP A1).
+  insert into public.search_misses (query_norm)
+  values ('bathtub gold');
 
   -- Back to Vendor A to prove the read is blocked.
   perform set_config('role', 'authenticated', true);

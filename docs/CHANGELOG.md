@@ -1,5 +1,50 @@
 # Changelog
 
+## Unreleased — Plugin 0.10.0: consent before sharing (UU PDP A1, A3, A4)
+
+OpenCode started this work on 13 Oct and deployed the server half (migrations
+0031/0032 and a new `events` function). The plugin half was left uncommitted and
+broken: it removed `base_headers` / `request_headers` while twelve calls still
+used them, so every cloud call would have raised. The released 0.9.9 predates it.
+
+**Plugin 0.10.0**
+- **A3 consent dialog.** After sign-in the panel asks, with "Share usage" and
+  "Also send my project name" unchecked and "Report searches that find nothing"
+  checked. Nothing is shared until it is answered (`Cloud.consent_answered?`
+  gates `share_usage?`), which also resets everyone upgrading from a version
+  where usage sharing was on by default. "Later" shares nothing and asks again
+  next session. `CONSENT_VERSION` re-asks everyone when the policy changes.
+- **Three switches** in the account panel; the search-miss switch is separate
+  from usage and gates the panel's "we've noted your search" text too.
+- **A4 consent log.** The first answer logs all three choices, later changes
+  log the switch that changed, as `consent_log` events (signed in only).
+- **A1 anonymous misses.** Search misses go in their own envelope with no
+  `install_id`, no `user` and **no sign-in token**. Each request clears only its
+  own outbox entries, so one failing does not resend the other.
+- `user` in the envelope is back to its committed shape (name, email, phone,
+  firm) — OpenCode had added the share flags to it.
+
+**`events` function**
+- `consent_log` rows are written only for an account proven by the plugin
+  token, never the email in the envelope, and mirror the choice onto
+  `profiles.share_*` / `consent_version`. Unknown purposes are dropped.
+- Search misses are scrubbed of emails and Indonesian phone numbers before
+  storage (`node scripts/test-scrub-query.mjs`), and are logged in
+  `ingest_log` with no install id, from either envelope.
+- The anonymous envelope has its own global rate limit (600/min).
+- A2 safety net: a snapshot from a plugin older than 0.5.2 never stores a
+  project title.
+- Removed debug logging that printed architects' email addresses.
+- Plugins up to 0.9.9 keep working unchanged.
+
+**Migration 0033** clears `ingest_log.install_id` on past search-miss rows (the
+last join key back to an install) and revokes client writes on `consent_log`.
+New test: `supabase/tests/consent_log_test.sql`; `rls_test.sql` no longer
+inserts the dropped `search_misses.install_id`.
+
+`missing_requests.distinct_installs` can no longer be counted, so the admin
+column is labelled "Installs (to 13 Oct)".
+
 ## Unreleased — Kalua Studio vendor list: 30 cold-outreach proposals
 
 A colleague at Kalua Studio shared a vendor database (42 rows). **Eight rows are not

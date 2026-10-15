@@ -133,12 +133,11 @@
         <label class="share-row">
           <input type="checkbox" id="shareUsage">
           <span>
-            Share anonymous usage, and searches that find nothing
+            Share usage
             <small>
-              Sends the Dirory products used in your open model — product names,
-              categories, brands, quantities and painted area, never geometry or
-              files — every few minutes, and search terms that return no results.
-              These are not linked to your name.
+              Off until you turn it on. Sends the Dirory products used in your open
+              model — product names, categories, brands, quantities and painted
+              area, never geometry or files — every few minutes.
             </small>
           </span>
         </label>
@@ -155,17 +154,37 @@
           </span>
         </label>
 
+        <label class="share-row">
+          <input type="checkbox" id="shareSearchMiss">
+          <span>
+            Report searches that find nothing
+            <small>
+              Sends only the search term, with no name, email or install id, so
+              Dirory knows which products architects are missing.
+            </small>
+          </span>
+        </label>
+
         <details class="privacy-details">
           <summary>See exactly what is sent</summary>
           <div class="privacy-body">
-            <p><strong>Sent when "Share anonymous usage" is on:</strong></p>
+            <p><strong>Sent when "Share usage" is on:</strong></p>
             <ul>
               <li>Product name, category and brand of each Dirory item in your file</li>
               <li>Quantity placed (models) and painted area in m² (materials)</li>
               <li>Totals for the file, and SketchUp's own id for the file</li>
               <li>A random install id, the plugin and SketchUp versions, and Windows or macOS</li>
-              <li>Search terms that returned <em>no results at all</em></li>
             </ul>
+            <p><strong>Sent when "Report searches that find nothing" is on:</strong></p>
+            <ul>
+              <li>Search terms that returned <em>no results at all</em>, on their own,
+                with the plugin and SketchUp versions only</li>
+            </ul>
+            <p>
+              Every choice you make here is recorded with the date and the policy
+              version, so Dirory can show what you agreed to. What is waiting to be
+              sent is kept in <code>~/.dirory/outbox.json</code> on your computer.
+            </p>
             <p><strong>Never sent:</strong></p>
             <ul>
               <li>Model geometry, meshes, or the contents of your .skp file</li>
@@ -182,6 +201,52 @@
           </div>
         </details>
       </div>
+    </div>
+  </div>
+
+  <!-- UU PDP A3: asked once after sign-in, and again whenever the policy
+       version changes. Usage and project name start unchecked; nothing is
+       shared until "Save choices". -->
+  <div id="consentModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+      <h2 id="consentTitle">Before you start: what you share</h2>
+      <p class="modal-lead">
+        Choose what Dirory may receive. You can change this any time under the
+        account button.
+      </p>
+      <div class="consent-block">
+        <label class="share-row">
+          <input type="checkbox" id="consentUsage">
+          <span>
+            Share usage
+            <small>
+              The Dirory products used in your open model: names, categories,
+              brands, quantities and painted area. Never geometry or files.
+            </small>
+          </span>
+        </label>
+        <label class="share-row">
+          <input type="checkbox" id="consentProject" disabled>
+          <span>
+            Also send my project name
+            <small>
+              The title of your SketchUp file, which can identify a client or a site.
+            </small>
+          </span>
+        </label>
+        <label class="share-row">
+          <input type="checkbox" id="consentSearchMiss" checked>
+          <span>
+            Report searches that find nothing
+            <small>
+              Only the search term, with no name, email or install id.
+            </small>
+          </span>
+        </label>
+      </div>
+      <p class="modal-sub"><a id="consentPrivacy" href="#">Read the privacy policy</a></p>
+      <button id="consentSave" class="primary-btn">Save choices</button>
+      <button id="consentLater" class="ghost-btn">Later (share nothing for now)</button>
     </div>
   </div>
 

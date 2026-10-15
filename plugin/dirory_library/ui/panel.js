@@ -16,8 +16,10 @@ const DEFAULT_EMPTY_HTML =
   'anywhere inside your library folder and click \u27F3 to rescan.';
 
 // Account: browsing and search are anonymous; insert, paint and quote need sign-in.
-// shareProject is a separate, opt-in consent and defaults to off (v0.5.2).
-let account = { signedIn: false, shareUsage: true, shareProject: false };
+// Usage and project name are opt-in (UU PDP A3); search-miss reporting is
+// anonymous and on unless switched off.
+let account = { signedIn: false, shareUsage: false, shareProject: false, shareSearchMiss: true };
+let consentDismissed = false; // "Later" hides the consent dialog for this session
 // Favourites: starred keys + keys used before (most recent first), and brand logos.
 let favourites = new Set();
 let recentKeys = [];
@@ -230,6 +232,7 @@ window.diroryRender = function (data) {
   updateAccountButton();
   document.getElementById('path').textContent = data.path;
   render();
+  maybeAskConsent();
 };
 
 /* ------------------------------------------------------------------ */
@@ -330,7 +333,7 @@ function checkSearchMiss() {
   if (allItems.some((item) => matchesSearch(item, q))) return;
   if (reportedMisses.has(q)) return;
   reportedMisses.add(q);
-  if (!account.shareUsage) return;
+  if (!account.shareSearchMiss) return;
   sketchup.searchMiss(
     JSON.stringify({
       query: q,
@@ -385,7 +388,7 @@ function render() {
     // Zero results even across the whole library = something Dirory doesn't have yet.
     if (q && allItems.length > 0 && !allItems.some((i) => matchesSearch(i, q))) {
       emptyEl.textContent =
-        q.length >= 3 && account.shareUsage
+        q.length >= 3 && account.shareSearchMiss
           ? `No results for \u201C${raw}\u201D. It isn't in the library yet \u2014 we've noted your search so the Dirory team can add it.`
           : `No results for \u201C${raw}\u201D.`;
     } else if (currentFilter === 'favourite' && !q && !selectedCategory && !selectedBrand) {
@@ -984,6 +987,7 @@ function openAccount() {
   byId('shareProject').checked = !!account.shareProject;
   // The project-name switch is meaningless while anonymous reporting is off.
   byId('shareProject').disabled = !account.shareUsage;
+  byId('shareSearchMiss').checked = !!account.shareSearchMiss;
   byId('acctError').hidden = true;
   applyDeviceState();
   byId('accountModal').hidden = false;
@@ -1040,6 +1044,47 @@ byId('shareUsage').addEventListener('change', (e) => {
 byId('shareProject').addEventListener('change', (e) => {
   sketchup.setShareProject(JSON.stringify({ on: e.target.checked }));
 });
+byId('shareSearchMiss').addEventListener('change', (e) => {
+  sketchup.setShareSearchMiss(JSON.stringify({ on: e.target.checked }));
+  account.shareSearchMiss = e.target.checked;
+});
+
+/* ------------------------------------------------------------------ */
+/* Consent dialog (UU PDP A3): after sign-in, until it is answered      */
+/* ------------------------------------------------------------------ */
+
+function maybeAskConsent() {
+  if (!account.consentNeeded || consentDismissed) return;
+  if (!byId('consentModal').hidden) return;
+  byId('consentUsage').checked = false;
+  byId('consentProject').checked = false;
+  byId('consentProject').disabled = true;
+  byId('consentSearchMiss').checked = true;
+  byId('consentModal').hidden = false;
+}
+
+byId('consentUsage').addEventListener('change', (e) => {
+  byId('consentProject').disabled = !e.target.checked;
+  if (!e.target.checked) byId('consentProject').checked = false;
+});
+byId('consentSave').addEventListener('click', () => {
+  sketchup.consentSave(
+    JSON.stringify({
+      shareUsage: byId('consentUsage').checked,
+      shareProject: byId('consentUsage').checked && byId('consentProject').checked,
+      shareSearchMiss: byId('consentSearchMiss').checked,
+    }),
+  );
+  byId('consentModal').hidden = true;
+});
+byId('consentLater').addEventListener('click', () => {
+  consentDismissed = true;
+  byId('consentModal').hidden = true;
+});
+byId('consentPrivacy').addEventListener('click', (e) => {
+  e.preventDefault();
+  sketchup.openPrivacy();
+});
 byId('privacyLink').addEventListener('click', (e) => {
   e.preventDefault();
   sketchup.openPrivacy();
@@ -1088,6 +1133,7 @@ window.diroryAccount = function (state) {
     byId('acctError').hidden = false;
   }
   render(); // the empty-search message depends on the share setting
+  maybeAskConsent();
 };
 
 // Ruby pushes this after a product is inserted or painted ("used before").

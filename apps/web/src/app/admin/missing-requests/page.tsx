@@ -60,7 +60,7 @@ export default async function AdminMissingRequests({
         </div>
 
         {rows?.length ? (
-          <Table head={["Query", "Searches", "Installs", "First seen", "Last seen", "Status", "Note"]}>
+          <Table head={["Query", "Searches", "Installs (to 13 Oct)", "First seen", "Last seen", "Status", "Note"]}>
             {rows.map((r) => (
               <tr key={r.id} className="hover:bg-slate-50/60">
                 <Td className="font-medium text-slate-900">{r.query_norm}</Td>

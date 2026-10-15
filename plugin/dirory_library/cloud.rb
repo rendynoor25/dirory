@@ -28,7 +28,10 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.9.9'.freeze
+      PLUGIN_VERSION = '0.10.0'.freeze
+      # The privacy-policy edition the consent dialog asks about. Bump it to
+      # ask every architect again (UU PDP A3/A12).
+      CONSENT_VERSION = '2026-10'.freeze
 
       # M6: cloud catalogue and signed asset cache live under ~/.dirory.
       CACHE_ROOT = File.join(Dir.home, '.dirory').freeze
@@ -340,8 +343,15 @@ module Dirory
       end
 
 
+      # UU PDP A3: nothing is shared until the architect has answered the
+      # consent dialog for the current policy. That also resets everyone who
+      # upgrades from a version where sharing was on by default.
+      def self.consent_answered?
+        read('consent_version', '').to_s == CONSENT_VERSION
+      end
+
       def self.share_usage?
-        read('share_usage', true) ? true : false
+        consent_answered? && read('share_usage', false) ? true : false
       end
 
       # v0.5.2 / UU 27/2022: the project title is its own consent, OFF by default.
@@ -352,8 +362,11 @@ module Dirory
       # Default when unset: false. `read` returns the default for an unwritten
       # key, and a returning v0.5.1 user has no 'share_project' key, so they are
       # opted out on upgrade rather than silently opted in.
+      #
+      # A2: the title only ever travels inside a usage snapshot, so it is only
+      # effective while usage sharing is on.
       def self.share_project?
-        read('share_project', false) ? true : false
+        share_usage? && read('share_project', false) ? true : false
       end
 
       def self.snapshot_minutes
@@ -397,6 +410,9 @@ module Dirory
           'firm' => u ? u['firm'] : '',
           'shareUsage' => share_usage?,
           'shareProject' => share_project?,
+          'shareSearchMiss' => share_search_miss?,
+          # The panel shows the consent dialog while this is true.
+          'consentNeeded' => !u.nil? && !consent_answered?,
           'devicePending' => !@pending_device.nil?,
           'deviceStatus' => @poll_info.to_s,
           'deviceUserCode' => @pending_device ? @pending_device['user_code'].to_s : '',
@@ -609,17 +625,54 @@ module Dirory
       end
 
       def self.set_share_usage(on)
-        write('share_usage', on ? true : false)
+        save_consent(usage: on, project: share_project?, search_miss: share_search_miss?)
       end
 
-      # Turning the project title on or off must take effect on the next
-      # snapshot, so drop the "unchanged since last time" memo for every model
-      # and clear the last sent digest. Otherwise a user who turns sharing on
-      # while their file is open would wait for their next edit.
       def self.set_share_project(on)
-        write('share_project', on ? true : false)
+        save_consent(usage: share_usage?, project: on, search_miss: share_search_miss?)
+      end
+
+      def self.set_share_search_miss(on)
+        save_consent(usage: share_usage?, project: share_project?, search_miss: on)
+      end
+
+      # Stores the architect's three choices for the current policy. The first
+      # answer records all three; after that only the switches that changed
+      # (A4). Turning a share on or off must take effect on the next snapshot,
+      # so the "unchanged since last time" memo is dropped for every model.
+      def self.save_consent(usage:, project:, search_miss:)
+        usage = usage ? true : false
+        project = usage && project ? true : false
+        search_miss = search_miss ? true : false
+        first = !consent_answered?
+        before = {
+          'usage' => share_usage?,
+          'project_name' => share_project?,
+          'search_miss' => share_search_miss?
+        }
+        after = { 'usage' => usage, 'project_name' => project, 'search_miss' => search_miss }
+
+        write('share_usage', usage)
+        write('share_project', project)
+        write('share_search_miss', search_miss)
+        write('consent_version', CONSENT_VERSION)
+
+        after.each do |purpose, granted|
+          log_consent(purpose, granted) if first || before[purpose] != granted
+        end
         @dirty.each_key { |guid| @dirty[guid] = true }
         @last_hash.clear
+      end
+
+      # A4: the server keeps an append-only consent_log, written only for a
+      # verified sign-in, so a signed-out choice is kept locally and not sent.
+      def self.log_consent(purpose, granted)
+        return unless signed_in?
+        enqueue('consent_log', {
+          'purpose' => purpose,
+          'granted' => granted,
+          'policy_version' => CONSENT_VERSION
+        })
       end
 
       # Called by insert / paint / quote. Returns true when allowed; otherwise
@@ -692,6 +745,10 @@ module Dirory
       # --------------------------------------------------------------
       # Sending
       # --------------------------------------------------------------
+      def self.event_list(entries)
+        entries.map { |e| e.reject { |k, _| k == 't' || k == 'key' } }
+      end
+
       def self.envelope(entries)
         {
           'install_id' => install_id,
@@ -699,8 +756,32 @@ module Dirory
           'plugin_version' => PLUGIN_VERSION,
           'su_version' => Sketchup.version.to_s,
           'platform' => (RUBY_PLATFORM =~ /mswin|mingw/i ? 'win' : 'mac'),
-          'events' => entries.map { |e| e.reject { |k, _| k == 't' || k == 'key' } }
+          'events' => event_list(entries)
         }
+      end
+
+      # UU PDP A1: search misses go in their own envelope with no install_id and
+      # no user, and are sent without the sign-in token.
+      def self.anonymous_envelope(entries)
+        {
+          'plugin_version' => PLUGIN_VERSION,
+          'su_version' => Sketchup.version.to_s,
+          'platform' => (RUBY_PLATFORM =~ /mswin|mingw/i ? 'win' : 'mac'),
+          'events' => event_list(entries)
+        }
+      end
+
+      # One request for the search misses, one for everything else.
+      def self.build_payloads(entries)
+        misses, rest = entries.partition { |e| e['kind'] == 'search_miss' }
+        payloads = []
+        unless misses.empty?
+          payloads << { anonymous: true, ids: misses.map { |e| e['id'] }, body: anonymous_envelope(misses) }
+        end
+        unless rest.empty?
+          payloads << { anonymous: false, ids: rest.map { |e| e['id'] }, body: envelope(rest) }
+        end
+        payloads
       end
 
       # Auth headers for the Edge Functions.
@@ -747,6 +828,8 @@ module Dirory
 
       # Sends up to BATCH_SIZE queued entries. Asynchronous: SketchUp is never
       # blocked; on failure the entries simply stay queued for the next tick.
+      # Each request clears only its own entries, so a failed one is retried
+      # without resending the other.
       def self.flush
         return false unless configured?
         return false if @sending
@@ -757,23 +840,28 @@ module Dirory
         batch = load_outbox.first(BATCH_SIZE)
         return false if batch.empty?
 
+        payloads = build_payloads(batch)
         @sending = true
-        sent_ids = batch.map { |e| e['id'] }
-        request = new_request("#{api_base_url}/events", Sketchup::Http::POST)
-        request.headers = request_headers
-        request.body = JSON.generate(envelope(batch))
-        request.start do |_req, response|
-          release_request(request)
-          @sending = false
-          code = response.status_code.to_i
-          if code >= 200 && code < 300
-            remaining = load_outbox.reject { |e| sent_ids.include?(e['id']) }
-            save_outbox(remaining)
-            @last_send = Time.now
-            @last_error = nil
-          else
-            @last_error = "Server answered HTTP #{code}"
-            health_bump('cloud_failures')
+        pending = payloads.length
+        payloads.each do |payload|
+          request = new_request("#{api_base_url}/events", Sketchup::Http::POST)
+          request.headers = payload[:anonymous] ? base_headers : request_headers
+          request.body = JSON.generate(payload[:body])
+          ids = payload[:ids]
+          request.start do |_req, response|
+            release_request(request)
+            pending -= 1
+            @sending = false if pending.zero?
+            code = response.status_code.to_i
+            if code >= 200 && code < 300
+              remaining = load_outbox.reject { |e| ids.include?(e['id']) }
+              save_outbox(remaining)
+              @last_send = Time.now
+              @last_error = nil
+            else
+              @last_error = "Server answered HTTP #{code}"
+              health_bump('cloud_failures')
+            end
           end
         end
         true
@@ -791,8 +879,14 @@ module Dirory
         text.to_s.downcase.gsub(/\s+/, ' ').strip
       end
 
+      # "Report missing searches" (A3): anonymous, so on by default and its own
+      # switch, separate from usage sharing.
+      def self.share_search_miss?
+        read('share_search_miss', true) ? true : false
+      end
+
       def self.record_search_miss(data)
-        return unless share_usage?
+        return unless share_search_miss?
         query = normalize_query(data['query'])
         return if query.length < 3 || query.length > 120
 
