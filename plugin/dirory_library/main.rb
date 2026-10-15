@@ -3,6 +3,7 @@ require 'json'
 require 'digest'
 require 'uri'
 require 'fileutils'
+require 'tmpdir'
 require File.join(File.dirname(__FILE__), 'cloud')
 require File.join(File.dirname(__FILE__), 'i18n')
 require File.join(File.dirname(__FILE__), 'updater')
@@ -1237,6 +1238,70 @@ module Dirory
       end
     end
 
+    def self.html_escape(text)
+      text.to_s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;')
+    end
+
+    # A finish & fixture schedule of the Dirory products in the open model,
+    # opened in the browser so it can be printed or saved as PDF (the working
+    # drawing document Indonesian practice expects). Written to a temp file
+    # only; nothing leaves the computer.
+    def self.print_schedule
+      UI.start_timer(0.1, false) do
+        begin
+          report = usage_report
+          model = Sketchup.active_model
+          title = model.title.to_s.empty? ? 'Untitled model' : model.title.to_s
+          esc = method(:html_escape)
+          # dirory_info carries the tile size as a string ("60 x 120 cm") for
+          # materials and free-text dimensions for models.
+          size = ->(r) { r['tile_size'].to_s.empty? ? r['dimensions'].to_s : r['tile_size'].to_s }
+          section = lambda do |heading, rows, headers, cells|
+            next '' if rows.empty?
+            body = rows.each_with_index.map do |r, i|
+              "<tr><td>#{i + 1}</td>" + cells.call(r).map { |c| "<td>#{esc.call(c)}</td>" }.join + '</tr>'
+            end.join
+            "<h2>#{heading}</h2><table><thead><tr><th>#</th>" +
+              headers.map { |h| "<th>#{h}</th>" }.join + "</tr></thead><tbody>#{body}</tbody></table>"
+          end
+          models = report['models'].select { |r| r['count'].to_i > 0 }
+          materials = report['materials'].select { |r| r['faces'].to_i > 0 }
+          html = <<~HTML
+            <!doctype html><html><head><meta charset="utf-8">
+            <title>Schedule - #{esc.call(title)}</title>
+            <style>
+              body { font: 12px/1.45 "Segoe UI", Arial, sans-serif; color: #1c1c1e; margin: 24px; }
+              h1 { font-size: 18px; margin: 0; } h2 { font-size: 14px; margin: 22px 0 6px; color: #39509f; }
+              .meta { color: #6b6b70; margin: 4px 0 0; }
+              table { border-collapse: collapse; width: 100%; }
+              th, td { border: 1px solid #d7d9e6; padding: 5px 7px; text-align: left; vertical-align: top; }
+              th { background: #f4f5f9; font-weight: 600; }
+              td:first-child, th:first-child { width: 28px; text-align: right; }
+              .num { text-align: right; }
+              @media print { body { margin: 0; } button { display: none; } }
+            </style></head><body>
+            <button onclick="window.print()" style="float:right">Print / Save as PDF</button>
+            <h1>Finish &amp; fixture schedule</h1>
+            <p class="meta">#{esc.call(title)} · #{Time.now.strftime('%d %B %Y')} · Dirory</p>
+            #{section.call('Fixtures & furniture (models)', models,
+                           %w[Product Brand Category SKU Size Quantity],
+                           ->(r) { [r['name'], r['brand'], r['category'], r['sku'], size.call(r), r['count']] })}
+            #{section.call('Finishes (materials)', materials,
+                           ['Finish', 'Brand', 'Category', 'SKU', 'Size', 'Area (m²)'],
+                           ->(r) { [r['name'], r['brand'], r['category'], r['sku'], size.call(r), format('%.2f', r['area_m2'].to_f)] })}
+            #{models.empty? && materials.empty? ? '<p>No Dirory products are used in this model yet.</p>' : ''}
+            <p class="meta">Quantities are read from the model. Areas include every painted face, once per copy of a group or component.</p>
+            </body></html>
+          HTML
+          path = File.join(Dir.tmpdir, "Dirory_schedule_#{Time.now.strftime('%Y%m%d_%H%M%S')}.html")
+          File.write(path, html, encoding: 'UTF-8')
+          UI.openURL('file:///' + path.tr('\\', '/'))
+        rescue StandardError => e
+          UI.messagebox("Dirory could not build the schedule:\n#{e.class}: #{e.message}")
+        end
+      end
+    end
+
     # ------------------------------------------------------------------
     # The panel.
     # ------------------------------------------------------------------
@@ -1283,6 +1348,7 @@ module Dirory
 
         @dialog.add_action_callback('requestReport') { |_ctx| send_usage_report }
         @dialog.add_action_callback('exportReport') { |_ctx| export_usage_csv }
+        @dialog.add_action_callback('printSchedule') { |_ctx| print_schedule }
         @dialog.add_action_callback('requestQuote') { |_ctx, payload| request_quote(payload) }
 
         @dialog.add_action_callback('generateThumbnails') do |_ctx|

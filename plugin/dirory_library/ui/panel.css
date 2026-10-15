@@ -878,3 +878,27 @@ h1 {
   font-size: 11px;
   color: #3f3f46;
 }
+
+/* Product info button: bottom-right, just left of the favourite star. */
+.info-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 33px;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: #39509f;
+  font: italic 700 13px/24px Georgia, serif;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(32, 43, 78, 0.28);
+}
+.info-btn:hover { background: #fff; color: #6073b3; }
+
+/* Three filters share the row when the size select is shown. */
+.filters { flex-wrap: wrap; }
+#sizeFilter { flex: 1 1 100%; }

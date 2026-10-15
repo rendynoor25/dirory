@@ -138,6 +138,59 @@ document.getElementById('brandFilter').addEventListener('change', (e) => {
 });
 
 /* ------------------------------------------------------------------ */
+/* Size filter (after Thudio's attribute filter)                       */
+/* ------------------------------------------------------------------ */
+
+let selectedSize = '';
+
+// "60 × 120 cm" from the catalogue's [w, h], or '' when the item has none.
+// Smaller side first: a 120 x 60 tile is the same product size as 60 x 120.
+function sizeLabel(item) {
+  const s = item.tile_size_cm;
+  if (!Array.isArray(s) || s.length < 2 || !s[0]) return '';
+  const [a, b] = [Number(s[0]), Number(s[1])].sort((x, y) => x - y);
+  return `${a} × ${b} cm`;
+}
+
+// Shows the size select only when the list has two sizes or more.
+function applySizeFilter(items) {
+  const select = document.getElementById('sizeFilter');
+  const counts = {};
+  items.forEach((i) => {
+    const label = sizeLabel(i);
+    if (label) counts[label] = (counts[label] || 0) + 1;
+  });
+  const sides = (label) => label.match(/[\d.]+/g).map(Number);
+  const sizes = Object.keys(counts).sort((a, b) => sides(a)[0] - sides(b)[0] || sides(a)[1] - sides(b)[1]);
+  if (sizes.length < 2) {
+    select.hidden = true;
+    selectedSize = '';
+    return items;
+  }
+  if (selectedSize && !counts[selectedSize]) selectedSize = '';
+  select.innerHTML = '';
+  const all = document.createElement('option');
+  all.value = '';
+  all.textContent = 'All sizes';
+  select.appendChild(all);
+  sizes.forEach((label) => {
+    const option = document.createElement('option');
+    option.value = label;
+    option.textContent = `${label} (${counts[label]})`;
+    select.appendChild(option);
+  });
+  select.value = selectedSize;
+  select.hidden = false;
+  return selectedSize ? items.filter((i) => sizeLabel(i) === selectedSize) : items;
+}
+
+document.getElementById('sizeFilter').addEventListener('change', (e) => {
+  selectedSize = e.target.value;
+  render();
+  scrollToTop();
+});
+
+/* ------------------------------------------------------------------ */
 /* Colour family (after Thudio's Wall Paint browser)                   */
 /*                                                                      */
 /* The catalogue stores no colour, so each paint's colour is sampled    */
@@ -318,6 +371,7 @@ function applyColourFamily(items) {
 
 document.getElementById('usageRefresh').addEventListener('click', () => requestReport(true));
 document.getElementById('usageExport').addEventListener('click', () => sketchup.exportReport());
+document.getElementById('usagePrint').addEventListener('click', () => sketchup.printSchedule());
 document.getElementById('usageSelectAll').addEventListener('click', () => {
   const usable = brandGroups(lastReport).filter((g) => g.used && !g.sample);
   const allOn = usable.length > 0 && usable.every((g) => quoteBrands.has(g.brand));
@@ -559,6 +613,7 @@ function render() {
     const matchesBrand = !selectedBrand || item.brand === selectedBrand;
     return matchesType && matchesCategory && matchesBrand && (!q || matchesSearch(item, q));
   });
+  filtered = applySizeFilter(filtered);
   filtered = applyColourFamily(filtered);
 
   if (currentFilter === 'favourite') {
@@ -664,6 +719,19 @@ function render() {
     });
     star.addEventListener('keydown', (event) => event.stopPropagation());
     thumb.appendChild(star);
+
+    // Product info: specification, vendor page and quote, without placing it.
+    const info = el('button', 'info-btn', 'i');
+    info.type = 'button';
+    info.title = 'Product info';
+    info.setAttribute('aria-label', `Product info: ${item.name}`);
+    info.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation(); // don't insert / paint
+      openProductInfo(item);
+    });
+    info.addEventListener('keydown', (event) => event.stopPropagation());
+    thumb.appendChild(info);
 
     const name = document.createElement('div');
     name.className = 'name';
@@ -1383,6 +1451,21 @@ function renderProductBody(container, item, onAction) {
   }
   if (actions.children.length) container.appendChild(actions);
 }
+
+function openProductInfo(item) {
+  byId('productTitle').textContent = item.name;
+  renderProductBody(byId('productBody'), item, closeProductInfo);
+  byId('productModal').hidden = false;
+}
+
+function closeProductInfo() {
+  byId('productModal').hidden = true;
+}
+
+byId('productClose').addEventListener('click', closeProductInfo);
+byId('productModal').addEventListener('click', (e) => {
+  if (e.target === byId('productModal')) closeProductInfo();
+});
 
 function openInspector() {
   byId('inspectorModal').hidden = false;

@@ -124,8 +124,20 @@ export function Table({ head, children }: { head: string[]; children: ReactNode 
   );
 }
 
-export function Td({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <td className={`px-5 py-3 align-top text-slate-700 ${className}`}>{children}</td>;
+export function Td({
+  children,
+  className = "",
+  colSpan,
+}: {
+  children: ReactNode;
+  className?: string;
+  colSpan?: number;
+}) {
+  return (
+    <td colSpan={colSpan} className={`px-5 py-3 align-top text-slate-700 ${className}`}>
+      {children}
+    </td>
+  );
 }
 
 export function Empty({ children }: { children: ReactNode }) {

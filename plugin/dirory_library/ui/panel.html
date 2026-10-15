@@ -45,6 +45,9 @@
     <div id="filters" class="filters">
       <select id="categoryFilter" aria-label="Filter by category"></select>
       <select id="brandFilter" aria-label="Filter by brand"></select>
+      <!-- Size (after Thudio's attribute filter): only shown when the list
+           has more than one size, e.g. tiles. -->
+      <select id="sizeFilter" aria-label="Filter by size" hidden></select>
     </div>
 
     <!-- Colour family (after Thudio): paint ranges run to hundreds of colours,
@@ -65,6 +68,7 @@
       <div class="usage-actions">
         <button id="usageRefresh" class="ghost-btn">⟳ Refresh</button>
         <button id="usageExport" class="ghost-btn">⭳ Export CSV</button>
+        <button id="usagePrint" class="ghost-btn" title="Finish &amp; fixture schedule, to print or save as PDF">🖨 Print schedule</button>
         <button id="usageSelectAll" class="ghost-btn">☑ Select all brands</button>
         <button id="usageToggleAll" class="ghost-btn">▴ Collapse all</button>
       </div>
@@ -218,6 +222,14 @@
           </div>
         </details>
       </div>
+    </div>
+  </div>
+
+  <div id="productModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="productTitle">
+      <button id="productClose" class="modal-close" aria-label="Close">×</button>
+      <h2 id="productTitle">Product info</h2>
+      <div id="productBody" class="product-body"></div>
     </div>
   </div>
 

@@ -1,5 +1,48 @@
 # Changelog
 
+## Unreleased — BDA products live, Hunter Douglas ceilings extracted, vendor minimum, retention
+
+**BDA Sanitary (live).** The 41 SketchUp files BDA sent are filed in the library
+as `Model/Closet/Icepol` (11), `Model/Lavatory/Icepol` (14), `Model/Kitchen
+Sink/Valpra` (13) and `Model/Kitchen Sink/Yoshimoto` (3), named by model code
+("(BDA GROUP)" dropped). Each carries its official product photo: from
+bdagroup.co.id (the related-product images are labelled with the model code),
+Yoshimoto's from yoshimoto-sangyo.co.jp. IC-210 is no longer on BDA's site; its
+photo is a retailer image cropped to the product. IC-036's x1-x3 variant files
+stay in vendor-sources (no product page of their own).
+**28 are live**; 13 are over the 50 MB `models` bucket limit and stay local:
+the ten Valpra granite sinks (52-60 MB), V-VT 5480 GY (70 MB) and Yoshimoto
+HS700/HS950 (169/208 MB). They need Purge Unused / smaller textures in
+SketchUp, or a higher bucket limit. Icepol, Valpra and Yoshimoto got the usual
+seeded non-expiring subscription so the catalogue shows them.
+
+**Hunter Douglas ceilings (local, not uploaded).**
+`scripts/extract-hunterdouglas-ceilings.py` reads the 404-page product guide's
+reference pages into `Materials/Ceiling/Hunter Douglas`: 64 woodgrain/veneer
+finishes (captions are part of the raster, so transcribed), 12 stretch-metal
+meshes, 14 metal and 3 wood perforations. Perforations are rebuilt from the
+vector drawing — hole lattice, smallest rectangular repeat, whole-cm tile — and
+the printed diameter calibrates scale (P134 is labelled 1:4 but drawn at 1:8).
+Clustered, irregular, slotted and pitch-mismatched patterns are skipped and
+listed.
+
+**Vendors see usage only above 5 architects (UU PDP A6, migration 0035).**
+Totals, per-product rows, the daily trend (per product per day) and category
+share withhold any figure covering fewer than 5 installs; the dashboard and
+CSV say so. Quote counts are always shown. Test:
+`supabase/tests/vendor_threshold_test.sql`.
+
+**Retention (UU PDP A9, migration 0036).** `run_retention()` deletes usage
+history and stale snapshots, ingest/health/unhandled logs after 12 months, raw
+search misses, audit and security logs after 24. Invoices, subscriptions,
+consent_log and quote_requests are never touched. Scheduled daily with pg_cron
+when available.
+
+**Plugin 0.10.0.** Size filter (tiles: "60 × 120 cm", orientation-free), an ⓘ
+product-info button on every card, and **🖨 Print schedule** in the Usage tab:
+a finish & fixture schedule of the open model, opened in the browser to print
+or save as PDF.
+
 ## Unreleased — Plugin 0.10.0: panel fixes and paint colour families
 
 - **Settings and account stayed out of reach on long lists.** The header was

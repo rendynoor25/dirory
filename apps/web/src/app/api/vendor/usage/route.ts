@@ -37,10 +37,16 @@ export async function GET(request: Request) {
     type: string;
     projects: number;
     units: number;
-    area_m2: number;
+    area_m2: number | null;
     quotes: number;
+    suppressed: boolean;
   }[]) {
-    rows.push([r.name, r.type, r.projects, r.units, Number(r.area_m2).toFixed(2), r.quotes]);
+    // Fewer than 5 architects: the figures are withheld (UU PDP A6, migration 0035).
+    rows.push(
+      r.suppressed
+        ? [r.name, r.type, "withheld (<5 architects)", "", "", r.quotes]
+        : [r.name, r.type, r.projects, r.units, Number(r.area_m2 ?? 0).toFixed(2), r.quotes],
+    );
   }
 
   return new Response(csv(rows), {

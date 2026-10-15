@@ -214,16 +214,26 @@ export default async function VendorHome({
     area_m2: 0,
     architects: 0,
     quotes: 0,
-  }) as { projects: number; units: number; area_m2: number; architects: number; quotes: number };
+    suppressed: false,
+  }) as {
+    projects: number;
+    units: number;
+    area_m2: number;
+    architects: number;
+    quotes: number;
+    suppressed: boolean;
+  };
 
   type Row = {
     asset_id: string;
     name: string;
     type: string;
-    projects: number;
-    units: number;
-    area_m2: number;
+    // Null when fewer than 5 installs used the product (migration 0035).
+    projects: number | null;
+    units: number | null;
+    area_m2: number | null;
     quotes: number;
+    suppressed: boolean;
   };
   const rows = (byAssetRes.data ?? []) as Row[];
 
@@ -243,10 +253,10 @@ export default async function VendorHome({
 
   const sorted = [...rows].sort((a, b) => {
     if (sort === "name") return a.name.localeCompare(b.name);
-    if (sort === "area") return Number(b.area_m2) - Number(a.area_m2);
-    if (sort === "projects") return b.projects - a.projects;
+    if (sort === "area") return Number(b.area_m2 ?? 0) - Number(a.area_m2 ?? 0);
+    if (sort === "projects") return (b.projects ?? 0) - (a.projects ?? 0);
     if (sort === "quotes") return b.quotes - a.quotes;
-    return b.units - a.units;
+    return (b.units ?? 0) - (a.units ?? 0);
   });
 
   const published = (assetsRes.data ?? []).filter((a) => a.status === "approved").length;
@@ -340,6 +350,14 @@ export default async function VendorHome({
         <Kpi label="Published products" value={`${published} / ${(assetsRes.data ?? []).length}`} />
       </div>
 
+      {totals.suppressed ? (
+        <p className="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          Usage in this range comes from fewer than 5 architects, so the figures are withheld to
+          protect their privacy (UU PDP). They appear as soon as more architects use your products.
+          Quote requests are always shown.
+        </p>
+      ) : null}
+
       {/* ---- trend ------------------------------------------------------- */}
       <Card>
         <CardHeader
@@ -372,9 +390,17 @@ export default async function VendorHome({
                   <Td>
                     <Badge tone={r.type === "material" ? "blue" : "gray"}>{r.type}</Badge>
                   </Td>
-                  <Td>{r.projects}</Td>
-                  <Td>{r.units || "—"}</Td>
-                  <Td>{r.area_m2 ? Number(r.area_m2).toFixed(1) : "—"}</Td>
+                  {r.suppressed ? (
+                    <Td colSpan={3} className="text-xs text-slate-400">
+                      Fewer than 5 architects — withheld
+                    </Td>
+                  ) : (
+                    <>
+                      <Td>{r.projects ?? 0}</Td>
+                      <Td>{r.units || "—"}</Td>
+                      <Td>{r.area_m2 ? Number(r.area_m2).toFixed(1) : "—"}</Td>
+                    </>
+                  )}
                   <Td>{r.quotes || "—"}</Td>
                   <Td>
                     <Sparkline points={seriesByAsset.get(r.asset_id) ?? []} />
