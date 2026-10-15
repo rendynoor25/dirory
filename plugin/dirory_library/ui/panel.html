@@ -13,7 +13,9 @@
     </div>
     <div class="toolbar">
       <button id="updateBtn" class="update-btn" title="Update" hidden>⬆</button>
-      <button id="inspectorBtn" title="Inspector">🔍</button>
+      <!-- Inspector (after Thudio) is parked until the catalogue carries the
+           purchase details it is meant to show. The code stays wired up. -->
+      <button id="inspectorBtn" title="Inspector" hidden>🔍</button>
       <button id="settingsBtn" title="Settings">⚙</button>
       <button id="accountBtn" title="Sign in">👤</button>
     </div>
@@ -26,7 +28,9 @@
   <div id="controls" class="controls">
     <div class="search-row">
       <input id="search" type="text" list="searchSuggestions" placeholder="Search name, category or brand…" data-i18n-placeholder="app.search_placeholder" autocomplete="off">
-      <button id="searchGo" type="button" title="Search (Enter)" data-i18n="app.search">Search</button>
+      <button id="searchGo" type="button" title="Search (Enter)" data-i18n-title="app.search" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+      </button>
     </div>
     <datalist id="searchSuggestions"></datalist>
 
@@ -42,6 +46,10 @@
       <select id="categoryFilter" aria-label="Filter by category"></select>
       <select id="brandFilter" aria-label="Filter by brand"></select>
     </div>
+
+    <!-- Colour family (after Thudio): paint ranges run to hundreds of colours,
+         so a paint list can be narrowed to one family first. -->
+    <div id="colourFamilies" class="colour-families" hidden></div>
   </div>
 
   <div id="brandBanner" class="brand-banner" hidden></div>

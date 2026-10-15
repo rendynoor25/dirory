@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased — Plugin 0.10.0: panel fixes and paint colour families
+
+- **Settings and account stayed out of reach on long lists.** The header was
+  not pinned, only the search bar was, so after scrolling any long tab (All,
+  Models, Materials) the ⚙ and account buttons had scrolled away; Favourite is
+  short enough never to scroll, which is why they seemed to exist only there.
+  The header is now pinned above the search bar (`--header-h`).
+- **Inspector button hidden** for now (the code stays wired up). It came from
+  Thudio, where it shows price and purchase details Dirory does not carry yet.
+- **Search button is a magnifying-glass icon.**
+- **Colour family for paint** (from Thudio's Wall Paint browser). When the list
+  is paint — category "Paint", or a brand whose items are all paint — a row of
+  chips (White, Cream, Yellow, Orange, Red, Pink, Purple, Blue, Green, Brown,
+  Grey, Black) narrows hundreds of colours to one family, light to dark. The
+  catalogue stores no colour, so each paint's colour is sampled once from its
+  thumbnail (served with `Access-Control-Allow-Origin: *`) and cached in the
+  panel's local storage per asset version. Neutrals are classified by chroma,
+  not HSL saturation, which reads barely-tinted whites as saturated. Checked on
+  400 live paints: every one landed in a family.
+
 ## Unreleased — Plugin 0.10.0: consent before sharing (UU PDP A1, A3, A4)
 
 OpenCode started this work on 13 Oct and deployed the server half (migrations

@@ -51,13 +51,22 @@ function scrollToTop() {
   if (window.scrollY > 0) window.scrollTo(0, 0);
 }
 
-// The sticky Usage toolbar must sit right under the sticky search/tabs bar.
+// The header and the search/tabs bar are both pinned; the bar sits under the
+// header, and the sticky Usage toolbar under both.
 function trackControlsHeight() {
+  const header = document.querySelector('header');
   const controls = document.getElementById('controls');
-  const apply = () =>
-    document.documentElement.style.setProperty('--controls-h', controls.offsetHeight + 'px');
+  const apply = () => {
+    const root = document.documentElement.style;
+    root.setProperty('--header-h', header.offsetHeight + 'px');
+    root.setProperty('--controls-h', header.offsetHeight + controls.offsetHeight + 'px');
+  };
   apply();
-  if (window.ResizeObserver) new ResizeObserver(apply).observe(controls);
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(apply);
+    ro.observe(header);
+    ro.observe(controls);
+  }
 }
 
 window.addEventListener('load', () => {
@@ -127,6 +136,185 @@ document.getElementById('brandFilter').addEventListener('change', (e) => {
   render();
   scrollToTop();
 });
+
+/* ------------------------------------------------------------------ */
+/* Colour family (after Thudio's Wall Paint browser)                   */
+/*                                                                      */
+/* The catalogue stores no colour, so each paint's colour is sampled    */
+/* from its thumbnail once and remembered on this computer. A paint     */
+/* card is a flat swatch, so the average is the colour itself.          */
+/* ------------------------------------------------------------------ */
+
+const PAINT_RE = /\b(paint|cat|colou?r)\b/i;
+const COLOUR_FAMILIES = [
+  ['white', 'White', '#f7f5ef'],
+  ['cream', 'Cream', '#eadcb8'],
+  ['yellow', 'Yellow', '#f2c94c'],
+  ['orange', 'Orange', '#f2994a'],
+  ['red', 'Red', '#d64545'],
+  ['pink', 'Pink', '#f2a2c0'],
+  ['purple', 'Purple', '#8e6cc0'],
+  ['blue', 'Blue', '#3d7bd9'],
+  ['green', 'Green', '#4caf6a'],
+  ['brown', 'Brown', '#8a5a3b'],
+  ['grey', 'Grey', '#9a9ca3'],
+  ['black', 'Black', '#26272b'],
+];
+let selectedFamily = '';
+const swatches = new Map(); // item key -> { hex, h, s, l }
+const swatchPending = new Set();
+let swatchRenderTimer = null;
+
+function swatchCacheKey(item) {
+  return `dirory.swatch.${item.asset_id || item.key}.${item.version || 0}`;
+}
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return { h: 0, s: 0, l };
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h;
+  if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  return { h: h * 60, s, l };
+}
+
+function swatchFromHex(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  // Chroma (0-255): how far the colour is from grey. HSL saturation runs to
+  // 1.0 for barely-tinted whites such as #f5f5fd, so neutrals use chroma.
+  const c = Math.max(r, g, b) - Math.min(r, g, b);
+  return { hex, c, ...rgbToHsl(r, g, b) };
+}
+
+// Hue bands for paint cards: neutrals first, then by hue.
+function familyOf(sw) {
+  if (!sw) return '';
+  const { h, l, c } = sw;
+  if (l >= 0.92 && c <= 16) return 'white';
+  if (l <= 0.14) return 'black';
+  if (c <= 18) return 'grey';
+  if (h >= 25 && h < 65 && l >= 0.72 && c <= 80) return 'cream';
+  if (h >= 10 && h < 50 && l < 0.45) return 'brown';
+  if (h < 12 || h >= 345) return l >= 0.72 ? 'pink' : 'red';
+  if (h < 40) return 'orange';
+  if (h < 68) return 'yellow';
+  if (h < 170) return 'green';
+  if (h < 255) return 'blue';
+  if (h < 290) return 'purple';
+  return 'pink';
+}
+
+function isPaintList(items) {
+  if (!items.length || !items.every((i) => i.type === 'material')) return false;
+  if (selectedCategory) return PAINT_RE.test(selectedCategory);
+  return items.every((i) => PAINT_RE.test(i.category || ''));
+}
+
+function swatchOf(item) {
+  if (swatches.has(item.key)) return swatches.get(item.key);
+  try {
+    const hex = localStorage.getItem(swatchCacheKey(item));
+    if (hex) {
+      const sw = swatchFromHex(hex);
+      swatches.set(item.key, sw);
+      return sw;
+    }
+  } catch (e) { /* storage unavailable: sample again */ }
+  return null;
+}
+
+// Load the thumbnail CORS-clean, shrink it to a few pixels and average them.
+function sampleSwatch(item) {
+  const src = item.thumbnail_url;
+  if (!src || !/^https?:/i.test(src) || swatchPending.has(item.key)) return;
+  swatchPending.add(item.key);
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    swatchPending.delete(item.key);
+    try {
+      const size = 8;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, size, size);
+      const px = ctx.getImageData(0, 0, size, size).data;
+      let r = 0, g = 0, b = 0, n = 0;
+      for (let i = 0; i < px.length; i += 4) {
+        if (px[i + 3] < 128) continue;
+        r += px[i]; g += px[i + 1]; b += px[i + 2]; n++;
+      }
+      if (!n) return;
+      const hex = '#' + [r, g, b].map((v) => Math.round(v / n).toString(16).padStart(2, '0')).join('');
+      swatches.set(item.key, swatchFromHex(hex));
+      try { localStorage.setItem(swatchCacheKey(item), hex); } catch (e) { /* not fatal */ }
+      scheduleSwatchRender();
+    } catch (e) {
+      // A tainted canvas (no CORS) leaves the item without a family.
+    }
+  };
+  img.onerror = () => swatchPending.delete(item.key);
+  img.src = src;
+}
+
+function scheduleSwatchRender() {
+  if (swatchRenderTimer) return;
+  swatchRenderTimer = setTimeout(() => {
+    swatchRenderTimer = null;
+    render();
+  }, 400);
+}
+
+// Shows the family chips for a paint list and narrows it to the chosen one.
+function applyColourFamily(items) {
+  const bar = document.getElementById('colourFamilies');
+  if (!isPaintList(items)) {
+    bar.hidden = true;
+    selectedFamily = '';
+    return items;
+  }
+  items.forEach((item) => { if (!swatchOf(item)) sampleSwatch(item); });
+
+  const counts = {};
+  items.forEach((item) => {
+    const f = familyOf(swatchOf(item));
+    if (f) counts[f] = (counts[f] || 0) + 1;
+  });
+  if (selectedFamily && !counts[selectedFamily]) selectedFamily = '';
+
+  bar.innerHTML = '';
+  const all = el('button', 'family-chip family-all' + (selectedFamily ? '' : ' active'), 'All colours');
+  all.title = `All colours (${items.length})`;
+  all.addEventListener('click', () => { selectedFamily = ''; render(); scrollToTop(); });
+  bar.appendChild(all);
+  COLOUR_FAMILIES.forEach(([id, label, hex]) => {
+    if (!counts[id]) return;
+    const chip = el('button', 'family-chip' + (selectedFamily === id ? ' active' : ''));
+    chip.style.background = hex;
+    chip.title = `${label} (${counts[id]})`;
+    chip.setAttribute('aria-label', chip.title);
+    chip.addEventListener('click', () => {
+      selectedFamily = selectedFamily === id ? '' : id;
+      render();
+      scrollToTop();
+    });
+    bar.appendChild(chip);
+  });
+  bar.hidden = false;
+
+  if (!selectedFamily) return items;
+  // Light to dark inside a family, the way a fan deck is read.
+  return items
+    .filter((item) => familyOf(swatchOf(item)) === selectedFamily)
+    .sort((a, b) => swatchOf(b).l - swatchOf(a).l);
+}
 
 document.getElementById('usageRefresh').addEventListener('click', () => requestReport(true));
 document.getElementById('usageExport').addEventListener('click', () => sketchup.exportReport());
@@ -365,12 +553,13 @@ function render() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
 
-  const filtered = allItems.filter((item) => {
+  let filtered = allItems.filter((item) => {
     const matchesType = inCurrentTab(item);
     const matchesCategory = !selectedCategory || item.category === selectedCategory;
     const matchesBrand = !selectedBrand || item.brand === selectedBrand;
     return matchesType && matchesCategory && matchesBrand && (!q || matchesSearch(item, q));
   });
+  filtered = applyColourFamily(filtered);
 
   if (currentFilter === 'favourite') {
     // Starred first, then what was used before (most recent first).
