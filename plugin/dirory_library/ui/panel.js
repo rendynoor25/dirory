@@ -1428,6 +1428,9 @@ function takeoffTable(head, rows) {
 }
 
 window.diroryTakeoff = function (data) {
+  lastTakeoff = data;
+  byId('rabBox').hidden = false;
+  if (typeof renderRab === 'function' && rabBook) renderRab();
   const body = byId('takeoffBody');
   body.innerHTML = '';
   byId('takeoffRun').disabled = false;
@@ -1490,6 +1493,138 @@ byId('takeoffRun').addEventListener('click', () => {
   sketchup.requestTakeoff();
 });
 byId('takeoffExport').addEventListener('click', () => sketchup.exportTakeoff());
+
+/* ------------------------------------------------------------------ */
+/* RAB: takeoff x regional price book (rab.js does the arithmetic)      */
+/* ------------------------------------------------------------------ */
+
+let lastTakeoff = null;
+let rabBook = null;
+let lastRab = null;
+const RAB_ELEMENT_LABELS = Object.assign({}, ELEMENT_LABELS, { opening: 'Doors & windows (kusen, pintu, jendela)' });
+
+function rupiah(n) {
+  return 'Rp ' + Math.round(Number(n) || 0).toLocaleString('id-ID');
+}
+
+function rabOptions() {
+  return { wallType: byId('rabWall').value, wallsBothSides: byId('rabBothSides').checked };
+}
+
+function renderRab() {
+  const body = byId('rabBody');
+  body.innerHTML = '';
+  if (!lastTakeoff || !rabBook) return;
+  lastRab = window.DiroryRab.computeRab(lastTakeoff, rabBook, rabOptions());
+  if (!lastRab.lines.length) {
+    body.appendChild(el('p', 'usage-note', 'Nothing to price yet: measure a model with walls, floors, ceilings or roofs.'));
+    return;
+  }
+  window.DiroryRab.ELEMENTS.forEach((element) => {
+    const lines = lastRab.lines.filter((l) => l.element === element);
+    if (!lines.length) return;
+    body.appendChild(el('h4', 'takeoff-element', RAB_ELEMENT_LABELS[element] || element));
+    const rows = lines.map((l) => [
+      [l.name, ''],
+      [`${fmt2(l.quantity)} ${l.unit}`, 'num'],
+      [rupiah(l.unit_price), 'num'],
+      [rupiah(l.amount), 'num'],
+    ]);
+    const sub = [['Subtotal', ''], ['', ''], ['', ''], [rupiah(lastRab.subtotals[element]), 'num']];
+    sub.className = 'total';
+    rows.push(sub);
+    body.appendChild(takeoffTable([['Work item'], ['Volume', 'num'], ['Unit price', 'num'], ['Amount', 'num']], rows));
+  });
+  const total = el('p', 'rab-total');
+  total.appendChild(el('span', '', 'Estimated total'));
+  total.appendChild(el('strong', '', rupiah(lastRab.total)));
+  body.appendChild(total);
+  const note = [
+    `Unit prices: ${rabBook.name}, AHSP coefficients with regional basic prices, including ${rabBook.overhead_pct}% overhead and profit. Excludes PPN.`,
+    rabBook.source ? `Source: ${rabBook.source}` : '',
+    'An estimate from the model, not a tender document. Check volumes and specifications with your quantity surveyor.',
+  ].filter(Boolean).join(' ');
+  body.appendChild(el('p', 'usage-note', note));
+  const actions = el('div', 'usage-actions');
+  const print = el('button', 'ghost-btn', '🖨 Print RAB');
+  print.addEventListener('click', printRab);
+  const csv = el('button', 'ghost-btn', '⭳ Export RAB (CSV)');
+  csv.addEventListener('click', exportRabCsv);
+  actions.appendChild(print);
+  actions.appendChild(csv);
+  body.appendChild(actions);
+}
+
+function escapeHtml(text) {
+  return String(text == null ? '' : text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+function printRab() {
+  if (!lastRab) return;
+  const sections = window.DiroryRab.ELEMENTS.map((element) => {
+    const lines = lastRab.lines.filter((l) => l.element === element);
+    if (!lines.length) return '';
+    const rows = lines.map((l, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(l.name)}<div class="ref">${escapeHtml(l.reference)}</div></td>` +
+      `<td class="num">${fmt2(l.quantity)}</td><td>${escapeHtml(l.unit)}</td><td class="num">${rupiah(l.unit_price)}</td><td class="num">${rupiah(l.amount)}</td></tr>`).join('');
+    return `<h2>${escapeHtml(RAB_ELEMENT_LABELS[element] || element)}</h2><table><thead><tr><th>#</th><th>Uraian pekerjaan</th>` +
+      `<th>Volume</th><th>Sat.</th><th>Harga satuan</th><th>Jumlah</th></tr></thead><tbody>${rows}` +
+      `<tr class="sub"><td></td><td>Subtotal</td><td></td><td></td><td></td><td class="num">${rupiah(lastRab.subtotals[element])}</td></tr></tbody></table>`;
+  }).join('');
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>RAB - ${escapeHtml(rabBook.name)}</title><style>
+    body { font: 12px/1.45 "Segoe UI", Arial, sans-serif; color: #1c1c1e; margin: 24px; }
+    h1 { font-size: 18px; margin: 0; } h2 { font-size: 13px; margin: 20px 0 6px; color: #39509f; }
+    .meta, .ref { color: #6b6b70; } .ref { font-size: 10px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #d7d9e6; padding: 5px 7px; text-align: left; vertical-align: top; }
+    th { background: #f4f5f9; } .num { text-align: right; white-space: nowrap; }
+    tr.sub td { font-weight: 700; background: #f4f5f9; }
+    .total { margin-top: 18px; font-size: 15px; text-align: right; }
+    @media print { body { margin: 0; } button { display: none; } }
+  </style></head><body><button onclick="window.print()" style="float:right">Print / Save as PDF</button>
+  <h1>Rencana Anggaran Biaya (estimate)</h1>
+  <p class="meta">${escapeHtml(rabBook.name)} · ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} · Dirory</p>
+  ${sections}
+  <p class="total">Estimated total: <strong>${rupiah(lastRab.total)}</strong></p>
+  <p class="meta">Includes ${rabBook.overhead_pct}% overhead and profit; excludes PPN. ${escapeHtml(rabBook.source || '')}
+  Volumes are measured from the SketchUp model; check them before a tender.</p></body></html>`;
+  sketchup.printHtml(JSON.stringify({ name: 'Dirory_RAB', html: html }));
+}
+
+function exportRabCsv() {
+  if (!lastRab) return;
+  const cell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+  const rows = [['Element', 'Work item', 'Volume', 'Unit', 'Unit price (IDR)', 'Amount (IDR)', 'Reference']];
+  lastRab.lines.forEach((l) => rows.push([RAB_ELEMENT_LABELS[l.element] || l.element, l.name, l.quantity, l.unit, l.unit_price, l.amount, l.reference]));
+  rows.push(['', 'Estimated total', '', '', '', lastRab.total, '']);
+  const content = rows.map((r) => r.map(cell).join(',')).join('\r\n') + '\r\n';
+  sketchup.saveText(JSON.stringify({ title: 'Export RAB', filename: 'Dirory_RAB.csv', content: content }));
+}
+
+window.diroryRabBook = function (book) {
+  rabBook = book;
+  byId('rabRun').disabled = false;
+  byId('rabRun').textContent = '💰 Estimate cost (RAB)';
+  renderRab();
+};
+
+window.diroryRabError = function (message) {
+  byId('rabRun').disabled = false;
+  byId('rabRun').textContent = '💰 Estimate cost (RAB)';
+  byId('rabBody').innerHTML = '';
+  byId('rabBody').appendChild(el('p', 'usage-note', message));
+};
+
+byId('rabRun').addEventListener('click', () => {
+  const region = byId('rabRegion').value;
+  if (rabBook && rabBook.region === region) {
+    renderRab();
+    return;
+  }
+  byId('rabRun').disabled = true;
+  byId('rabRun').textContent = 'Loading prices…';
+  sketchup.requestRab(JSON.stringify({ region: region }));
+});
+['rabWall', 'rabBothSides'].forEach((id) => byId(id).addEventListener('change', () => { if (rabBook) renderRab(); }));
 
 /* ------------------------------------------------------------------ */
 /* Product info + Inspector                                            */

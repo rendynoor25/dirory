@@ -1,5 +1,37 @@
 # Changelog
 
+## Unreleased — RAB step 2: Jakarta price book and cost estimate
+
+**Coefficients: the newest official ones, via Jakarta.** Permen PUPR 1/2022 was
+extracted first (`scripts/extract-ahsp.py` → `supabase/seed/ahsp_pupr_2022.json`,
+15 items, kept as the national fallback). Checking it against Jakarta's own
+published unit rates showed differences of up to +100%: Jakarta already uses
+**SE Dirjen Bina Konstruksi 182/SE/Dk/2025 and 47/SE/Dk/2026**, which supersede
+the 2022 productivity figures (ceramic floor labour 0.70 → 0.15 OH/m²). The
+2022 text also has typos (AAC mortar 0.063 kg/m², hollow 40.40 at "4000 m'/m²").
+So the Jakarta book is built from Jakarta's analyses: those coefficients ×
+Jakarta's basic prices (HSD, wages per Kepgub DKI) + 15% overhead.
+
+- `scripts/build-rab-jakarta.py` fetches the 15 items from the public DCKTRP
+  "Bangun Jakarta" HSP API and recomputes each; all 15 match Jakarta's
+  published totals to the rupiah. Output: `supabase/seed/rab_jakarta.json`.
+- Items: red brick ½ batu / AAC 10 cm, plaster 1:4, skim coat, interior paint,
+  wall tile 20×20, floor tile 40×40, skirting, hollow ceiling frame, gypsum 9 mm,
+  light-steel truss, concrete roof tile, aluminium frame, panel door leaf,
+  5 mm glass.
+- **Migration 0038**: `rab_regions`, `rab_items`, `rab_components` (admin-only;
+  served by the new **`rab` Edge Function** to signed-in plugins — where the Pro
+  check goes in step 3). `scripts/seed-rab.mjs --region jakarta` loads it.
+- **Plugin**: `ui/rab.js` (pure, `node scripts/test-rab.mjs`, 15 tests) turns
+  the takeoff into volumes — masonry = wall faces / 2, finishes = untiled faces,
+  tiled walls by Dirory tile category, skirting = floor perimeter, frames =
+  2(W+H) per opening — and prices them. The Quantities section gains
+  **💰 Estimate cost (RAB)** with brick/AAC and single/double-face options,
+  subtotals per element, print (opens in the browser) and CSV.
+
+Not deployed yet (0038, seed, `rab` function). Excludes PPN. Plugin not yet run
+in SketchUp; checked in the browser with the real Jakarta book.
+
 ## Unreleased — Quantity takeoff (RAB step 1)
 
 The first step of Dirory Pro's RAB / Bill of Quantities: measure the

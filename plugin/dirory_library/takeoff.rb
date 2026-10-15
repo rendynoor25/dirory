@@ -130,6 +130,7 @@ module Dirory
           'material' => tag ? tag['name'] : mat_name,
           'brand' => tag ? tag['brand'] : '',
           'sku' => tag ? tag['sku'] : '',
+          'category' => tag ? tag['category'] : '',
           'tile_size' => tag ? tag['tile_size'] : '',
           'dirory' => !tag.nil?,
           'faces' => 0,

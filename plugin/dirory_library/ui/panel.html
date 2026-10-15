@@ -90,6 +90,21 @@
           <button id="takeoffExport" class="ghost-btn" hidden>⭳ Export quantities</button>
         </div>
       </div>
+      <!-- RAB step 2: AHSP x regional prices. Shown once the model is measured. -->
+      <div id="rabBox" class="rab-box" hidden>
+        <div class="rab-controls">
+          <select id="rabRegion" aria-label="Price region">
+            <option value="jakarta">DKI Jakarta</option>
+          </select>
+          <select id="rabWall" aria-label="Wall type">
+            <option value="brick">Red brick walls</option>
+            <option value="aac">Lightweight block (AAC) walls</option>
+          </select>
+          <label class="usage-option"><input type="checkbox" id="rabBothSides" checked> Walls drawn with both faces</label>
+          <button id="rabRun" class="primary-btn">💰 Estimate cost (RAB)</button>
+        </div>
+        <div id="rabBody"></div>
+      </div>
       <div id="takeoffBody" class="takeoff-body">
         <p class="usage-note">
           Measures wall, floor, ceiling and roof finish areas per material, and counts doors
@@ -314,6 +329,7 @@
 
   <div id="toast" class="toast" hidden></div>
 
+  <script src="rab.js"></script>
   <script src="panel.js"></script>
 </body>
 </html>

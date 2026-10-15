@@ -1173,6 +1173,38 @@ module Dirory
       end
     end
 
+    # A document built by the panel (the RAB), written to a temp file and
+    # opened in the browser to print or save as PDF. Nothing is uploaded.
+    def self.open_html_document(name, html)
+      UI.start_timer(0.1, false) do
+        begin
+          safe = name.to_s.gsub(/[^A-Za-z0-9_-]/, '_')[0, 40]
+          safe = 'Dirory' if safe.empty?
+          path = File.join(Dir.tmpdir, "#{safe}_#{Time.now.strftime('%Y%m%d_%H%M%S')}.html")
+          File.write(path, html.to_s, encoding: 'UTF-8')
+          UI.openURL('file:///' + path.tr('\\', '/'))
+        rescue StandardError => e
+          UI.messagebox("Dirory could not open the document:\n#{e.class}: #{e.message}")
+        end
+      end
+    end
+
+    # Save text the panel produced (a CSV) where the user chooses.
+    def self.save_text_file(title, filename, content)
+      UI.start_timer(0.1, false) do
+        begin
+          path = UI.savepanel(title.to_s.empty? ? 'Save' : title.to_s, Dir.home, filename.to_s)
+          next unless path
+          ext = File.extname(filename.to_s)
+          path += ext unless ext.empty? || path.downcase.end_with?(ext.downcase)
+          File.open(path, 'wb') { |f| f.write("\xEF\xBB\xBF".b + content.to_s.encode('UTF-8').b) }
+          UI.messagebox("Saved to:\n#{path}")
+        rescue StandardError => e
+          UI.messagebox("Dirory could not save the file:\n#{e.class}: #{e.message}")
+        end
+      end
+    end
+
     def self.send_usage_report
       return unless @dialog
       begin
@@ -1409,6 +1441,18 @@ module Dirory
         @dialog.add_action_callback('printSchedule') { |_ctx| print_schedule }
         @dialog.add_action_callback('requestTakeoff') { |_ctx| send_takeoff }
         @dialog.add_action_callback('exportTakeoff') { |_ctx| export_takeoff_csv }
+        @dialog.add_action_callback('requestRab') do |_ctx, payload|
+          data = parse_payload(payload)
+          Cloud.fetch_rab(@dialog, data['region'])
+        end
+        @dialog.add_action_callback('printHtml') do |_ctx, payload|
+          data = parse_payload(payload)
+          open_html_document(data['name'], data['html'])
+        end
+        @dialog.add_action_callback('saveText') do |_ctx, payload|
+          data = parse_payload(payload)
+          save_text_file(data['title'], data['filename'], data['content'])
+        end
         @dialog.add_action_callback('requestQuote') { |_ctx, payload| request_quote(payload) }
 
         @dialog.add_action_callback('generateThumbnails') do |_ctx|

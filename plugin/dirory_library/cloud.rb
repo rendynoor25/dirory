@@ -1175,6 +1175,43 @@ module Dirory
         end
       end
 
+      # RAB price book for a region (the `rab` Edge Function). The plugin
+      # multiplies it by its own takeoff, so no geometry is sent. Answers the
+      # panel with window.diroryRabBook(book) or window.diroryRabError(msg).
+      def self.fetch_rab(dialog, region)
+        region = region.to_s.downcase.gsub(/[^a-z0-9_-]/, '')
+        region = 'jakarta' if region.empty?
+        say = lambda do |fn, value|
+          dialog && dialog.execute_script("window.#{fn} && window.#{fn}(#{value.to_json});")
+        end
+        unless configured? && defined?(Sketchup::Http::Request)
+          say.call('diroryRabError', 'The cost estimate needs the Dirory cloud connection.')
+          return
+        end
+        unless signed_in?
+          say.call('diroryRabError', 'Sign in to estimate costs.')
+          return
+        end
+        request = new_request("#{api_base_url}/rab?region=#{region}", Sketchup::Http::GET)
+        request.headers = request_headers
+        request.start do |_req, response|
+          release_request(request)
+          safely do
+            code = response.status_code.to_i
+            if code == 200
+              say.call('diroryRabBook', (JSON.parse(response.body.to_s) rescue {}))
+            elsif code == 401
+              unauthorized!
+              say.call('diroryRabError', 'Your session has expired. Please sign in again.')
+            else
+              say.call('diroryRabError', "Could not load the #{region} price book (HTTP #{code}).")
+            end
+          end
+        end
+      rescue StandardError => e
+        say && say.call('diroryRabError', "Could not load the price book: #{e.message}")
+      end
+
       def self.push_favourites(favourites, recent)
         return unless configured? && signed_in? && defined?(Sketchup::Http::Request)
         request = new_request("#{api_base_url}/favourites", Sketchup::Http::POST)
