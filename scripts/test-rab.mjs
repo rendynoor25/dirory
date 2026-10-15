@@ -55,4 +55,42 @@ eq("an empty takeoff costs nothing", computeRab({ rows: [], openings: [] }, book
 eq("an item missing from the book is reported", computeRab(takeoff, { items: [] }).missing.length > 0 ? 1 : 0, 1);
 
 console.log(`\nTotal for the sample room: Rp ${rab.total.toLocaleString("id-ID")}`);
+// Structure (Revit): a column with modelled rebar, a slab without, a steel
+// beam, and a concrete wall whose core must not be priced as brick too.
+const frame = {
+  rows: [
+    { element: "wall", material: "Brick 150", area_m2: 40 },
+    { element: "wall", material: "Concrete 200", core: "concrete", area_m2: 20 },
+  ],
+  openings: [],
+  structure: [
+    { member: "column", name: "K1 30x30", count: 4, concrete_m3: 1.08, formwork_m2: 14.4, rebar_kg: 200, rebar_ratio_m3: 0, steel_kg: 0 },
+    { member: "slab", name: "Plat 12", count: 1, concrete_m3: 6, formwork_m2: 52, rebar_kg: 0, rebar_ratio_m3: 6, steel_kg: 0 },
+    { member: "wall", name: "Concrete 200", count: 1, concrete_m3: 2, formwork_m2: 20, rebar_kg: 0, rebar_ratio_m3: 2, steel_kg: 0 },
+    { member: "steel", name: "Beam: WF 200", count: 2, concrete_m3: 0, formwork_m2: 0, rebar_kg: 0, rebar_ratio_m3: 0, steel_kg: 358 },
+  ],
+};
+const fq = quantities(frame);
+eq("concrete wall core is not masonry", fq.wall_core, 20);
+eq("concrete wall still gets finishes", fq.wall_finish, 60);
+eq("modelled rebar is used as-is", fq.rebar_column, 200);
+eq("unmodelled rebar uses the slab ratio", fq.rebar_slab, 6 * 110);
+eq("ratio can be overridden", quantities(frame, { rebarRatio: { slab: 100 } }).rebar_slab, 600);
+eq("all concrete is compacted", fq.concrete, 9.08);
+eq("steel weight", fq.steel, 358);
+const frab = computeRab(frame, book);
+const fline = (key, basis) => frab.lines.find((l) => l.key === key && l.basis === basis);
+eq("column concrete priced as ready-mix", fline("concrete_rm", "concrete_column").amount, Math.round(1.08 * price("concrete_rm")));
+eq("slab rebar uses the slab item", fline("rebar_slab", "rebar_slab").quantity, 660);
+eq("column rebar uses the frame item", fline("rebar_frame", "rebar_column").quantity, 200);
+eq("slab formwork", fline("formwork_slab", "formwork_slab").quantity, 52);
+eq("steel line", fline("steel_profile", "steel").amount, Math.round(358 * price("steel_profile")));
+eq("site-mixed option swaps the concrete item",
+  computeRab(frame, book, { concrete: "site" }).lines.filter((l) => l.key === "concrete_rm").length, 0);
+eq("structure subtotal is its lines", frab.subtotals.structure,
+  frab.lines.filter((l) => l.element === "structure").reduce((s, l) => s + l.amount, 0));
+eq("nothing missing from the Jakarta book", frab.missing.length, 0);
+eq("a SketchUp takeoff has no structure lines", rab.lines.filter((l) => l.element === "structure").length, 0);
+console.log(`Structure sample: Rp ${frab.subtotals.structure.toLocaleString("id-ID")}`);
+
 process.exit(failed ? 1 : 0);

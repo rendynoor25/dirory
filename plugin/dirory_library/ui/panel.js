@@ -1400,6 +1400,7 @@ window.diroryDownloading = function (data) {
 /* ------------------------------------------------------------------ */
 
 const ELEMENT_LABELS = {
+  structure: 'Structure (struktur)',
   wall: 'Wall (dinding)',
   floor: 'Floor (lantai)',
   ceiling: 'Ceiling (plafon)',
@@ -1437,7 +1438,9 @@ window.diroryTakeoff = function (data) {
   byId('takeoffRun').textContent = '⟳ Measure again';
   const rows = data.rows || [];
   const openings = data.openings || [];
-  if (!rows.length && !openings.length) {
+  const structure = data.structure || [];
+  byId('rabConcrete').hidden = !structure.some((s) => s.concrete_m3 > 0);
+  if (!rows.length && !openings.length && !structure.length) {
     body.appendChild(el('p', 'usage-note',
       'Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.'));
     byId('takeoffExport').hidden = true;
@@ -1460,6 +1463,26 @@ window.diroryTakeoff = function (data) {
     body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS[element]));
     body.appendChild(takeoffTable([['Material'], ['Area', 'num']], lines));
   });
+
+  // Revit only: concrete, formwork and rebar per member, then steel.
+  if (structure.length) {
+    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.structure));
+    const labels = (window.DiroryRab && window.DiroryRab.MEMBER_LABELS) || {};
+    const concrete = structure.filter((s) => s.concrete_m3 > 0).map((s) => [
+      [`${labels[s.member] || s.member} · ${s.name} (${s.count})`, ''],
+      [fmt2(s.concrete_m3) + ' m³', 'num'],
+      [fmt2(s.formwork_m2) + ' m²', 'num'],
+      [s.rebar_kg > 0 ? fmt2(s.rebar_kg) + ' kg' : 'estimated', 'num'],
+    ]);
+    if (concrete.length) {
+      body.appendChild(takeoffTable([['Member'], ['Concrete', 'num'], ['Formwork', 'num'], ['Rebar', 'num']], concrete));
+    }
+    const steel = structure.filter((s) => s.steel_kg > 0).map((s) => [
+      [`${s.name} (${s.count})`, ''],
+      [fmt2(s.steel_kg) + ' kg', 'num'],
+    ]);
+    if (steel.length) body.appendChild(takeoffTable([['Steel member'], ['Weight', 'num']], steel));
+  }
 
   if (openings.length) {
     body.appendChild(el('h4', 'takeoff-element', 'Doors & windows (kusen, pintu, jendela)'));
@@ -1512,7 +1535,11 @@ function rupiah(n) {
 }
 
 function rabOptions() {
-  return { wallType: byId('rabWall').value, wallsBothSides: byId('rabBothSides').checked };
+  return {
+    wallType: byId('rabWall').value,
+    wallsBothSides: byId('rabBothSides').checked,
+    concrete: byId('rabConcrete').value,
+  };
 }
 
 function renderRab() {
@@ -1521,7 +1548,7 @@ function renderRab() {
   if (!lastTakeoff || !rabBook) return;
   lastRab = window.DiroryRab.computeRab(lastTakeoff, rabBook, rabOptions());
   if (!lastRab.lines.length) {
-    body.appendChild(el('p', 'usage-note', 'Nothing to price yet: measure a model with walls, floors, ceilings or roofs.'));
+    body.appendChild(el('p', 'usage-note', 'Nothing to price yet: measure a model with walls, floors, ceilings, roofs or structure.'));
     return;
   }
   window.DiroryRab.ELEMENTS.forEach((element) => {
@@ -1546,6 +1573,7 @@ function renderRab() {
   const note = [
     `Unit prices: ${rabBook.name}, AHSP coefficients with regional basic prices, including ${rabBook.overhead_pct}% overhead and profit. Excludes PPN.`,
     rabBook.source ? `Source: ${rabBook.source}` : '',
+    rebarNote(),
     'An estimate from the model, not a tender document. Check volumes and specifications with your quantity surveyor.',
   ].filter(Boolean).join(' ');
   body.appendChild(el('p', 'usage-note', note));
@@ -1557,6 +1585,16 @@ function renderRab() {
   actions.appendChild(print);
   actions.appendChild(csv);
   body.appendChild(actions);
+}
+
+// Members with no modelled rebar are priced with a kg per m3 ratio; say so.
+function rebarNote() {
+  const rab = window.DiroryRab;
+  const used = ((lastTakeoff && lastTakeoff.structure) || []).filter((s) => s.rebar_ratio_m3 > 0);
+  if (!used.length) return '';
+  const members = Array.from(new Set(used.map((s) => s.member)));
+  const ratios = members.map((m) => `${(rab.MEMBER_LABELS[m] || m).toLowerCase()} ${rab.REBAR_RATIO[m]} kg/m³`).join(', ');
+  return `Rebar is not modelled in some members, so it is estimated per m³ of concrete: ${ratios}. Model the rebar in Revit for the real weight.`;
 }
 
 function escapeHtml(text) {
@@ -1589,8 +1627,8 @@ function printRab() {
   <p class="meta">${escapeHtml(rabBook.name)} · ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} · Dirory</p>
   ${sections}
   <p class="total">Estimated total: <strong>${rupiah(lastRab.total)}</strong></p>
-  <p class="meta">Includes ${rabBook.overhead_pct}% overhead and profit; excludes PPN. ${escapeHtml(rabBook.source || '')}
-  Volumes are measured from the SketchUp model; check them before a tender.</p></body></html>`;
+  <p class="meta">Includes ${rabBook.overhead_pct}% overhead and profit; excludes PPN. ${escapeHtml(rabBook.source || '')} ${escapeHtml(rebarNote())}
+  Volumes are measured from the model; check them before a tender.</p></body></html>`;
   sketchup.printHtml(JSON.stringify({ name: 'Dirory_RAB', html: html }));
 }
 
@@ -1642,7 +1680,7 @@ byId('rabRun').addEventListener('click', () => {
   byId('rabRun').textContent = 'Loading prices…';
   sketchup.requestRab(JSON.stringify({ region: region }));
 });
-['rabWall', 'rabBothSides'].forEach((id) => byId(id).addEventListener('change', () => { if (rabBook) renderRab(); }));
+['rabWall', 'rabConcrete', 'rabBothSides'].forEach((id) => byId(id).addEventListener('change', () => { if (rabBook) renderRab(); }));
 
 /* ------------------------------------------------------------------ */
 /* Product info + Inspector                                            */

@@ -7,7 +7,12 @@
 //   floors, ceilings, roofs   HOST_AREA_COMPUTED (roof area includes slope)
 //   doors, windows            counted per type with the type's width/height
 //   skirting                  sum of room perimeters, when rooms are placed
+//   structure                 concrete, formwork, rebar and steel per member
+//                             (StructureTakeoff.cs)
 // A type is treated as tiled when its name or any layer material says so.
+// A wall with concrete in it is marked core = "concrete": rab.js prices its
+// finishes but not as brick or block masonry, since the structure section
+// already prices its concrete.
 
 using System;
 using System.Collections.Generic;
@@ -27,10 +32,12 @@ namespace Dirory.Revit
         public static Dictionary<string, object> Run(Document doc)
         {
             var rows = new Dictionary<string, Dictionary<string, object>>();
-            void Add(string element, string material, string category, double areaM2)
+            var (structure, concreteWalls) = StructureTakeoff.Run(doc);
+
+            void Add(string element, string material, string category, double areaM2, string core = "")
             {
                 if (areaM2 <= 0) return;
-                string key = element + "|" + material;
+                string key = element + "|" + material + "|" + core;
                 if (!rows.TryGetValue(key, out var row))
                 {
                     row = new Dictionary<string, object>
@@ -39,6 +46,7 @@ namespace Dirory.Revit
                         ["category"] = category, ["dirory"] = material.StartsWith("Dirory - "),
                         ["faces"] = 0, ["area_m2"] = 0.0,
                     };
+                    if (core != "") row["core"] = core;
                     rows[key] = row;
                 }
                 row["faces"] = (int)row["faces"] + 1;
@@ -50,7 +58,8 @@ namespace Dirory.Revit
             foreach (Wall w in new FilteredElementCollector(doc).OfClass(typeof(Wall)).WhereElementIsNotElementType())
             {
                 if (w.WallType.Kind == WallKind.Curtain) continue;
-                Add("wall", w.WallType.Name, IsTiled(doc, w.WallType) ? "Tiles" : "", 2 * Area(w));
+                Add("wall", w.WallType.Name, IsTiled(doc, w.WallType) ? "Tiles" : "", 2 * Area(w),
+                    concreteWalls.Contains(w.Id) ? "concrete" : "");
             }
             foreach (Floor f in new FilteredElementCollector(doc).OfClass(typeof(Floor)).WhereElementIsNotElementType())
                 Add("floor", f.FloorType.Name, IsTiled(doc, f.FloorType) ? "Tiles" : "", Area(f));
@@ -96,6 +105,9 @@ namespace Dirory.Revit
             {
                 "Measured from Revit elements: wall areas count both faces, openings are already deducted.",
                 perimeter > 0 ? "Skirting uses the perimeter of the placed rooms." : "Place rooms to get the skirting length.",
+                structure.Count > 0
+                    ? "Structure: concrete volumes from concrete materials; formwork from the vertical faces, plus soffits of beams and suspended slabs; rebar weight from modelled rebar, otherwise estimated per m3 of concrete."
+                    : "No structural members found: model foundations, columns, beams and slabs with concrete materials to price the structure.",
                 "An estimate from the model: check it before a tender.",
             };
             return new Dictionary<string, object>
@@ -104,6 +116,7 @@ namespace Dirory.Revit
                 ["totals"] = totals,
                 ["openings"] = openings.Values.OrderBy(o => (string)o["kind"]).ThenBy(o => (string)o["name"]).ToList(),
                 ["floor_perimeter_m"] = Math.Round(perimeter, 2),
+                ["structure"] = structure,
                 ["components_skipped"] = 0,
                 ["notes"] = notes,
             };

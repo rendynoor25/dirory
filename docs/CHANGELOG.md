@@ -1,5 +1,42 @@
 # Changelog
 
+## Unreleased — current national AHSP; structure in the Revit RAB
+
+**National AHSP brought up to date.** Permen PUPR 1/2022 was revoked by
+**Permen PUPR 8/2023**, which moved the AHSP tables into circulars of the Dirjen
+Bina Konstruksi, updated at least yearly. The old extract
+(`supabase/seed/ahsp_pupr_2022.json`, `scripts/extract-ahsp.py`) is removed. In
+its place `scripts/build-rab-jakarta.py` now also writes
+`supabase/seed/ahsp_national.json`: every item's coefficients without prices,
+each citing its circular (SE 182/SE/Dk/2025 or 47/SE/Dk/2026), for pricing
+another region with its own HSD. The coefficients are as Jakarta applies them
+item by item; they have not been re-read from the circular PDFs themselves.
+Jakarta prices for the existing 15 items are unchanged.
+
+**Structure in the Revit RAB.** The add-in now measures structural members and
+the RAB prices them (Revit only; SketchUp has no structural elements):
+
+- `revit/DiroryRevit/src/StructureTakeoff.cs`, per member (footing, sloof,
+  column, beam, slab, concrete wall): concrete volume from concrete materials,
+  formwork contact area from the solid faces (sides; plus soffits for beams and
+  suspended slabs), rebar weight from modelled rebar (length × bar area × 7850),
+  and steel members' weight (volume × 7850).
+- Where no rebar is modelled, `rab.js` estimates it per m³ of concrete:
+  footing 90, sloof 130, column 180, beam 160, slab 110, wall 120 kg/m³. These
+  are planning ratios, not AHSP, and the RAB says so whenever they are used.
+- 12 new Jakarta items, all matching Jakarta's published totals (formwork for
+  columns within 0.15%): ready-mix and site-mixed concrete fc' 25, vibrator
+  compaction, rebar BjTS ≥ 12 mm (frames) and < 12 mm (slabs), formwork for
+  footing, sloof, column, beam, slab and shear wall, structural steel per kg.
+- A wall with concrete in it is no longer also priced as brick: its finishes
+  are priced, its core is in the structure section.
+- Panel: a structure table in Quantities, a ready-mix / site-mixed choice in
+  the RAB, structure rows in the Revit quantities CSV.
+- **Migration 0040** allows the `structure` element in `rab_items`.
+- Tests: `scripts/test-rab.mjs` (31 checks). The add-in compiles against Revit
+  2024 but has not been run on a structural model yet.
+
+
 ## Unreleased — download page lists SketchUp for Web and iPad as coming soon
 
 `/download` shows SketchUp for Web and SketchUp for iPad next to the three

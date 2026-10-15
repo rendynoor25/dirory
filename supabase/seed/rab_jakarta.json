@@ -4,7 +4,7 @@
  "currency": "IDR",
  "overhead_pct": 15.0,
  "source": "DCKTRP Bangun Jakarta HSP, public API (dcktrp.jakarta.go.id/bangunjakarta/hsp); coefficients per SE Dirjen Bina Konstruksi 182/SE/Dk/2025 and 47/SE/Dk/2026; wages per Kepgub DKI.",
- "fetched": "2026-10-15",
+ "fetched": "2026-10-16",
  "items": [
   {
    "key": "wall_brick",
@@ -13,7 +13,7 @@
    "quantity": "wall_core",
    "unit": "m2",
    "title": "3.6.1.8 Pemasangan 1 m2 Dinding Bata Merah Tebal 1/2 Batu dengan Mortar Tipe N,fc 5,2 MPa (Setara Campuran 1SP : 4PP)",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1044,
    "components": [
     {
@@ -89,7 +89,7 @@
    "quantity": "wall_core",
    "unit": "m2",
    "title": "3.6.4.2 Pemasangan 1 m2 Dinding Bata Ringan Tebal 10 cm dengan Mortar Siap Pakai",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1027,
    "components": [
     {
@@ -156,7 +156,7 @@
    "quantity": "wall_finish",
    "unit": "m2",
    "title": "3.7.4 Pemasangan 1 m2 Plesteran 1SP : 4PP Tebal 15 mm",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1059,
    "components": [
     {
@@ -223,7 +223,7 @@
    "quantity": "wall_finish",
    "unit": "m2",
    "title": "3.7.8 Pemasangan 1 m2 Acian",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1072,
    "components": [
     {
@@ -281,7 +281,7 @@
    "quantity": "wall_finish",
    "unit": "m2",
    "title": "3.8.10.1 Pengecatan 1 m2 Tembok Baru Interior (1 Lapis Cat Dasar, 2 Lapis Cat Penutup)",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1073,
    "components": [
     {
@@ -348,7 +348,7 @@
    "quantity": "wall_tiled",
    "unit": "m2",
    "title": "3.10.1.4 Pemasangan 1 m2 Dinding Keramik 20 cm x 20 cm (1SP : 2PP)",
-   "reference": "SE DIRJEN  Binkon No. 47/SE/Dk/2026",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
    "jakarta_hsp_id": 2755,
    "components": [
     {
@@ -433,7 +433,7 @@
    "quantity": "floor",
    "unit": "m2",
    "title": "3.9.8.14 Pemasangan 1 m2 Lantai Keramik Ukuran 40 cm x 40 cm (1SP : 2PP), Unpolished",
-   "reference": "SE DIRJEN  Binkon No. 47/SE/Dk/2026",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
    "jakarta_hsp_id": 5497,
    "components": [
     {
@@ -518,7 +518,7 @@
    "quantity": "floor_perimeter",
    "unit": "m",
    "title": "3.9.8.17 Pemasangan 1 m Plint Keramik Ukuran 10 s.d. 15 cm x 20 cm (1SP : 2PP)",
-   "reference": "SE DIRJEN  Binkon No. 47/SE/Dk/2026",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
    "jakarta_hsp_id": 2907,
    "components": [
     {
@@ -603,7 +603,7 @@
    "quantity": "ceiling",
    "unit": "m2",
    "title": "3.5.3.1 Pemasangan 1 m2 Rangka Besi Hollow Galvanis 40.40 mm, Modul 60 x 60 cm, untuk Langit-langit (Plafon)",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1103,
    "components": [
     {
@@ -670,7 +670,7 @@
    "quantity": "ceiling",
    "unit": "m2",
    "title": "3.5.2.1 Pemasangan 1 m2 Langit-langit (Plafon) Papan Gypsum, Tebal 9 mm",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1095,
    "components": [
     {
@@ -737,7 +737,7 @@
    "quantity": "roof",
    "unit": "m2",
    "title": "2.1.1.1 Pemasangan 1 m2 Atap Pelana Rangka Atap Baja Ringan (Canai Dingin) profil C75",
-   "reference": "SE DIRJEN Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1575,
    "components": [
     {
@@ -858,7 +858,7 @@
    "quantity": "roof",
    "unit": "m2",
    "title": "3.1.1.4 Pemasangan 1 m2 Atap Genteng Beton",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 5698,
    "components": [
     {
@@ -925,7 +925,7 @@
    "quantity": "opening_perimeter",
    "unit": "m",
    "title": "3.11.3.1 Pemasangan 1 m Kusen Aluminium",
-   "reference": "SE DIRJEN  Binkon No. 47/SE/Dk/2026",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
    "jakarta_hsp_id": 1375,
    "components": [
     {
@@ -1001,7 +1001,7 @@
    "quantity": "door_area",
    "unit": "m2",
    "title": "3.11.1.11 Pembuatan 1 m2 Daun Pintu Panel, Kayu Kelas I atau II",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 2013,
    "components": [
     {
@@ -1068,7 +1068,7 @@
    "quantity": "window_area",
    "unit": "m2",
    "title": "3.12.3 Pemasangan 1 m2 Kaca Polos Tebal 5 mm",
-   "reference": "SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
    "jakarta_hsp_id": 1816,
    "components": [
     {
@@ -1127,6 +1127,972 @@
     }
    ],
    "unit_price": 181925.81
+  },
+  {
+   "key": "concrete_rm",
+   "name": "Ready-mix concrete fc' 25 MPa, placed",
+   "element": "structure",
+   "quantity": "concrete",
+   "unit": "m3",
+   "title": "2.2.1.6.6 Pengecoran 1 M3 Beton Menggunakan Ready Mixed F'c 25 MPa",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5846,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.4,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang batu/tembok",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Beton Ready Mix K300 NFA",
+     "unit": "M3",
+     "coef": 1.02,
+     "price": 905000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1210488.91
+  },
+  {
+   "key": "concrete_site",
+   "name": "Site-mixed concrete fc' 25 MPa, semi-mechanical",
+   "element": "structure",
+   "quantity": "concrete",
+   "unit": "m3",
+   "title": "2.2.1.5.6 1 m3 beton mutu sedang f'c 25 MPa, Slump (100 +/- 25) mm, agregat maks 19 mm secara semi mekanis",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1135,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.0,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang batu/tembok",
+     "unit": "OH",
+     "coef": 0.25,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.025,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 407.0,
+     "price": 1500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Beton",
+     "unit": "Kg",
+     "coef": 731.0,
+     "price": 320.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kerikil",
+     "unit": "M3",
+     "coef": 0.7474,
+     "price": 350000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Air Bersih",
+     "unit": "Liter",
+     "coef": 202.0,
+     "price": 400.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Molen Beton Mixer",
+     "unit": "Hari",
+     "coef": 0.1475,
+     "price": 400000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1804991.27
+  },
+  {
+   "key": "concrete_vibrate",
+   "name": "Concrete compaction with a vibrator",
+   "element": "structure",
+   "quantity": "concrete",
+   "unit": "m3",
+   "title": "2.2.1.8.2 Pemadatan 1 m3 beton dengan vibrator pada bangunan gedung",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 3457,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.08,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.008,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Vibrator beton",
+     "unit": "Hari",
+     "coef": 0.08,
+     "price": 295000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 50776.54
+  },
+  {
+   "key": "rebar_frame",
+   "name": "Rebar BjTS >= 12 mm: footings, sloof, columns, beams, walls",
+   "element": "structure",
+   "quantity": "rebar_frame",
+   "unit": "kg",
+   "title": "2.2.1.1.4.a 1 kg Penulangan kolom, balok, ring balk, sloof, dan shearwall untuk BjTS diameter >= 12 mm, cara Semi mekanis (untuk bangunan gedung)",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 1435,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang besi/besi beton",
+     "unit": "OH",
+     "coef": 0.0008,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 8e-05,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.00016,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.0016,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Besi beton ulir diameter >= 12 mm",
+     "unit": "Kg",
+     "coef": 1.05,
+     "price": 10600.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kawat Tali Beton / Bendrat",
+     "unit": "Kg",
+     "coef": 0.028,
+     "price": 25000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa  Bar Cutter besi beton",
+     "unit": "Hari",
+     "coef": 0.0004,
+     "price": 320000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Bar Bending Besi Beton",
+     "unit": "Hari",
+     "coef": 0.0004,
+     "price": 285000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 14601.46
+  },
+  {
+   "key": "rebar_slab",
+   "name": "Rebar BjTS < 12 mm: slabs",
+   "element": "structure",
+   "quantity": "rebar_slab",
+   "unit": "kg",
+   "title": "2.2.1.1.1.a 1 kg Penulangan slab untuk BjTS diameter < 12 mm, cara Manual (untuk bangunan gedung)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1415,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.007,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang besi/besi beton",
+     "unit": "OH",
+     "coef": 0.007,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0007,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0007,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Besi beton ulir diameter < 12 mm",
+     "unit": "Kg",
+     "coef": 1.02,
+     "price": 10800.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kawat Tali Beton / Bendrat",
+     "unit": "Kg",
+     "coef": 0.015,
+     "price": 25000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 17319.73
+  },
+  {
+   "key": "formwork_footing",
+   "name": "Formwork, pad footing (3 uses)",
+   "element": "structure",
+   "quantity": "formwork_footing",
+   "unit": "m2",
+   "title": "2.2.1.3.1 Pemasangan 1 m2 bekisting untuk fondasi telapak (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2445,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.52,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.26,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.026,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Papan Kayu Kelas III",
+     "unit": "M3",
+     "coef": 0.016,
+     "price": 3780000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.3,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.1,
+     "price": 74000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 304817.19
+  },
+  {
+   "key": "formwork_tie_beam",
+   "name": "Formwork, sloof / tie beam (3 uses)",
+   "element": "structure",
+   "quantity": "formwork_tie_beam",
+   "unit": "m2",
+   "title": "2.2.1.3.3 Pemasangan 1 m2 bekisting untuk sloof (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1017,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.26,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.026,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.52,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Papan Kayu Kelas III",
+     "unit": "M3",
+     "coef": 0.018,
+     "price": 3780000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.3,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.1,
+     "price": 74000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 313511.19
+  },
+  {
+   "key": "formwork_column",
+   "name": "Formwork, column (3 uses)",
+   "element": "structure",
+   "quantity": "formwork_column",
+   "unit": "m2",
+   "title": "2.2.1.3.4 Pemasangan 1 m2 bekisting untuk kolom (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1019,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.66,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.33,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.033,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.4,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.2,
+     "price": 74000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Balok Kayu Kelas II",
+     "unit": "M3",
+     "coef": 0.0046,
+     "price": 10000000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Triplek / Plywood tebal 12 mm",
+     "unit": "Lembar",
+     "coef": 0.127,
+     "price": 160000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Dolken kayu  dia. 8- 10/400 cm",
+     "unit": "Batang",
+     "coef": 0.65,
+     "price": 16000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 393360.08
+  },
+  {
+   "key": "formwork_beam",
+   "name": "Formwork, beam (3 uses)",
+   "element": "structure",
+   "quantity": "formwork_beam",
+   "unit": "m2",
+   "title": "2.2.1.3.5 Pemasangan 1 m2 bekisting untuk balok (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1020,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.66,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.33,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.033,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.4,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.2,
+     "price": 74000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Balok Kayu Kelas II",
+     "unit": "M3",
+     "coef": 0.00558,
+     "price": 10000000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Triplek / Plywood tebal 12 mm",
+     "unit": "Lembar",
+     "coef": 0.12705,
+     "price": 160000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Dolken kayu  dia. 8- 10/400 cm",
+     "unit": "Batang",
+     "coef": 0.65,
+     "price": 16000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 404639.28
+  },
+  {
+   "key": "formwork_slab",
+   "name": "Formwork, floor slab (3 uses)",
+   "element": "structure",
+   "quantity": "formwork_slab",
+   "unit": "m2",
+   "title": "2.2.1.3.6 Pemasangan 1 m2 bekisting untuk plat lantai (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1004,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.66,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.33,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.033,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.4,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.2,
+     "price": 74000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Balok Kayu Kelas II",
+     "unit": "M3",
+     "coef": 0.00465,
+     "price": 10000000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Triplek / Plywood tebal 12 mm",
+     "unit": "Lembar",
+     "coef": 0.127,
+     "price": 160000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Dolken kayu  dia. 8- 10/400 cm",
+     "unit": "Batang",
+     "coef": 1.95,
+     "price": 16000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 417855.08
+  },
+  {
+   "key": "formwork_wall",
+   "name": "Formwork, shear wall (3 uses)",
+   "element": "structure",
+   "quantity": "formwork_wall",
+   "unit": "m2",
+   "title": "2.2.1.3.7 Pemasangan 1 m2 bekisting untuk dinding shearwall (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 3421,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.66,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.33,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.033,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Penjaga jarak  bekisting/spacer",
+     "unit": "Buah",
+     "coef": 4.0,
+     "price": 11000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.2,
+     "price": 74000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.4,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Balok Kayu Kelas II",
+     "unit": "M3",
+     "coef": 0.006,
+     "price": 10000000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Triplek / Plywood tebal 12 mm",
+     "unit": "Lembar",
+     "coef": 0.127,
+     "price": 160000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Dolken kayu  dia. 8- 10/400 cm",
+     "unit": "Batang",
+     "coef": 0.975,
+     "price": 16000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 466040.08
+  },
+  {
+   "key": "steel_profile",
+   "name": "Structural steel profile, fabricate and erect",
+   "element": "structure",
+   "quantity": "steel",
+   "unit": "kg",
+   "title": "2.3.1.1 1 kg Pabrikasi dan Ereksi Baja Profil",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2361,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.0375,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang besi/besi beton",
+     "unit": "OH",
+     "coef": 0.0125,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0025,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0008,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Baja Profil",
+     "unit": "Kg",
+     "coef": 1.15,
+     "price": 14100.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kawat Las Listrik",
+     "unit": "Kg",
+     "coef": 0.053,
+     "price": 50000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa alat las listrik",
+     "unit": "Jam",
+     "coef": 0.033,
+     "price": 50000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Mobil Crane 7 Ton",
+     "unit": "Jam",
+     "coef": 0.0013,
+     "price": 750000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 39071.91
   }
  ]
 }

@@ -256,6 +256,12 @@ namespace Dirory.Revit
                 sb.Append($"{r["element"]},\"{Json.Str(r, "material").Replace("\"", "\"\"")}\",m2,{Json.Str(r, "area_m2")}\r\n");
             foreach (Dictionary<string, object> o in (IEnumerable<object>)_lastTakeoff["openings"])
                 sb.Append($"Opening ({o["kind"]}),\"{Json.Str(o, "name").Replace("\"", "\"\"")}\",unit,{Json.Str(o, "count")}\r\n");
+            foreach (Dictionary<string, object> s in (IEnumerable<object>)_lastTakeoff["structure"])
+            {
+                string name = $"\"{Json.Str(s, "name").Replace("\"", "\"\"")}\"";
+                foreach (var (field, unit) in new[] { ("concrete_m3", "m3 concrete"), ("formwork_m2", "m2 formwork"), ("rebar_kg", "kg rebar (modelled)"), ("steel_kg", "kg steel") })
+                    if ((double)s[field] > 0) sb.Append($"Structure ({s["member"]}),{name},{unit},{Json.Str(s, field)}\r\n");
+            }
             SaveText("Export Dirory quantities", "Dirory_quantities.csv", sb.ToString());
         }
 
