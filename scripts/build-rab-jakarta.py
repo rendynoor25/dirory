@@ -196,7 +196,7 @@ def main() -> int:
                 components.append({
                     "kind": kind,
                     "code": r.get("kode_material"),
-                    "name": (r.get("material") or {}).get("nama_material"),
+                    "name": (r.get("material") or {}).get("nama_material") or "(not named in Jakarta's analysis)",
                     "unit": (r.get("satuan") or {}).get("nama"),
                     "coef": float(r["koefisien"]),
                     # The API names it the other way round: total_harga is the

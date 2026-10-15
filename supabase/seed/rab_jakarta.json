@@ -5842,7 +5842,7 @@
     {
      "kind": "material",
      "code": null,
-     "name": null,
+     "name": "(not named in Jakarta's analysis)",
      "unit": "Buah",
      "coef": 1.0,
      "price": 7900.0,
@@ -7097,7 +7097,7 @@
     {
      "kind": "material",
      "code": null,
-     "name": null,
+     "name": "(not named in Jakarta's analysis)",
      "unit": "Buah",
      "coef": 1.0,
      "price": 7900.0,
