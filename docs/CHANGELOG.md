@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — housekeeping jobs actually scheduled
+
+pg_cron was never installed, so the "best effort" schedules in 0022 and 0036
+silently did nothing: subscription statuses were never expired and nothing was
+ever deleted for retention. Migration 0037 installs pg_cron and schedules
+`dirory-expire-subs` (hourly at :15) and `dirory-retention` (daily 02:30 UTC =
+09:30 WIB). Verified in `cron.job` on production, both active.
+
 ## Unreleased — BDA products live, Hunter Douglas ceilings extracted, vendor minimum, retention
 
 **BDA Sanitary (live).** The 41 SketchUp files BDA sent are filed in the library
