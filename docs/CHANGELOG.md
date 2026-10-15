@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased — signed releases: the updater replaces the extension cleanly
+
+SketchUp showed Dirory as **Unsigned**. Signing is done per release in the
+Extension Warehouse Developer Center; the new **`docs/RELEASE.md`** puts that
+step between building and publishing (sign last — any change after signing
+breaks the signature).
+
+The updater was not safe for signed releases: it copied a new version **over**
+the installed folder, so a file a release removed would stay behind and make
+SketchUp report the extension as modified. It now:
+
+- refuses to stage an archive that is not a whole extension
+  (`dirory_library.rb` + `dirory_library/main.rb`);
+- at the next start backs up the installed extension to
+  `~/.dirory/previous_version`, deletes it, and copies the new one in whole;
+- restores the backup if the copy fails.
+
 ## Unreleased — Dirory for Revit 0.1.0 (beta)
 
 A Revit 2024 add-in on the same principle as the SketchUp plugin — and the
