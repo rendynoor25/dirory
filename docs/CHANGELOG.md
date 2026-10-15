@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased — Quantity takeoff (RAB step 1)
+
+The first step of Dirory Pro's RAB / Bill of Quantities: measure the
+architecture itself, not only the Dirory products in it. Volumes only — the
+AHSP coefficients (Permen PUPR 1/2022) and Jakarta unit prices come next.
+
+- **`plugin/dirory_library/takeoff.rb`.** Faces in the model and in groups are
+  classified by world-space direction: vertical = wall, up = floor (or roof
+  when tagged roof/atap), down = ceiling, sloped = roof (true area). Areas are
+  summed per element and material, openings already deducted. Components are
+  not measured (furniture/products); those named door/pintu, window/jendela,
+  kusen — or Dirory items in such a category — are counted with their world
+  width × height. Floor perimeter is reported for skirting. Tags never decide
+  floor vs wall: "Lantai 1" names a storey.
+- **Usage tab → 📐 Quantities.** Measure model, per-element tables with
+  totals, doors & windows, notes on what was skipped, and CSV export.
+- **Print schedule** now includes the quantities and openings.
+- `rb:check` covers `takeoff.rb` and cross-checks `Takeoff.*` calls.
+
+Not verified in SketchUp (no Ruby here): parse-checked and the panel checked
+in a browser with sample data only.
+
 ## Unreleased — housekeeping jobs actually scheduled
 
 pg_cron was never installed, so the "best effort" schedules in 0022 and 0036

@@ -1396,6 +1396,102 @@ window.diroryDownloading = function (data) {
 };
 
 /* ------------------------------------------------------------------ */
+/* Quantity takeoff (RAB step 1)                                       */
+/* ------------------------------------------------------------------ */
+
+const ELEMENT_LABELS = {
+  wall: 'Wall (dinding)',
+  floor: 'Floor (lantai)',
+  ceiling: 'Ceiling (plafon)',
+  roof: 'Roof (atap)',
+};
+
+function fmt2(n) {
+  return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function takeoffTable(head, rows) {
+  const table = el('table', 'usage-table');
+  const thead = el('thead');
+  const tr = el('tr');
+  head.forEach(([label, cls]) => tr.appendChild(el('th', cls || '', label)));
+  thead.appendChild(tr);
+  table.appendChild(thead);
+  const tbody = el('tbody');
+  rows.forEach((cells) => {
+    const row = el('tr', cells.className || '');
+    cells.forEach(([text, cls]) => row.appendChild(el('td', cls || '', text)));
+    tbody.appendChild(row);
+  });
+  table.appendChild(tbody);
+  return table;
+}
+
+window.diroryTakeoff = function (data) {
+  const body = byId('takeoffBody');
+  body.innerHTML = '';
+  byId('takeoffRun').disabled = false;
+  byId('takeoffRun').textContent = '⟳ Measure again';
+  const rows = data.rows || [];
+  const openings = data.openings || [];
+  if (!rows.length && !openings.length) {
+    body.appendChild(el('p', 'usage-note',
+      'Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.'));
+    byId('takeoffExport').hidden = true;
+    return;
+  }
+
+  ['wall', 'floor', 'ceiling', 'roof'].forEach((element) => {
+    const list = rows.filter((r) => r.element === element);
+    if (!list.length) return;
+    const lines = list.map((r) => {
+      const line = [
+        [r.material + (r.brand ? ` · ${r.brand}` : ''), r.dirory ? 'u-name' : ''],
+        [fmt2(r.area_m2) + ' m²', 'num'],
+      ];
+      return line;
+    });
+    const total = [['Total', ''], [fmt2((data.totals || {})[element]) + ' m²', 'num']];
+    total.className = 'total';
+    lines.push(total);
+    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS[element]));
+    body.appendChild(takeoffTable([['Material'], ['Area', 'num']], lines));
+  });
+
+  if (openings.length) {
+    body.appendChild(el('h4', 'takeoff-element', 'Doors & windows (kusen, pintu, jendela)'));
+    body.appendChild(takeoffTable(
+      [['Item'], ['W × H', 'num'], ['Qty', 'num']],
+      openings.map((o) => [
+        [`${o.name} (${o.kind})`, ''],
+        [`${fmt2(o.width_m)} × ${fmt2(o.height_m)} m`, 'num'],
+        [String(o.count), 'num'],
+      ]),
+    ));
+  }
+
+  const notes = [];
+  if (data.floor_perimeter_m > 0) {
+    notes.push(`Floor perimeter (for skirting, approx.): ${fmt2(data.floor_perimeter_m)} m¹.`);
+  }
+  notes.push('Wall areas are finish areas per side (paint, plaster, tiles); openings are already deducted.');
+  if (data.components_skipped) {
+    notes.push(`${data.components_skipped} component(s) were not measured (furniture and products). ` +
+      'Draw walls, slabs and roofs as groups so they are counted.');
+  }
+  notes.push('An estimate from the model: check it before a tender.');
+  body.appendChild(el('p', 'usage-note', notes.join(' ')));
+  byId('takeoffExport').hidden = false;
+};
+
+byId('takeoffRun').addEventListener('click', () => {
+  byId('takeoffRun').disabled = true;
+  byId('takeoffRun').textContent = 'Measuring…';
+  sketchup.requestTakeoff();
+});
+byId('takeoffExport').addEventListener('click', () => sketchup.exportTakeoff());
+
+/* ------------------------------------------------------------------ */
 /* Product info + Inspector                                            */
 /* ------------------------------------------------------------------ */
 

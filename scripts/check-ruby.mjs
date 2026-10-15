@@ -25,6 +25,7 @@ const FILES = [
   "plugin/dirory_library/cloud.rb",
   "plugin/dirory_library/i18n.rb",
   "plugin/dirory_library/updater.rb",
+  "plugin/dirory_library/takeoff.rb",
 ];
 
 const parse = await loadPrism();
@@ -46,6 +47,20 @@ for (const rel of FILES) {
     }
   } else {
     console.log(`[ok] ${rel} - parses clean (${source.split(/\r?\n/).length} lines)`);
+  }
+}
+
+// Cross-file: every `Takeoff.xxx` used in main.rb must be defined in takeoff.rb.
+{
+  const mainSrc = fs.readFileSync("plugin/dirory_library/main.rb", "utf8");
+  const takeoffSrc = fs.readFileSync("plugin/dirory_library/takeoff.rb", "utf8");
+  const used = new Set([...mainSrc.matchAll(/\bTakeoff\.([a-z_]+[?!]?)/g)].map((m) => m[1]));
+  const missing = [...used].filter((m) => !new RegExp(String.raw`def self\.` + m.replace(/[?!]/g, "\$&") + String.raw`(?![\w?!])`).test(takeoffSrc));
+  if (missing.length) {
+    failed = true;
+    console.log(`[FAIL] main.rb calls Takeoff.${missing.join(", Takeoff.")} which takeoff.rb does not define`);
+  } else {
+    console.log(`[ok] every Takeoff.* called from main.rb is defined in takeoff.rb (${used.size} methods)`);
   }
 }
 

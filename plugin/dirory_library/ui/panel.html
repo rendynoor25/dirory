@@ -80,6 +80,24 @@
 
     <div id="brandGroups"></div>
 
+    <!-- Quantity takeoff (RAB step 1): the architecture itself, not only
+         Dirory products. Volumes only; prices come with the AHSP step. -->
+    <section id="takeoff" class="takeoff">
+      <div class="takeoff-head">
+        <h3>📐 Quantities (volume pekerjaan)</h3>
+        <div class="usage-actions">
+          <button id="takeoffRun" class="ghost-btn">⟳ Measure model</button>
+          <button id="takeoffExport" class="ghost-btn" hidden>⭳ Export quantities</button>
+        </div>
+      </div>
+      <div id="takeoffBody" class="takeoff-body">
+        <p class="usage-note">
+          Measures wall, floor, ceiling and roof finish areas per material, and counts doors
+          and windows. Click <strong>Measure model</strong>; large models take a moment.
+        </p>
+      </div>
+    </section>
+
     <p class="usage-note">
       Grouped by brand and counted from the open model, so it stays correct after undo or delete.
       Only models and materials inserted with this version of Dirory are counted.

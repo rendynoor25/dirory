@@ -902,3 +902,16 @@ h1 {
 /* Three filters share the row when the size select is shown. */
 .filters { flex-wrap: wrap; }
 #sizeFilter { flex: 1 1 100%; }
+
+/* Quantity takeoff in the Usage tab. */
+.takeoff {
+  margin: 14px 12px 0;
+  padding: 10px 12px;
+  border: 1px solid #d7d9e6;
+  border-radius: 8px;
+  background: #fff;
+}
+.takeoff-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; }
+.takeoff-head h3 { margin: 0; font-size: 13px; color: #39509f; }
+.takeoff-element { margin: 12px 0 4px; font-size: 12px; color: #3f3f46; }
+.takeoff .usage-note { margin: 8px 0 0; }

@@ -7,6 +7,7 @@ require 'tmpdir'
 require File.join(File.dirname(__FILE__), 'cloud')
 require File.join(File.dirname(__FILE__), 'i18n')
 require File.join(File.dirname(__FILE__), 'updater')
+require File.join(File.dirname(__FILE__), 'takeoff')
 
 if RUBY_PLATFORM =~ /mswin|mingw/i
   begin
@@ -1123,6 +1124,55 @@ module Dirory
       { 'models' => models, 'materials' => materials }
     end
 
+    # Quantity takeoff of the open model (takeoff.rb): finish areas per
+    # element and material, openings, floor perimeter.
+    def self.takeoff
+      Takeoff.run(Sketchup.active_model, method(:dirory_info))
+    end
+
+    def self.send_takeoff
+      return unless @dialog
+      begin
+        @dialog.execute_script("window.diroryTakeoff(#{takeoff.to_json});")
+      rescue StandardError => e
+        @dialog.execute_script("window.diroryError && window.diroryError(#{e.message.to_json});")
+      end
+    end
+
+    ELEMENT_LABELS = {
+      'wall' => 'Wall (dinding)', 'floor' => 'Floor (lantai)',
+      'ceiling' => 'Ceiling (plafon)', 'roof' => 'Roof (atap)'
+    }.freeze
+
+    def self.export_takeoff_csv
+      UI.start_timer(0.1, false) do
+        begin
+          data = takeoff
+          path = UI.savepanel('Export Dirory quantities', Dir.home, 'Dirory_quantities.csv')
+          next unless path
+          path += '.csv' unless path.downcase.end_with?('.csv')
+          rows = [['Element', 'Material', 'Brand', 'SKU', 'Unit', 'Quantity', 'Faces']]
+          data['rows'].each do |r|
+            rows << [ELEMENT_LABELS[r['element']] || r['element'], r['material'], r['brand'], r['sku'], 'm2', r['area_m2'], r['faces']]
+          end
+          data['openings'].each do |o|
+            rows << ["Opening (#{o['kind']})", o['name'], o['brand'], o['sku'], 'unit',
+                     o['count'], format('%.2f x %.2f m', o['width_m'], o['height_m'])]
+          end
+          rows << ['Floor perimeter (skirting, approx.)', '', '', '', 'm1', data['floor_perimeter_m'], '']
+          body = rows.map { |row| row.map { |v| csv_escape(v) }.join(',') }.join("
+") + "
+"
+          File.open(path, 'wb') { |f| f.write("ï»¿".b + body.encode('UTF-8').b) }
+          UI.messagebox("Quantities exported to:
+#{path}")
+        rescue StandardError => e
+          UI.messagebox("Dirory could not export the quantities:
+#{e.class}: #{e.message}")
+        end
+      end
+    end
+
     def self.send_usage_report
       return unless @dialog
       begin
@@ -1264,6 +1314,7 @@ module Dirory
             "<h2>#{heading}</h2><table><thead><tr><th>#</th>" +
               headers.map { |h| "<th>#{h}</th>" }.join + "</tr></thead><tbody>#{body}</tbody></table>"
           end
+          q = takeoff
           models = report['models'].select { |r| r['count'].to_i > 0 }
           materials = report['materials'].select { |r| r['faces'].to_i > 0 }
           html = <<~HTML
@@ -1290,6 +1341,13 @@ module Dirory
                            ['Finish', 'Brand', 'Category', 'SKU', 'Size', 'Area (m²)'],
                            ->(r) { [r['name'], r['brand'], r['category'], r['sku'], size.call(r), format('%.2f', r['area_m2'].to_f)] })}
             #{models.empty? && materials.empty? ? '<p>No Dirory products are used in this model yet.</p>' : ''}
+            #{section.call('Quantities (volume pekerjaan)', q['rows'],
+                           ['Element', 'Material', 'Brand', 'Area (m²)'],
+                           ->(r) { [ELEMENT_LABELS[r['element']] || r['element'], r['material'], r['brand'], format('%.2f', r['area_m2'])] })}
+            #{section.call('Doors &amp; windows', q['openings'],
+                           ['Type', 'Name', 'Size (W × H)', 'Quantity'],
+                           ->(o) { [o['kind'], o['name'], format('%.2f × %.2f m', o['width_m'], o['height_m']), o['count']] })}
+            #{q['floor_perimeter_m'].to_f > 0 ? "<p class=\"meta\">Floor perimeter (skirting, approx.): #{format('%.2f', q['floor_perimeter_m'])} m¹</p>" : ''}
             <p class="meta">Quantities are read from the model. Areas include every painted face, once per copy of a group or component.</p>
             </body></html>
           HTML
@@ -1349,6 +1407,8 @@ module Dirory
         @dialog.add_action_callback('requestReport') { |_ctx| send_usage_report }
         @dialog.add_action_callback('exportReport') { |_ctx| export_usage_csv }
         @dialog.add_action_callback('printSchedule') { |_ctx| print_schedule }
+        @dialog.add_action_callback('requestTakeoff') { |_ctx| send_takeoff }
+        @dialog.add_action_callback('exportTakeoff') { |_ctx| export_takeoff_csv }
         @dialog.add_action_callback('requestQuote') { |_ctx, payload| request_quote(payload) }
 
         @dialog.add_action_callback('generateThumbnails') do |_ctx|
