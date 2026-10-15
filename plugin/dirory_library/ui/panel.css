@@ -922,3 +922,11 @@ h1 {
 .rab-controls select { flex: 1 1 45%; min-width: 0; padding: 5px 6px; border: 1px solid #d7d9e6; border-radius: 6px; font-size: 12px; }
 .rab-controls .primary-btn { flex: 1 1 100%; }
 .rab-total { display: flex; justify-content: space-between; margin: 12px 0 4px; padding: 8px 10px; border-radius: 6px; background: #39509f; color: #fff; font-size: 13px; }
+
+/* RAB: unit prices the architect can type over */
+.price-input { width: 92px; padding: 3px 5px; border: 1px solid #d7d9e6; border-radius: 4px; font: inherit; text-align: right; background: #fff; }
+.price-input:focus { outline: 2px solid #39509f33; border-color: #39509f; }
+.price-input.custom { border-color: #b7791f; background: #fffaf0; }
+tr.needs-price td { background: #fff7e6; }
+tr.needs-price .price-input { border-color: #d97706; }
+.rab-unpriced { margin: 10px 0 0; padding: 7px 10px; border-radius: 6px; background: #fff7e6; color: #8a4b00; font-size: 12px; }

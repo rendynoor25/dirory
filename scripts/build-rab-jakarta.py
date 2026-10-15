@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 """
-Build Dirory's Jakarta RAB price book - 15 architectural and 12 structural
-work items, each with its AHSP coefficients and Jakarta's basic prices (HSD) -
-and the national AHSP coefficients the book is built on.
+Build Dirory's Jakarta RAB price book - 15 architectural, 12 structural and
+87 MEP work items, each with its AHSP coefficients and Jakarta's basic prices
+(HSD), plus 4 split AC units at market prices - and the national AHSP
+coefficients the book is built on.
 
 Which AHSP is current: Permen PUPR 8/2023 revoked Permen PUPR 1/2022 and moved
 the AHSP tables out of the regulation into circulars of the Dirjen Bina
@@ -31,6 +32,7 @@ from __future__ import annotations
 import datetime
 import json
 import os
+import re
 import sys
 import urllib.request
 
@@ -72,6 +74,79 @@ ITEMS = [
     ("formwork_wall", 3421, "Formwork, shear wall (3 uses)", "structure", "formwork_wall"),
     ("steel_profile", 2361, "Structural steel profile, fabricate and erect", "structure", "steel"),
 ]
+# MEP (Revit). rab.js matches each measured pipe, fixture and device to one of
+# these keys (see mepKey there). Pipes are priced per metre and Jakarta's pipe
+# analyses already include fittings and accessories (1.45 m of pipe "dan
+# aksesoris" per m), so fittings are not counted again. A light, socket or
+# detector "point" includes its cable and conduit, so conduits are not either.
+PIPES = {
+    # kind: (label, {DN mm: Jakarta HSP id})
+    "pvc_aw": ("PVC AW pipe (clean water)", {15: 1675, 20: 1677, 25: 1678, 32: 1679, 40: 2127, 50: 2128,
+                                             65: 2130, 80: 2134, 100: 2135, 125: 2139, 150: 2140, 200: 2141}),
+    "pvc_d": ("PVC D pipe (waste, vent, rainwater)", {32: 2222, 40: 2223, 50: 2224, 65: 2226, 80: 2228,
+                                                      100: 2230, 125: 2232, 150: 2233, 200: 2235}),
+    "ppr": ("PPR PN10 pipe", {15: 2256, 20: 2257, 25: 2261, 32: 2265, 40: 2266, 50: 2267, 65: 2269,
+                              80: 2270, 100: 2271}),
+    "gi": ("Galvanised steel pipe SCH 40", {15: 5560, 20: 5561, 25: 5562, 32: 5563, 40: 5564, 50: 5565,
+                                            65: 5566, 80: 5567, 100: 5568, 125: 5569, 150: 5575, 200: 5576}),
+    "hdpe": ("HDPE pipe", {15: 5999, 20: 6000, 25: 6001, 32: 6002, 40: 6003, 50: 6004, 65: 5985,
+                           80: 6005, 100: 5986, 125: 5987, 150: 5988, 200: 5989}),
+}
+MEP = [("pipe_%s_%d" % (kind, dn), hsp, "%s DN %d" % (label, dn), "mep", "mep")
+       for kind, (label, sizes) in PIPES.items() for dn, hsp in sizes.items()] + [
+    # Plumbing fixtures
+    ("closet_seat", 1096, "Close-coupled / monoblock WC", "mep", "mep"),
+    ("closet_squat", 1099, "Squat WC (kloset jongkok)", "mep", "mep"),
+    ("closet_disabled", 4335, "Accessible WC", "mep", "mep"),
+    ("washbasin", 2040, "Washbasin (wastafel)", "mep", "mep"),
+    ("urinal", 1559, "Urinal", "mep", "mep"),
+    ("shower_set", 2066, "Shower set", "mep", "mep"),
+    ("tap", 1876, "Tap 1/2 inch", "mep", "mep"),
+    ("tap_kitchen", 3764, "Kitchen sink tap", "mep", "mep"),
+    ("floor_drain", 3090, "Floor drain 2 inch", "mep", "mep"),
+    # Electrical: installation points (cable + conduit) and devices
+    ("light_point", 1674, "Lighting point: NYM 3x2.5 cable and conduit", "mep", "mep"),
+    ("socket_point", 1663, "Socket point: NYM 3x2.5 cable and conduit", "mep", "mep"),
+    ("switch_single", 1635, "Single switch", "mep", "mep"),
+    ("switch_double", 1636, "Double switch", "mep", "mep"),
+    ("socket", 1638, "Socket outlet 1P 10A", "mep", "mep"),
+    ("socket_ac", 1658, "AC socket outlet", "mep", "mep"),
+    ("mcb_box", 2297, "MCB box", "mep", "mep"),
+    ("panel_floor", 5359, "Floor panel, wall-mounted 600 x 400 x 200 mm", "mep", "mep"),
+    ("panel_sdp", 5357, "Sub-distribution panel (SDP), wall-mounted", "mep", "mep"),
+    ("panel_mdp", 5336, "Main distribution panel (MDP), wall-mounted", "mep", "mep"),
+    # Light fittings
+    ("downlight", 2351, "LED downlight 5 inch 12 W", "mep", "mep"),
+    ("batten", 5475, "LED batten 1 x 24 W", "mep", "mep"),
+    ("batten_2x", 5882, "LED batten 2 x 24 W", "mep", "mep"),
+    ("spotlight", 6175, "LED spotlight 9 W", "mep", "mep"),
+    ("garden_light", 3137, "Garden light 25 W with 1 m post", "mep", "mep"),
+    ("exit_light", 2480, "LED exit sign with battery", "mep", "mep"),
+    # Fire
+    ("sprinkler_pendant", 2359, "Sprinkler head, pendant", "mep", "mep"),
+    ("sprinkler_upright", 2360, "Sprinkler head, upright", "mep", "mep"),
+    ("smoke_detector", 4155, "Smoke detector, conventional", "mep", "mep"),
+    ("detector_point", 2327, "Detector installation point, conventional", "mep", "mep"),
+    ("hydrant_box", 2376, "Indoor hydrant box", "mep", "mep"),
+    # Air
+    ("exhaust_fan", 5804, "Exhaust (propeller) fan 75 CFM", "mep", "mep"),
+    ("grille", 3674, "Exhaust grille 200 x 200 mm", "mep", "mep"),
+    ("diffuser", 6355, "Box diffuser 250 x 250 mm", "mep", "mep"),
+]
+
+# Items with no Jakarta analysis, at market prices: a mid-range standard split
+# AC unit plus installation with about 3 m of piping. From retail listings,
+# June-October 2026 (Erablue, Ruparupa, Transmart; installation Rp 385,000
+# labour + piping and cable). No overhead is added: these are prices as sold.
+# Edit them in the panel to the quote you have.
+MARKET = [
+    ("ac_split_05", "Split AC 1/2 PK, installed", 3000000, 900000),
+    ("ac_split_10", "Split AC 1 PK, installed", 4000000, 900000),
+    ("ac_split_15", "Split AC 1.5 PK, installed", 5000000, 1000000),
+    ("ac_split_20", "Split AC 2 PK, installed", 7200000, 1100000),
+]
+MARKET_REFERENCE = "Market estimate, retail listings Jun-Oct 2026 (unit + installation); not AHSP"
+
 OVERHEAD_PCT = 15.0
 KINDS = {"Tenaga Kerja": "labour", "Material": "material", "Peralatan": "equipment"}
 
@@ -84,6 +159,7 @@ def fetch(hsp_id: int) -> dict:
 def clean_reference(text: str) -> str:
     """'SE DIRJEN SE Dirjen Binkon No. 182/SE/Dk/2025' -> 'SE Dirjen Binkon No. 182/SE/Dk/2025'."""
     t = " ".join(str(text or "").split())
+    t = re.sub(r"^SE DIRJEN BINKON NO\.? ?", "SE Dirjen Binkon No. ", t)
     t = t.replace("SE DIRJEN SE Dirjen", "SE Dirjen").replace("SE DIRJEN Binkon", "SE Dirjen Binkon")
     return t.replace("No.182", "No. 182")
 
@@ -100,7 +176,7 @@ def national(items: list[dict]) -> dict:
             "key": it["key"], "name": it["name"], "element": it["element"], "unit": it["unit"],
             "title": it["title"], "reference": it["reference"],
             "components": [{k: c[k] for k in ("kind", "code", "name", "unit", "coef")} for c in it["components"]],
-        } for it in items],
+        } for it in items if it["jakarta_hsp_id"]],
     }
 
 
@@ -111,7 +187,7 @@ def main() -> int:
         pass
     items, problems = [], []
     print("%-15s %-4s %14s %14s %7s  %s" % ("item", "unit", "Dirory", "Jakarta", "diff", "reference"))
-    for key, hsp_id, name, element, quantity in ITEMS:
+    for key, hsp_id, name, element, quantity in ITEMS + MEP:
         d = fetch(hsp_id)
         components = []
         for cat in d.get("kategori_material") or []:
@@ -141,12 +217,30 @@ def main() -> int:
             "name": name,
             "element": element,
             "quantity": quantity,
-            "unit": d["satuan"]["nama"].replace("M2", "m2").replace("M3", "m3").replace("M", "m").replace("Kg", "kg"),
+            "unit": d["satuan"]["nama"].strip().lower(),
             "title": d["pekerjaan"],
             "reference": clean_reference(d["reference"]),
             "jakarta_hsp_id": hsp_id,
             "components": components,
             "unit_price": round(total, 2),
+        })
+    for key, name, unit_cost, install in MARKET:
+        items.append({
+            "key": key,
+            "name": name,
+            "element": "mep",
+            "quantity": "mep",
+            "unit": "unit",
+            "title": name,
+            "reference": MARKET_REFERENCE,
+            "jakarta_hsp_id": None,
+            "components": [
+                {"kind": "material", "code": None, "name": name.replace(", installed", ""), "unit": "unit",
+                 "coef": 1.0, "price": float(unit_cost), "price_source": "market"},
+                {"kind": "labour", "code": None, "name": "Installation incl. ~3 m piping and cable", "unit": "unit",
+                 "coef": 1.0, "price": float(install), "price_source": "market"},
+            ],
+            "unit_price": float(unit_cost + install),
         })
     out = {
         "region": "jakarta",
@@ -164,7 +258,7 @@ def main() -> int:
     with open(NATIONAL, "w", encoding="utf-8") as fh:
         json.dump(national(items), fh, ensure_ascii=False, indent=1)
     print("\n%d items -> %s, %s" % (len(items), os.path.relpath(OUT), os.path.relpath(NATIONAL)))
-    stale = [it["key"] for it in items if "/SE/Dk/" not in it["reference"]]
+    stale = [it["key"] for it in items if it["jakarta_hsp_id"] and "/SE/Dk/" not in it["reference"]]
     if stale:
         problems.append("not on a current SE: " + ", ".join(stale))
     for p in problems:

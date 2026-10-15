@@ -66,6 +66,8 @@ namespace Dirory.Revit
                     });
                     break;
                 case "exportTakeoff": ExportTakeoff(); break;
+                case "loadPrices": _page.Call("diroryPrices", Json.Write(CleanPrices(Json.Read(_cloud.Get("custom_prices"))))); break;
+                case "savePrices": _cloud.Set("custom_prices", Json.Write(CleanPrices(data))); break;
                 case "requestRab": _ = RequestRab(Json.Str(data, "region")); break;
                 case "requestReport":
                     _page.Call("diroryReport", Json.Write(new { models = new object[0], materials = new object[0] }));
@@ -248,6 +250,22 @@ namespace Dirory.Revit
 
         // ------------------------------------------------------------ files
 
+        // The architect's own unit prices, by RAB line id: numbers only, at most 2,000.
+        private static Dictionary<string, double> CleanPrices(Dictionary<string, object> raw)
+        {
+            var clean = new Dictionary<string, double>();
+            foreach (var kv in raw)
+            {
+                if (clean.Count >= 2000) break;
+                if (kv.Key.Length > 300) continue;
+                if (double.TryParse(Convert.ToString(kv.Value, System.Globalization.CultureInfo.InvariantCulture),
+                        System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double v)
+                    && v >= 0 && v < 1e13)
+                    clean[kv.Key] = v;
+            }
+            return clean;
+        }
+
         private void ExportTakeoff()
         {
             if (_lastTakeoff == null) { Toast("Measure the model first."); return; }
@@ -261,6 +279,13 @@ namespace Dirory.Revit
                 string name = $"\"{Json.Str(s, "name").Replace("\"", "\"\"")}\"";
                 foreach (var (field, unit) in new[] { ("concrete_m3", "m3 concrete"), ("formwork_m2", "m2 formwork"), ("rebar_kg", "kg rebar (modelled)"), ("steel_kg", "kg steel") })
                     if ((double)s[field] > 0) sb.Append($"Structure ({s["member"]}),{name},{unit},{Json.Str(s, field)}\r\n");
+            }
+            foreach (Dictionary<string, object> m in (IEnumerable<object>)_lastTakeoff["mep"])
+            {
+                string size = Json.Str(m, "size_mm");
+                string label = string.Join(" ", new[] { Json.Str(m, "name"), Json.Str(m, "system"), Json.Str(m, "material"),
+                    size != "" && size != "0" ? "DN " + size : "" }.Where(x => x != ""));
+                sb.Append($"MEP ({m["group"]}),\"{label.Replace("\"", "\"\"")}\",{m["unit"]},{Json.Str(m, "quantity")}\r\n");
             }
             SaveText("Export Dirory quantities", "Dirory_quantities.csv", sb.ToString());
         }

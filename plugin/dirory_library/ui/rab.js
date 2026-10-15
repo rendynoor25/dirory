@@ -69,7 +69,7 @@
   // rebar in Revit, or pass options.rebarRatio, for a real figure.
   const REBAR_RATIO = { footing: 90, tie_beam: 130, column: 180, beam: 160, slab: 110, wall: 120 };
 
-  const ELEMENTS = ['structure', 'wall', 'floor', 'ceiling', 'roof', 'opening'];
+  const ELEMENTS = ['structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep'];
 
   function round2(n) {
     return Math.round((Number(n) || 0) * 100) / 100;
@@ -137,10 +137,195 @@
     return specs.map((s) => Object.assign({ element: 'structure' }, s));
   }
 
+  /* ---------------------------------------------------------------- MEP */
+  //
+  // takeoff.mep (Revit, MepTakeoff.cs) is a list of
+  //   { group, name, system, material, size_mm, unit, quantity }
+  // where group is pipe, duct, cable_tray, plumbing_fixture, light, switch,
+  // socket, panel, equipment, air_terminal, sprinkler or fire_alarm. mepKey()
+  // decides which priced item each row is, from its names. A row it cannot
+  // match still becomes a line, with no price, for the architect to fill in.
+
+  const MEP_SECTIONS = {
+    pipe: 'Plumbing', plumbing_fixture: 'Plumbing',
+    light: 'Electrical', switch: 'Electrical', socket: 'Electrical', panel: 'Electrical', cable_tray: 'Electrical',
+    duct: 'Air', air_terminal: 'Air', equipment: 'Air',
+    sprinkler: 'Fire', fire_alarm: 'Fire',
+  };
+
+  // Pipe kind from its material and system. Revit's default templates model
+  // domestic water in copper; Indonesian practice is PVC AW, so a material
+  // Dirory does not price falls back by system (and the line says so).
+  function pipeKind(row) {
+    const m = String(row.material || '') + ' ' + String(row.name || '');
+    const sys = String(row.system || '').toLowerCase();
+    if (/\bppr?\b|polypropylene/i.test(m)) return { kind: 'ppr' };
+    if (/hdpe|\bpe\s?100\b|polyethylene/i.test(m)) return { kind: 'hdpe' };
+    if (/galv|\bgi\b|\bsch|steel|baja|black iron/i.test(m)) return { kind: 'gi' };
+    const drain = /sanitary|vent|storm|waste|drain|soil|air kotor|air hujan/.test(sys);
+    if (/pvc/i.test(m)) return { kind: drain ? 'pvc_d' : 'pvc_aw' };
+    if (/fire|sprinkler|hydrant/.test(sys)) return { kind: 'gi', assumed: true };
+    return { kind: drain ? 'pvc_d' : 'pvc_aw', assumed: Boolean(m.trim()) };
+  }
+
+  // The smallest priced diameter at or above the pipe's, else the largest.
+  function pipeKey(row, items) {
+    const pk = pipeKind(row);
+    const prefix = 'pipe_' + pk.kind + '_';
+    const sizes = [];
+    items.forEach((_it, key) => {
+      if (key.indexOf(prefix) === 0) sizes.push(Number(key.slice(prefix.length)));
+    });
+    if (!sizes.length) return null;
+    sizes.sort((a, b) => a - b);
+    const size = Number(row.size_mm) || 0;
+    const dn = sizes.find((s) => s >= size - 1) || sizes[sizes.length - 1];
+    return { key: prefix + dn, assumed: pk.assumed };
+  }
+
+  function acKey(text) {
+    let pk = null;
+    const m = text.match(/(\d+(?:[.,]\d+)?|1\/2|½)\s*pk/i);
+    if (m) pk = m[1] === '1/2' || m[1] === '½' ? 0.5 : parseFloat(m[1].replace(',', '.'));
+    const btu = text.match(/(\d{1,2})[.,]?(\d{3})\s*btu/i);
+    if (pk == null && btu) pk = Number(btu[1] + btu[2]) / 9000;
+    const kw = text.match(/(\d+(?:[.,]\d+)?)\s*kw/i);
+    if (pk == null && kw) pk = parseFloat(kw[1].replace(',', '.')) / 2.6;
+    if (pk == null) pk = 1;
+    if (pk <= 0.75) return 'ac_split_05';
+    if (pk <= 1.25) return 'ac_split_10';
+    if (pk <= 1.75) return 'ac_split_15';
+    return 'ac_split_20';
+  }
+
+  // [item keys] for one takeoff row; [] when nothing matches; null for a row
+  // that is part of another's price (an AC outdoor unit comes with the indoor
+  // unit's installed price). Lights and sockets add their installation point
+  // (cable and conduit) as a second item.
+  function mepKey(row, items) {
+    const t = (String(row.name || '') + ' ' + String(row.material || '')).toLowerCase();
+    switch (row.group) {
+      case 'pipe': {
+        const p = pipeKey(row, items);
+        return p ? [p.key] : [];
+      }
+      case 'plumbing_fixture':
+        if (/squat|jongkok/.test(t)) return ['closet_squat'];
+        if (/(water ?closet|toilet|closet|kloset|\bwc\b|monoblock|one[\s-]?piece|close[\s-]?coupled)/.test(t)) return [/accessib|disab|difabel/.test(t) ? 'closet_disabled' : 'closet_seat'];
+        if (/urinal|urinoir/.test(t)) return ['urinal'];
+        if (/shower/.test(t)) return ['shower_set'];
+        if (/drain/.test(t)) return ['floor_drain'];
+        if (/kitchen|dapur/.test(t)) return [];
+        if (/lavator|basin|wastafel|vanity|sink/.test(t)) return ['washbasin'];
+        if (/faucet|tap\b|kran|keran/.test(t)) return ['tap'];
+        return [];
+      case 'light': {
+        let fitting = 'downlight';
+        if (/exit|emergency|darurat/.test(t)) fitting = 'exit_light';
+        else if (/garden|bollard|landscape|outdoor|taman/.test(t)) fitting = 'garden_light';
+        else if (/spot|flood|sorot|track/.test(t)) fitting = 'spotlight';
+        else if (/linear|batten|tled|fluoresc|strip|troffer|\btl\b|balk/.test(t)) fitting = /2\s?x|2 lamp|twin/.test(t) ? 'batten_2x' : 'batten';
+        return [fitting, 'light_point'];
+      }
+      case 'switch':
+        return [/double|2[\s-]?gang|ganda/.test(t) ? 'switch_double' : 'switch_single'];
+      case 'socket':
+        if (/data|tel|rj ?45|tv|lan/.test(t)) return [];
+        return [/\bac\b|air ?con/.test(t) ? 'socket_ac' : 'socket', 'socket_point'];
+      case 'panel':
+        if (/\bmdp\b|main distribution/.test(t)) return ['panel_mdp'];
+        if (/\bsdp\b|sub[\s-]?distribution/.test(t)) return ['panel_sdp'];
+        if (/mcb|consumer unit|\bbox\b/.test(t)) return ['mcb_box'];
+        if (/panel|\blp\b|\bpp\b/.test(t)) return ['panel_floor'];
+        return [];
+      case 'equipment':
+        if (/outdoor|condens|\bodu\b|\bcdu\b/.test(t)) return null;
+        if (/split|\bac\b|air ?con|indoor|fan ?coil|\bfcu\b|wall[\s-]?mount/.test(t)) return [acKey(t)];
+        if (/exhaust|ventilat|propeller/.test(t)) return ['exhaust_fan'];
+        return [];
+      case 'air_terminal':
+        if (/diffuser/.test(t)) return ['diffuser'];
+        if (/grille|register|louver|louvre/.test(t)) return ['grille'];
+        return [];
+      case 'sprinkler':
+        return [/upright/.test(t) ? 'sprinkler_upright' : 'sprinkler_pendant'];
+      case 'fire_alarm':
+        if (/smoke|heat|detector/.test(t)) return ['smoke_detector', 'detector_point'];
+        return [];
+      default:
+        return [];
+    }
+  }
+
+  function mepLabel(row) {
+    const parts = [row.name];
+    if (row.group === 'pipe') {
+      if (row.system) parts.push(row.system);
+      if (row.size_mm) parts.push('Ø' + row.size_mm + ' mm');
+    }
+    return parts.filter(Boolean).join(' · ');
+  }
+
+  // One line per priced item and Revit type (so a WC from one brand can be
+  // priced apart from another); pipes per item and system; installation
+  // points in one line each. Unmatched rows are lines without a price.
+  function mepLines(takeoff, items) {
+    const rows = (takeoff && takeoff.mep) || [];
+    const byId = new Map();
+    const add = (id, fields, quantity) => {
+      if (!byId.has(id)) byId.set(id, Object.assign({ id: id, element: 'mep', quantity: 0 }, fields));
+      byId.get(id).quantity += quantity;
+    };
+    rows.forEach((row) => {
+      const qty = Number(row.quantity) || 0;
+      if (qty <= 0) return;
+      const section = MEP_SECTIONS[row.group] || 'MEP';
+      const matched = mepKey(row, items);
+      if (matched === null) return;
+      const keys = matched.filter((k) => items.has(k));
+      if (!keys.length) {
+        add('mep|' + row.group + '|' + row.name, {
+          key: null, section: section, name: mepLabel(row), unit: row.unit || 'unit', needs_price: true, reference: '',
+        }, qty);
+        return;
+      }
+      keys.forEach((key) => {
+        const it = items.get(key);
+        const shared = /_point$/.test(key);
+        if (row.group === 'pipe') {
+          const assumed = pipeKind(row).assumed;
+          add('mep|' + key + '|' + (row.system || ''), {
+            key: key, section: section, reference: it.reference || '', unit: it.unit,
+            name: it.name + (row.system ? ' · ' + row.system : '') + (assumed ? ' (modelled in ' + row.material + ')' : ''),
+          }, qty);
+        } else if (shared) {
+          add('mep|' + key, { key: key, section: section, reference: it.reference || '', unit: it.unit, name: it.name }, qty);
+        } else {
+          add('mep|' + key + '|' + row.name, {
+            key: key, section: section, reference: it.reference || '', unit: it.unit, name: it.name + ' · ' + row.name,
+          }, qty);
+        }
+      });
+    });
+    const order = ['Plumbing', 'Electrical', 'Air', 'Fire', 'MEP'];
+    return Array.from(byId.values()).map((l) => {
+      const it = l.key ? items.get(l.key) : null;
+      return Object.assign(l, {
+        quantity: round2(l.quantity),
+        price: it ? Number(it.unit_price) || 0 : 0,
+        basis: 'mep',
+      });
+    }).sort((a, b) => order.indexOf(a.section) - order.indexOf(b.section));
+  }
+
   /**
    * computeRab(takeoff, book, options) ->
-   *   { region, lines: [{element, key, name, basis, quantity, unit, unit_price, amount}],
-   *     subtotals: {wall: n, ...}, total, missing: [item keys not in the book] }
+   *   { region, lines: [{id, element, key, name, basis, quantity, unit, unit_price, amount,
+   *                      custom, needs_price, section}],
+   *     subtotals: {wall: n, ...}, total, unpriced, missing: [item keys not in the book] }
+   *
+   * options.prices: { [line id]: unit price } - the architect's own prices,
+   * which replace the book's for that line (or price a line the book cannot).
    */
   function computeRab(takeoff, book, options) {
     const o = Object.assign({ wallType: 'brick', wallsBothSides: true, concrete: 'readymix' }, options || {});
@@ -157,19 +342,34 @@
         if (missing.indexOf(spec.item) < 0) missing.push(spec.item);
         return;
       }
-      const unitPrice = Number(it.unit_price) || 0;
       lines.push({
+        id: spec.item + '|' + spec.basis,
         element: spec.element || it.element,
         key: spec.item,
         name: spec.label || (spec.prefix ? spec.prefix + ': ' + it.name : it.name),
         basis: spec.basis,
         quantity: quantity,
         unit: it.unit,
-        unit_price: Math.round(unitPrice),
-        amount: Math.round(quantity * unitPrice),
+        price: Number(it.unit_price) || 0,
         reference: it.reference || '',
       });
     });
+    mepLines(takeoff, items).forEach((l) => lines.push(l));
+
+    const prices = o.prices || {};
+    lines.forEach((l) => {
+      const own = prices[l.id];
+      if (typeof own === 'number' && isFinite(own) && own >= 0) {
+        l.price = own;
+        l.custom = true;
+        l.needs_price = false;
+      }
+      // Amounts use the exact unit price; the line shows it rounded.
+      l.unit_price = Math.round(l.price);
+      l.amount = Math.round(l.quantity * l.price);
+      delete l.price;
+    });
+
     const subtotals = {};
     ELEMENTS.forEach((e) => {
       subtotals[e] = lines.filter((l) => l.element === e).reduce((s, l) => s + l.amount, 0);
@@ -182,6 +382,7 @@
       lines: lines,
       subtotals: subtotals,
       total: total,
+      unpriced: lines.filter((l) => l.needs_price).length,
       missing: missing,
     };
   }
@@ -189,6 +390,7 @@
   const api = {
     computeRab: computeRab,
     quantities: quantities,
+    mepKey: mepKey,
     ELEMENTS: ELEMENTS,
     MEMBERS: MEMBERS,
     MEMBER_LABELS: MEMBER_LABELS,

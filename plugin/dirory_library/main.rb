@@ -1190,6 +1190,22 @@ module Dirory
     end
 
     # Save text the panel produced (a CSV) where the user chooses.
+    # The architect's own RAB unit prices, by line id (panel.js). Numbers only.
+    def self.custom_prices
+      clean_prices(JSON.parse(Sketchup.read_default(SETTINGS_SECTION, 'custom_prices', '{}').to_s))
+    rescue JSON::ParserError
+      {}
+    end
+
+    def self.clean_prices(raw)
+      return {} unless raw.is_a?(Hash)
+      raw.each_with_object({}) do |(key, value), out|
+        break out if out.size >= 2000
+        next unless key.is_a?(String) && key.length <= 300 && value.is_a?(Numeric)
+        out[key] = value.to_f if value >= 0 && value < 1e13
+      end
+    end
+
     def self.save_text_file(title, filename, content)
       UI.start_timer(0.1, false) do
         begin
@@ -1452,6 +1468,12 @@ module Dirory
         @dialog.add_action_callback('saveText') do |_ctx, payload|
           data = parse_payload(payload)
           save_text_file(data['title'], data['filename'], data['content'])
+        end
+        @dialog.add_action_callback('loadPrices') do |_ctx|
+          @dialog.execute_script("window.diroryPrices && window.diroryPrices(#{custom_prices.to_json});")
+        end
+        @dialog.add_action_callback('savePrices') do |_ctx, payload|
+          Sketchup.write_default(SETTINGS_SECTION, 'custom_prices', clean_prices(parse_payload(payload)).to_json)
         end
         @dialog.add_action_callback('requestQuote') { |_ctx, payload| request_quote(payload) }
 

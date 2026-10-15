@@ -1405,6 +1405,7 @@ const ELEMENT_LABELS = {
   floor: 'Floor (lantai)',
   ceiling: 'Ceiling (plafon)',
   roof: 'Roof (atap)',
+  mep: 'MEP (mekanikal, elektrikal, plumbing)',
 };
 
 function fmt2(n) {
@@ -1421,7 +1422,15 @@ function takeoffTable(head, rows) {
   const tbody = el('tbody');
   rows.forEach((cells) => {
     const row = el('tr', cells.className || '');
-    cells.forEach(([text, cls]) => row.appendChild(el('td', cls || '', text)));
+    cells.forEach(([text, cls]) => {
+      if (text instanceof Node) {
+        const td = el('td', cls || '');
+        td.appendChild(text);
+        row.appendChild(td);
+      } else {
+        row.appendChild(el('td', cls || '', text));
+      }
+    });
     tbody.appendChild(row);
   });
   table.appendChild(tbody);
@@ -1439,8 +1448,9 @@ window.diroryTakeoff = function (data) {
   const rows = data.rows || [];
   const openings = data.openings || [];
   const structure = data.structure || [];
+  const mep = data.mep || [];
   byId('rabConcrete').hidden = !structure.some((s) => s.concrete_m3 > 0);
-  if (!rows.length && !openings.length && !structure.length) {
+  if (!rows.length && !openings.length && !structure.length && !mep.length) {
     body.appendChild(el('p', 'usage-note',
       'Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.'));
     byId('takeoffExport').hidden = true;
@@ -1482,6 +1492,25 @@ window.diroryTakeoff = function (data) {
       [fmt2(s.steel_kg) + ' kg', 'num'],
     ]);
     if (steel.length) body.appendChild(takeoffTable([['Steel member'], ['Weight', 'num']], steel));
+  }
+
+  // Revit only: pipe and duct runs, fixtures and devices.
+  if (mep.length) {
+    const GROUPS = {
+      pipe: 'Pipe', duct: 'Duct', cable_tray: 'Cable tray', plumbing_fixture: 'Plumbing fixture', light: 'Light',
+      switch: 'Switch', socket: 'Socket', panel: 'Panel', equipment: 'Equipment', air_terminal: 'Air terminal',
+      sprinkler: 'Sprinkler', fire_alarm: 'Fire alarm',
+    };
+    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.mep));
+    body.appendChild(takeoffTable([['Item'], ['Quantity', 'num']], mep.map((m) => {
+      const detail = m.group === 'pipe'
+        ? [m.system, m.material, m.size_mm ? `Ø${m.size_mm} mm` : ''].filter(Boolean).join(' · ')
+        : '';
+      return [
+        [`${GROUPS[m.group] || m.group}: ${m.name}${detail ? ` (${detail})` : ''}`, ''],
+        [`${m.unit === 'unit' ? m.quantity : fmt2(m.quantity)} ${m.unit === 'unit' ? '' : m.unit}`.trim(), 'num'],
+      ];
+    })));
   }
 
   if (openings.length) {
@@ -1539,6 +1568,7 @@ function rabOptions() {
     wallType: byId('rabWall').value,
     wallsBothSides: byId('rabBothSides').checked,
     concrete: byId('rabConcrete').value,
+    prices: customPrices,
   };
 }
 
@@ -1555,17 +1585,25 @@ function renderRab() {
     const lines = lastRab.lines.filter((l) => l.element === element);
     if (!lines.length) return;
     body.appendChild(el('h4', 'takeoff-element', RAB_ELEMENT_LABELS[element] || element));
-    const rows = lines.map((l) => [
-      [l.name, ''],
-      [`${fmt2(l.quantity)} ${l.unit}`, 'num'],
-      [rupiah(l.unit_price), 'num'],
-      [rupiah(l.amount), 'num'],
-    ]);
+    const rows = lines.map((l) => {
+      const row = [
+        [lineName(l), ''],
+        [`${fmt2(l.quantity)} ${l.unit}`, 'num'],
+        [priceInput(l), 'num'],
+        [l.needs_price ? '—' : rupiah(l.amount), 'num'],
+      ];
+      if (l.needs_price) row.className = 'needs-price';
+      return row;
+    });
     const sub = [['Subtotal', ''], ['', ''], ['', ''], [rupiah(lastRab.subtotals[element]), 'num']];
     sub.className = 'total';
     rows.push(sub);
     body.appendChild(takeoffTable([['Work item'], ['Volume', 'num'], ['Unit price', 'num'], ['Amount', 'num']], rows));
   });
+  if (lastRab.unpriced) {
+    body.appendChild(el('p', 'rab-unpriced',
+      `${lastRab.unpriced} line(s) have no price yet and are not in the total: type the unit price from your quote in the highlighted rows.`));
+  }
   const total = el('p', 'rab-total');
   total.appendChild(el('span', '', 'Estimated total'));
   total.appendChild(el('strong', '', rupiah(lastRab.total)));
@@ -1574,6 +1612,9 @@ function renderRab() {
     `Unit prices: ${rabBook.name}, AHSP coefficients with regional basic prices, including ${rabBook.overhead_pct}% overhead and profit. Excludes PPN.`,
     rabBook.source ? `Source: ${rabBook.source}` : '',
     rebarNote(),
+    lastRab.lines.some((l) => !l.custom && /^Market estimate/.test(l.reference))
+      ? 'Split AC units have no AHSP analysis: they are market estimates (retail listings, mid-2026, unit plus installation). Type your quote over them.'
+      : '',
     'An estimate from the model, not a tender document. Check volumes and specifications with your quantity surveyor.',
   ].filter(Boolean).join(' ');
   body.appendChild(el('p', 'usage-note', note));
@@ -1585,6 +1626,41 @@ function renderRab() {
   actions.appendChild(print);
   actions.appendChild(csv);
   body.appendChild(actions);
+}
+
+// The architect's own unit prices, by RAB line id. Kept by the host (SketchUp
+// defaults / the Revit add-in's settings), so they survive a restart.
+let customPrices = {};
+let customPricesLoaded = false;
+
+window.diroryPrices = function (prices) {
+  customPrices = prices && typeof prices === 'object' ? prices : {};
+  customPricesLoaded = true;
+  if (lastTakeoff && rabBook) renderRab();
+};
+
+function lineName(l) {
+  return (l.section ? `${l.section}: ` : '') + l.name + (l.custom ? ' (your price)' : '');
+}
+
+// The unit price as a box the architect can type over. Clearing it goes back
+// to the price book.
+function priceInput(l) {
+  const input = el('input', 'price-input' + (l.custom ? ' custom' : ''));
+  input.type = 'text';
+  input.inputMode = 'numeric';
+  input.value = l.needs_price ? '' : String(l.unit_price);
+  input.placeholder = l.needs_price ? 'Enter price' : '';
+  input.title = l.needs_price ? 'No price in the book: type your unit price (Rp)' : 'Type your own unit price (Rp); clear it to use the book price';
+  input.setAttribute('aria-label', `Unit price for ${l.name}`);
+  input.addEventListener('change', () => {
+    const digits = input.value.replace(/[^\d]/g, '');
+    if (digits) customPrices[l.id] = Number(digits);
+    else delete customPrices[l.id];
+    try { sketchup.savePrices(JSON.stringify(customPrices)); } catch (e) { /* kept for this session */ }
+    renderRab();
+  });
+  return input;
 }
 
 // Members with no modelled rebar are priced with a kg per m3 ratio; say so.
@@ -1606,8 +1682,9 @@ function printRab() {
   const sections = window.DiroryRab.ELEMENTS.map((element) => {
     const lines = lastRab.lines.filter((l) => l.element === element);
     if (!lines.length) return '';
-    const rows = lines.map((l, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(l.name)}<div class="ref">${escapeHtml(l.reference)}</div></td>` +
-      `<td class="num">${fmt2(l.quantity)}</td><td>${escapeHtml(l.unit)}</td><td class="num">${rupiah(l.unit_price)}</td><td class="num">${rupiah(l.amount)}</td></tr>`).join('');
+    const rows = lines.map((l, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(lineName(l))}<div class="ref">${escapeHtml(l.custom ? 'Price entered by the architect' : l.reference)}</div></td>` +
+      `<td class="num">${fmt2(l.quantity)}</td><td>${escapeHtml(l.unit)}</td>` +
+      `<td class="num">${l.needs_price ? 'not priced' : rupiah(l.unit_price)}</td><td class="num">${l.needs_price ? '—' : rupiah(l.amount)}</td></tr>`).join('');
     return `<h2>${escapeHtml(RAB_ELEMENT_LABELS[element] || element)}</h2><table><thead><tr><th>#</th><th>Uraian pekerjaan</th>` +
       `<th>Volume</th><th>Sat.</th><th>Harga satuan</th><th>Jumlah</th></tr></thead><tbody>${rows}` +
       `<tr class="sub"><td></td><td>Subtotal</td><td></td><td></td><td></td><td class="num">${rupiah(lastRab.subtotals[element])}</td></tr></tbody></table>`;
@@ -1627,6 +1704,7 @@ function printRab() {
   <p class="meta">${escapeHtml(rabBook.name)} · ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} · Dirory</p>
   ${sections}
   <p class="total">Estimated total: <strong>${rupiah(lastRab.total)}</strong></p>
+  ${lastRab.unpriced ? `<p class="meta">${lastRab.unpriced} line(s) are not priced and not in the total.</p>` : ''}
   <p class="meta">Includes ${rabBook.overhead_pct}% overhead and profit; excludes PPN. ${escapeHtml(rabBook.source || '')} ${escapeHtml(rebarNote())}
   Volumes are measured from the model; check them before a tender.</p></body></html>`;
   sketchup.printHtml(JSON.stringify({ name: 'Dirory_RAB', html: html }));
@@ -1636,7 +1714,8 @@ function exportRabCsv() {
   if (!lastRab) return;
   const cell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
   const rows = [['Element', 'Work item', 'Volume', 'Unit', 'Unit price (IDR)', 'Amount (IDR)', 'Reference']];
-  lastRab.lines.forEach((l) => rows.push([RAB_ELEMENT_LABELS[l.element] || l.element, l.name, l.quantity, l.unit, l.unit_price, l.amount, l.reference]));
+  lastRab.lines.forEach((l) => rows.push([RAB_ELEMENT_LABELS[l.element] || l.element, lineName(l), l.quantity, l.unit,
+    l.needs_price ? '' : l.unit_price, l.needs_price ? '' : l.amount, l.custom ? 'Price entered by the architect' : l.reference]));
   rows.push(['', 'Estimated total', '', '', '', lastRab.total, '']);
   const content = rows.map((r) => r.map(cell).join(',')).join('\r\n') + '\r\n';
   sketchup.saveText(JSON.stringify({ title: 'Export RAB', filename: 'Dirory_RAB.csv', content: content }));
@@ -1644,6 +1723,9 @@ function exportRabCsv() {
 
 window.diroryRabBook = function (book) {
   rabBook = book;
+  if (!customPricesLoaded) {
+    try { sketchup.loadPrices(); } catch (e) { /* an older host keeps no prices */ }
+  }
   byId('rabRun').disabled = false;
   byId('rabRun').textContent = '💰 Estimate cost (RAB)';
   renderRab();

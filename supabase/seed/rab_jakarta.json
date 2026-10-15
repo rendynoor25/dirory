@@ -2093,6 +2093,5410 @@
     }
    ],
    "unit_price": 39071.91
+  },
+  {
+   "key": "pipe_pvc_aw_15",
+   "name": "PVC AW pipe (clean water) DN 15",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.1 Pemasangan 1 m pipa PVC AW, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1675,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.017,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.028,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1/2\" (15 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 6860.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 24522.72
+  },
+  {
+   "key": "pipe_pvc_aw_20",
+   "name": "PVC AW pipe (clean water) DN 20",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.2 Pemasangan 1 m pipa PVC AW, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1677,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.024,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 3/4\" (20 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 8800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 33066.91
+  },
+  {
+   "key": "pipe_pvc_aw_25",
+   "name": "PVC AW pipe (clean water) DN 25",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.3 Pemasangan 1 m pipa PVC AW, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1678,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.052,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1\" (25 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 13000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 45698.48
+  },
+  {
+   "key": "pipe_pvc_aw_32",
+   "name": "PVC AW pipe (clean water) DN 32",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.4 Pemasangan 1 m pipa PVC AW, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1679,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.068,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.007,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1- 1/4\" (32 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 18550.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 62145.13
+  },
+  {
+   "key": "pipe_pvc_aw_40",
+   "name": "PVC AW pipe (clean water) DN 40",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.5 Pemasangan 1 m pipa PVC AW, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2127,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.048,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.08,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.008,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1- 1/2\" (40 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 22400.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 74137.82
+  },
+  {
+   "key": "pipe_pvc_aw_50",
+   "name": "PVC AW pipe (clean water) DN 50",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.6 Pemasangan 1 m pipa PVC AW, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2128,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.104,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.063,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 2\" (50 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 26800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 92675.71
+  },
+  {
+   "key": "pipe_pvc_aw_65",
+   "name": "PVC AW pipe (clean water) DN 65",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.7 Pemasangan 1 m pipa PVC AW, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2130,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.077,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.129,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 2- 1/2\" (65 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 40000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 126188.93
+  },
+  {
+   "key": "pipe_pvc_aw_80",
+   "name": "PVC AW pipe (clean water) DN 80",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.8 Pemasangan 1 m pipa PVC AW, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2134,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.094,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.157,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.016,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW dia 3 inci",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 53800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 162284.09
+  },
+  {
+   "key": "pipe_pvc_aw_100",
+   "name": "PVC AW pipe (clean water) DN 100",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.9 Pemasangan 1 m pipa PVC AW, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2135,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.123,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.205,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.021,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 4\" (100 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 100000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 261443.3
+  },
+  {
+   "key": "pipe_pvc_aw_125",
+   "name": "PVC AW pipe (clean water) DN 125",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.10 Pemasangan 1 m pipa PVC AW, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2139,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.152,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.254,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.025,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.008,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW ; DN. 5\" (125 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 156600.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 378225.58
+  },
+  {
+   "key": "pipe_pvc_aw_150",
+   "name": "PVC AW pipe (clean water) DN 150",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.11 Pemasangan 1 m pipa PVC AW, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2140,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.183,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.306,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW ; DN. 6\" (150 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 214100.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 498110.32
+  },
+  {
+   "key": "pipe_pvc_aw_200",
+   "name": "PVC AW pipe (clean water) DN 200",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.12 Pemasangan 1 m pipa PVC AW, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2141,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.246,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.411,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.041,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.012,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW ; DN. 8\" (200 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 348000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 769638.85
+  },
+  {
+   "key": "pipe_pvc_d_32",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 32",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.17 Pemasangan 1 m pipa PVC D, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2222,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.067,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.007,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 1-1/4\" (32 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 11650.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 50375.8
+  },
+  {
+   "key": "pipe_pvc_d_40",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 40",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.18 Pemasangan 1 m pipa PVC D, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2223,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.048,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.08,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.008,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D dia 1 1/2 inci",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 13175.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 58755.13
+  },
+  {
+   "key": "pipe_pvc_d_50",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 50",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.19 Pemasangan 1 m pipa PVC D, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2224,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.063,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.104,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 16900.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 76167.46
+  },
+  {
+   "key": "pipe_pvc_d_65",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 65",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.20 Pemasangan 1 m pipa PVC D, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2226,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.077,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.129,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 2-1/2\" (65 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 22800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 97507.93
+  },
+  {
+   "key": "pipe_pvc_d_80",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 80",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.21 Pemasangan 1 m pipa PVC D, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2228,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.094,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.157,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.016,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 30250.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 123014.47
+  },
+  {
+   "key": "pipe_pvc_d_100",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 100",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.22 Pemasangan 1 m pipa PVC D, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "jakarta_hsp_id": 2230,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.123,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.205,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.021,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 4\" (100 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 47575.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 174024.62
+  },
+  {
+   "key": "pipe_pvc_d_125",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 125",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.23 Pemasangan 1 m pipa PVC D, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2232,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.152,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.254,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.025,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.008,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 5\" (125 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 74700.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 241657.33
+  },
+  {
+   "key": "pipe_pvc_d_150",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 150",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.24 Pemasangan 1 m pipa PVC D, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2233,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.183,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.306,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 6\" (150 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 100500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 308682.32
+  },
+  {
+   "key": "pipe_pvc_d_200",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 200",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.1.25 Pemasangan 1 m pipa PVC D, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2235,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.012,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.246,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.411,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.041,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 8\" (200 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45,
+     "price": 160800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 457482.85
+  },
+  {
+   "key": "pipe_ppr_15",
+   "name": "PPR PN10 pipe DN 15",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.1 Pemasangan 1 m pipa PPR PN 10, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2256,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.021,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.035,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1/2\" (15 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 11000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 36855.48
+  },
+  {
+   "key": "pipe_ppr_20",
+   "name": "PPR PN10 pipe DN 20",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.2 Pemasangan 1 m pipa PPR PN 10, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2257,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.052,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 3/4\" (20 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 14500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 51534.73
+  },
+  {
+   "key": "pipe_ppr_25",
+   "name": "PPR PN10 pipe DN 25",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.3 Pemasangan 1 m pipa PPR PN 10, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2261,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.044,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.073,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.007,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1\" (25 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 23300.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 77796.92
+  },
+  {
+   "key": "pipe_ppr_32",
+   "name": "PPR PN10 pipe DN 32",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.4 Pemasangan 1 m pipa PPR PN 10, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2265,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.054,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.09,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1-1/4\" (32 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 36900.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 111640.92
+  },
+  {
+   "key": "pipe_ppr_40",
+   "name": "PPR PN10 pipe DN 40",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.5 Pemasangan 1 m pipa PPR PN 10, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2266,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.065,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.108,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1-1/2\" (40 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 57200.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 158406.49
+  },
+  {
+   "key": "pipe_ppr_50",
+   "name": "PPR PN10 pipe DN 50",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.6 Pemasangan 1 m pipa PPR PN 10, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2267,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.077,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.129,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 90500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 231212.68
+  },
+  {
+   "key": "pipe_ppr_65",
+   "name": "PPR PN10 pipe DN 65",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.7 Pemasangan 1 m pipa PPR PN 10, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2269,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.108,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.181,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.018,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 2-1/2\" (65 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 126700.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 323604.33
+  },
+  {
+   "key": "pipe_ppr_80",
+   "name": "PPR PN10 pipe DN 80",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.8 Pemasangan 1 m pipa PPR PN 10, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2270,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.216,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.022,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.129,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 182800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 446338.4
+  },
+  {
+   "key": "pipe_ppr_100",
+   "name": "PPR PN10 pipe DN 100",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.3.9 Pemasangan 1 m pipa PPR PN 10, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2271,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.289,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.029,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.173,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 4\" (100 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65,
+     "price": 271500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 648550.64
+  },
+  {
+   "key": "pipe_gi_15",
+   "name": "Galvanised steel pipe SCH 40 DN 15",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.17 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5560,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.035,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.058,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1/2\" (15 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 30200.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 79053.06
+  },
+  {
+   "key": "pipe_gi_20",
+   "name": "Galvanised steel pipe SCH 40 DN 20",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.18 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5561,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.052,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.087,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 3/4\" (20 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 40000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 109305.3
+  },
+  {
+   "key": "pipe_gi_25",
+   "name": "Galvanised steel pipe SCH 40 DN 25",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.19 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5562,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.069,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.115,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1\" (25 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 57800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 152473.8
+  },
+  {
+   "key": "pipe_gi_32",
+   "name": "Galvanised steel pipe SCH 40 DN 32",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.20 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5563,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.085,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.143,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.014,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1-1/4\" (32 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 79000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 201863.9
+  },
+  {
+   "key": "pipe_gi_40",
+   "name": "Galvanised steel pipe SCH 40 DN 40",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.21 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5564,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.104,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.174,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.017,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1-1/2\" (40 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 93800.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 241795.43
+  },
+  {
+   "key": "pipe_gi_50",
+   "name": "Galvanised steel pipe SCH 40 DN 50",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.22 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5565,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.138,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.23,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.023,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.007,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 125300.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 322300.27
+  },
+  {
+   "key": "pipe_gi_65",
+   "name": "Galvanised steel pipe SCH 40 DN 65",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.23 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5566,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.171,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.285,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.029,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 2-1/2\" (65 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 199500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 475935.45
+  },
+  {
+   "key": "pipe_gi_80",
+   "name": "Galvanised steel pipe SCH 40 DN 80",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.24 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5567,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.238,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.397,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.012,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 260200.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 632093.88
+  },
+  {
+   "key": "pipe_gi_100",
+   "name": "Galvanised steel pipe SCH 40 DN 100",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.25 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5568,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.317,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.529,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.053,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.016,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 4\" (100 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 370000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 882305.68
+  },
+  {
+   "key": "pipe_gi_125",
+   "name": "Galvanised steel pipe SCH 40 DN 125",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.26 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5569,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.394,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.658,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.066,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.02,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 5\" (125 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 500500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1166907.11
+  },
+  {
+   "key": "pipe_gi_150",
+   "name": "Galvanised steel pipe SCH 40 DN 150",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.27 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5575,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.473,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.79,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.079,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.024,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 6\" (150 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 647000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1480426.41
+  },
+  {
+   "key": "pipe_gi_200",
+   "name": "Galvanised steel pipe SCH 40 DN 200",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "6.4.2.28 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5576,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.629,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 1.051,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.105,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.032,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 8\" (200 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5,
+     "price": 992300.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 2196364.64
+  },
+  {
+   "key": "pipe_hdpe_15",
+   "name": "HDPE pipe DN 15",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.17 Pemasangan 1 m Pipa HDPE, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5999,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.022,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1/2\" (15 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 6700.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 17040.6
+  },
+  {
+   "key": "pipe_hdpe_20",
+   "name": "HDPE pipe DN 20",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.18 Pemasangan 1 m Pipa HDPE, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 6000,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.022,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 3/4\" (20 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 10100.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 20950.6
+  },
+  {
+   "key": "pipe_hdpe_25",
+   "name": "HDPE pipe DN 25",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.19 Pemasangan 1 m Pipa HDPE, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 6001,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.028,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.014,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1\" (25 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 16200.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 30656.59
+  },
+  {
+   "key": "pipe_hdpe_32",
+   "name": "HDPE pipe DN 32",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.20 Pemasangan 1 m Pipa HDPE, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 6002,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.028,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.014,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1-1/4\" (32 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 25600.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 41466.59
+  },
+  {
+   "key": "pipe_hdpe_40",
+   "name": "HDPE pipe DN 40",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.21 Pemasangan 1 m Pipa HDPE, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 6003,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.014,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.028,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1-1/2\" (40 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 39600.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 57566.59
+  },
+  {
+   "key": "pipe_hdpe_50",
+   "name": "HDPE pipe DN 50",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.22 Pemasangan 1 m Pipa HDPE, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 6004,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.035,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.017,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 2\" (50 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 62600.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 86652.34
+  },
+  {
+   "key": "pipe_hdpe_65",
+   "name": "HDPE pipe DN 65",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.1 Pemasangan 1 m Pipa HDPE, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5985,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.035,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.017,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 2-1/2\" (65 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 105200.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019,
+     "price": 250000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 141104.84
+  },
+  {
+   "key": "pipe_hdpe_80",
+   "name": "HDPE pipe DN 80",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.23 Pemasangan 1 m Pipa HDPE, DN. 3 (75 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 6005,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.037,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.018,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 3\" (75 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 151200.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 189651.88
+  },
+  {
+   "key": "pipe_hdpe_100",
+   "name": "HDPE pipe DN 100",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.2 Pemasangan 1 m Pipa HDPE, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5986,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.02,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 4\" (100 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 225200.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019,
+     "price": 250000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 281532.25
+  },
+  {
+   "key": "pipe_hdpe_125",
+   "name": "HDPE pipe DN 125",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.3 Pemasangan 1 m Pipa HDPE, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5987,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.045,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.023,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 5\" (125 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 291300.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019,
+     "price": 250000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 359974.67
+  },
+  {
+   "key": "pipe_hdpe_150",
+   "name": "HDPE pipe DN 150",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.4 Pemasangan 1 m Pipa HDPE, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5988,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.062,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 6\" (150 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 475200.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019,
+     "price": 250000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 578367.85
+  },
+  {
+   "key": "pipe_hdpe_200",
+   "name": "HDPE pipe DN 200",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "m",
+   "title": "9.3.1.5 Pemasangan 1 m Pipa HDPE, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5989,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.102,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.051,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 8\" (200 mm)",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 743400.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019,
+     "price": 250000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 903887.61
+  },
+  {
+   "key": "closet_seat",
+   "name": "Close-coupled / monoblock WC",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "3.18.3.1 Pemasangan 1 Buah Closet Duduk/Monoblock",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1096,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.5,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 1.2,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.12,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kloset Duduk",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 1602000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Hose",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 70000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 2436234.68
+  },
+  {
+   "key": "closet_squat",
+   "name": "Squat WC (kloset jongkok)",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "3.18.3.2 Pemasangan 1 Buah Closet Jongkok",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1099,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.5,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.5,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.05,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0167,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kloset Jongkok",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 660000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "3.6.1.2 Pemasangan 1 m2 Dinding Bata Merah Tebal 1 Batu dengan Mortar Tipe S,fc 12, 5 MPa (Setara Campuran 1SP : 3PP)",
+     "unit": "M2",
+     "coef": 0.036,
+     "price": 371161.9,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1065183.67
+  },
+  {
+   "key": "closet_disabled",
+   "name": "Accessible WC",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "D.3.18.3.1 Pemasangan 1 Buah Closet Duduk Difabel",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "jakarta_hsp_id": 4335,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 1.2,
+     "price": 231637.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.12,
+     "price": 251732.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 266344.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.5,
+     "price": 220188.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kloset Duduk Difabel",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 5085000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Hose",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 83500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 6437033.0
+  },
+  {
+   "key": "washbasin",
+   "name": "Washbasin (wastafel)",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "3.18.1.1 Pemasangan 1 Buah Wastafel",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2040,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.0,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.5,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.05,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0167,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Wastafel",
+     "unit": "Unit",
+     "coef": 1.2,
+     "price": 2450000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 6.0,
+     "price": 1500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.01,
+     "price": 500000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 3819704.69
+  },
+  {
+   "key": "urinal",
+   "name": "Urinal",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "3.18.4.1 Pemasangan 1 Buah Urinoir",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1559,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.0,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 1.0,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0333,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Urinoir",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 2169000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 6.0,
+     "price": 1500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.01,
+     "price": 500000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 3092053.25
+  },
+  {
+   "key": "shower_set",
+   "name": "Shower set",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "3.18.6.9 Pemasangan 1 Buah Shower Set",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2066,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.4,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0133,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Shower Set",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 6999000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Seal tape",
+     "unit": "Buah",
+     "coef": 0.025,
+     "price": 5000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 8178834.72
+  },
+  {
+   "key": "tap",
+   "name": "Tap 1/2 inch",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "3.18.6.2.1 Pemasangan 1 buah Kran Diameter 1/2 inch",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1876,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.4,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0133,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kran Air dia 1/2 inch",
+     "unit": "Buah",
+     "coef": 1.0,
+     "price": 100000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Seal tape",
+     "unit": "Buah",
+     "coef": 0.025,
+     "price": 5000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 244984.72
+  },
+  {
+   "key": "tap_kitchen",
+   "name": "Kitchen sink tap",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "D.3.18.6.2.2 Pemasangan 1 buah Kran Kitchen Sink",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "jakarta_hsp_id": 3764,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 220188.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.4,
+     "price": 231637.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04,
+     "price": 251732.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0133,
+     "price": 266344.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Keran Sink",
+     "unit": "Buah",
+     "coef": 1.0,
+     "price": 365500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Seal tape",
+     "unit": "Buah",
+     "coef": 0.025,
+     "price": 13600.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 545454.59
+  },
+  {
+   "key": "floor_drain",
+   "name": "Floor drain 2 inch",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "D.3.18.6.1 Pemasangan 1 Buah Floor Drain 2 inci (50 mm)",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "jakarta_hsp_id": 3090,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 231637.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 251732.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 220188.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033,
+     "price": 266344.0,
+     "price_source": "KEPGUB No. 832 Tahun 2024"
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Floor Drain 2 inci (50 mm)",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 224000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 290676.11
+  },
+  {
+   "key": "light_point",
+   "name": "Lighting point: NYM 3x2.5 cable and conduit",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "titik",
+   "title": "5.3.1.1 Pemasangan 1 titik Instalasi Lampu",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1674,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.318,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.032,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.19,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kabel NYM 3 x 2,5 mm2 dan aksesoris",
+     "unit": "M",
+     "coef": 8.8,
+     "price": 24500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Conduit PVC HI (High Impact) 20 mm dan aksesoris",
+     "unit": "M",
+     "coef": 8.8,
+     "price": 6600.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": null,
+     "unit": "Buah",
+     "coef": 1.0,
+     "price": 7900.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Socket Conduit dia.20 mm",
+     "unit": "Buah",
+     "coef": 5.0,
+     "price": 650.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Klem 20 mm",
+     "unit": "Buah",
+     "coef": 10.0,
+     "price": 840.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Set Fisher S6 + sekrup",
+     "unit": "Buah",
+     "coef": 15.0,
+     "price": 200.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Conduit 20 mm",
+     "unit": "M",
+     "coef": 1.0,
+     "price": 5700.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Elbow /siku pipa/ knee/ bend",
+     "unit": "Buah",
+     "coef": 4.0,
+     "price": 6950.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Isolasi Listrik",
+     "unit": "M",
+     "coef": 0.5,
+     "price": 650.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lasdop / wire nut / konektor kabel ulir",
+     "unit": "Buah",
+     "coef": 4.0,
+     "price": 350.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 536460.49
+  },
+  {
+   "key": "socket_point",
+   "name": "Socket point: NYM 3x2.5 cable and conduit",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "titik",
+   "title": "5.1.5.13 Pemasangan 1 titik Instalasi Stop Kontak",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 1663,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.342,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.034,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.205,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kabel NYM 3 x 2,5 mm2 dan aksesoris",
+     "unit": "M",
+     "coef": 14.3,
+     "price": 24500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Conduit PVC HI (High Impact) 20 mm dan aksesoris",
+     "unit": "M",
+     "coef": 14.3,
+     "price": 6600.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "T Dus",
+     "unit": "Buah",
+     "coef": 1.0,
+     "price": 6400.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Socket Conduit dia.20 mm",
+     "unit": "Buah",
+     "coef": 8.0,
+     "price": 650.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Klem 20 mm",
+     "unit": "Buah",
+     "coef": 8.0,
+     "price": 840.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Elbow /siku pipa/ knee/ bend",
+     "unit": "Buah",
+     "coef": 4.0,
+     "price": 6950.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Isolasi Listrik",
+     "unit": "M",
+     "coef": 0.5,
+     "price": 650.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lasdop / wire nut / konektor kabel ulir",
+     "unit": "Buah",
+     "coef": 4.0,
+     "price": 350.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Set Fisher S6 + sekrup",
+     "unit": "Buah",
+     "coef": 12.0,
+     "price": 200.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 736012.57
+  },
+  {
+   "key": "switch_single",
+   "name": "Single switch",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.5.1 Pemasangan 1 Unit Saklar Tunggal",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1635,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.052,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Saklar tunggal / 1 gang dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 15000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 44343.69
+  },
+  {
+   "key": "switch_double",
+   "name": "Double switch",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.5.2 Pemasangan 1 Unit Saklar Ganda",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1636,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.052,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Saklar ganda / 2 gang / seri dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 25000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 56993.69
+  },
+  {
+   "key": "socket",
+   "name": "Socket outlet 1P 10A",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.5.9 Pemasangan 1 Unit Stop Kontak 1 P, 10 A, 200 W",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1638,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.044,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.026,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Stop Kontak 1 P, 10 A, 200 W dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 20000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 46414.73
+  },
+  {
+   "key": "socket_ac",
+   "name": "AC socket outlet",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.5.12 Pemasangan 1 Unit Stop Kontak AC",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1658,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.038,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.064,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Stop kontak AC dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 95500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 151796.45
+  },
+  {
+   "key": "mcb_box",
+   "name": "MCB box",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.2.24 Pemasangan 1 Unit MCB Box",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2297,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.105,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.175,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.017,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "MCB Box dan akseoris",
+     "unit": "Unit",
+     "coef": 1.03,
+     "price": 223000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 349515.48
+  },
+  {
+   "key": "panel_floor",
+   "name": "Floor panel, wall-mounted 600 x 400 x 200 mm",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.2.8 Pemasangan 1 Unit Panel Lantai Wall Mounted (600 x 400 x 200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5359,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.938,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.094,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.031,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.562,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Panel Lantai Wall Mounted Uk. 600x400x200mm (termasuk material bantu / aksesoris)",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 1500000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 2182880.94
+  },
+  {
+   "key": "panel_sdp",
+   "name": "Sub-distribution panel (SDP), wall-mounted",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.2.6 Pemasangan 1 Unit Sub Distribution Panel (SDP) Wall Mounted",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5357,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.895,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 1.495,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.15,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.05,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "SDP (Sub Distribution Panel) Wall Mounted (termasuk material bantu/aksesoris)",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 21850000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 25857330.44
+  },
+  {
+   "key": "panel_mdp",
+   "name": "Main distribution panel (MDP), wall-mounted",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.1.2.4 Pemasangan 1 Unit Main Distribution Panel (MDP) Wall Mounted",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5336,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.167,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 1.948,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.195,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.065,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Main Distribution Panel (MDP) Wall Mounted (termasuk material bantu / aksesoris)",
+     "unit": "Unit",
+     "coef": 1.0,
+     "price": 55500000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 64776004.79
+  },
+  {
+   "key": "downlight",
+   "name": "LED downlight 5 inch 12 W",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.3.1.50 Pemasangan 1 Unit Downlight 5 Inch 12 Watt LED",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2351,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.107,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.064,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Downlight 5 Inch 12 Watt LED dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 86840.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 162286.94
+  },
+  {
+   "key": "batten",
+   "name": "LED batten 1 x 24 W",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.3.1.14 Pemasangan 1 Unit Lampu TLED 1 x 24 Watt 2.100 Lumen (Balk)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5475,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.114,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.191,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.019,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu TLED 1 x 24 Watt 2100 Lumen (Dust Proof)",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 71900.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 183932.18
+  },
+  {
+   "key": "batten_2x",
+   "name": "LED batten 2 x 24 W",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.3.1.16 Pemasangan 1 Unit Lampu TLED 2 x 24 Watt 2.100 Lumen (Balk)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5882,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.167,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.278,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.028,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu TLED 2 x 24 Watt 2.100 Lumen (Balk) dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 300000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 515302.38
+  },
+  {
+   "key": "spotlight",
+   "name": "LED spotlight 9 W",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.3.1.53 Pemasangan 1 Unit Lampu Sorot LED 9 Watt",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 6175,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.064,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.107,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu Sorot (flood light)  LED 9 Watt dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 188000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 290254.34
+  },
+  {
+   "key": "garden_light",
+   "name": "Garden light 25 W with 1 m post",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "buah",
+   "title": "5.3.1.20 Pemasangan 1 Unit Lampu Taman 25 Watt + Tiang 1 M",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 3137,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.255,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.425,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.043,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.014,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu Taman 25 Watt + Tiang 1 M",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 837900.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1267609.83
+  },
+  {
+   "key": "exit_light",
+   "name": "LED exit sign with battery",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.3.1.12 Pemasangan 1 Unit Lampu Eksit LED 3 Watt c/w Battery",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2480,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.127,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.076,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu Eksit LED 3 Watt c/w Battery dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1,
+     "price": 110000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 201139.73
+  },
+  {
+   "key": "sprinkler_pendant",
+   "name": "Sprinkler head, pendant",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.6.2.1 Pemasangan 1 Unit Sprinkler Head Pendant",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2359,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.052,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.087,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Sprinkler Head Pendant dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 95000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 160480.3
+  },
+  {
+   "key": "sprinkler_upright",
+   "name": "Sprinkler head, upright",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.6.2.2 Pemasangan 1 Unit Sprinkler Head Upright",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2360,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.052,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.087,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Sprinkler Head Upright dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 86100.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 149221.8
+  },
+  {
+   "key": "smoke_detector",
+   "name": "Smoke detector, conventional",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.4.1.10 Pemasangan 1 Unit Smoke Detector Konvensional",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 4155,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.095,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.159,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.016,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Smoke Detector Konvensional dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.05,
+     "price": 238000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 364869.21
+  },
+  {
+   "key": "detector_point",
+   "name": "Detector installation point, conventional",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "titik",
+   "title": "5.4.1.19 Pemasangan 1 titik Instalasi Detector Konvensional Per Titik",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2327,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.19,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.318,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.032,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kabel NYA 2 x 1,5  mm2 dan aksesoris",
+     "unit": "M",
+     "coef": 8.8,
+     "price": 3266.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC conduit dia 20 mm dan aksesoris",
+     "unit": "M",
+     "coef": 8.8,
+     "price": 4700.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": null,
+     "unit": "Buah",
+     "coef": 1.0,
+     "price": 7900.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Socket Conduit dia.20 mm",
+     "unit": "Buah",
+     "coef": 5.0,
+     "price": 650.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Klem 20 mm",
+     "unit": "Buah",
+     "coef": 10.0,
+     "price": 840.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Conduit 20 mm",
+     "unit": "Buah",
+     "coef": 1.0,
+     "price": 47000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Set Fisher S6 + sekrup",
+     "unit": "Buah",
+     "coef": 15.0,
+     "price": 200.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 315885.66
+  },
+  {
+   "key": "hydrant_box",
+   "name": "Indoor hydrant box",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.6.2.4 Pemasangan 1 Unit Indoor Hydrant Box (IHB)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2376,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.269,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 2.119,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.212,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.071,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Indoor Hydrant Box dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 5944400.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 8499174.79
+  },
+  {
+   "key": "exhaust_fan",
+   "name": "Exhaust (propeller) fan 75 CFM",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.5.2.16 Pemasangan 1 Unit Propeller Fan ; 75 CFM",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5804,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.381,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.636,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.064,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.021,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Propeller Fan, 75 CFM dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 373000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 782364.23
+  },
+  {
+   "key": "grille",
+   "name": "Exhaust grille 200 x 200 mm",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.5.2.32 Pemasangan 1 Unit Exhaust Grille 200 x 200 mm",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 3674,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.064,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.107,
+     "price": 251732.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Exhaust Grille, 200 x 200 mm dan aksesori",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 159600.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 254328.34
+  },
+  {
+   "key": "diffuser",
+   "name": "Box diffuser 250 x 250 mm",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "5.5.5.1 Pemasangan 1 Unit Box Diffuser 250 x 250 mm",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 6355,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.09,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.151,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.015,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Box Diffuser 250 x 250 mm dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1,
+     "price": 300000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 451204.91
+  },
+  {
+   "key": "ac_split_05",
+   "name": "Split AC 1/2 PK, installed",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "Split AC 1/2 PK, installed",
+   "reference": "Market estimate, retail listings Jun-Oct 2026 (unit + installation); not AHSP",
+   "jakarta_hsp_id": null,
+   "components": [
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Split AC 1/2 PK",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 3000000.0,
+     "price_source": "market"
+    },
+    {
+     "kind": "labour",
+     "code": null,
+     "name": "Installation incl. ~3 m piping and cable",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 900000.0,
+     "price_source": "market"
+    }
+   ],
+   "unit_price": 3900000.0
+  },
+  {
+   "key": "ac_split_10",
+   "name": "Split AC 1 PK, installed",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "Split AC 1 PK, installed",
+   "reference": "Market estimate, retail listings Jun-Oct 2026 (unit + installation); not AHSP",
+   "jakarta_hsp_id": null,
+   "components": [
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Split AC 1 PK",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 4000000.0,
+     "price_source": "market"
+    },
+    {
+     "kind": "labour",
+     "code": null,
+     "name": "Installation incl. ~3 m piping and cable",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 900000.0,
+     "price_source": "market"
+    }
+   ],
+   "unit_price": 4900000.0
+  },
+  {
+   "key": "ac_split_15",
+   "name": "Split AC 1.5 PK, installed",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "Split AC 1.5 PK, installed",
+   "reference": "Market estimate, retail listings Jun-Oct 2026 (unit + installation); not AHSP",
+   "jakarta_hsp_id": null,
+   "components": [
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Split AC 1.5 PK",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 5000000.0,
+     "price_source": "market"
+    },
+    {
+     "kind": "labour",
+     "code": null,
+     "name": "Installation incl. ~3 m piping and cable",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 1000000.0,
+     "price_source": "market"
+    }
+   ],
+   "unit_price": 6000000.0
+  },
+  {
+   "key": "ac_split_20",
+   "name": "Split AC 2 PK, installed",
+   "element": "mep",
+   "quantity": "mep",
+   "unit": "unit",
+   "title": "Split AC 2 PK, installed",
+   "reference": "Market estimate, retail listings Jun-Oct 2026 (unit + installation); not AHSP",
+   "jakarta_hsp_id": null,
+   "components": [
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Split AC 2 PK",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 7200000.0,
+     "price_source": "market"
+    },
+    {
+     "kind": "labour",
+     "code": null,
+     "name": "Installation incl. ~3 m piping and cable",
+     "unit": "unit",
+     "coef": 1.0,
+     "price": 1100000.0,
+     "price_source": "market"
+    }
+   ],
+   "unit_price": 8300000.0
   }
  ]
 }

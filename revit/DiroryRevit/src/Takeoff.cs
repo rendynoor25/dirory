@@ -9,6 +9,8 @@
 //   skirting                  sum of room perimeters, when rooms are placed
 //   structure                 concrete, formwork, rebar and steel per member
 //                             (StructureTakeoff.cs)
+//   mep                       pipe and duct runs, fixtures and devices
+//                             (MepTakeoff.cs)
 // A type is treated as tiled when its name or any layer material says so.
 // A wall with concrete in it is marked core = "concrete": rab.js prices its
 // finishes but not as brick or block masonry, since the structure section
@@ -33,6 +35,7 @@ namespace Dirory.Revit
         {
             var rows = new Dictionary<string, Dictionary<string, object>>();
             var (structure, concreteWalls) = StructureTakeoff.Run(doc);
+            var mep = MepTakeoff.Run(doc);
 
             void Add(string element, string material, string category, double areaM2, string core = "")
             {
@@ -108,6 +111,9 @@ namespace Dirory.Revit
                 structure.Count > 0
                     ? "Structure: concrete volumes from concrete materials; formwork from the vertical faces, plus soffits of beams and suspended slabs; rebar weight from modelled rebar, otherwise estimated per m3 of concrete."
                     : "No structural members found: model foundations, columns, beams and slabs with concrete materials to price the structure.",
+                mep.Count > 0
+                    ? "MEP: pipe lengths per system and size (fittings are included in the pipe rates), duct surface areas, and fixtures and devices counted per type."
+                    : "No MEP elements found.",
                 "An estimate from the model: check it before a tender.",
             };
             return new Dictionary<string, object>
@@ -117,6 +123,7 @@ namespace Dirory.Revit
                 ["openings"] = openings.Values.OrderBy(o => (string)o["kind"]).ThenBy(o => (string)o["name"]).ToList(),
                 ["floor_perimeter_m"] = Math.Round(perimeter, 2),
                 ["structure"] = structure,
+                ["mep"] = mep,
                 ["components_skipped"] = 0,
                 ["notes"] = notes,
             };

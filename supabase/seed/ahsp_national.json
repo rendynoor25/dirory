@@ -1623,6 +1623,4103 @@
      "coef": 0.0013
     }
    ]
+  },
+  {
+   "key": "pipe_pvc_aw_15",
+   "name": "PVC AW pipe (clean water) DN 15",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.1 Pemasangan 1 m pipa PVC AW, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.017
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.028
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1/2\" (15 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_20",
+   "name": "PVC AW pipe (clean water) DN 20",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.2 Pemasangan 1 m pipa PVC AW, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.024
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 3/4\" (20 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_25",
+   "name": "PVC AW pipe (clean water) DN 25",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.3 Pemasangan 1 m pipa PVC AW, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.052
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1\" (25 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_32",
+   "name": "PVC AW pipe (clean water) DN 32",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.4 Pemasangan 1 m pipa PVC AW, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.068
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.007
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1- 1/4\" (32 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_40",
+   "name": "PVC AW pipe (clean water) DN 40",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.5 Pemasangan 1 m pipa PVC AW, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.048
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.08
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.008
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 1- 1/2\" (40 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_50",
+   "name": "PVC AW pipe (clean water) DN 50",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.6 Pemasangan 1 m pipa PVC AW, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.104
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.063
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 2\" (50 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_65",
+   "name": "PVC AW pipe (clean water) DN 65",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.7 Pemasangan 1 m pipa PVC AW, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.077
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.129
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 2- 1/2\" (65 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_80",
+   "name": "PVC AW pipe (clean water) DN 80",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.8 Pemasangan 1 m pipa PVC AW, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.094
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.157
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.016
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW dia 3 inci",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_100",
+   "name": "PVC AW pipe (clean water) DN 100",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.9 Pemasangan 1 m pipa PVC AW, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.123
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.205
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.021
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "PIPA PVC AW ; DN. 4\" (100 mm) dan aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_125",
+   "name": "PVC AW pipe (clean water) DN 125",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.10 Pemasangan 1 m pipa PVC AW, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.152
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.254
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.025
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.008
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW ; DN. 5\" (125 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_150",
+   "name": "PVC AW pipe (clean water) DN 150",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.11 Pemasangan 1 m pipa PVC AW, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.183
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.306
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW ; DN. 6\" (150 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_aw_200",
+   "name": "PVC AW pipe (clean water) DN 200",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.12 Pemasangan 1 m pipa PVC AW, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.246
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.411
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.041
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.012
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC AW ; DN. 8\" (200 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_32",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 32",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.17 Pemasangan 1 m pipa PVC D, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.067
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.007
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 1-1/4\" (32 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_40",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 40",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.18 Pemasangan 1 m pipa PVC D, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.048
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.08
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.008
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D dia 1 1/2 inci",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_50",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 50",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.19 Pemasangan 1 m pipa PVC D, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.063
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.104
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_65",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 65",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.20 Pemasangan 1 m pipa PVC D, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.077
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.129
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 2-1/2\" (65 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_80",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 80",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.21 Pemasangan 1 m pipa PVC D, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.094
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.157
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.016
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_100",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 100",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.22 Pemasangan 1 m pipa PVC D, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.123
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.205
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.021
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 4\" (100 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_125",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 125",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.23 Pemasangan 1 m pipa PVC D, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.152
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.254
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.025
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.008
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 5\" (125 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_150",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 150",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.24 Pemasangan 1 m pipa PVC D, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.183
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.306
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 6\" (150 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_pvc_d_200",
+   "name": "PVC D pipe (waste, vent, rainwater) DN 200",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.1.25 Pemasangan 1 m pipa PVC D, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.012
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.246
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.411
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.041
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC D ; DN. 8\" (200 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.45
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_15",
+   "name": "PPR PN10 pipe DN 15",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.1 Pemasangan 1 m pipa PPR PN 10, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.021
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.035
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1/2\" (15 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_20",
+   "name": "PPR PN10 pipe DN 20",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.2 Pemasangan 1 m pipa PPR PN 10, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.052
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 3/4\" (20 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_25",
+   "name": "PPR PN10 pipe DN 25",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.3 Pemasangan 1 m pipa PPR PN 10, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.044
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.073
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.007
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1\" (25 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_32",
+   "name": "PPR PN10 pipe DN 32",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.4 Pemasangan 1 m pipa PPR PN 10, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.054
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.09
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1-1/4\" (32 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_40",
+   "name": "PPR PN10 pipe DN 40",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.5 Pemasangan 1 m pipa PPR PN 10, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.065
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.108
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 1-1/2\" (40 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_50",
+   "name": "PPR PN10 pipe DN 50",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.6 Pemasangan 1 m pipa PPR PN 10, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.077
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.129
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_65",
+   "name": "PPR PN10 pipe DN 65",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.7 Pemasangan 1 m pipa PPR PN 10, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.108
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.181
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.018
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 2-1/2\" (65 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_80",
+   "name": "PPR PN10 pipe DN 80",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.8 Pemasangan 1 m pipa PPR PN 10, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.216
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.022
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.129
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_ppr_100",
+   "name": "PPR PN10 pipe DN 100",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.3.9 Pemasangan 1 m pipa PPR PN 10, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.289
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.029
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.173
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PPR PN 10 ; DN. 4\" (100 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.65
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_15",
+   "name": "Galvanised steel pipe SCH 40 DN 15",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.17 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.035
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.058
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1/2\" (15 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_20",
+   "name": "Galvanised steel pipe SCH 40 DN 20",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.18 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.052
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.087
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 3/4\" (20 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_25",
+   "name": "Galvanised steel pipe SCH 40 DN 25",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.19 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.069
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.115
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1\" (25 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_32",
+   "name": "Galvanised steel pipe SCH 40 DN 32",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.20 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.085
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.143
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.014
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1-1/4\" (32 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_40",
+   "name": "Galvanised steel pipe SCH 40 DN 40",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.21 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.104
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.174
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.017
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 1-1/2\" (40 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_50",
+   "name": "Galvanised steel pipe SCH 40 DN 50",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.22 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.138
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.23
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.023
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.007
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_65",
+   "name": "Galvanised steel pipe SCH 40 DN 65",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.23 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.171
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.285
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.029
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 2-1/2\" (65 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_80",
+   "name": "Galvanised steel pipe SCH 40 DN 80",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.24 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 3\" (80 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.238
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.397
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.012
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_100",
+   "name": "Galvanised steel pipe SCH 40 DN 100",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.25 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.317
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.529
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.053
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.016
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 4\" (100 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_125",
+   "name": "Galvanised steel pipe SCH 40 DN 125",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.26 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.394
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.658
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.066
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.02
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 5\" (125 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_150",
+   "name": "Galvanised steel pipe SCH 40 DN 150",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.27 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.473
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.79
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.079
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.024
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 6\" (150 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_gi_200",
+   "name": "Galvanised steel pipe SCH 40 DN 200",
+   "element": "mep",
+   "unit": "m",
+   "title": "6.4.2.28 Pemasangan 1 m Pipa Galvanis SCH 40, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.629
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 1.051
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.105
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.032
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa galvanis SCH 40 ; DN. 8\" (200 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 1.5
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_15",
+   "name": "HDPE pipe DN 15",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.17 Pemasangan 1 m Pipa HDPE, DN. 1/2\" (15 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.022
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1/2\" (15 mm)",
+     "unit": "M",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_20",
+   "name": "HDPE pipe DN 20",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.18 Pemasangan 1 m Pipa HDPE, DN. 3/4\" (20 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.022
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 3/4\" (20 mm)",
+     "unit": "M",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_25",
+   "name": "HDPE pipe DN 25",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.19 Pemasangan 1 m Pipa HDPE, DN. 1\" (25 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.028
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.014
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1\" (25 mm)",
+     "unit": "M",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_32",
+   "name": "HDPE pipe DN 32",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.20 Pemasangan 1 m Pipa HDPE, DN. 1-1/4\" (32 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.028
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.014
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1-1/4\" (32 mm)",
+     "unit": "M",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_40",
+   "name": "HDPE pipe DN 40",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.21 Pemasangan 1 m Pipa HDPE, DN. 1-1/2\" (40 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.014
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.028
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 1-1/2\" (40 mm)",
+     "unit": "M",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_50",
+   "name": "HDPE pipe DN 50",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.22 Pemasangan 1 m Pipa HDPE, DN. 2\" (50 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.035
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.017
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 2\" (50 mm)",
+     "unit": "M",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_65",
+   "name": "HDPE pipe DN 65",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.1 Pemasangan 1 m Pipa HDPE, DN. 2-1/2\" (65 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.035
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.017
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 2-1/2\" (65 mm)",
+     "unit": "M",
+     "coef": 1.0
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_80",
+   "name": "HDPE pipe DN 80",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.23 Pemasangan 1 m Pipa HDPE, DN. 3 (75 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.037
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.018
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 3\" (75 mm)",
+     "unit": "M",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_100",
+   "name": "HDPE pipe DN 100",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.2 Pemasangan 1 m Pipa HDPE, DN. 4\" (100 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.02
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 4\" (100 mm)",
+     "unit": "M",
+     "coef": 1.0
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_125",
+   "name": "HDPE pipe DN 125",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.3 Pemasangan 1 m Pipa HDPE, DN. 5\" (125 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.045
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.023
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 5\" (125 mm)",
+     "unit": "M",
+     "coef": 1.0
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_150",
+   "name": "HDPE pipe DN 150",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.4 Pemasangan 1 m Pipa HDPE, DN. 6\" (150 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.062
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 6\" (150 mm)",
+     "unit": "M",
+     "coef": 1.0
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019
+    }
+   ]
+  },
+  {
+   "key": "pipe_hdpe_200",
+   "name": "HDPE pipe DN 200",
+   "element": "mep",
+   "unit": "m",
+   "title": "9.3.1.5 Pemasangan 1 m Pipa HDPE, DN. 8\" (200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.102
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.051
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa HDPE, DN. 8\" (200 mm)",
+     "unit": "M",
+     "coef": 1.0
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa Tripot /Tackel",
+     "unit": "Hari",
+     "coef": 0.019
+    }
+   ]
+  },
+  {
+   "key": "closet_seat",
+   "name": "Close-coupled / monoblock WC",
+   "element": "mep",
+   "unit": "unit",
+   "title": "3.18.3.1 Pemasangan 1 Buah Closet Duduk/Monoblock",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.5
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 1.2
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.12
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kloset Duduk",
+     "unit": "Unit",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Hose",
+     "unit": "Unit",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "closet_squat",
+   "name": "Squat WC (kloset jongkok)",
+   "element": "mep",
+   "unit": "unit",
+   "title": "3.18.3.2 Pemasangan 1 Buah Closet Jongkok",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.5
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.5
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.05
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0167
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kloset Jongkok",
+     "unit": "Unit",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "3.6.1.2 Pemasangan 1 m2 Dinding Bata Merah Tebal 1 Batu dengan Mortar Tipe S,fc 12, 5 MPa (Setara Campuran 1SP : 3PP)",
+     "unit": "M2",
+     "coef": 0.036
+    }
+   ]
+  },
+  {
+   "key": "closet_disabled",
+   "name": "Accessible WC",
+   "element": "mep",
+   "unit": "buah",
+   "title": "D.3.18.3.1 Pemasangan 1 Buah Closet Duduk Difabel",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 1.2
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.12
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.5
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kloset Duduk Difabel",
+     "unit": "Unit",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Hose",
+     "unit": "Unit",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "washbasin",
+   "name": "Washbasin (wastafel)",
+   "element": "mep",
+   "unit": "buah",
+   "title": "3.18.1.1 Pemasangan 1 Buah Wastafel",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.0
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.5
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.05
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0167
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Wastafel",
+     "unit": "Unit",
+     "coef": 1.2
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 6.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.01
+    }
+   ]
+  },
+  {
+   "key": "urinal",
+   "name": "Urinal",
+   "element": "mep",
+   "unit": "buah",
+   "title": "3.18.4.1 Pemasangan 1 Buah Urinoir",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.0
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 1.0
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.1
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0333
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Urinoir",
+     "unit": "Unit",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 6.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.01
+    }
+   ]
+  },
+  {
+   "key": "shower_set",
+   "name": "Shower set",
+   "element": "mep",
+   "unit": "buah",
+   "title": "3.18.6.9 Pemasangan 1 Buah Shower Set",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.4
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0133
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Shower Set",
+     "unit": "Unit",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Seal tape",
+     "unit": "Buah",
+     "coef": 0.025
+    }
+   ]
+  },
+  {
+   "key": "tap",
+   "name": "Tap 1/2 inch",
+   "element": "mep",
+   "unit": "buah",
+   "title": "3.18.6.2.1 Pemasangan 1 buah Kran Diameter 1/2 inch",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.4
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0133
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kran Air dia 1/2 inch",
+     "unit": "Buah",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Seal tape",
+     "unit": "Buah",
+     "coef": 0.025
+    }
+   ]
+  },
+  {
+   "key": "tap_kitchen",
+   "name": "Kitchen sink tap",
+   "element": "mep",
+   "unit": "buah",
+   "title": "D.3.18.6.2.2 Pemasangan 1 buah Kran Kitchen Sink",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.4
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.04
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0133
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Keran Sink",
+     "unit": "Buah",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Seal tape",
+     "unit": "Buah",
+     "coef": 0.025
+    }
+   ]
+  },
+  {
+   "key": "floor_drain",
+   "name": "Floor drain 2 inch",
+   "element": "mep",
+   "unit": "buah",
+   "title": "D.3.18.6.1 Pemasangan 1 Buah Floor Drain 2 inci (50 mm)",
+   "reference": "SE Dirjen Binkon No. 30/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.1
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Floor Drain 2 inci (50 mm)",
+     "unit": "Unit",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "light_point",
+   "name": "Lighting point: NYM 3x2.5 cable and conduit",
+   "element": "mep",
+   "unit": "titik",
+   "title": "5.3.1.1 Pemasangan 1 titik Instalasi Lampu",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.318
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.032
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.19
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kabel NYM 3 x 2,5 mm2 dan aksesoris",
+     "unit": "M",
+     "coef": 8.8
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Conduit PVC HI (High Impact) 20 mm dan aksesoris",
+     "unit": "M",
+     "coef": 8.8
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": null,
+     "unit": "Buah",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Socket Conduit dia.20 mm",
+     "unit": "Buah",
+     "coef": 5.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Klem 20 mm",
+     "unit": "Buah",
+     "coef": 10.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Set Fisher S6 + sekrup",
+     "unit": "Buah",
+     "coef": 15.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Conduit 20 mm",
+     "unit": "M",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Elbow /siku pipa/ knee/ bend",
+     "unit": "Buah",
+     "coef": 4.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Isolasi Listrik",
+     "unit": "M",
+     "coef": 0.5
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lasdop / wire nut / konektor kabel ulir",
+     "unit": "Buah",
+     "coef": 4.0
+    }
+   ]
+  },
+  {
+   "key": "socket_point",
+   "name": "Socket point: NYM 3x2.5 cable and conduit",
+   "element": "mep",
+   "unit": "titik",
+   "title": "5.1.5.13 Pemasangan 1 titik Instalasi Stop Kontak",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.342
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.034
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.205
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kabel NYM 3 x 2,5 mm2 dan aksesoris",
+     "unit": "M",
+     "coef": 14.3
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Conduit PVC HI (High Impact) 20 mm dan aksesoris",
+     "unit": "M",
+     "coef": 14.3
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "T Dus",
+     "unit": "Buah",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Socket Conduit dia.20 mm",
+     "unit": "Buah",
+     "coef": 8.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Klem 20 mm",
+     "unit": "Buah",
+     "coef": 8.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Elbow /siku pipa/ knee/ bend",
+     "unit": "Buah",
+     "coef": 4.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Isolasi Listrik",
+     "unit": "M",
+     "coef": 0.5
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lasdop / wire nut / konektor kabel ulir",
+     "unit": "Buah",
+     "coef": 4.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Set Fisher S6 + sekrup",
+     "unit": "Buah",
+     "coef": 12.0
+    }
+   ]
+  },
+  {
+   "key": "switch_single",
+   "name": "Single switch",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.5.1 Pemasangan 1 Unit Saklar Tunggal",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.052
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Saklar tunggal / 1 gang dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "switch_double",
+   "name": "Double switch",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.5.2 Pemasangan 1 Unit Saklar Ganda",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.052
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Saklar ganda / 2 gang / seri dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "socket",
+   "name": "Socket outlet 1P 10A",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.5.9 Pemasangan 1 Unit Stop Kontak 1 P, 10 A, 200 W",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.044
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.001
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.026
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Stop Kontak 1 P, 10 A, 200 W dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "socket_ac",
+   "name": "AC socket outlet",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.5.12 Pemasangan 1 Unit Stop Kontak AC",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.038
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.064
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Stop kontak AC dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "mcb_box",
+   "name": "MCB box",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.2.24 Pemasangan 1 Unit MCB Box",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.105
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.175
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.017
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "MCB Box dan akseoris",
+     "unit": "Unit",
+     "coef": 1.03
+    }
+   ]
+  },
+  {
+   "key": "panel_floor",
+   "name": "Floor panel, wall-mounted 600 x 400 x 200 mm",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.2.8 Pemasangan 1 Unit Panel Lantai Wall Mounted (600 x 400 x 200 mm)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.938
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.094
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.031
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.562
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Panel Lantai Wall Mounted Uk. 600x400x200mm (termasuk material bantu / aksesoris)",
+     "unit": "Unit",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "panel_sdp",
+   "name": "Sub-distribution panel (SDP), wall-mounted",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.2.6 Pemasangan 1 Unit Sub Distribution Panel (SDP) Wall Mounted",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.895
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 1.495
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.15
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.05
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "SDP (Sub Distribution Panel) Wall Mounted (termasuk material bantu/aksesoris)",
+     "unit": "Unit",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "panel_mdp",
+   "name": "Main distribution panel (MDP), wall-mounted",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.1.2.4 Pemasangan 1 Unit Main Distribution Panel (MDP) Wall Mounted",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.167
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 1.948
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.195
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.065
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Main Distribution Panel (MDP) Wall Mounted (termasuk material bantu / aksesoris)",
+     "unit": "Unit",
+     "coef": 1.0
+    }
+   ]
+  },
+  {
+   "key": "downlight",
+   "name": "LED downlight 5 inch 12 W",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.3.1.50 Pemasangan 1 Unit Downlight 5 Inch 12 Watt LED",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.107
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.064
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Downlight 5 Inch 12 Watt LED dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "batten",
+   "name": "LED batten 1 x 24 W",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.3.1.14 Pemasangan 1 Unit Lampu TLED 1 x 24 Watt 2.100 Lumen (Balk)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.006
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.114
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.191
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.019
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu TLED 1 x 24 Watt 2100 Lumen (Dust Proof)",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "batten_2x",
+   "name": "LED batten 2 x 24 W",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.3.1.16 Pemasangan 1 Unit Lampu TLED 2 x 24 Watt 2.100 Lumen (Balk)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.167
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.278
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.028
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu TLED 2 x 24 Watt 2.100 Lumen (Balk) dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "spotlight",
+   "name": "LED spotlight 9 W",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.3.1.53 Pemasangan 1 Unit Lampu Sorot LED 9 Watt",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.064
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.107
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu Sorot (flood light)  LED 9 Watt dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "garden_light",
+   "name": "Garden light 25 W with 1 m post",
+   "element": "mep",
+   "unit": "buah",
+   "title": "5.3.1.20 Pemasangan 1 Unit Lampu Taman 25 Watt + Tiang 1 M",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.255
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.425
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.043
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.014
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu Taman 25 Watt + Tiang 1 M",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "exit_light",
+   "name": "LED exit sign with battery",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.3.1.12 Pemasangan 1 Unit Lampu Eksit LED 3 Watt c/w Battery",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.127
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.013
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.076
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lampu Eksit LED 3 Watt c/w Battery dan aksesoris",
+     "unit": "Buah",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "sprinkler_pendant",
+   "name": "Sprinkler head, pendant",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.6.2.1 Pemasangan 1 Unit Sprinkler Head Pendant",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.052
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.087
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Sprinkler Head Pendant dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "sprinkler_upright",
+   "name": "Sprinkler head, upright",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.6.2.2 Pemasangan 1 Unit Sprinkler Head Upright",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.052
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 0.087
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.009
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.003
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Sprinkler Head Upright dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "smoke_detector",
+   "name": "Smoke detector, conventional",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.4.1.10 Pemasangan 1 Unit Smoke Detector Konvensional",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.095
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.159
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.016
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Smoke Detector Konvensional dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.05
+    }
+   ]
+  },
+  {
+   "key": "detector_point",
+   "name": "Detector installation point, conventional",
+   "element": "mep",
+   "unit": "titik",
+   "title": "5.4.1.19 Pemasangan 1 titik Instalasi Detector Konvensional Per Titik",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.19
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.318
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.032
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kabel NYA 2 x 1,5  mm2 dan aksesoris",
+     "unit": "M",
+     "coef": 8.8
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa PVC conduit dia 20 mm dan aksesoris",
+     "unit": "M",
+     "coef": 8.8
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": null,
+     "unit": "Buah",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Socket Conduit dia.20 mm",
+     "unit": "Buah",
+     "coef": 5.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Klem 20 mm",
+     "unit": "Buah",
+     "coef": 10.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Flexible Conduit 20 mm",
+     "unit": "Buah",
+     "coef": 1.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Set Fisher S6 + sekrup",
+     "unit": "Buah",
+     "coef": 15.0
+    }
+   ]
+  },
+  {
+   "key": "hydrant_box",
+   "name": "Indoor hydrant box",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.6.2.4 Pemasangan 1 Unit Indoor Hydrant Box (IHB)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 1.269
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Pipa",
+     "unit": "OH",
+     "coef": 2.119
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.212
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.071
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Indoor Hydrant Box dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "exhaust_fan",
+   "name": "Exhaust (propeller) fan 75 CFM",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.5.2.16 Pemasangan 1 Unit Propeller Fan ; 75 CFM",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.381
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.636
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.064
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.021
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Propeller Fan, 75 CFM dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "grille",
+   "name": "Exhaust grille 200 x 200 mm",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.5.2.32 Pemasangan 1 Unit Exhaust Grille 200 x 200 mm",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.064
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang Listrik",
+     "unit": "OH",
+     "coef": 0.107
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.004
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Exhaust Grille, 200 x 200 mm dan aksesori",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
+  },
+  {
+   "key": "diffuser",
+   "name": "Box diffuser 250 x 250 mm",
+   "element": "mep",
+   "unit": "unit",
+   "title": "5.5.5.1 Pemasangan 1 Unit Box Diffuser 250 x 250 mm",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.09
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.151
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.015
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Box Diffuser 250 x 250 mm dan aksesoris",
+     "unit": "Unit",
+     "coef": 1.1
+    }
+   ]
   }
  ]
 }

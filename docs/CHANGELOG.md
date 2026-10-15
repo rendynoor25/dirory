@@ -1,5 +1,44 @@
 # Changelog
 
+## Unreleased — MEP in the Revit RAB; your own prices on any line
+
+**MEP takeoff (Revit).** `revit/DiroryRevit/src/MepTakeoff.cs` measures pipe
+lengths per system, material and diameter, duct surface areas, cable tray
+lengths, and counts plumbing fixtures, light fittings, switches, sockets,
+panels, mechanical equipment, air terminals, sprinklers and fire alarm devices
+per family and type. They appear in Quantities and in the quantities CSV.
+
+**MEP prices.** 87 AHSP items from Jakarta's list, all on the current
+circulars and matching Jakarta's published totals: PVC AW, PVC D, PPR,
+galvanised and HDPE pipe by diameter; WCs, washbasin, urinal, shower, taps,
+floor drain; lighting and socket points (cable and conduit included),
+switches, sockets, MCB box and panels; downlights, battens, spotlights, garden
+and exit lights; sprinklers, smoke detectors, hydrant box; exhaust fan, grille,
+diffuser. `rab.js` (`mepKey`) matches each Revit row to an item by its names:
+- pipes by material and system (copper or unknown water pipe is priced as PVC
+  AW and the line says what was modelled) and the next priced diameter up;
+  the AHSP pipe rates already include fittings, so fittings are not counted;
+- each light or socket adds one installation point;
+- split AC units by PK, BTU or kW; outdoor units are not priced again.
+
+**Market prices where AHSP has none.** Split AC ½, 1, 1.5 and 2 PK, unit plus
+installation, from retail listings June–October 2026; the RAB marks them as
+market estimates. Ducts, kitchen sinks, pumps and anything else Dirory cannot
+match are listed without a price rather than with a guessed one, highlighted,
+and left out of the total until priced.
+
+**Your own prices.** Every RAB line's unit price is a box: type a quote to
+replace the book price (or to price an unpriced line), clear it to go back.
+Prices are kept by line, so one WC brand can be priced apart from another,
+and stored by the host (SketchUp defaults, the Revit add-in's settings), so
+they survive a restart. The printout and CSV mark them as the architect's.
+
+- **Migration 0041** allows the `mep` element. The Jakarta book is now 118
+  items.
+- Tests: `scripts/test-rab.mjs`, 50 checks. Not yet run on a real Revit MEP
+  model.
+
+
 ## Unreleased — current national AHSP; structure in the Revit RAB
 
 **National AHSP brought up to date.** Permen PUPR 1/2022 was revoked by
