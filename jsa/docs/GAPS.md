@@ -14,6 +14,12 @@ spike to run inside SketchUp.
 
 ### B1. `/catalog` cannot be fetched from a browser with the `apikey` header
 
+> **Resolved 16 Oct 2026.** `catalog/index.ts` now answers the `OPTIONS`
+> preflight like the other functions (fix 1 below), deployed and verified:
+> preflight 200 with `Access-Control-Allow-Headers: … apikey …`, and
+> `GET /catalog` with the key from `Origin: https://app.sketchup.com` returns
+> 200 with every item. The desktop plugin's response is unchanged.
+
 | | |
 |---|---|
 | Evidence | **[live]** — `OPTIONS /catalog` → **405**, every other endpoint → 200 |

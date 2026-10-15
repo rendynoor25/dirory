@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — catalogue reachable from SketchUp for Web / iPad
+
+`/catalog` answered the browser's CORS preflight with 405, so the JavaScript
+(JSA) extension could not load the catalogue (`jsa/docs/GAPS.md` B1). It now
+returns the shared CORS headers for `OPTIONS`, like the other functions.
+Deployed; preflight 200, `GET` with the key from a SketchUp-for-Web origin 200
+with all items, desktop plugin response unchanged (22 keys). The M0 spike is
+re-packed as `dist/dirory-spike-0.0.1.zip` for a run in SketchUp for Web.
+
 ## Unreleased — final privacy policy, download choice, Revit install guide
 
 - **Privacy policy v1.0** (`/privacy`, English and Bahasa Indonesia). The

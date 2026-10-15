@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-import { json, serviceHeaders } from "../_shared/cors.ts";
+import { corsHeaders, json, serviceHeaders } from "../_shared/cors.ts";
 import { resolveServiceKey } from "../_shared/keys.ts";
 
 /**
@@ -34,6 +34,11 @@ import { resolveServiceKey } from "../_shared/keys.ts";
  * purpose - migration 0022 changes both, and they must stay in step.
  */
 Deno.serve(async (req: Request) => {
+  // CORS preflight. A browser sends OPTIONS before any GET carrying the
+  // `apikey` header; answering 405 here made the catalogue unreachable from
+  // SketchUp for Web / iPad (jsa/docs/GAPS.md B1). Same pattern as the other
+  // functions.
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "GET") return json({ error: "method not allowed" }, 405);
 
   const url = new URL(req.url);

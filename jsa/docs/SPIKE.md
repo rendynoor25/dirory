@@ -43,7 +43,7 @@ Upload the zip from `../spike/` via **Extensions → Extension Manager**, then o
 | # | Brief item | Expected | Result | Exact call the spike uses |
 |---|---|---|---|---|
 | 1 | Manifest + window opens, `connect()` works, `platform` read | — | **PENDING** | `SketchUpApi.connect()`, `SketchUpApi.platform` |
-| 2 | `fetch('/catalog')` with the publishable key | **expected to FAIL** (B1) | **PENDING** | `fetch(FN + '/catalog', { headers: { apikey } })` |
+| 2 | `fetch('/catalog')` with the publishable key | expected to PASS (B1 fixed 16 Oct) | **PENDING** | `fetch(FN + '/catalog', { headers: { apikey } })` |
 | 3 | Load one real `.skp` from a signed URL | — | **PENDING** | `op.componentsLoadFromUrl(new Request(url), undefined, { addOperationError: true })` |
 | 4 | Write + read attribute dictionary `Dirory` | — | **PENDING** | `op.entitySetAttribute(model, defId, 'Dirory', k, v)` → `definition.attributes.findDictionary('Dirory')` |
 | 5 | Textured material from a signed URL + set tile size | **size expected to FAIL** (B2) | **PENDING** | `op.createMaterial(name)`, `model.getMaterials()`; then dump `Texture` members |
