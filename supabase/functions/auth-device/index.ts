@@ -5,7 +5,9 @@
 //
 //   POST /auth-device/poll    { device_code, install_id? }
 //     -> { status: "pending" }
-//     -> { status: "approved", token, user: { name, email } }
+//     -> { status: "approved", token, user: { name, email }, consent }
+//        consent: { version, share_usage, share_project, share_search_miss }
+//        or null — the choices made on the download page (UU PDP A3).
 //     -> { status: "expired" | "denied" }
 //
 //   POST /auth-device/revoke  (Authorization: Bearer <token>)
@@ -116,7 +118,7 @@ async function poll(req: Request): Promise<Response> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name")
+    .select("full_name, consent_version, share_usage, share_project, share_search_miss")
     .eq("id", row.profile_id)
     .maybeSingle();
   const { data: user } = await supabase
@@ -130,6 +132,15 @@ async function poll(req: Request): Promise<Response> {
     status: "approved",
     token,
     user: { name: profile?.full_name ?? "", email: user?.email ?? "" },
+    // The plugin adopts these instead of asking again inside SketchUp.
+    consent: profile?.consent_version
+      ? {
+        version: profile.consent_version,
+        share_usage: !!profile.share_usage,
+        share_project: !!profile.share_project,
+        share_search_miss: !!profile.share_search_miss,
+      }
+      : null,
   });
 }
 

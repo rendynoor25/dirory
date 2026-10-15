@@ -7,13 +7,24 @@ OpenCode started this work on 13 Oct and deployed the server half (migrations
 broken: it removed `base_headers` / `request_headers` while twelve calls still
 used them, so every cloud call would have raised. The released 0.9.9 predates it.
 
+**Consent is asked on the download page, not inside SketchUp (A3).**
+A popup after sign-in interrupted work and did not fit the panel. `/download`
+now carries the three choices — "Share usage" and "Also send my project name"
+unchecked, "Report searches that find nothing" checked — next to the privacy
+notice, and records them with `record_my_consent` (migration 0034: writes
+`consent_log` with `source = 'website'` and the profile, for `auth.uid()` only).
+`/api/download/rbz` requires them too. "Change my choices" edits them later
+without downloading again. `auth-device/poll` returns them on approval and the
+plugin adopts them, so a new architect is never asked inside SketchUp.
+
 **Plugin 0.10.0**
-- **A3 consent dialog.** After sign-in the panel asks, with "Share usage" and
-  "Also send my project name" unchecked and "Report searches that find nothing"
-  checked. Nothing is shared until it is answered (`Cloud.consent_answered?`
-  gates `share_usage?`), which also resets everyone upgrading from a version
-  where usage sharing was on by default. "Later" shares nothing and asks again
-  next session. `CONSENT_VERSION` re-asks everyone when the policy changes.
+- Nothing is shared until choices exist for the current policy
+  (`Cloud.consent_answered?` gates `share_usage?`), which also resets everyone
+  upgrading from a version where usage sharing was on by default.
+  `CONSENT_VERSION` re-asks everyone when the policy changes.
+- Architects already signed in before this (they never pass the download page)
+  get an amber dot on the account button and a "Confirm these choices" box in
+  the account panel — no popup.
 - **Three switches** in the account panel; the search-miss switch is separate
   from usage and gates the panel's "we've noted your search" text too.
 - **A4 consent log.** The first answer logs all three choices, later changes

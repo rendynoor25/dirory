@@ -129,6 +129,15 @@
            list of exactly what leaves the computer. -->
       <div class="consent-block">
         <h3 class="consent-title">What you share</h3>
+        <!-- Shown to architects who signed in before choices were asked on the
+             download page (UU PDP A3). Nothing is shared until they confirm. -->
+        <div id="consentNeeded" class="consent-needed" hidden>
+          <p>
+            Please confirm what you share. Until you do, Dirory sends nothing
+            from this computer.
+          </p>
+          <button id="consentConfirm" class="primary-btn">Confirm these choices</button>
+        </div>
 
         <label class="share-row">
           <input type="checkbox" id="shareUsage">
@@ -201,52 +210,6 @@
           </div>
         </details>
       </div>
-    </div>
-  </div>
-
-  <!-- UU PDP A3: asked once after sign-in, and again whenever the policy
-       version changes. Usage and project name start unchecked; nothing is
-       shared until "Save choices". -->
-  <div id="consentModal" class="modal" hidden>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
-      <h2 id="consentTitle">Before you start: what you share</h2>
-      <p class="modal-lead">
-        Choose what Dirory may receive. You can change this any time under the
-        account button.
-      </p>
-      <div class="consent-block">
-        <label class="share-row">
-          <input type="checkbox" id="consentUsage">
-          <span>
-            Share usage
-            <small>
-              The Dirory products used in your open model: names, categories,
-              brands, quantities and painted area. Never geometry or files.
-            </small>
-          </span>
-        </label>
-        <label class="share-row">
-          <input type="checkbox" id="consentProject" disabled>
-          <span>
-            Also send my project name
-            <small>
-              The title of your SketchUp file, which can identify a client or a site.
-            </small>
-          </span>
-        </label>
-        <label class="share-row">
-          <input type="checkbox" id="consentSearchMiss" checked>
-          <span>
-            Report searches that find nothing
-            <small>
-              Only the search term, with no name, email or install id.
-            </small>
-          </span>
-        </label>
-      </div>
-      <p class="modal-sub"><a id="consentPrivacy" href="#">Read the privacy policy</a></p>
-      <button id="consentSave" class="primary-btn">Save choices</button>
-      <button id="consentLater" class="ghost-btn">Later (share nothing for now)</button>
     </div>
   </div>
 

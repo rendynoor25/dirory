@@ -1327,8 +1327,9 @@ module Dirory
           Cloud.set_share_search_miss(data['on'] ? true : false)
           push_account
         end
-        # The first-run consent dialog (UU PDP A3). "Later" sends nothing:
-        # nothing is shared until this is answered, and it asks again next time.
+        # "Confirm these choices" in the account panel (UU PDP A3), for an
+        # architect whose choices did not arrive from the download page.
+        # Nothing is shared until this is answered.
         @dialog.add_action_callback('consentSave') do |_ctx, payload|
           data = parse_payload(payload)
           Cloud.save_consent(

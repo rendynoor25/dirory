@@ -548,6 +548,7 @@ module Dirory
           u = body['user'] || {}
           write('account_name', u['name'].to_s)
           write('account_email', u['email'].to_s)
+          adopt_consent(body['consent'])
           @pending_device = nil
           stop_device_poll
           # A verified identity means a fresh send: usage under the account and
@@ -662,6 +663,20 @@ module Dirory
         end
         @dirty.each_key { |guid| @dirty[guid] = true }
         @last_hash.clear
+      end
+
+      # UU PDP A3: the architect chooses what to share on the download page,
+      # before the plugin is ever installed. Sign-in hands those choices over,
+      # so nothing is asked again inside SketchUp. The website already logged
+      # them, so nothing is logged here. A choice for an older policy is
+      # ignored and the account panel asks for confirmation instead.
+      def self.adopt_consent(consent)
+        return unless consent.is_a?(Hash) && consent['version'].to_s == CONSENT_VERSION
+        usage = consent['share_usage'] ? true : false
+        write('share_usage', usage)
+        write('share_project', usage && consent['share_project'] ? true : false)
+        write('share_search_miss', consent['share_search_miss'] ? true : false)
+        write('consent_version', CONSENT_VERSION)
       end
 
       # A4: the server keeps an append-only consent_log, written only for a

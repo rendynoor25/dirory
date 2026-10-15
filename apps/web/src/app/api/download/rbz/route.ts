@@ -30,7 +30,7 @@ export async function GET(request: Request) {
   // Require the matching application profile as well as a valid Supabase user.
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, plugin_consent_version")
+    .select("id, plugin_consent_version, consent_version")
     .eq("id", user.id)
     .maybeSingle();
   if (profileError || !profile) {
@@ -42,8 +42,11 @@ export async function GET(request: Request) {
   }
 
   // Consent gate (UU 27/2022). Checked here as well as on the page, so a direct
-  // link to this route cannot avoid the privacy notice.
-  if (profile.plugin_consent_version !== PLUGIN_CONSENT_VERSION) {
+  // link to this route cannot avoid the privacy notice or the sharing choices.
+  if (
+    profile.plugin_consent_version !== PLUGIN_CONSENT_VERSION ||
+    profile.consent_version !== PLUGIN_CONSENT_VERSION
+  ) {
     const consent = new URL("/download", publicOrigin(request));
     return NextResponse.redirect(consent);
   }

@@ -19,7 +19,6 @@ const DEFAULT_EMPTY_HTML =
 // Usage and project name are opt-in (UU PDP A3); search-miss reporting is
 // anonymous and on unless switched off.
 let account = { signedIn: false, shareUsage: false, shareProject: false, shareSearchMiss: true };
-let consentDismissed = false; // "Later" hides the consent dialog for this session
 // Favourites: starred keys + keys used before (most recent first), and brand logos.
 let favourites = new Set();
 let recentKeys = [];
@@ -232,7 +231,6 @@ window.diroryRender = function (data) {
   updateAccountButton();
   document.getElementById('path').textContent = data.path;
   render();
-  maybeAskConsent();
 };
 
 /* ------------------------------------------------------------------ */
@@ -795,11 +793,13 @@ function byId(id) {
 function updateAccountButton() {
   const btn = byId('accountBtn');
   btn.classList.toggle('signed-in', !!account.signedIn);
+  btn.classList.toggle('needs-consent', !!account.consentNeeded);
   if (account.signedIn) {
     // Show who is signed in: the name, or the part of the email before "@".
     const label = (account.name || '').trim() || String(account.email || '').split('@')[0] || 'Account';
     btn.textContent = label;
     btn.title = `Signed in as ${account.name ? account.name + ' · ' : ''}${account.email || ''}`;
+    if (account.consentNeeded) btn.title += ' · please confirm what you share';
   } else {
     btn.textContent = '👤';
     btn.title = 'Sign in';
@@ -988,6 +988,7 @@ function openAccount() {
   // The project-name switch is meaningless while anonymous reporting is off.
   byId('shareProject').disabled = !account.shareUsage;
   byId('shareSearchMiss').checked = !!account.shareSearchMiss;
+  byId('consentNeeded').hidden = !account.consentNeeded;
   byId('acctError').hidden = true;
   applyDeviceState();
   byId('accountModal').hidden = false;
@@ -1049,43 +1050,17 @@ byId('shareSearchMiss').addEventListener('change', (e) => {
   account.shareSearchMiss = e.target.checked;
 });
 
-/* ------------------------------------------------------------------ */
-/* Consent dialog (UU PDP A3): after sign-in, until it is answered      */
-/* ------------------------------------------------------------------ */
-
-function maybeAskConsent() {
-  if (!account.consentNeeded || consentDismissed) return;
-  if (!byId('consentModal').hidden) return;
-  byId('consentUsage').checked = false;
-  byId('consentProject').checked = false;
-  byId('consentProject').disabled = true;
-  byId('consentSearchMiss').checked = true;
-  byId('consentModal').hidden = false;
-}
-
-byId('consentUsage').addEventListener('change', (e) => {
-  byId('consentProject').disabled = !e.target.checked;
-  if (!e.target.checked) byId('consentProject').checked = false;
-});
-byId('consentSave').addEventListener('click', () => {
+// Architects who signed in before the download page asked for these choices
+// confirm them here (UU PDP A3). Nothing is shared until they do.
+byId('consentConfirm').addEventListener('click', () => {
   sketchup.consentSave(
     JSON.stringify({
-      shareUsage: byId('consentUsage').checked,
-      shareProject: byId('consentUsage').checked && byId('consentProject').checked,
-      shareSearchMiss: byId('consentSearchMiss').checked,
+      shareUsage: byId('shareUsage').checked,
+      shareProject: byId('shareUsage').checked && byId('shareProject').checked,
+      shareSearchMiss: byId('shareSearchMiss').checked,
     }),
   );
-  byId('consentModal').hidden = true;
-});
-byId('consentLater').addEventListener('click', () => {
-  consentDismissed = true;
-  byId('consentModal').hidden = true;
-});
-byId('consentPrivacy').addEventListener('click', (e) => {
-  e.preventDefault();
-  sketchup.openPrivacy();
-});
-byId('privacyLink').addEventListener('click', (e) => {
+});byId('privacyLink').addEventListener('click', (e) => {
   e.preventDefault();
   sketchup.openPrivacy();
 });
@@ -1133,7 +1108,6 @@ window.diroryAccount = function (state) {
     byId('acctError').hidden = false;
   }
   render(); // the empty-search message depends on the share setting
-  maybeAskConsent();
 };
 
 // Ruby pushes this after a product is inserted or painted ("used before").

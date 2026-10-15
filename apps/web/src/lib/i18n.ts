@@ -238,10 +238,24 @@ const en: Record<string, string> = {
   "download.footerNote": "Free for architects and designers.",
   "download.consentTitle": "Before you download",
   "download.consentBody":
-    "The plugin can send Dirory anonymous usage reports: which Dirory products are used in your model (names, quantities and painted area), and searches that return nothing. It never sends geometry, your SketchUp file, or file paths. Sharing the project name is a separate choice and stays off unless you turn it on. You can switch all of this off at any time in the plugin's account dialog.",
+    "Choose what the plugin may send Dirory. It never sends geometry, your SketchUp file, or file paths. The plugin uses these choices when you sign in, and you can change them any time in its account dialog.",
+  "download.shareUsage": "Share usage",
+  "download.shareUsageBody":
+    "Which Dirory products are used in your open model: names, categories, brands, quantities and painted area.",
+  "download.shareProject": "Also send my project name",
+  "download.shareProjectBody":
+    "The title of your SketchUp file, which can identify a client or a site. Only with usage.",
+  "download.shareSearchMiss": "Report searches that find nothing",
+  "download.shareSearchMissBody":
+    "Only the search term, with no name, email or install id, so we know which products are missing.",
   "download.consentAgree":
-    "I have read the Privacy Policy and agree to these reports.",
-  "download.consentButton": "Agree and download",
+    "I have read the Privacy Policy.",
+  "download.yourChoices": "Your sharing choices",
+  "download.on": "on",
+  "download.off": "off",
+  "download.changeChoices": "Change my choices",
+  "download.saveChoices": "Save choices",
+  "download.consentButton": "Save choices and download",
 
   // ---- vendor section + pricing ------------------------------------------
   "vendor.tag": "For vendors",
@@ -634,10 +648,24 @@ const id: Record<string, string> = {
   "download.footerNote": "Gratis untuk arsitek dan desainer.",
   "download.consentTitle": "Sebelum mengunduh",
   "download.consentBody":
-    "Plugin dapat mengirim laporan pemakaian anonim ke Dirory: produk Dirory apa yang dipakai di model Anda (nama, jumlah, dan luas yang dicat), serta pencarian yang tidak menemukan apa pun. Plugin tidak pernah mengirim geometri, berkas SketchUp, atau lokasi berkas. Membagikan nama proyek adalah pilihan terpisah dan tetap mati kecuali Anda menyalakannya. Anda dapat mematikan semuanya kapan saja di dialog akun plugin.",
+    "Pilih apa yang boleh dikirim plugin ke Dirory. Plugin tidak pernah mengirim geometri, berkas SketchUp, atau lokasi berkas. Plugin memakai pilihan ini saat Anda masuk, dan Anda dapat mengubahnya kapan saja di dialog akun plugin.",
+  "download.shareUsage": "Bagikan pemakaian",
+  "download.shareUsageBody":
+    "Produk Dirory yang dipakai di model yang terbuka: nama, kategori, merek, jumlah, dan luas yang dicat.",
+  "download.shareProject": "Kirim juga nama proyek saya",
+  "download.shareProjectBody":
+    "Judul berkas SketchUp Anda, yang dapat menunjukkan klien atau lokasi. Hanya bersama data pemakaian.",
+  "download.shareSearchMiss": "Laporkan pencarian yang tidak menemukan apa pun",
+  "download.shareSearchMissBody":
+    "Hanya kata pencarian, tanpa nama, email, atau ID instalasi, agar kami tahu produk apa yang belum ada.",
   "download.consentAgree":
-    "Saya telah membaca Kebijakan Privasi dan menyetujui laporan ini.",
-  "download.consentButton": "Setuju dan unduh",
+    "Saya telah membaca Kebijakan Privasi.",
+  "download.yourChoices": "Pilihan berbagi Anda",
+  "download.on": "aktif",
+  "download.off": "mati",
+  "download.changeChoices": "Ubah pilihan saya",
+  "download.saveChoices": "Simpan pilihan",
+  "download.consentButton": "Simpan pilihan dan unduh",
 
   // ---- vendor section + pricing ------------------------------------------
   "vendor.tag": "Untuk vendor",

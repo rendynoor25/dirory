@@ -7,6 +7,7 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { PLUGIN_VERSION } from "@/lib/pluginRelease";
 import { PLUGIN_CONSENT_VERSION } from "@/lib/consent";
 import { acceptPluginConsent } from "./actions";
+import { ShareChoices } from "./ShareChoices";
 
 export const dynamic = "force-dynamic";
 
@@ -14,13 +15,15 @@ export const dynamic = "force-dynamic";
  * Plugin download.
  *
  * The RBZ is served only to a signed-in account that has accepted the privacy
- * notice (UU 27/2022). The agreement is stored on the profile and the version is
- * compared exactly, so revising the policy asks everyone to agree again.
+ * notice (UU 27/2022). This is also where the architect makes the three sharing
+ * choices (UU PDP A3); the plugin adopts them when it signs in, so it never has
+ * to interrupt work in SketchUp to ask. The version is compared exactly, so
+ * revising the policy asks everyone to choose again.
  */
 export default async function DownloadPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; edit?: string }>;
 }) {
   const [{ supabase, user }, locale, sp] = await Promise.all([
     getSession(),
@@ -29,14 +32,26 @@ export default async function DownloadPage({
   ]);
 
   let consented = false;
+  let choices = { usage: false, project: false, searchMiss: true };
   if (user) {
     const { data } = await supabase
       .from("profiles")
-      .select("plugin_consent_version")
+      .select("plugin_consent_version, consent_version, share_usage, share_project, share_search_miss")
       .eq("id", user.id)
       .maybeSingle();
-    consented = data?.plugin_consent_version === PLUGIN_CONSENT_VERSION;
+    consented =
+      data?.plugin_consent_version === PLUGIN_CONSENT_VERSION &&
+      data?.consent_version === PLUGIN_CONSENT_VERSION;
+    if (data?.consent_version) {
+      choices = {
+        usage: !!data.share_usage,
+        project: !!data.share_project,
+        searchMiss: !!data.share_search_miss,
+      };
+    }
   }
+  const editing = consented && sp.edit === "1";
+  const onOff = (on: boolean) => t(locale, on ? "download.on" : "download.off");
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f8f9fc] px-6 py-16">
@@ -63,15 +78,26 @@ export default async function DownloadPage({
               {t(locale, "download.signedInBody")}
             </p>
 
-            {consented ? (
-              <a
-                href="/api/download/rbz"
-                className="mt-7 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
-              >
-                {t(locale, "download.button")} (v{PLUGIN_VERSION})
-              </a>
+            {consented && !editing ? (
+              <>
+                <a
+                  href="/api/download/rbz"
+                  className="mt-7 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
+                >
+                  {t(locale, "download.button")} (v{PLUGIN_VERSION})
+                </a>
+                <p className="mt-4 text-xs leading-5 text-slate-500">
+                  {t(locale, "download.yourChoices")}: {t(locale, "download.shareUsage")}{" "}
+                  {onOff(choices.usage)} · {t(locale, "download.shareProject")} {onOff(choices.project)} ·{" "}
+                  {t(locale, "download.shareSearchMiss")} {onOff(choices.searchMiss)}.{" "}
+                  <Link href="/download?edit=1" className="font-medium text-brand-700 underline">
+                    {t(locale, "download.changeChoices")}
+                  </Link>
+                </p>
+              </>
             ) : (
               <form action={acceptPluginConsent} className="mt-6">
+                {editing ? <input type="hidden" name="stay" value="1" /> : null}
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                   <p className="text-sm font-semibold text-slate-900">
                     {t(locale, "download.consentTitle")}
@@ -80,6 +106,17 @@ export default async function DownloadPage({
                     {t(locale, "download.consentBody")}
                   </p>
                 </div>
+                <ShareChoices
+                  initial={choices}
+                  labels={{
+                    usage: t(locale, "download.shareUsage"),
+                    usageBody: t(locale, "download.shareUsageBody"),
+                    project: t(locale, "download.shareProject"),
+                    projectBody: t(locale, "download.shareProjectBody"),
+                    searchMiss: t(locale, "download.shareSearchMiss"),
+                    searchMissBody: t(locale, "download.shareSearchMissBody"),
+                  }}
+                />
                 <label className="mt-4 flex items-start gap-3 text-sm text-slate-700">
                   <input
                     type="checkbox"
@@ -98,7 +135,9 @@ export default async function DownloadPage({
                   type="submit"
                   className="mt-5 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
                 >
-                  {t(locale, "download.consentButton")} (v{PLUGIN_VERSION})
+                  {editing
+                    ? t(locale, "download.saveChoices")
+                    : `${t(locale, "download.consentButton")} (v${PLUGIN_VERSION})`}
                 </button>
               </form>
             )}
