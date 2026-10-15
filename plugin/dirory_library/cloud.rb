@@ -1192,7 +1192,11 @@ module Dirory
           say.call('diroryRabError', 'Sign in to estimate costs.')
           return
         end
-        request = new_request("#{api_base_url}/rab?region=#{region}", Sketchup::Http::GET)
+        # A project pass binds to one model. Only a hash of SketchUp's own
+        # model id is sent, never the id, the title or the path.
+        guid = Sketchup.active_model ? Sketchup.active_model.guid.to_s : ''
+        model = guid.empty? ? '' : Digest::SHA256.hexdigest(guid)
+        request = new_request("#{api_base_url}/rab?region=#{region}&model=#{model}", Sketchup::Http::GET)
         request.headers = request_headers
         request.start do |_req, response|
           release_request(request)
@@ -1200,6 +1204,9 @@ module Dirory
             code = response.status_code.to_i
             if code == 200
               say.call('diroryRabBook', (JSON.parse(response.body.to_s) rescue {}))
+            elsif code == 402
+              body = (JSON.parse(response.body.to_s) rescue {})
+              say.call('diroryRabUpgrade', body['upgrade_url'].to_s)
             elsif code == 401
               unauthorized!
               say.call('diroryRabError', 'Your session has expired. Please sign in again.')

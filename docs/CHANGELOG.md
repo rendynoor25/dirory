@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased — Dirory Pro for architects, paid by QRIS (RAB step 3)
+
+The RAB cost estimate now needs Dirory Pro.
+
+- **Plans (migration 0039, editable in `pro_plans`)**: monthly Rp 99.000 for 30
+  days on every model; one-project pass Rp 49.000 for 30 days, bound to the
+  first SketchUp model it is used on (only a SHA-256 of the model's guid is
+  stored).
+- **`/pro`**: plans, current Pro status, **Pay with QRIS**. `pro_create_order()`
+  prices the order from the table (never the browser), `/api/pro/order` mints a
+  dynamic QRIS (`DRP-<order>-<time>`), and the page polls until it is paid.
+- **Webhook**: `DRP-` orders are settled by `mark_pro_order_paid()` with the
+  same rules as vendor invoices — signature, idempotent event log, exact-amount
+  match — and it grants once however often Midtrans retries. A second monthly
+  payment extends from the end of the current month. Vendor invoices untouched.
+- **`rab` Edge Function** answers 402 `pro_required` with the upgrade link
+  unless the architect has Pro (admins pass for testing); the plugin shows
+  **⭐ Get Dirory Pro**.
+- Fixed in passing: the product-info "open page" button sent the URL in a form
+  the plugin's `openURL` callback could not read.
+- Test: `supabase/tests/dirory_pro_test.sql`.
+
 ## Unreleased — RAB step 2: Jakarta price book and cost estimate
 
 **Coefficients: the newest official ones, via Jakarta.** Permen PUPR 1/2022 was

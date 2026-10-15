@@ -10,8 +10,12 @@
 // takeoff (plugin/dirory_library/ui/rab.js); geometry never leaves SketchUp.
 //
 // Auth: the plugin's opaque token (Authorization: Bearer <token>), as for
-// /favourites. Signed-in only for now; this is where the Dirory Pro check
-// (subscription or per-project pass) goes in step 3.
+// /favourites. The price book needs Dirory Pro (migration 0039):
+//   * a monthly entitlement covers every model;
+//   * a project pass covers one model: `model` (sha256 of the SketchUp model's
+//     guid, hashed in the plugin) is bound to the pass on first use;
+//   * admins pass, for testing.
+// Otherwise 402 { error: "pro_required", upgrade_url }.
 //
 // Deploy: supabase functions deploy rab --no-verify-jwt
 
@@ -19,6 +23,53 @@ import { corsHeaders, json } from "../_shared/cors.ts";
 import { resolvePluginToken, serviceClient } from "../_shared/plugin-auth.ts";
 
 const REGION_RE = /^[a-z][a-z0-9_-]{1,40}$/;
+const MODEL_RE = /^[0-9a-f]{64}$/;
+
+function siteUrl(): string {
+  return (Deno.env.get("SITE_URL") ?? Deno.env.get("NEXT_PUBLIC_SITE_URL") ?? "https://dirory.id")
+    .replace(/\/+$/, "");
+}
+
+type Entitlement = { id: string; plan_id: string; model_hash: string | null; ends_at: string };
+
+/** True when the profile may use the price book for this model (may bind a pass). */
+async function hasPro(
+  supabase: ReturnType<typeof serviceClient>,
+  profileId: string,
+  model: string | null,
+): Promise<boolean> {
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", profileId).maybeSingle();
+  if (profile?.role === "admin") return true;
+
+  const now = new Date().toISOString();
+  const { data } = await supabase
+    .from("pro_entitlements")
+    .select("id, plan_id, model_hash, ends_at, pro_plans!inner(per_model)")
+    .eq("profile_id", profileId)
+    .lte("starts_at", now)
+    .gt("ends_at", now)
+    .order("ends_at", { ascending: true });
+  type Row = Entitlement & { pro_plans: { per_model: boolean } | { per_model: boolean }[] };
+  const rows = (data ?? []) as unknown as Row[];
+  // A many-to-one embed arrives as an object; be tolerant of an array too.
+  const perModel = (r: Row) => (Array.isArray(r.pro_plans) ? r.pro_plans[0]?.per_model : r.pro_plans?.per_model) ?? true;
+
+  if (rows.some((r) => !perModel(r))) return true;
+  if (!model) return false;
+  if (rows.some((r) => r.model_hash === model)) return true;
+  const unused = rows.find((r) => r.model_hash === null);
+  if (!unused) return false;
+  // Bind the soonest-ending unused pass to this model. The `is null` guard
+  // keeps two simultaneous requests from binding it twice.
+  const { data: bound } = await supabase
+    .from("pro_entitlements")
+    .update({ model_hash: model })
+    .eq("id", unused.id)
+    .is("model_hash", null)
+    .select("id")
+    .maybeSingle();
+  return Boolean(bound);
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -28,7 +79,10 @@ Deno.serve(async (req: Request) => {
   if (!identity) return json({ error: "sign in required" }, 401);
 
   const supabase = serviceClient();
-  const region = new URL(req.url).searchParams.get("region");
+  const params = new URL(req.url).searchParams;
+  const region = params.get("region");
+  const modelParam = (params.get("model") ?? "").toLowerCase();
+  const model = MODEL_RE.test(modelParam) ? modelParam : null;
 
   if (!region) {
     const { data, error } = await supabase.from("rab_regions").select("id, name, fetched").order("name");
@@ -36,6 +90,10 @@ Deno.serve(async (req: Request) => {
     return json({ regions: data ?? [] });
   }
   if (!REGION_RE.test(region)) return json({ error: "invalid region" }, 400);
+
+  if (!(await hasPro(supabase, identity.profileId, model))) {
+    return json({ error: "pro_required", upgrade_url: `${siteUrl()}/pro` }, 402);
+  }
 
   const { data: reg, error: regError } = await supabase
     .from("rab_regions")

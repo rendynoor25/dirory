@@ -29,7 +29,8 @@ export type SecurityEventKind =
   | "webhook.bad_signature"
   | "webhook.oversized_body"
   | "webhook.amount_mismatch"
-  | "webhook.unmatched_invoice";
+  | "webhook.unmatched_invoice"
+  | "webhook.unmatched_pro_order";
 
 /** Best-effort client address; `x-forwarded-for` is set by Caddy. */
 function clientIp(request?: Request): string | null {

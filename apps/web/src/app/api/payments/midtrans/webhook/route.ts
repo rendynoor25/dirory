@@ -4,6 +4,7 @@ import {
   invoiceIdFromOrderId,
   mapMidtransStatus,
   midtransConfigured,
+  proOrderIdFromOrderId,
   verifyMidtransSignature,
 } from "@/lib/midtrans";
 import { recordSecurityEvent } from "@/lib/securityAlerts";
@@ -72,6 +73,16 @@ export async function POST(request: Request) {
   }
 
   const supabase = createSupabaseServiceClient();
+
+  // Dirory Pro (architects, migration 0039): its own orders, same rules.
+  if (orderId.startsWith("DRP-")) {
+    return settleProOrder(supabase, request, body, {
+      orderId,
+      statusCode,
+      grossAmount,
+      transactionStatus,
+    });
+  }
 
   // Find the invoice this order belongs to.
   //
@@ -162,4 +173,73 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true, settled: invoice.id });
+}
+
+/**
+ * A Dirory Pro order (architect). Same safety rules as an invoice: the event is
+ * logged first (a retry is a no-op), only a settlement for the exact amount
+ * grants Pro, and mark_pro_order_paid() is itself idempotent.
+ */
+async function settleProOrder(
+  supabase: ReturnType<typeof createSupabaseServiceClient>,
+  request: Request,
+  body: Record<string, unknown>,
+  n: { orderId: string; statusCode: string; grossAmount: string; transactionStatus: string },
+) {
+  let order = (
+    await supabase.from("pro_orders").select("id, amount_idr, status").eq("gateway_ref", n.orderId).maybeSingle()
+  ).data;
+  if (!order) {
+    const fallbackId = proOrderIdFromOrderId(n.orderId);
+    if (fallbackId) {
+      order = (
+        await supabase.from("pro_orders").select("id, amount_idr, status").eq("id", fallbackId).maybeSingle()
+      ).data;
+    }
+  }
+
+  const { data: recorded, error: recordError } = await supabase
+    .from("payment_events")
+    .insert({
+      gateway: "midtrans",
+      order_id: n.orderId,
+      transaction_status: n.transactionStatus,
+      status_code: n.statusCode,
+      gross_amount: n.grossAmount,
+      pro_order_id: order?.id ?? null,
+      payload: body,
+    })
+    .select("id")
+    .maybeSingle();
+  if (recordError && recordError.code !== "23505") {
+    console.error("midtrans webhook: could not record pro event", recordError);
+    return NextResponse.json({ error: "Could not record the event." }, { status: 500 });
+  }
+  if (!recorded) return NextResponse.json({ ok: true, duplicate: true });
+
+  if (!order) {
+    await recordSecurityEvent("webhook.unmatched_pro_order", { orderId: n.orderId, grossAmount: n.grossAmount }, request);
+    return NextResponse.json({ ok: true, unmatched: true });
+  }
+
+  const outcome = mapMidtransStatus(n.transactionStatus);
+  if (outcome !== "paid") return NextResponse.json({ ok: true, status: n.transactionStatus, outcome });
+
+  const paid = Math.round(Number(n.grossAmount));
+  const due = Math.round(Number(order.amount_idr));
+  if (!Number.isFinite(paid) || paid !== due) {
+    await recordSecurityEvent("webhook.amount_mismatch", { orderId: n.orderId, paid, due }, request);
+    return NextResponse.json({ ok: true, amount_mismatch: true });
+  }
+
+  const { error } = await supabase.rpc("mark_pro_order_paid", {
+    p_order: order.id,
+    p_gateway: "midtrans",
+    p_reference: n.orderId,
+  });
+  if (error) {
+    console.error("midtrans webhook: could not settle pro order", error);
+    return NextResponse.json({ error: "Could not settle the order." }, { status: 500 });
+  }
+  return NextResponse.json({ ok: true, pro_settled: order.id });
 }

@@ -239,6 +239,22 @@ export function buildOrderId(invoiceId: string, now = new Date()): string {
  * the id was not built by us. The webhook uses this as a fallback when
  * `gateway_ref` has moved on to a newer order for the same invoice.
  */
+/**
+ * Dirory Pro orders (architects, migration 0039) use their own prefix so the
+ * webhook can route them without touching the vendor invoice path.
+ */
+export function buildProOrderId(orderUuid: string, now = new Date()): string {
+  const stamp = Math.floor(now.getTime() / 1000);
+  return `DRP-${orderUuid.replace(/-/g, "").toLowerCase()}-${stamp}`;
+}
+
+export function proOrderIdFromOrderId(orderId: string): string | null {
+  const m = /^DRP-([0-9a-f]{32})-\d+$/i.exec(orderId);
+  if (!m) return null;
+  const h = m[1].toLowerCase();
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
+
 export function invoiceIdFromOrderId(orderId: string): string | null {
   const m = /^DRY-([0-9a-f]{32})-\d+$/i.exec(orderId);
   if (!m) return null;

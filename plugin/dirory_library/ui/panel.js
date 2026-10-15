@@ -1607,6 +1607,20 @@ window.diroryRabBook = function (book) {
   renderRab();
 };
 
+// The estimate needs Dirory Pro: explain and offer the payment page.
+window.diroryRabUpgrade = function (url) {
+  byId('rabRun').disabled = false;
+  byId('rabRun').textContent = '💰 Estimate cost (RAB)';
+  const body = byId('rabBody');
+  body.innerHTML = '';
+  const box = el('div', 'consent-needed');
+  box.appendChild(el('p', '', 'The cost estimate (RAB) is part of Dirory Pro: Rp 99.000 a month, or Rp 49.000 for one project. Pay with QRIS, then click Estimate cost again.'));
+  const go = el('button', 'primary-btn', '⭐ Get Dirory Pro');
+  go.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: url || 'https://dirory.id/pro' })));
+  box.appendChild(go);
+  body.appendChild(box);
+};
+
 window.diroryRabError = function (message) {
   byId('rabRun').disabled = false;
   byId('rabRun').textContent = '💰 Estimate cost (RAB)';
@@ -1665,7 +1679,7 @@ function renderProductBody(container, item, onAction) {
   if (item.product_url) {
     const open = el('button', 'ghost-btn', t('product.open_page'));
     open.type = 'button';
-    open.addEventListener('click', () => sketchup.openURL(item.product_url));
+    open.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: item.product_url })));
     actions.appendChild(open);
   }
   if (item.brand && String(item.brand).toLowerCase() !== 'dirory') {
