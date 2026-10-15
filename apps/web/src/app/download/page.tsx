@@ -76,6 +76,13 @@ export default async function DownloadPage({
       href: DOWNLOAD_ROUTES.both,
     },
   ];
+  // SketchUp for Web and iPad run a different kind of extension (the JavaScript
+  // API); it is being tested (jsa/) and installs from inside SketchUp, not as a
+  // downloaded file. Shown so architects know it is coming, not selectable.
+  const upcoming = [
+    { id: "web", title: t(locale, "download.optWeb"), body: t(locale, "download.optWebBody"), badge: t(locale, "download.soon") },
+    { id: "ipad", title: t(locale, "download.optIpad"), body: t(locale, "download.optIpadBody"), badge: t(locale, "download.soon") },
+  ];
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f8f9fc] px-6 py-16">
@@ -106,7 +113,7 @@ export default async function DownloadPage({
               <>
                 <p className="mt-7 text-sm font-semibold text-slate-900">{t(locale, "download.pick")}</p>
                 <div className="mt-3">
-                  <ProductPicker options={productOptions} mode="link" />
+                  <ProductPicker options={productOptions} upcoming={upcoming} mode="link" />
                 </div>
                 <p className="mt-4 text-xs leading-5 text-slate-500">
                   {t(locale, "download.yourChoices")}: {t(locale, "download.shareUsage")}{" "}
@@ -123,7 +130,7 @@ export default async function DownloadPage({
                 {!editing ? (
                   <div className="mb-6">
                     <p className="mb-3 text-sm font-semibold text-slate-900">{t(locale, "download.pick")}</p>
-                    <ProductPicker options={productOptions} mode="form" />
+                    <ProductPicker options={productOptions} upcoming={upcoming} mode="form" />
                   </div>
                 ) : null}
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">

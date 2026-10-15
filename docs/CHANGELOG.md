@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — download page lists SketchUp for Web and iPad as coming soon
+
+`/download` shows SketchUp for Web and SketchUp for iPad next to the three
+downloads, marked "Coming soon" and not selectable: those versions use the
+JavaScript extension API, are still being tested (`jsa/`), and will install
+from inside SketchUp rather than as a downloaded file.
+
 ## Unreleased — catalogue reachable from SketchUp for Web / iPad
 
 `/catalog` answered the browser's CORS preflight with 405, so the JavaScript

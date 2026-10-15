@@ -6,6 +6,9 @@ export type Product = "sketchup" | "revit" | "both";
 
 type Option = { id: Product; title: string; body: string; button: string; href: string };
 
+/** Shown but not selectable: a product that has no download yet. */
+type Upcoming = { id: string; title: string; body: string; badge: string };
+
 /**
  * SketchUp only, Revit only, or both. The download button, its label and the
  * file it serves follow the choice.
@@ -15,10 +18,12 @@ type Option = { id: Product; title: string; body: string; button: string; href: 
  */
 export function ProductPicker({
   options,
+  upcoming = [],
   mode,
   initial = "sketchup",
 }: {
   options: Option[];
+  upcoming?: Upcoming[];
   mode: "link" | "form";
   initial?: Product;
 }) {
@@ -48,6 +53,25 @@ export function ProductPicker({
           </label>
         ))}
       </div>
+      {upcoming.length ? (
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          {upcoming.map((u) => (
+            <div
+              key={u.id}
+              aria-disabled="true"
+              className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500"
+            >
+              <span className="flex items-center gap-2 font-semibold text-slate-700">
+                {u.title}
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800">
+                  {u.badge}
+                </span>
+              </span>
+              <span className="mt-1 block text-xs leading-5">{u.body}</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
       {mode === "link" ? (
         <a
           href={current.href}
