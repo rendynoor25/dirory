@@ -1473,16 +1473,20 @@ window.diroryTakeoff = function (data) {
     ));
   }
 
-  const notes = [];
-  if (data.floor_perimeter_m > 0) {
+  // A host can describe its own measuring rules (the Revit add-in does).
+  const notes = Array.isArray(data.notes) ? data.notes.slice() : [];
+  if (!Array.isArray(data.notes) && data.floor_perimeter_m > 0) {
     notes.push(`Floor perimeter (for skirting, approx.): ${fmt2(data.floor_perimeter_m)} m¹.`);
   }
-  notes.push('Wall areas are finish areas per side (paint, plaster, tiles); openings are already deducted.');
+  if (!Array.isArray(data.notes)) notes.push('Wall areas are finish areas per side (paint, plaster, tiles); openings are already deducted.');
   if (data.components_skipped) {
     notes.push(`${data.components_skipped} component(s) were not measured (furniture and products). ` +
       'Draw walls, slabs and roofs as groups so they are counted.');
   }
-  notes.push('An estimate from the model: check it before a tender.');
+  if (!Array.isArray(data.notes)) notes.push('An estimate from the model: check it before a tender.');
+  if (Array.isArray(data.notes) && data.floor_perimeter_m > 0) {
+    notes.unshift(`Floor perimeter (for skirting): ${fmt2(data.floor_perimeter_m)} m¹.`);
+  }
   body.appendChild(el('p', 'usage-note', notes.join(' ')));
   byId('takeoffExport').hidden = false;
 };

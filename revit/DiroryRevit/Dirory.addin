@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dirory for Revit. Installed next to a "Dirory" folder holding DiroryRevit.dll and ui\. -->
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Dirory</Name>
+    <Assembly>Dirory\DiroryRevit.dll</Assembly>
+    <FullClassName>Dirory.Revit.App</FullClassName>
+    <ClientId>2C9E0B1E-7B0C-4E8F-9D1A-6F2E3C4B5A60</ClientId>
+    <VendorId>DIRORY</VendorId>
+    <VendorDescription>Dirory, dirory.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>

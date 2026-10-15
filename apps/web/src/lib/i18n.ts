@@ -46,11 +46,11 @@ const en: Record<string, string> = {
   "common.freeSample": "Free sample",
 
   // ---- landing ------------------------------------------------------------
-  "home.badge": "Product library for SketchUp",
+  "home.badge": "Product library for SketchUp and Revit",
   "home.h1a": "Design with products that are",
   "home.h1b": "real.",
   "home.lead":
-    "Dirory brings Indonesian construction brands, 3D models and material textures into one easy-to-use SketchUp library.",
+    "Dirory brings Indonesian construction brands, 3D models and material textures into one easy-to-use library for SketchUp and Revit.",
   "home.browse": "Browse the library",
   "home.getPlugin": "Get the plugin",
   "home.freeNote": "Free to browse. Account required to get the plugin download.",
@@ -65,18 +65,18 @@ const en: Record<string, string> = {
   "home.mockSearch": "Search products and materials",
   "home.mockBrowseNote": "Browse freely · sign in when you're ready to use a product",
   "home.builtFor": "Built for designers",
-  "home.builtForSub": "Your material library, in SketchUp",
+  "home.builtForSub": "Your material library, in SketchUp and Revit",
   "home.howTag": "How it works",
   "home.howHeading": "From search to placed, in three clicks.",
   "home.step1Title": "Get the plugin",
-  "home.step1Text": "Create a free account and install the Dirory extension in SketchUp 2019 or newer.",
+  "home.step1Text": "Create a free account and install Dirory in SketchUp 2019+ or Revit 2024.",
   "home.step2Title": "Browse real products",
   "home.step2Text":
     "Search every brand's models and materials inside SketchUp. Filter by category or brand, or star your favourites.",
   "home.step3Title": "Drop them into your design",
   "home.step3Text":
     "Click a model to place it, or click a material and paint a surface. Sizes, textures and 3 mm grout are handled for you.",
-  "home.feat1Title": "Made for SketchUp",
+  "home.feat1Title": "Made for SketchUp and Revit",
   "home.feat1Text": "Find product models and material textures without leaving your design workflow.",
   "home.feat2Title": "Real Indonesian brands",
   "home.feat2Text": "Products from local suppliers, organised by category and brand, always up to date.",
@@ -96,7 +96,7 @@ const en: Record<string, string> = {
   "home.brandsBody":
     "The sample library already covers these brands. More are added as Dirory grows — and you can ask for a brand directly from inside SketchUp.",
   "home.ctaTag": "Start designing",
-  "home.ctaHeading": "Bring better product detail into your next SketchUp project.",
+  "home.ctaHeading": "Bring better product detail into your next SketchUp or Revit project.",
   "home.ctaBody": "Create a free account. We'll send a secure sign-in link to your email, then you can get the plugin.",
   "home.ctaButton": "Create your free account",
   "brand.sanitaryware": "Sanitaryware",
@@ -236,6 +236,11 @@ const en: Record<string, string> = {
   "download.howToInstall": "How to install",
   "download.privacy": "Privacy Policy",
   "download.footerNote": "Free for architects and designers.",
+  "download.revitTitle": "Dirory for Revit (beta)",
+  "download.revitBody":
+    "For Revit 2024 on Windows. Paint Dirory materials onto walls, floors and ceilings with real tile sizes, and get the RAB from walls, floors, ceilings, roofs, doors and windows. Revit families (.rfa) for products are being added.",
+  "download.revitButton": "Download for Revit 2024",
+  "download.revitStep": "Unzip, run Install-Dirory.cmd, then restart Revit and open the Dirory tab → Library.",
   "download.consentTitle": "Before you download",
   "download.consentBody":
     "Choose what the plugin may send Dirory. It never sends geometry, your SketchUp file, or file paths. The plugin uses these choices when you sign in, and you can change them any time in its account dialog.",
@@ -456,11 +461,11 @@ const id: Record<string, string> = {
   "common.freeSample": "Sampel gratis",
 
   // ---- landing ------------------------------------------------------------
-  "home.badge": "Pustaka produk untuk SketchUp",
+  "home.badge": "Pustaka produk untuk SketchUp dan Revit",
   "home.h1a": "Desain dengan produk yang",
   "home.h1b": "nyata.",
   "home.lead":
-    "Dirory menghadirkan merek konstruksi Indonesia, model 3D, dan tekstur material ke dalam satu pustaka SketchUp yang mudah digunakan.",
+    "Dirory menghadirkan merek konstruksi Indonesia, model 3D, dan tekstur material ke dalam satu pustaka yang mudah digunakan untuk SketchUp dan Revit.",
   "home.browse": "Jelajahi pustaka",
   "home.getPlugin": "Dapatkan plugin",
   "home.freeNote": "Gratis untuk dijelajahi. Perlu akun untuk mengunduh plugin.",
@@ -475,18 +480,18 @@ const id: Record<string, string> = {
   "home.mockSearch": "Cari produk dan material",
   "home.mockBrowseNote": "Jelajahi dengan bebas · masuk saat siap memakai produk",
   "home.builtFor": "Dirancang untuk desainer",
-  "home.builtForSub": "Pustaka material Anda, di dalam SketchUp",
+  "home.builtForSub": "Pustaka material Anda, di dalam SketchUp dan Revit",
   "home.howTag": "Cara kerja",
   "home.howHeading": "Dari pencarian hingga terpasang, dalam tiga klik.",
   "home.step1Title": "Dapatkan plugin",
-  "home.step1Text": "Buat akun gratis dan pasang ekstensi Dirory di SketchUp 2019 atau lebih baru.",
+  "home.step1Text": "Buat akun gratis dan pasang Dirory di SketchUp 2019+ atau Revit 2024.",
   "home.step2Title": "Jelajahi produk asli",
   "home.step2Text":
     "Cari model dan material setiap merek langsung di SketchUp. Saring berdasarkan kategori atau merek, atau bintangi favorit Anda.",
   "home.step3Title": "Masukkan ke desain Anda",
   "home.step3Text":
     "Klik model untuk menempatkannya, atau klik material lalu cat permukaannya. Ukuran, tekstur, dan nat 3 mm ditangani otomatis.",
-  "home.feat1Title": "Dibuat untuk SketchUp",
+  "home.feat1Title": "Dibuat untuk SketchUp dan Revit",
   "home.feat1Text": "Temukan model produk dan tekstur material tanpa keluar dari alur kerja desain Anda.",
   "home.feat2Title": "Merek Indonesia asli",
   "home.feat2Text": "Produk dari pemasok lokal, tersusun per kategori dan merek, selalu terbaru.",
@@ -506,7 +511,7 @@ const id: Record<string, string> = {
   "home.brandsBody":
     "Pustaka contoh sudah mencakup merek-merek ini. Semakin banyak ditambahkan seiring Dirory berkembang — dan Anda dapat meminta merek langsung dari dalam SketchUp.",
   "home.ctaTag": "Mulai mendesain",
-  "home.ctaHeading": "Hadirkan detail produk yang lebih baik di proyek SketchUp Anda berikutnya.",
+  "home.ctaHeading": "Hadirkan detail produk yang lebih baik di proyek SketchUp atau Revit Anda berikutnya.",
   "home.ctaBody": "Buat akun gratis. Kami mengirim tautan masuk yang aman ke email Anda, lalu Anda dapat mengunduh plugin.",
   "home.ctaButton": "Buat akun gratis Anda",
   "brand.sanitaryware": "Saniter",
@@ -646,6 +651,11 @@ const id: Record<string, string> = {
   "download.howToInstall": "Cara memasang",
   "download.privacy": "Kebijakan Privasi",
   "download.footerNote": "Gratis untuk arsitek dan desainer.",
+  "download.revitTitle": "Dirory untuk Revit (beta)",
+  "download.revitBody":
+    "Untuk Revit 2024 di Windows. Cat material Dirory ke dinding, lantai, dan plafon dengan ukuran ubin sebenarnya, dan dapatkan RAB dari dinding, lantai, plafon, atap, pintu, dan jendela. Family Revit (.rfa) untuk produk sedang ditambahkan.",
+  "download.revitButton": "Unduh untuk Revit 2024",
+  "download.revitStep": "Ekstrak, jalankan Install-Dirory.cmd, lalu mulai ulang Revit dan buka tab Dirory → Library.",
   "download.consentTitle": "Sebelum mengunduh",
   "download.consentBody":
     "Pilih apa yang boleh dikirim plugin ke Dirory. Plugin tidak pernah mengirim geometri, berkas SketchUp, atau lokasi berkas. Plugin memakai pilihan ini saat Anda masuk, dan Anda dapat mengubahnya kapan saja di dialog akun plugin.",

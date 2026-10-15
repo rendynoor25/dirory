@@ -161,6 +161,21 @@ export default async function DownloadPage({
                 {t(locale, "download.fullGuide")} →
               </Link>
             </p>
+
+            {/* Dirory for Revit (beta): same account, same consent, Windows only. */}
+            <div className="mt-8 rounded-xl border border-slate-200 p-5">
+              <p className="text-sm font-semibold text-slate-900">{t(locale, "download.revitTitle")}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{t(locale, "download.revitBody")}</p>
+              {consented && !editing ? (
+                <a
+                  href="/api/download/revit"
+                  className="mt-4 inline-flex rounded-full border border-brand-700 px-5 py-2.5 text-sm font-semibold text-brand-700 transition hover:bg-brand-50"
+                >
+                  {t(locale, "download.revitButton")}
+                </a>
+              ) : null}
+              <p className="mt-3 text-xs leading-5 text-slate-500">{t(locale, "download.revitStep")}</p>
+            </div>
           </>
         ) : (
           <>

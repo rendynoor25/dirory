@@ -1,5 +1,36 @@
 # Changelog
 
+## Unreleased — Dirory for Revit 0.1.0 (beta)
+
+A Revit 2024 add-in on the same principle as the SketchUp plugin — and the
+same panel. `revit/DiroryRevit` hosts `plugin/dirory_library/ui` in a WebView2
+dockable pane; a bridge turns the panel's `sketchup.*` calls into messages for
+the add-in, which answers through the same `window.dirory*` functions Ruby
+uses. Catalogue, search, colour families, quantities and RAB are one code base.
+
+- **Materials.** A Revit material is not an image, so Dirory builds one per
+  catalogue material: the texture as the render appearance at its real size
+  (the catalogue's tile size), the texture's average colour for shaded views,
+  and the tile grid as a model surface pattern, so drawings show real joints.
+  Click a card, then click faces to paint (`Document.Paint`), Esc to finish.
+- **Models.** Families (`.rfa`) load and are placed with Revit's own placement.
+  The catalogue has no `.rfa` files yet, so only materials show for now.
+- **RAB.** The takeoff comes from Revit elements, not face directions: walls
+  (both faces), floors, ceilings, roofs (`HOST_AREA_COMPUTED`), doors and
+  windows per type with their width/height, skirting from room perimeters.
+  Same shape as `takeoff.rb`, so `rab.js`, the Jakarta price book and the Pro
+  gate apply unchanged; a project pass binds to a hash of the project's id.
+- Sends no usage data (no usage reports, search misses or quotes yet), so it
+  needs no consent switches.
+- `scripts/build-revit.ps1` compiles with the Build Tools' Roslyn csc against
+  .NET 4.8 and Revit's own DLLs (no SDK, no NuGet) and packages
+  `DiroryRevit-2024-0.1.0.zip` with `Install-Dirory.cmd` (per user, no admin).
+- **Website.** `/download` offers the Revit package (same sign-in and consent
+  gate, `/api/download/revit`); the landing page and site title say "SketchUp
+  and Revit" in both languages.
+
+Compiled, not yet run in Revit.
+
 ## Unreleased — Dirory Pro for architects, paid by QRIS (RAB step 3)
 
 The RAB cost estimate now needs Dirory Pro.

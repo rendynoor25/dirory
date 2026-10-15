@@ -4,14 +4,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dirory.com"),
   title: {
-    default: "Dirory - Product Library for SketchUp",
+    default: "Dirory - Product Library for SketchUp and Revit",
     template: "%s | Dirory",
   },
   description:
     "Discover real Indonesian construction brands, 3D models and material textures for SketchUp. Free for architects and designers.",
   icons: { icon: "/dirory-mark.png", shortcut: "/dirory-mark.png" },
   openGraph: {
-    title: "Dirory - Product Library for SketchUp",
+    title: "Dirory - Product Library for SketchUp and Revit",
     description:
       "Discover real Indonesian construction brands, 3D models and material textures for SketchUp.",
     siteName: "Dirory",
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Dirory - Product Library for SketchUp",
-    description: "Real Indonesian products for your SketchUp workflow.",
+    title: "Dirory - Product Library for SketchUp and Revit",
+    description: "Real Indonesian products for your SketchUp and Revit workflow.",
     images: ["/dirory-mark.png"],
   },
 };

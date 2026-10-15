@@ -64,3 +64,6 @@ plugin/**/*.tmp
 !dist/*.rbz
 # Headless-Chrome scratch profile written by the proposal builders.
 proposals/**/.chrome-profile/
+
+# Revit add-in build output; the packaged zip is served from apps/web/private.
+dist/revit/
