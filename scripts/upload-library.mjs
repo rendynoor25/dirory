@@ -26,7 +26,7 @@
  *   node scripts/upload-library.mjs --dry-run
  *   node scripts/upload-library.mjs --root "D:/Dirory/sample_library"
  *   node scripts/upload-library.mjs --root "D:/Dirory/sample_library" --limit 5
- *   node scripts/upload-library.mjs --root "D:/Dirory/TOTO" --vendor <vendor-uuid>
+ *   node scripts/upload-library.mjs --root "D:/Dirory/vendor-sources/TOTO" --vendor <vendor-uuid>
  *
  * Needs in the environment (or a .env.local next to this file):
  *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY

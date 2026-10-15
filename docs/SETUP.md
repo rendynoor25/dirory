@@ -362,7 +362,7 @@ are visible to architects with no subscription.
 **A real vendor's products:**
 
 ```bash
-node scripts/upload-library.mjs --root "D:/Dirory/TOTO" --vendor <vendor-uuid>
+node scripts/upload-library.mjs --root "D:/Dirory/vendor-sources/TOTO" --vendor <vendor-uuid>
 ```
 
 Find the vendor id in the admin **Vendors** page URL, or:
