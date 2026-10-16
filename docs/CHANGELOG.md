@@ -1,5 +1,32 @@
 # Changelog
 
+## Unreleased — RAB as an Excel workbook
+
+**Export RAB (Excel)** in the RAB view writes a workbook organised the way
+Indonesian estimators build one (modelled on a practising estimator's
+"RAB Rumah Sumedang 2025"):
+
+- **REKAP**: divisions A–H (pembongkaran, struktur, dinding, lantai, plafon,
+  atap, kusen, MEP) with their share, PPN (11% effective, editable), total,
+  rounded total, floor area (from the model, editable) and cost per m².
+- **RAB**: work items per division: volume × unit price = amount, with a
+  subtotal per division; MEP grouped into plumbing, electrical, air and fire.
+- **AHS BONGKAR / AHS STR / AHS ARS / AHS MEP**: one Analisa Harga Satuan
+  block per item used: labour, materials, equipment (coefficient × price),
+  D = A+B+C, E = overhead and profit, F = unit price. MEP gets its own sheet.
+- **HARGA UPAH BAHAN**: every basic price the analyses use, plus the overhead
+  %; change a price here and the whole workbook follows.
+- **VOL**: each RAB volume with how it was measured, and the model's figures.
+- **CATATAN**: sources and assumptions.
+
+Every link is a formula (RAB → VOL and AHS, AHS → HARGA UPAH BAHAN) with the
+value cached. Own prices and unpriced lines are yellow input cells.
+`plugin/dirory_library/ui/xlsx.js` writes the .xlsx with no library;
+`rab-xlsx.js` lays out the workbook; the hosts only save the bytes
+(`saveBinary`). Tests: `scripts/test-rab-xlsx.mjs` builds a sample workbook and
+`scripts/check-xlsx.py` recalculates all its formulas (704, all matching).
+
+
 ## Unreleased — Revit phasing, demolition, and live cost
 
 **Phasing.** The RAB prices one Revit phase, by default the last one ("New

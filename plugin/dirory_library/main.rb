@@ -1,5 +1,6 @@
 require 'sketchup.rb'
 require 'json'
+require 'base64'
 require 'digest'
 require 'uri'
 require 'fileutils'
@@ -1127,7 +1128,9 @@ module Dirory
     # Quantity takeoff of the open model (takeoff.rb): finish areas per
     # element and material, openings, floor perimeter.
     def self.takeoff
-      Takeoff.run(Sketchup.active_model, method(:dirory_info))
+      model = Sketchup.active_model
+      # The title stays in the panel (it names the exported RAB); it is not sent.
+      Takeoff.run(model, method(:dirory_info)).merge('project' => model.title.to_s)
     end
 
     def self.send_takeoff
@@ -1251,6 +1254,25 @@ module Dirory
         break out if out.size >= 2000
         next unless key.is_a?(String) && key.length <= 300 && value.is_a?(Numeric)
         out[key] = value.to_f if value >= 0 && value < 1e13
+      end
+    end
+
+    # A file the panel built (the Excel RAB), sent as base64.
+    def self.save_binary_file(title, filename, base64)
+      bytes = Base64.decode64(base64.to_s)
+      UI.start_timer(0.1, false) do
+        begin
+          path = UI.savepanel(title.to_s.empty? ? 'Save' : title.to_s, Dir.home, filename.to_s)
+          next unless path
+          ext = File.extname(filename.to_s)
+          path += ext unless ext.empty? || path.downcase.end_with?(ext.downcase)
+          File.binwrite(path, bytes)
+          UI.messagebox("Saved to:
+#{path}")
+        rescue StandardError => e
+          UI.messagebox("Dirory could not save the file:
+#{e.class}: #{e.message}")
+        end
       end
     end
 
@@ -1523,6 +1545,10 @@ module Dirory
         @dialog.add_action_callback('saveText') do |_ctx, payload|
           data = parse_payload(payload)
           save_text_file(data['title'], data['filename'], data['content'])
+        end
+        @dialog.add_action_callback('saveBinary') do |_ctx, payload|
+          data = parse_payload(payload)
+          save_binary_file(data['title'], data['filename'], data['base64'])
         end
         @dialog.add_action_callback('loadPrices') do |_ctx|
           @dialog.execute_script("window.diroryPrices && window.diroryPrices(#{custom_prices.to_json});")

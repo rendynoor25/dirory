@@ -160,6 +160,8 @@ namespace Dirory.Revit
                 ["structure"] = structure,
                 ["mep"] = mep,
                 ["demolition"] = demolition,
+                // Names the exported RAB; stays in the panel, never sent.
+                ["project"] = doc.Title ?? "",
                 ["phase"] = ph.PhaseId == ElementId.InvalidElementId ? "" : ph.PhaseId.Value.ToString(),
                 ["phases"] = Phasing.List(doc),
                 ["components_skipped"] = 0,

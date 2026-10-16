@@ -1682,7 +1682,11 @@ function renderRab() {
   print.addEventListener('click', printRab);
   const csv = el('button', 'ghost-btn', '⭳ Export RAB (CSV)');
   csv.addEventListener('click', exportRabCsv);
+  const xlsx = el('button', 'ghost-btn', '⭳ Export RAB (Excel)');
+  xlsx.title = 'REKAP, RAB, AHS per discipline, basic prices and volumes, linked by formulas';
+  xlsx.addEventListener('click', exportRabXlsx);
   actions.appendChild(print);
+  actions.appendChild(xlsx);
   actions.appendChild(csv);
   body.appendChild(actions);
 }
@@ -1769,6 +1773,33 @@ function printRab() {
   <p class="meta">Includes ${rabBook.overhead_pct}% overhead and profit; excludes PPN. ${escapeHtml(rabBook.source || '')} ${escapeHtml(rebarNote())}
   Volumes are measured from the model; check them before a tender.</p></body></html>`;
   sketchup.printHtml(JSON.stringify({ name: 'Dirory_RAB', html: html }));
+}
+
+// The RAB as an Excel workbook (rab-xlsx.js): REKAP, RAB, AHS per discipline,
+// HARGA UPAH BAHAN, VOL and CATATAN, linked by formulas. Built here; the host
+// only saves the bytes.
+function exportRabXlsx() {
+  if (!lastRab || !rabBook) return;
+  try {
+    const project = (lastTakeoff && lastTakeoff.project) || '';
+    const workbook = window.DiroryRabXlsx.buildRabWorkbook({
+      rab: lastRab,
+      book: rabBook,
+      takeoff: lastTakeoff,
+      project: project,
+      labels: {},
+      notes: [rebarNote()].filter(Boolean),
+    });
+    const bytes = window.DiroryXlsx.write(workbook);
+    const safe = (project || 'Dirory').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '_') || 'Dirory';
+    sketchup.saveBinary(JSON.stringify({
+      title: 'Export RAB (Excel)',
+      filename: `RAB_${safe}.xlsx`,
+      base64: window.DiroryXlsx.toBase64(bytes),
+    }));
+  } catch (e) {
+    window.diroryToast(`Could not build the Excel file: ${e.message}`);
+  }
 }
 
 function exportRabCsv() {

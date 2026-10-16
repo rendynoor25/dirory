@@ -131,6 +131,7 @@ namespace Dirory.Revit
                     break;
                 case "printHtml": OpenHtml(Json.Str(data, "name"), Json.Str(data, "html")); break;
                 case "saveText": SaveText(Json.Str(data, "title"), Json.Str(data, "filename"), Json.Str(data, "content")); break;
+                case "saveBinary": SaveBinary(Json.Str(data, "title"), Json.Str(data, "filename"), Json.Str(data, "base64")); break;
                 case "openURL": Cloud.Open(Json.Str(data, "url")); break;
                 case "openPrivacy": Cloud.Open("https://dirory.com/privacy"); break;
                 case "toggleFavourite": case "searchMiss": case "setLanguage":
@@ -361,6 +362,29 @@ namespace Dirory.Revit
             string path = Path.Combine(Path.GetTempPath(), $"{(safe == "" ? "Dirory" : safe)}_{DateTime.Now:yyyyMMdd_HHmmss}.html");
             File.WriteAllText(path, html ?? "", new UTF8Encoding(false));
             Cloud.Open(path);
+        }
+
+        /// A file the panel built (the Excel RAB), sent as base64.
+        private void SaveBinary(string title, string filename, string base64)
+        {
+            byte[] bytes;
+            try { bytes = Convert.FromBase64String(base64 ?? ""); }
+            catch (FormatException) { Toast("Dirory could not read the file to save."); return; }
+            _page.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                using (var dlg = new System.Windows.Forms.SaveFileDialog { Title = title, FileName = filename })
+                {
+                    string ext = Path.GetExtension(filename);
+                    if (ext != "") dlg.Filter = $"{ext.TrimStart('.').ToUpper()} files|*{ext}|All files|*.*";
+                    if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                    try
+                    {
+                        File.WriteAllBytes(dlg.FileName, bytes);
+                        Toast("Saved to " + dlg.FileName);
+                    }
+                    catch (Exception e) { Toast("Dirory could not save the file: " + e.Message); }
+                }
+            }));
         }
 
         private void SaveText(string title, string filename, string content)
