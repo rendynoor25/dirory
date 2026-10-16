@@ -68,7 +68,10 @@ async function start(req: Request): Promise<Response> {
   });
   if (error) return json({ error: "could not start device login" }, 500);
 
-  const verificationUrl = `${siteUrl()}/auth/device?code=${encodeURIComponent(code)}`;
+  // Which app is signing in, so the browser page can say "Connect Revit" or
+  // "Connect SketchUp". The Revit add-in sends plugin_version "revit-x.y.z".
+  const app = /^revit/i.test(String(body.plugin_version ?? "")) ? "revit" : "sketchup";
+  const verificationUrl = `${siteUrl()}/auth/device?code=${encodeURIComponent(code)}&app=${app}`;
   return json({
     device_code: deviceCode,
     user_code: code,

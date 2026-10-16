@@ -13,10 +13,14 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
  */
 export function DeviceSignIn({
   code,
+  app,
+  appName,
   googleEnabled,
   error,
 }: {
   code: string;
+  app: "sketchup" | "revit";
+  appName: string;
   googleEnabled: boolean;
   error?: string;
 }) {
@@ -37,7 +41,7 @@ export function DeviceSignIn({
   // appended `code=` collided with the device code (`?code=X&code=Y` -> 500),
   // so the plugin's poll never saw an approval.
   const returnUrl = () =>
-    `${origin()}/auth/callback?next=${encodeURIComponent(`/auth/device?code=${code}`)}`;
+    `${origin()}/auth/callback?next=${encodeURIComponent(`/auth/device?code=${code}&app=${app}&signed_in=1`)}`;
 
   async function onGoogle() {
     setStatus("google");
@@ -84,7 +88,7 @@ export function DeviceSignIn({
   return (
     <>
       <p className="text-sm text-slate-600">
-        Sign in to link this SketchUp session to your Dirory account.
+        Sign in to connect Dirory in {appName} to your account.
       </p>
 
       {error ? (

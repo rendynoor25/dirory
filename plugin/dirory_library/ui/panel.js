@@ -92,6 +92,10 @@ function updateLoadingNote(text) {
   if (note) note.textContent = text;
 }
 
+// The same panel runs in SketchUp and in the Revit add-in; name the right app.
+const HOST_NAME = window.DIRORY_HOST === 'revit' ? 'Revit' : 'SketchUp';
+document.querySelectorAll('.host-name').forEach((n) => { n.textContent = HOST_NAME; });
+
 window.addEventListener('load', () => {
   trackControlsHeight();
   document.getElementById('grid').appendChild(loadingState());
