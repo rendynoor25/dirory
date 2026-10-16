@@ -40,7 +40,10 @@ function loadEnv() {
 
 loadEnv();
 const dryRun = process.argv.includes("--dry-run");
-const families = JSON.parse(fs.readFileSync(MANIFEST, "utf8")).families;
+// --only "Name A,Name B": just those entries (e.g. a batch added later).
+const onlyArg = process.argv.indexOf("--only");
+const only = onlyArg > -1 ? new Set(process.argv[onlyArg + 1].split(",").map((s) => s.trim())) : null;
+const families = JSON.parse(fs.readFileSync(MANIFEST, "utf8")).families.filter((f) => !only || only.has(f.name));
 
 // Check every file first, so a typo fails before anything is uploaded.
 for (const f of families) {
@@ -78,7 +81,12 @@ async function upload(bucket, storageKey, file) {
 }
 
 async function vendorId(brand) {
-  const { data, error } = await supabase.from("vendors").select("id").ilike("brand_name", brand).limit(1).maybeSingle();
+  // Several vendor rows can share a brand name ("Dirory"): prefer the platform
+  // one, then an approved one.
+  const { data, error } = await supabase
+    .from("vendors").select("id").ilike("brand_name", brand).neq("status", "suspended")
+    .order("is_platform", { ascending: false }).order("approved_at", { ascending: true, nullsFirst: false })
+    .limit(1).maybeSingle();
   if (error || !data) throw new Error(`no vendor "${brand}"`);
   return data.id;
 }

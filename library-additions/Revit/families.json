@@ -1,38 +1,276 @@
 {
   "_about": "Revit families (.rfa) added to the catalogue by scripts/upload-revit-families.mjs. 'attach' adds the family to an existing product (brand + name), so one card serves SketchUp and Revit. 'new' creates a Revit-only product. Paths are relative to D:\\Dirory. Thumbnails: the vendor's photo where there is one; otherwise the family's own preview, enlarged (library-additions/Revit/thumbnails) - replace those with product photos when they exist.",
   "families": [
-    { "action": "attach", "brand": "Toto", "name": "CE9", "file": "vendor-sources/TOTO/TOTO/KLOSET/CE9/CE9.rfa" },
-    { "action": "attach", "brand": "Toto", "name": "CW 630 PJ", "file": "vendor-sources/TOTO/TOTO/KLOSET/CW 630 PJ/CW 630 PJ.rfa" },
-    { "action": "attach", "brand": "Toto", "name": "LW952J", "file": "vendor-sources/TOTO/TOTO/WASTAFEL/LW952J/LW952J.rfa" },
-    { "action": "attach", "brand": "Toto", "name": "U104", "file": "vendor-sources/TOTO/TOTO/URINOIR/U104/U104.rfa" },
-    { "action": "attach", "brand": "Trilliunware", "name": "Arabian", "file": "vendor-sources/Trilliunware/Trilliunware/Arabian/Arabian.rfa" },
-    { "action": "attach", "brand": "Trilliunware", "name": "Chrysolite", "file": "vendor-sources/Trilliunware/Trilliunware/Chrysolite/Chrysolite.rfa" },
-    { "action": "attach", "brand": "Trilliunware", "name": "SAPPHIRA", "file": "vendor-sources/Trilliunware/Trilliunware/Sapphira/SAPPHIRA.rfa" },
-    { "action": "attach", "brand": "ALPHAMAX", "name": "MAX 1", "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450857818.rfa" },
-    { "action": "attach", "brand": "ALPHAMAX", "name": "MAX 2", "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450861227.rfa" },
-
-    { "action": "new", "brand": "Toto", "name": "TX109LRS", "category": "Faucet", "tags": ["Kran", "Keran", "Faucet", "Tap", "Wastafel", "Revit"],
-      "file": "vendor-sources/TOTO/TOTO/KRAN/TX109LRS/TX109LRS.rfa", "thumbnail": "dirory/library-additions/Revit/thumbnails/TX109LRS.png" },
-    { "action": "new", "brand": "Toto", "name": "TX123LESN", "category": "Faucet", "tags": ["Kran", "Keran", "Faucet", "Tap", "Wastafel", "Revit"],
-      "file": "vendor-sources/TOTO/TOTO/KRAN/TX123LESN/TX 123 LESN.rfa", "thumbnail": "dirory/library-additions/Revit/thumbnails/TX123LESN.png" },
-    { "action": "new", "brand": "Toto", "name": "AW115J", "category": "Urinoir", "tags": ["Urinoir", "Urinal", "Sensor", "Flush", "Revit"],
-      "file": "vendor-sources/TOTO/TOTO/URINOIR/AW115J/AW115J.rfa", "thumbnail": "dirory/library-additions/Revit/thumbnails/AW115J.png" },
-    { "action": "new", "brand": "Trilliunware", "name": "Citrine Countertop", "category": "Lavatory", "tags": ["Wastafel", "Lavatory", "Basin", "Countertop", "Revit"],
-      "file": "vendor-sources/Trilliunware/Trilliunware/Citrine/Citrine countertop.rfa", "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Citrine/Citrine.JPG" },
-    { "action": "new", "brand": "Trilliunware", "name": "Cobalt Above", "category": "Lavatory", "tags": ["Wastafel", "Lavatory", "Basin", "Above counter", "Revit"],
-      "file": "vendor-sources/Trilliunware/Trilliunware/Cobalt/Cobalt Above.rfa", "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Cobalt/Cobalt above.JPG" },
-    { "action": "new", "brand": "Trilliunware", "name": "Juniper Vessel", "category": "Lavatory", "tags": ["Wastafel", "Lavatory", "Basin", "Vessel", "Revit"],
-      "file": "vendor-sources/Trilliunware/Trilliunware/Juniper/Juniper vessel.rfa", "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Juniper/Juniper.JPG" },
-    { "action": "new", "brand": "Trilliunware", "name": "Opal", "category": "Closet", "tags": ["Kloset", "Closet", "Toilet", "One piece", "Revit"],
-      "file": "vendor-sources/Trilliunware/Trilliunware/Opal/Opal.rfa", "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Opal/Capture.JPG" }
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CE9",
+      "file": "vendor-sources/TOTO/TOTO/KLOSET/CE9/CE9.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW 630 PJ",
+      "file": "vendor-sources/TOTO/TOTO/KLOSET/CW 630 PJ/CW 630 PJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW952J",
+      "file": "vendor-sources/TOTO/TOTO/WASTAFEL/LW952J/LW952J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "U104",
+      "file": "vendor-sources/TOTO/TOTO/URINOIR/U104/U104.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Trilliunware",
+      "name": "Arabian",
+      "file": "vendor-sources/Trilliunware/Trilliunware/Arabian/Arabian.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Trilliunware",
+      "name": "Chrysolite",
+      "file": "vendor-sources/Trilliunware/Trilliunware/Chrysolite/Chrysolite.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Trilliunware",
+      "name": "SAPPHIRA",
+      "file": "vendor-sources/Trilliunware/Trilliunware/Sapphira/SAPPHIRA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "ALPHAMAX",
+      "name": "MAX 1",
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450857818.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "ALPHAMAX",
+      "name": "MAX 2",
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450861227.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TX109LRS",
+      "category": "Faucet",
+      "tags": [
+        "Kran",
+        "Keran",
+        "Faucet",
+        "Tap",
+        "Wastafel",
+        "Revit"
+      ],
+      "file": "vendor-sources/TOTO/TOTO/KRAN/TX109LRS/TX109LRS.rfa",
+      "thumbnail": "dirory/library-additions/Revit/thumbnails/TX109LRS.png"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TX123LESN",
+      "category": "Faucet",
+      "tags": [
+        "Kran",
+        "Keran",
+        "Faucet",
+        "Tap",
+        "Wastafel",
+        "Revit"
+      ],
+      "file": "vendor-sources/TOTO/TOTO/KRAN/TX123LESN/TX 123 LESN.rfa",
+      "thumbnail": "dirory/library-additions/Revit/thumbnails/TX123LESN.png"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "AW115J",
+      "category": "Urinoir",
+      "tags": [
+        "Urinoir",
+        "Urinal",
+        "Sensor",
+        "Flush",
+        "Revit"
+      ],
+      "file": "vendor-sources/TOTO/TOTO/URINOIR/AW115J/AW115J.rfa",
+      "thumbnail": "dirory/library-additions/Revit/thumbnails/AW115J.png"
+    },
+    {
+      "action": "new",
+      "brand": "Trilliunware",
+      "name": "Citrine Countertop",
+      "category": "Lavatory",
+      "tags": [
+        "Wastafel",
+        "Lavatory",
+        "Basin",
+        "Countertop",
+        "Revit"
+      ],
+      "file": "vendor-sources/Trilliunware/Trilliunware/Citrine/Citrine countertop.rfa",
+      "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Citrine/Citrine.JPG"
+    },
+    {
+      "action": "new",
+      "brand": "Trilliunware",
+      "name": "Cobalt Above",
+      "category": "Lavatory",
+      "tags": [
+        "Wastafel",
+        "Lavatory",
+        "Basin",
+        "Above counter",
+        "Revit"
+      ],
+      "file": "vendor-sources/Trilliunware/Trilliunware/Cobalt/Cobalt Above.rfa",
+      "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Cobalt/Cobalt above.JPG"
+    },
+    {
+      "action": "new",
+      "brand": "Trilliunware",
+      "name": "Juniper Vessel",
+      "category": "Lavatory",
+      "tags": [
+        "Wastafel",
+        "Lavatory",
+        "Basin",
+        "Vessel",
+        "Revit"
+      ],
+      "file": "vendor-sources/Trilliunware/Trilliunware/Juniper/Juniper vessel.rfa",
+      "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Juniper/Juniper.JPG"
+    },
+    {
+      "action": "new",
+      "brand": "Trilliunware",
+      "name": "Opal",
+      "category": "Closet",
+      "tags": [
+        "Kloset",
+        "Closet",
+        "Toilet",
+        "One piece",
+        "Revit"
+      ],
+      "file": "vendor-sources/Trilliunware/Trilliunware/Opal/Opal.rfa",
+      "thumbnail": "vendor-sources/Trilliunware/Trilliunware/Opal/Capture.JPG"
+    },
+    {
+      "action": "new",
+      "brand": "ALPHAMAX",
+      "name": "ASTRAL Standard",
+      "category": "Windows",
+      "tags": [
+        "Jendela",
+        "Window",
+        "Kusen",
+        "Allure Industries",
+        "ASTRAL",
+        "Revit"
+      ],
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450865424.rfa",
+      "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165398825815.JPG",
+      "_note": "ASTRAL is Allure Industries' window line, the company behind ALPHAMAX; listed on the ALPHAMAX vendor."
+    },
+    {
+      "action": "new",
+      "brand": "Trilliunware",
+      "name": "Viscaria",
+      "category": "Urinoir",
+      "tags": [
+        "Urinoir",
+        "Urinal",
+        "Revit"
+      ],
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450868149.rfa",
+      "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165398853661.JPG"
+    },
+    {
+      "action": "new",
+      "brand": "Dirory",
+      "name": "Vessel Basin Tap",
+      "category": "Faucet",
+      "tags": [
+        "Kran",
+        "Keran",
+        "Faucet",
+        "Tap",
+        "Wastafel",
+        "Revit"
+      ],
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450892992.rfa",
+      "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165416349613.JPG",
+      "_note": "Brand to confirm: the family was saved from a TRILIUNWARE folder."
+    },
+    {
+      "action": "new",
+      "brand": "Dirory",
+      "name": "Washroom Accessory - Hinged Oval",
+      "category": "Accessories",
+      "tags": [
+        "Bobrick",
+        "Washroom",
+        "Toilet accessory",
+        "Revit"
+      ],
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450898825.rfa",
+      "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165421959163.JPG",
+      "_note": "A Bobrick family (Revit MEP 2011); product to confirm and rename."
+    },
+    {
+      "action": "new",
+      "brand": "Dirory",
+      "name": "Washroom Accessory - Rounded Panel",
+      "category": "Accessories",
+      "tags": [
+        "Bobrick",
+        "Washroom",
+        "Toilet accessory",
+        "Revit"
+      ],
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450902118.rfa",
+      "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165421976781.JPG",
+      "_note": "A Bobrick family (Revit MEP 2011); product to confirm and rename."
+    },
+    {
+      "action": "new",
+      "brand": "Dirory",
+      "name": "Hand Dryer ThinAir",
+      "category": "Accessories",
+      "tags": [
+        "Hand dryer",
+        "Pengering tangan",
+        "Excel Dryer",
+        "Washroom",
+        "Revit"
+      ],
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450907122.rfa",
+      "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165422021615.JPG"
+    },
+    {
+      "action": "new",
+      "brand": "Dirory",
+      "name": "Hand Dryer XLERATOR",
+      "category": "Accessories",
+      "tags": [
+        "Hand dryer",
+        "Pengering tangan",
+        "Excel Dryer",
+        "Washroom",
+        "Revit"
+      ],
+      "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450912810.rfa",
+      "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165422068256.JPG"
+    }
   ],
   "waiting_for_brand": [
-    "ASTRAL STANDARD (window) - ARCHIVE/.../165450865424.rfa, photo 165398825815.JPG",
-    "VISCARIA (urinal) - ARCHIVE/.../165450868149.rfa, photo 165398853661.JPG",
-    "Vessel Basin Tap 2 - ARCHIVE/.../165450892992.rfa, photo 165416349613.JPG",
-    "Bobrick recessed accessory (2011) - ARCHIVE/.../165450898825.rfa, photo 165421959163.JPG",
-    "Bobrick recessed accessory (2011) - ARCHIVE/.../165450902118.rfa, photo 165421976781.JPG",
-    "Excel Dryer ThinAir hand dryer - ARCHIVE/.../165450907122.rfa, photo 165422021615.JPG",
-    "Excel Dryer XLERATOR hand dryer - ARCHIVE/.../165450912810.rfa, photo 165422068256.JPG"
+    "Dirory-branded until confirmed: Vessel Basin Tap (likely Trilliunware), the two Bobrick washroom accessories, Excel Dryer ThinAir and XLERATOR."
   ]
 }
