@@ -16,6 +16,11 @@ Use
   RAB        Usage tab -> Measure model -> Estimate cost (RAB). Needs Dirory Pro
              (dirory.com/pro).
 
+If Revit says "cannot run the external application Dirory" (FileLoadException,
+0x80131515), Windows has blocked the downloaded files. Run Install-Dirory.cmd
+from this version again (it unblocks Dirory's files), or right-click the .zip,
+choose Properties, tick Unblock, then extract and install again.
+
 Uninstall
   Delete Dirory.addin and the Dirory folder from
   %APPDATA%\Autodesk\Revit\Addins\2024

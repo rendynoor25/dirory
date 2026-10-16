@@ -64,7 +64,7 @@ export default async function HowToInstallPage() {
     [t(locale, "install.revitWhereFiles"), t(locale, "install.revitWhereFilesValue")],
     [t(locale, "install.whereSignIn"), t(locale, "install.whereSignInValue")],
   ];
-  const revitTrouble: [string, string][] = [1, 2, 3, 4, 5].map((i) => [
+  const revitTrouble: [string, string][] = [6, 1, 2, 3, 4, 5].map((i) => [
     t(locale, `install.revitTroubleQ${i}`),
     t(locale, `install.revitTroubleA${i}`),
   ]);

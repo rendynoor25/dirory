@@ -69,20 +69,48 @@ function trackControlsHeight() {
   }
 }
 
+// The catalogue comes from the cloud, which takes a few seconds (longer on a
+// slow connection): show a spinner and skeleton cards meanwhile.
+let loadingNote = 'Products and materials come from the Dirory cloud. This takes a few seconds.';
+
+function loadingState() {
+  const box = el('div', 'loading-state');
+  box.setAttribute('role', 'status');
+  box.setAttribute('aria-live', 'polite');
+  box.appendChild(el('div', 'spinner'));
+  box.appendChild(el('p', 'loading-title', 'Loading the Dirory catalogue…'));
+  box.appendChild(el('p', 'loading-note', loadingNote));
+  const skeletons = el('div', 'skeleton-grid');
+  for (let i = 0; i < 6; i++) skeletons.appendChild(el('div', 'skeleton-card'));
+  box.appendChild(skeletons);
+  return box;
+}
+
+function updateLoadingNote(text) {
+  loadingNote = text;
+  const note = document.querySelector('.loading-state .loading-note');
+  if (note) note.textContent = text;
+}
+
 window.addEventListener('load', () => {
   trackControlsHeight();
+  document.getElementById('grid').appendChild(loadingState());
   sketchup.ready();
-  // If Ruby never calls back (e.g. an exception before send_library runs),
-  // don't leave the panel silently blank — say so.
+  setTimeout(() => {
+    if (!heardFromRuby) updateLoadingNote('Still loading — a slow connection can take up to a minute.');
+  }, 12000);
+  // Only after a long silence is something likely wrong (e.g. an exception
+  // in Ruby before the catalogue is sent): say how to find out.
   setTimeout(() => {
     if (!heardFromRuby) {
+      updateLoadingNote('This is taking unusually long.');
       const diag = document.getElementById('diagnostic');
       diag.hidden = false;
       diag.textContent =
-        "Didn't hear back from SketchUp. Open Window \u2192 Ruby Console, " +
-        're-open this panel, and check for a red error message.';
+        'The catalogue has not arrived after 45 seconds. Check your internet connection, then close and re-open ' +
+        'this panel. If it still does not load, open Window → Ruby Console and send us any red error message.';
     }
-  }, 4000);
+  }, 45000);
 });
 
 // When the user comes back from the SketchUp viewport to this panel, refresh
@@ -606,6 +634,13 @@ function render() {
   const q = appliedQuery;
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
+  // Until the catalogue arrives, show that it is loading rather than an
+  // empty library (sign-in state can arrive first and re-render).
+  if (!heardFromRuby) {
+    document.getElementById('empty').hidden = true;
+    grid.appendChild(loadingState());
+    return;
+  }
 
   let filtered = allItems.filter((item) => {
     const matchesType = inCurrentTab(item);
