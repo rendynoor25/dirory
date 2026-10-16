@@ -25,9 +25,9 @@ export async function GET(request: Request) {
       // The most recent user-visible changes, newest first. Keep this short —
       // it is shown inside the plugin's update prompt.
       notes: [
-        "Search now runs on Enter (clearer results, better demand data).",
-        "Inspector window and per-card download badges.",
-        "Sign in with Google, no code to type.",
+        "Cost estimate (RAB) with Jakarta prices, exported to Excel like a QS workbook.",
+        "Live cost of the model while you design.",
+        "You choose what is shared before anything is sent.",
       ],
     },
     { headers: { "Cache-Control": "public, max-age=300" } },
