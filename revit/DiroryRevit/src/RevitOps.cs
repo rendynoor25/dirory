@@ -53,7 +53,14 @@ namespace Dirory.Revit
             string matName = ("Dirory - " + name).Replace("{", "(").Replace("}", ")").Replace("[", "(").Replace("]", ")");
             var existing = new FilteredElementCollector(doc).OfClass(typeof(Material)).Cast<Material>()
                 .FirstOrDefault(m => m.Name == matName);
-            if (existing != null) return existing.Id;
+
+            if (existing != null)
+            {
+                // A material made by an earlier build may have no texture
+                // (0.1.0-0.1.2 could leave the Image empty): repair it in place.
+                if (!HasTexture(doc, existing)) AttachAppearance(doc, app, existing, texturePath, tileWcm, tileHcm);
+                return existing.Id;
+            }
 
             using (var t = new Transaction(doc, "Dirory: create material"))
             {
@@ -79,43 +86,93 @@ namespace Dirory.Revit
                     mat.SurfaceForegroundPatternColor = new Autodesk.Revit.DB.Color(120, 120, 120);
                 }
 
-                var appearance = CreateAppearance(doc, app, matName);
-                if (appearance != null)
-                {
-                    mat.AppearanceAssetId = appearance.Id;
-                    t.Commit();
-                    SetTexture(doc, appearance.Id, texturePath, tileWcm > 0 ? tileWcm : 100, tileHcm > 0 ? tileHcm : 100);
-                }
-                else
-                {
-                    t.Commit();
-                }
+                t.Commit();
+                AttachAppearance(doc, app, mat, texturePath, tileWcm, tileHcm);
                 return id;
             }
         }
 
-        private static AppearanceAssetElement CreateAppearance(Document doc, Autodesk.Revit.ApplicationServices.Application app, string name)
+        /// Give the material its own Generic appearance with the Dirory texture
+        /// in the Image slot, at the tile's real size. Says so if it cannot.
+        private static void AttachAppearance(Document doc, Autodesk.Revit.ApplicationServices.Application app, Material mat,
+            string texturePath, double tileWcm, double tileHcm)
         {
-            // Prefer a Generic appearance already in the project; else the library.
-            var generic = new FilteredElementCollector(doc).OfClass(typeof(AppearanceAssetElement))
-                .Cast<AppearanceAssetElement>()
-                .FirstOrDefault(a =>
-                {
-                    try { return a.GetRenderingAsset()?.FindByName(Generic.GenericDiffuse) != null; }
-                    catch { return false; }
-                });
+            string problem;
             try
             {
-                if (generic != null) return generic.Duplicate(name);
-                var lib = app.GetAssets(AssetType.Appearance)
-                    .FirstOrDefault(a => a.FindByName(Generic.GenericDiffuse) != null);
-                return lib == null ? null : AppearanceAssetElement.Create(doc, name, lib);
+                using (var t = new Transaction(doc, "Dirory: material appearance"))
+                {
+                    t.Start();
+                    var appearance = CreateAppearance(doc, app, mat.Name);
+                    if (appearance == null)
+                    {
+                        t.RollBack();
+                        problem = "no Generic appearance was found in the project or the material library";
+                    }
+                    else
+                    {
+                        mat.AppearanceAssetId = appearance.Id;
+                        t.Commit();
+                        problem = SetTexture(doc, appearance.Id, texturePath,
+                            tileWcm > 0 ? tileWcm : 100, tileHcm > 0 ? tileHcm : 100, mat.Color);
+                    }
+                }
             }
-            catch { return null; }
+            catch (Exception e) { problem = e.Message; }
+
+            Log($"material \"{mat.Name}\" texture \"{texturePath}\": {problem ?? "ok"}");
+            if (problem != null)
+                App.Panel.Bridge.Toast($"Dirory created \"{mat.Name}\" but could not attach its texture ({problem}). " +
+                                       "The colour and tile pattern are set. Details: %LOCALAPPDATA%\\Dirory\\revit.log");
         }
 
-        private static void SetTexture(Document doc, ElementId appearanceId, string path, double wcm, double hcm)
+        /// True when the material's appearance has an image in its Image slot.
+        private static bool HasTexture(Document doc, Material mat)
         {
+            try
+            {
+                var element = doc.GetElement(mat.AppearanceAssetId) as AppearanceAssetElement;
+                var diffuse = element?.GetRenderingAsset()?.FindByName(Generic.GenericDiffuse);
+                var bitmap = diffuse != null && diffuse.NumberOfConnectedProperties > 0 ? diffuse.GetSingleConnectedAsset() : null;
+                var file = bitmap?.FindByName(UnifiedBitmap.UnifiedbitmapBitmap) as AssetPropertyString;
+                return file != null && !string.IsNullOrEmpty(file.Value);
+            }
+            catch { return false; }
+        }
+
+        // A Generic appearance to copy: a project asset of the Generic schema
+        // (not just any asset with a diffuse slot), else the library's Generic.
+        private static AppearanceAssetElement CreateAppearance(Document doc, Autodesk.Revit.ApplicationServices.Application app, string name)
+        {
+            string unique = name;
+            for (int i = 2; AppearanceAssetElement.GetAppearanceAssetElementByName(doc, unique) != null; i++) unique = $"{name} ({i})";
+
+            bool IsGeneric(Asset a)
+            {
+                try
+                {
+                    if (a == null || a.FindByName(Generic.GenericDiffuse) == null) return false;
+                    var schema = a.FindByName("BaseSchema") as AssetPropertyString;
+                    return schema == null || schema.Value == "GenericSchema";
+                }
+                catch { return false; }
+            }
+
+            var generic = new FilteredElementCollector(doc).OfClass(typeof(AppearanceAssetElement))
+                .Cast<AppearanceAssetElement>()
+                .FirstOrDefault(a => { try { return IsGeneric(a.GetRenderingAsset()); } catch { return false; } });
+            if (generic != null) return generic.Duplicate(unique);
+            var lib = app.GetAssets(AssetType.Appearance).Where(IsGeneric).ToList();
+            var pick = lib.FirstOrDefault(a => a.Name == "Generic") ?? lib.FirstOrDefault();
+            return pick == null ? null : AppearanceAssetElement.Create(doc, unique, pick);
+        }
+
+        /// Put the texture in the appearance's Image slot. Returns null when done,
+        /// else what went wrong.
+        private static string SetTexture(Document doc, ElementId appearanceId, string path, double wcm, double hcm, Autodesk.Revit.DB.Color shade)
+        {
+            if (!System.IO.File.Exists(path)) return "the downloaded texture file is missing";
+            string problem = null;
             using (var t = new Transaction(doc, "Dirory: material texture"))
             {
                 t.Start();
@@ -123,22 +180,58 @@ namespace Dirory.Revit
                 {
                     Asset asset = scope.Start(appearanceId);
                     var diffuse = asset.FindByName(Generic.GenericDiffuse) as AssetPropertyDoubleArray4d;
-                    if (diffuse != null)
+                    if (diffuse == null)
                     {
-                        if (diffuse.NumberOfConnectedProperties == 0) diffuse.AddConnectedAsset("UnifiedBitmapSchema");
-                        Asset bitmap = diffuse.GetSingleConnectedAsset();
-                        if (bitmap != null)
+                        problem = "the appearance has no Generic colour slot";
+                    }
+                    else
+                    {
+                        // The colour shows where the image does not (and in its preview).
+                        try { diffuse.SetValueAsColor(shade); } catch { /* keep the template's colour */ }
+
+                        // The slot may hold something other than an image (a
+                        // procedural texture in the copied asset): replace it.
+                        Asset bitmap = diffuse.NumberOfConnectedProperties > 0 ? diffuse.GetSingleConnectedAsset() : null;
+                        if (bitmap != null && !(bitmap.FindByName(UnifiedBitmap.UnifiedbitmapBitmap) is AssetPropertyString))
                         {
-                            if (bitmap.FindByName(UnifiedBitmap.UnifiedbitmapBitmap) is AssetPropertyString file && file.IsValidValue(path))
-                                file.Value = path;
+                            diffuse.RemoveConnectedAsset();
+                            bitmap = null;
+                        }
+                        if (bitmap == null)
+                        {
+                            diffuse.AddConnectedAsset("UnifiedBitmapSchema");
+                            bitmap = diffuse.GetSingleConnectedAsset();
+                        }
+                        var file = bitmap?.FindByName(UnifiedBitmap.UnifiedbitmapBitmap) as AssetPropertyString;
+                        if (file == null) problem = "Revit did not create an image slot";
+                        else if (!file.IsValidValue(path)) problem = "Revit refused the image path";
+                        else
+                        {
+                            file.Value = path;
                             SetDistance(bitmap, UnifiedBitmap.TextureRealWorldScaleX, wcm);
                             SetDistance(bitmap, UnifiedBitmap.TextureRealWorldScaleY, hcm);
+                            if (asset.FindByName(Generic.GenericDiffuseImageFade) is AssetPropertyDouble fade && fade.IsValidValue(1.0))
+                                fade.Value = 1.0;
                         }
                     }
-                    scope.Commit(true);
+                    if (problem == null) scope.Commit(true);
+                    else scope.Cancel();
                 }
-                t.Commit();
+                if (problem == null) t.Commit();
+                else t.RollBack();
             }
+            return problem;
+        }
+
+        public static void Log(string line)
+        {
+            try
+            {
+                string dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dirory");
+                System.IO.Directory.CreateDirectory(dir);
+                System.IO.File.AppendAllText(System.IO.Path.Combine(dir, "revit.log"), $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {line}\r\n");
+            }
+            catch { /* logging must never break the add-in */ }
         }
 
         private static void SetDistance(Asset asset, string name, double cm)
