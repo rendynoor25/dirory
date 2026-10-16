@@ -1,5 +1,33 @@
 # Changelog
 
+## SketchUp 0.10.1 and Revit 0.1.5 — city prices, two free estimates, Revit ribbon
+
+**Prices for any city.** Before estimating, the RAB asks for the project
+location: any of the 514 kabupaten/kota. Prices are the DKI Jakarta book ×
+IKK(city) / IKK(DKI Jakarta), from BPS's *Indeks Kemahalan Konstruksi
+Provinsi dan Kabupaten/Kota 2025* (Kota Surabaya = 100, built by BPS from
+Kemen PU's AHSP and regional prices). Kabupaten Sumedang, for example, is
+101,51 / 114,50 = 0,8866 × Jakarta. AHSP coefficients do not change; unit
+prices, basic prices in the Excel workbook and the live cost all follow the
+city. `scripts/extract-ikk.py` reads the publication into
+`plugin/dirory_library/ui/ikk.js` and `supabase/seed/ikk_2025.json`.
+
+**Two free estimates.** An account without Pro can generate the itemised RAB
+(view, print, CSV, Excel) for two projects; opening the same project again
+does not use another. Then the panel asks for Dirory Pro. Counted by the
+`rab` function in **migration 0044** (`rab_free_estimates`), by the model hash
+the project pass already uses. Privacy policy v1.1 says so.
+
+**Revit.** The ribbon's Dirory panel has the Dirory icon on **Dirory Library**
+and a new **Check for Updates** button, which compares the add-in with
+dirory.com (`/api/plugin/latest` now reports `revit_version`) and opens the
+download page; a newer version is also mentioned when the panel opens. The
+panel's empty-state text no longer talks about SketchUp files in Revit.
+
+SketchUp 0.10.1 is on /download only, like 0.10.0 (unsigned, not on the
+auto-updater).
+
+
 ## Revit families in the catalogue; Revit 0.1.4
 
 16 Revit families (.rfa) from vendor-sources and the archived v2 website are in

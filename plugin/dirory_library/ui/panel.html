@@ -93,9 +93,13 @@
       <!-- RAB step 2: AHSP x regional prices. Shown once the model is measured. -->
       <div id="rabBox" class="rab-box" hidden>
         <div class="rab-controls">
-          <select id="rabRegion" aria-label="Price region">
+          <select id="rabRegion" aria-label="Price book" hidden>
             <option value="jakarta">DKI Jakarta</option>
           </select>
+          <label class="rab-city">
+            <span>Project location (prices)</span>
+            <select id="rabCity" aria-label="Project location for prices"></select>
+          </label>
           <select id="rabWall" aria-label="Wall type">
             <option value="brick">Red brick walls</option>
             <option value="aac">Lightweight block (AAC) walls</option>
@@ -347,6 +351,7 @@
 
   <div id="toast" class="toast" hidden></div>
 
+  <script src="ikk.js"></script>
   <script src="rab.js"></script>
   <script src="xlsx.js"></script>
   <script src="rab-xlsx.js"></script>

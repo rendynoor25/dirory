@@ -96,6 +96,8 @@ namespace Dirory.Revit
                 case "ready":
                 case "rescan":
                     _ = LoadCatalog();
+                    if (name == "ready" && RevitUpdate.NewerAvailable)
+                        Toast($"Dirory for Revit {RevitUpdate.Latest} is available (you have {App.Version}). Click Check for Updates on the Dirory tab.");
                     _page.Script("var h=document.getElementById('hint'); if(h) h.textContent='Click a material card, then click faces in the model to paint it (Esc to finish). Models load as Revit families where a .rfa is available.';");
                     break;
                 case "signIn": _ = SignInStart(); break;

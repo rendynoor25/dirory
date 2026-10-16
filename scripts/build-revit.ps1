@@ -47,6 +47,7 @@ if ($LASTEXITCODE -ne 0) { throw "Compile failed." }
 
 Copy-Item (Join-Path $root "revit\DiroryRevit\Dirory.addin") $out
 Copy-Item (Join-Path $root "plugin\dirory_library\ui") (Join-Path $pkg "ui") -Recurse
+Copy-Item (Join-Path $root "revit\DiroryRevit\assets\*.png") $pkg
 Get-ChildItem (Join-Path $pkg "ui") -Filter "_test*" | Remove-Item -Force
 Copy-Item (Join-Path $root "revit\DiroryRevit\package\*") $out
 $version = (Select-String -Path (Join-Path $root "revit\DiroryRevit\src\App.cs") -Pattern 'Version = "([^"]+)"').Matches[0].Groups[1].Value

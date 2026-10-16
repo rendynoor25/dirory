@@ -956,3 +956,7 @@ body.has-live-cost { padding-bottom: 58px; }
 @keyframes dirory-spin { to { transform: rotate(360deg); } }
 @keyframes dirory-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .spinner, .skeleton-card { animation-duration: 3s; } }
+
+/* Project location for regional prices (BPS IKK) */
+.rab-city { display: flex; flex-direction: column; gap: 3px; width: 100%; font-size: 11px; color: #6b6b70; }
+.rab-city select { width: 100%; }

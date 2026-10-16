@@ -174,4 +174,17 @@ eq("pipe removal is listed for a price", dline("demo|pipe|PVC").needs_price ? 1 
 eq("demolition subtotal", drab.subtotals.demolition, drab.lines.filter((l) => l.element === "demolition").reduce((s, l) => s + l.amount, 0));
 console.log(`Demolition sample: Rp ${drab.subtotals.demolition.toLocaleString("id-ID")}`);
 
+// Regional prices: a city's book is Jakarta's x IKK(city) / IKK(DKI Jakarta).
+const IKK = require("../plugin/dirory_library/ui/ikk.js");
+const sumedang = IKK.cities.find((c) => c.name === "Kabupaten Sumedang");
+const cityBook = require("../plugin/dirory_library/ui/rab.js").bookForCity(book, sumedang, IKK);
+const factor = sumedang.ikk / IKK.reference.ikk;
+eq("514 kabupaten/kota", IKK.cities.length, 514);
+eq("Sumedang factor (101.51 / 114.50)", Math.round(factor * 10000) / 10000, 0.8866);
+eq("unit price scales", cityBook.items.find((i) => i.key === "wall_brick").unit_price, price("wall_brick") * factor);
+eq("component prices scale too", cityBook.items[0].components[0].price, book.items[0].components[0].price * factor);
+eq("the Jakarta book is not changed", book.items.find((i) => i.key === "wall_brick").unit_price, price("wall_brick"));
+eq("a RAB in Sumedang costs Jakarta x factor", Math.round(computeRab(takeoff, cityBook).total / 1000),
+  Math.round(computeRab(takeoff, book).total * factor / 1000));
+
 process.exit(failed ? 1 : 0);

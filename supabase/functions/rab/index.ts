@@ -24,7 +24,11 @@
 //   * a project pass covers one model: `model` (sha256 of the SketchUp model's
 //     guid, hashed in the plugin) is bound to the pass on first use;
 //   * admins pass, for testing.
-// Otherwise 402 { error: "pro_required", upgrade_url }.
+//   * otherwise two free estimates: the first two projects (model hashes) a
+//     free account prices are served too (migration 0044); the same project
+//     again does not count.
+// Otherwise 402 { error: "pro_required", upgrade_url, free_used, free_limit }.
+// A served book carries access: { pro, free_used, free_limit }.
 //
 // Deploy: supabase functions deploy rab --no-verify-jwt
 
@@ -32,10 +36,11 @@ import { corsHeaders, json } from "../_shared/cors.ts";
 import { resolvePluginToken, serviceClient } from "../_shared/plugin-auth.ts";
 
 const REGION_RE = /^[a-z][a-z0-9_-]{1,40}$/;
+const FREE_ESTIMATES = 2;
 const MODEL_RE = /^[0-9a-f]{64}$/;
 
 function siteUrl(): string {
-  return (Deno.env.get("SITE_URL") ?? Deno.env.get("NEXT_PUBLIC_SITE_URL") ?? "https://dirory.id")
+  return (Deno.env.get("SITE_URL") ?? Deno.env.get("NEXT_PUBLIC_SITE_URL") ?? "https://dirory.com")
     .replace(/\/+$/, "");
 }
 
@@ -82,6 +87,23 @@ async function hasPro(
   return Boolean(bound);
 }
 
+/** Free estimates: { used, thisModel } for the profile. */
+async function freeEstimates(supabase: ReturnType<typeof serviceClient>, profileId: string, model: string | null) {
+  const { data } = await supabase.from("rab_free_estimates").select("model_hash").eq("profile_id", profileId);
+  const hashes = (data ?? []).map((r: { model_hash: string }) => r.model_hash);
+  return { used: hashes.length, thisModel: model !== null && hashes.includes(model) };
+}
+
+/** Use a free estimate for this model, if one is left. True when allowed. */
+async function takeFreeEstimate(supabase: ReturnType<typeof serviceClient>, profileId: string, model: string | null) {
+  if (!model) return false;
+  const free = await freeEstimates(supabase, profileId, model);
+  if (free.thisModel) return true;
+  if (free.used >= FREE_ESTIMATES) return false;
+  const { error } = await supabase.from("rab_free_estimates").insert({ profile_id: profileId, model_hash: model });
+  return !error;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "GET") return json({ error: "method not allowed" }, 405);
@@ -114,13 +136,22 @@ Deno.serve(async (req: Request) => {
       name: reg.name,
       live: true,
       pro: await hasPro(supabase, identity.profileId, model, false),
+      ...(await (async () => {
+        const free = await freeEstimates(supabase, identity.profileId, model);
+        return { free_used: free.used, free_limit: FREE_ESTIMATES, free_this_model: free.thisModel };
+      })()),
       items: ((items ?? []) as { unit_price: number }[]).map((it) => ({ ...it, unit_price: Number(it.unit_price) })),
     });
   }
 
-  if (!(await hasPro(supabase, identity.profileId, model))) {
-    return json({ error: "pro_required", upgrade_url: `${siteUrl()}/pro` }, 402);
+  const pro = await hasPro(supabase, identity.profileId, model);
+  if (!pro && !(await takeFreeEstimate(supabase, identity.profileId, model))) {
+    const free = await freeEstimates(supabase, identity.profileId, model);
+    return json({ error: "pro_required", upgrade_url: `${siteUrl()}/pro`, free_used: free.used, free_limit: FREE_ESTIMATES }, 402);
   }
+  const access = pro
+    ? { pro: true }
+    : { pro: false, free_used: (await freeEstimates(supabase, identity.profileId, model)).used, free_limit: FREE_ESTIMATES };
 
   const { data: reg, error: regError } = await supabase
     .from("rab_regions")
@@ -152,6 +183,7 @@ Deno.serve(async (req: Request) => {
   }
 
   return json({
+    access,
     region: reg.id,
     name: reg.name,
     currency: reg.currency,

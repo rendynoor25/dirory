@@ -20,7 +20,7 @@ export const metadata = {
  * version below AND a new PLUGIN_CONSENT_VERSION (lib/consent.ts), so the
  * download page and the plugin ask everyone again.
  */
-const VERSION = "1.0";
+const VERSION = "1.1";
 
 type Section = { h: string; p?: string[]; list?: string[] };
 
@@ -54,7 +54,7 @@ function sections(locale: Locale, email: string, whatsapp: string): { lead: stri
             "Catatan persetujuan: pilihan Anda, waktunya, versi kebijakan, dan versi plugin. Tujuan: membuktikan persetujuan. Dasar: kewajiban hukum.",
             "Favorit: produk yang Anda beri bintang, disinkronkan ke akun Anda. Dasar: pelaksanaan perjanjian.",
             "Permintaan penawaran: data yang Anda isi dan produk yang Anda pilih, dikirim hanya ke merek yang Anda pilih. Dasar: persetujuan (atas perintah Anda).",
-            "Dirory Pro: paket, jumlah, status, dan waktu pembayaran. Pembayaran QRIS diproses oleh Midtrans; kami tidak menerima data rekening, kartu, atau dompet digital Anda. Untuk paket satu proyek kami menyimpan sidik satu arah (hash) dari ID model, bukan ID itu sendiri. Dasar: pelaksanaan perjanjian dan kewajiban hukum (perpajakan).",
+            "Dirory Pro: paket, jumlah, status, dan waktu pembayaran. Pembayaran QRIS diproses oleh Midtrans; kami tidak menerima data rekening, kartu, atau dompet digital Anda. Untuk paket satu proyek, dan untuk dua estimasi RAB gratis per akun, kami menyimpan sidik satu arah (hash) dari ID model, bukan ID itu sendiri, agar satu proyek dihitung sekali. Dasar: pelaksanaan perjanjian dan kewajiban hukum (perpajakan).",
             "Estimasi biaya (RAB): volume dihitung di komputer Anda. Yang diunduh hanya daftar harga; geometri model tidak dikirim.",
             "Add-in Revit: tidak mengirim laporan pemakaian, kata pencarian, atau permintaan penawaran. Add-in hanya mengunduh produk yang Anda klik.",
             "Vendor: nama perusahaan, kontak, NPWP, produk, dan tagihan. Dasar: pelaksanaan perjanjian dan kewajiban hukum.",
@@ -160,7 +160,7 @@ function sections(locale: Locale, email: string, whatsapp: string): { lead: stri
           "Consent records: your choices, when you made them, the policy version and the plugin version. Purpose: proving consent. Basis: legal obligation.",
           "Favourites: the products you star, synced to your account. Basis: performance of a contract.",
           "Quote requests: the details you enter and the products you pick, sent only to the brand you choose. Basis: consent (your instruction).",
-          "Dirory Pro: plan, amount, payment status and time. QRIS payments are processed by Midtrans; we never receive your bank, card or e-wallet details. For a one-project pass we keep a one-way hash of the model ID, not the ID itself. Basis: performance of a contract and legal obligation (tax).",
+          "Dirory Pro: plan, amount, payment status and time. QRIS payments are processed by Midtrans; we never receive your bank, card or e-wallet details. For a one-project pass, and for the two free RAB estimates per account, we keep a one-way hash of the model ID, not the ID itself, so a project counts once. Basis: performance of a contract and legal obligation (tax).",
           "Cost estimate (RAB): quantities are calculated on your computer. Only the price list is downloaded; model geometry is never sent.",
           "Revit add-in: sends no usage reports, search terms or quote requests. It only downloads the products you click.",
           "Vendors: company name, contacts, NPWP, products and invoices. Basis: performance of a contract and legal obligation.",

@@ -12,13 +12,14 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI;
 
 namespace Dirory.Revit
 {
     public class App : IExternalApplication
     {
-        public const string Version = "0.1.4";
+        public const string Version = "0.1.5";
         public static readonly DockablePaneId PaneId = new DockablePaneId(new Guid("6E3B2D3A-6A0E-4C55-9C8E-2B1F7A5D9E41"));
 
         public static PanelPage Panel { get; private set; }
@@ -43,14 +44,28 @@ namespace Dirory.Revit
 
                 const string tab = "Dirory";
                 try { application.CreateRibbonTab(tab); } catch (Autodesk.Revit.Exceptions.ArgumentException) { /* exists */ }
-                RibbonPanel panel = application.CreateRibbonPanel(tab, "Library");
+                RibbonPanel panel = application.CreateRibbonPanel(tab, "Dirory");
                 var button = new PushButtonData(
                     "DiroryShowLibrary", "Dirory\nLibrary",
                     Assembly.GetExecutingAssembly().Location, typeof(ShowPaneCommand).FullName)
                 {
                     ToolTip = "Open the Dirory panel: Indonesian building products, materials and the RAB cost estimate.",
+                    LargeImage = Icon("dirory32.png"),
+                    Image = Icon("dirory16.png"),
                 };
                 panel.AddItem(button);
+                var update = new PushButtonData(
+                    "DiroryCheckUpdate", "Check for\nUpdates",
+                    Assembly.GetExecutingAssembly().Location, typeof(CheckUpdateCommand).FullName)
+                {
+                    ToolTip = $"Dirory for Revit {Version}. Checks dirory.com for a newer version.",
+                    LargeImage = Icon("update32.png"),
+                    Image = Icon("update16.png"),
+                };
+                panel.AddItem(update);
+
+                // A quiet check at start-up; the panel mentions a newer version when it opens.
+                _ = RevitUpdate.CheckAsync(quiet: true);
                 return Result.Succeeded;
             }
             catch (Exception e)
@@ -61,6 +76,29 @@ namespace Dirory.Revit
         }
 
         public Result OnShutdown(UIControlledApplication application) => Result.Succeeded;
+
+        /// A ribbon image shipped next to the DLL; null if it is missing.
+        private static BitmapImage Icon(string file)
+        {
+            string path = Path.Combine(AddinFolder, file);
+            if (!File.Exists(path)) return null;
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.UriSource = new Uri(path);
+            image.CacheOption = BitmapCacheOption.OnLoad;
+            image.EndInit();
+            return image;
+        }
+    }
+
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    public class CheckUpdateCommand : IExternalCommand
+    {
+        public Result Execute(ExternalCommandData commandData, ref string message, Autodesk.Revit.DB.ElementSet elements)
+        {
+            RevitUpdate.ShowDialog();
+            return Result.Succeeded;
+        }
     }
 
     [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]

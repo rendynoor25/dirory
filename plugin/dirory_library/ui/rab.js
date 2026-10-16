@@ -478,8 +478,34 @@
     };
   }
 
+  /**
+   * A price book for another kabupaten/kota: the DKI Jakarta book's unit and
+   * basic prices x IKK(city) / IKK(DKI Jakarta), from BPS's Indeks Kemahalan
+   * Konstruksi 2025 (ikk.js). The AHSP coefficients do not change, only the
+   * prices. `city` is { code, name, province, ikk }; null keeps Jakarta.
+   */
+  function bookForCity(book, city, ikk) {
+    if (!book || !city || !ikk || !ikk.reference) return book;
+    const factor = Number(city.ikk) / Number(ikk.reference.ikk);
+    if (!isFinite(factor) || factor <= 0) return book;
+    const pct = (n) => String(n).replace('.', ',');
+    return Object.assign({}, book, {
+      name: city.name,
+      base_name: book.name,
+      city_code: city.code,
+      factor: factor,
+      source: `${city.name}: harga ${book.name} × IKK ${pct(city.ikk)} / ${pct(ikk.reference.ikk)} ` +
+        `(BPS, Indeks Kemahalan Konstruksi 2025). ${book.source || ''}`.trim(),
+      items: (book.items || []).map((it) => Object.assign({}, it, {
+        unit_price: (Number(it.unit_price) || 0) * factor,
+        components: (it.components || []).map((c) => Object.assign({}, c, { price: (Number(c.price) || 0) * factor })),
+      })),
+    });
+  }
+
   const api = {
     computeRab: computeRab,
+    bookForCity: bookForCity,
     quantities: quantities,
     mepKey: mepKey,
     ELEMENTS: ELEMENTS,

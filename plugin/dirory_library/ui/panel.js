@@ -11,8 +11,11 @@ const collapsedBrands = new Set(); // brands whose lists are folded in the Usage
 let hideUnused = false;
 const NO_BRAND = 'No brand';
 const SAMPLE_BRAND = 'Dirory'; // Dirory's own free samples (no vendor, cannot be quoted)
-const DEFAULT_EMPTY_HTML =
-  'No items found. Try another category or brand, or drop a <code>.skp</code> file ' +
+// The same panel runs in SketchUp and in the Revit add-in (window.DIRORY_HOST).
+const IS_REVIT = window.DIRORY_HOST === 'revit';
+const DEFAULT_EMPTY_HTML = IS_REVIT
+  ? 'No items found. Try another category or brand. In Revit, Models lists the products that have a Revit family (.rfa); more families are being added.'
+  : 'No items found. Try another category or brand, or drop a <code>.skp</code> file ' +
   'anywhere inside your library folder and click \u27F3 to rescan.';
 
 // Account: browsing and search are anonymous; insert, paint and quote need sign-in.
@@ -93,7 +96,7 @@ function updateLoadingNote(text) {
 }
 
 // The same panel runs in SketchUp and in the Revit add-in; name the right app.
-const HOST_NAME = window.DIRORY_HOST === 'revit' ? 'Revit' : 'SketchUp';
+const HOST_NAME = IS_REVIT ? 'Revit' : 'SketchUp';
 document.querySelectorAll('.host-name').forEach((n) => { n.textContent = HOST_NAME; });
 
 window.addEventListener('load', () => {
@@ -1619,7 +1622,60 @@ byId('takeoffExport').addEventListener('click', () => sketchup.exportTakeoff());
 /* ------------------------------------------------------------------ */
 
 let lastTakeoff = null;
-let rabBook = null;
+let rabBook = null;      // the book in the chosen city's prices
+let rabBookRaw = null;   // as served: DKI Jakarta prices
+let rabAccess = null;    // { pro, free_used, free_limit } from the rab function
+
+/* Project location: the city whose prices the RAB uses. Jakarta's book x
+   IKK(city) / IKK(DKI Jakarta), BPS Indeks Kemahalan Konstruksi 2025. */
+const CITY_PREF = 'dirory.city';
+const IKK_DATA = window.DiroryIKK || null;
+
+function selectedCity() {
+  const code = byId('rabCity') ? byId('rabCity').value : '';
+  return code && IKK_DATA ? IKK_DATA.cities.find((c) => c.code === code) || null : null;
+}
+
+function forCity(book) {
+  return window.DiroryRab.bookForCity(book, selectedCity(), IKK_DATA);
+}
+
+(function fillCities() {
+  const select = byId('rabCity');
+  if (!select) return;
+  const first = el('option', '', 'DKI Jakarta (official Jakarta prices)');
+  first.value = '';
+  select.appendChild(first);
+  if (IKK_DATA) {
+    const byProvince = new Map();
+    IKK_DATA.cities.forEach((c) => {
+      if (!byProvince.has(c.province)) byProvince.set(c.province, []);
+      byProvince.get(c.province).push(c);
+    });
+    byProvince.forEach((list, province) => {
+      const group = document.createElement('optgroup');
+      group.label = province;
+      list.slice().sort((a, b) => a.name.localeCompare(b.name)).forEach((c) => {
+        const o = el('option', '', `${c.name.replace(/^Kota Administrasi /, 'Kota ')} (IKK ${String(c.ikk).replace('.', ',')})`);
+        o.value = c.code;
+        group.appendChild(o);
+      });
+      select.appendChild(group);
+    });
+  }
+  try { select.value = localStorage.getItem(CITY_PREF) || ''; } catch (e) { /* default: Jakarta */ }
+  select.addEventListener('change', () => {
+    try { localStorage.setItem(CITY_PREF, select.value); } catch (e) { /* this session only */ }
+    if (rabBookRaw) rabBook = forCity(rabBookRaw);
+    if (liveBookRaw) {
+      const pro = liveBook && liveBook.pro;
+      liveBook = Object.assign(forCity(liveBookRaw), { pro: pro || liveBookRaw.pro });
+      byId('liveCostRegion').textContent = `· ${liveBook.name}`;
+    }
+    if (rabBook && lastTakeoff) renderRab();
+    renderLive();
+  });
+})();
 let lastRab = null;
 const RAB_ELEMENT_LABELS = Object.assign({}, ELEMENT_LABELS, { opening: 'Doors & windows (kusen, pintu, jendela)' });
 
@@ -1676,6 +1732,9 @@ function renderRab() {
     `Unit prices: ${rabBook.name}, AHSP coefficients with regional basic prices, including ${rabBook.overhead_pct}% overhead and profit. Excludes PPN.`,
     rabBook.source ? `Source: ${rabBook.source}` : '',
     rebarNote(),
+    rabAccess && !rabAccess.pro && rabAccess.free_limit
+      ? `Free estimate: ${rabAccess.free_used} of ${rabAccess.free_limit} used (this project counts once). After that, more estimates need Dirory Pro.`
+      : '',
     lastRab.lines.some((l) => !l.custom && /^Market estimate/.test(l.reference))
       ? 'Split AC units have no AHSP analysis: they are market estimates (retail listings, mid-2026, unit plus installation). Type your quote over them.'
       : '',
@@ -1819,9 +1878,11 @@ function exportRabCsv() {
 }
 
 window.diroryRabBook = function (book) {
-  rabBook = book;
-  // The full book is served to Pro only: the live strip can offer the breakdown.
-  if (liveBook && !liveBook.pro) {
+  rabBookRaw = book;
+  rabBook = forCity(book);
+  rabAccess = (book && book.access) || null;
+  // With Pro (or this project's free BoQ) the live strip can open the breakdown.
+  if (liveBook && !liveBook.pro && rabAccess && rabAccess.pro) {
     liveBook.pro = true;
     byId('liveCostDetails').textContent = 'Breakdown';
     byId('liveCostDetails').title = 'Open the itemised RAB';
@@ -1841,9 +1902,10 @@ window.diroryRabUpgrade = function (url) {
   const body = byId('rabBody');
   body.innerHTML = '';
   const box = el('div', 'consent-needed');
-  box.appendChild(el('p', '', 'The cost estimate (RAB) is part of Dirory Pro: Rp 99.000 a month, or Rp 49.000 for one project. Pay with QRIS, then click Estimate cost again.'));
+  box.appendChild(el('p', '', 'You have used your 2 free cost estimates (RAB / BoQ). More estimates are part of Dirory Pro: ' +
+    'Rp 99.000 a month, or Rp 49.000 for one project. Pay with QRIS, then click Estimate cost again.'));
   const go = el('button', 'primary-btn', '⭐ Get Dirory Pro');
-  go.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: url || 'https://dirory.id/pro' })));
+  go.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: url || 'https://dirory.com/pro' })));
   box.appendChild(go);
   body.appendChild(box);
 };
@@ -1857,7 +1919,9 @@ window.diroryRabError = function (message) {
 
 byId('rabRun').addEventListener('click', () => {
   const region = byId('rabRegion').value;
-  if (rabBook && rabBook.region === region) {
+  // Pro: reuse the book. Otherwise ask again, so the server can count a free
+  // estimate per project (the same project again is not counted twice).
+  if (rabBook && rabBook.region === region && rabAccess && rabAccess.pro) {
     renderRab();
     return;
   }
@@ -1884,6 +1948,7 @@ byId('rabPhase').addEventListener('change', () => {
 // itemised RAB - breakdown, print, CSV, own prices - is Dirory Pro.
 
 let liveBook = null;
+let liveBookRaw = null;
 let liveTakeoff = null;
 let liveRequested = false;
 const LIVE_PREF = 'dirory.liveCost';
@@ -1913,13 +1978,20 @@ function stopLive() {
 window.diroryLiveBook = function (book) {
   if (!book || !Array.isArray(book.items)) {
     liveBook = null;
+    liveBookRaw = null;
     showLive(false);
     return;
   }
-  liveBook = book;
-  byId('liveCostRegion').textContent = `· ${book.name}`;
-  byId('liveCostDetails').textContent = book.pro ? 'Breakdown' : 'Breakdown ⭐';
-  byId('liveCostDetails').title = book.pro ? 'Open the itemised RAB' : 'The itemised RAB is part of Dirory Pro';
+  liveBookRaw = book;
+  liveBook = forCity(book);
+  byId('liveCostRegion').textContent = `· ${liveBook.name}`;
+  const freeLeft = !book.pro && (book.free_this_model || (book.free_used || 0) < (book.free_limit || 0));
+  byId('liveCostDetails').textContent = book.pro ? 'Breakdown' : freeLeft ? 'Breakdown (free)' : 'Breakdown ⭐';
+  byId('liveCostDetails').title = book.pro
+    ? 'Open the itemised RAB'
+    : freeLeft
+      ? `Free estimates: ${book.free_used || 0} of ${book.free_limit} used. This project counts once.`
+      : 'You have used your free estimates: the itemised RAB is part of Dirory Pro';
   byId('liveCostTotal').textContent = 'Measuring…';
   showLive(true);
   byId('liveCost').classList.add('updating');
