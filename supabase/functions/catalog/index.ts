@@ -63,6 +63,10 @@ Deno.serve(async (req: Request) => {
   //
   // The plugin keeps asking for the full shape (FR-A7), so this is opt-in.
   const browseMode = url.searchParams.get("fields") === "browse";
+  // `app=revit`: the Revit add-in also gets products that only have a Revit
+  // family (no SketchUp file). Everyone else gets the products they can
+  // insert, so older SketchUp plugins never show a card they cannot use.
+  const forRevit = url.searchParams.get("app") === "revit";
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = resolveServiceKey();
@@ -80,7 +84,7 @@ Deno.serve(async (req: Request) => {
         "categories(name)," +
         "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path," +
         "subscriptions(status,current_period_end))," +
-        "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status,su_version)",
+        "asset_versions!assets_current_version_fk(version,file_path,thumbnail_path,review_status,su_version,revit_file_path)",
       status: "eq.approved",
       order: "updated_at.asc,id.asc",
       limit: String(PAGE),
@@ -116,7 +120,14 @@ Deno.serve(async (req: Request) => {
       return new Date(s.current_period_end).getTime() > nowMs - GRACE_MS;
     });
   };
-  const visible = rows.filter((r: any) => vendorVisible(r.vendors));
+  const versionOf = (r: any) => (Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions);
+  const visible = rows.filter((r: any) => {
+    if (!vendorVisible(r.vendors)) return false;
+    const v = versionOf(r);
+    // A Revit-only product: for the add-in and the website, not SketchUp.
+    if (r.type === "model" && v && !v.file_path && v.revit_file_path) return forRevit || browseMode;
+    return true;
+  });
 
   // FR-A24: the panel keys `brandLogos` by lower-cased brand name.
   const brandLogos: Record<string, string> = {};
@@ -189,6 +200,8 @@ Deno.serve(async (req: Request) => {
       // Inspector / product-info detail (M6).
       sku: r.sku ?? null,
       product_url: r.product_url ?? null,
+      // A Revit family (.rfa) is available for this product.
+      has_revit: Boolean(v?.revit_file_path),
     };
     if (browseMode) return browse;
 
@@ -201,6 +214,9 @@ Deno.serve(async (req: Request) => {
       thumbnail: thumbKey,
       model_path: r.type === "model" ? v?.file_path ?? null : null,
       material_path: r.type === "material" ? v?.file_path ?? null : null,
+      // The Revit family's storage key; the add-in downloads it with
+      // /download/<asset_id>?format=rfa.
+      rfa_path: v?.revit_file_path ?? null,
       // The panel keys favourites (and "used before") by this value. It must be
       // present or favouriting silently does nothing: the star toggles
       // `item.key`, which would be undefined. Use the asset id so favourites

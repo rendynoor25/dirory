@@ -789,6 +789,7 @@ function render() {
       // Ruby needs the metadata too, so the Usage tab can group by category/brand.
       const payload = JSON.stringify({
         path: item.type === 'material' ? item.material_path : item.model_path,
+        rfa_path: item.rfa_path || null,
         asset_id: item.asset_id || '',
         version: item.version || 1,
         tile_size_cm: item.tile_size_cm || null,

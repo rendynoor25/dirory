@@ -1,5 +1,31 @@
 # Changelog
 
+## Revit families in the catalogue; Revit 0.1.4
+
+16 Revit families (.rfa) from vendor-sources and the archived v2 website are in
+the catalogue (`scripts/upload-revit-families.mjs`, list in
+`library-additions/Revit/families.json`):
+
+- **On existing products** (one card for SketchUp and Revit): TOTO CE9,
+  CW 630 PJ, LW952J, U104; Trilliunware Arabian, Chrysolite, SAPPHIRA;
+  ALPHAMAX MAX 1, MAX 2.
+- **New, Revit only**: TOTO TX109LRS and TX123LESN (new category Faucet),
+  AW115J; Trilliunware Citrine Countertop, Cobalt Above, Juniper Vessel, Opal.
+  Thumbnails are the vendors' photos; the three TOTO ones are the families'
+  own previews, enlarged, until product photos exist.
+
+**Migration 0043** adds `asset_versions.revit_file_path`. `/catalog` returns
+`rfa_path` (and `has_revit` for the website) and lists Revit-only products
+only for `?app=revit` and the website, so SketchUp plugins never show a card
+they cannot insert. `/download/<id>?format=rfa` serves the family. **Revit
+0.1.4** asks for `app=revit` and loads the family when a model card is clicked.
+
+Not added yet, brand unknown: ASTRAL STANDARD, VISCARIA, Vessel Basin Tap 2,
+two Bobrick accessories, Excel Dryer ThinAir and XLERATOR. Duplicates in the
+archive (older copies of the Trilliunware families, LW952J.0001 backup,
+AW115J.3dm) were left out.
+
+
 ## 0.10.0 (SketchUp) and 0.1.2 (Revit) — published on /download, 16 Oct 2026
 
 Everything in the "Unreleased" entries below, now downloadable from

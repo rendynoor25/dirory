@@ -71,14 +71,15 @@ namespace Dirory.Revit
         }
 
         /// <summary>Download a catalogue asset into the local cache; returns its path.</summary>
-        public async Task<string> Download(string assetId, string version)
+        /// `format`: "" for the product's file, "rfa" for its Revit family.
+        public async Task<string> Download(string assetId, string version, string format = "")
         {
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Dirory", "cache", assetId, "v" + (string.IsNullOrEmpty(version) ? "1" : version));
+                "Dirory", "cache", assetId, "v" + (string.IsNullOrEmpty(version) ? "1" : version) + (format == "" ? "" : "-" + format));
             if (Directory.Exists(folder))
                 foreach (var f in Directory.GetFiles(folder)) return f;
 
-            var (code, text) = await Send(HttpMethod.Get, "/download/" + assetId).ConfigureAwait(false);
+            var (code, text) = await Send(HttpMethod.Get, "/download/" + assetId + (format == "" ? "" : "?format=" + format)).ConfigureAwait(false);
             if (code == 401) throw new UnauthorizedAccessException("Your Dirory session has expired. Please sign in again.");
             if (code < 200 || code >= 300) throw new Exception("Download server answered HTTP " + code);
             var meta = Json.Read(text);

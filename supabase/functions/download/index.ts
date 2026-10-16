@@ -41,7 +41,7 @@ Deno.serve(async (req: Request) => {
     .select(
       "id, type, name, status, tile_w_cm, tile_h_cm, current_version_id, " +
         "vendors!inner(is_platform, status), " +
-        "asset_versions!assets_current_version_fk(version, file_path, thumbnail_path, review_status)",
+        "asset_versions!assets_current_version_fk(version, file_path, thumbnail_path, review_status, revit_file_path)",
     )
     .eq("id", assetId)
     .maybeSingle();
@@ -55,14 +55,17 @@ Deno.serve(async (req: Request) => {
   if (!visible) return json({ error: "asset not available" }, 404);
 
   const version = Array.isArray(asset.asset_versions) ? asset.asset_versions[0] : asset.asset_versions;
-  if (!version || version.review_status !== "approved" || !version.file_path) {
-    return json({ error: "no approved file" }, 404);
+  // `format=rfa`: the product's Revit family instead of its SketchUp file.
+  const wantRfa = url.searchParams.get("format") === "rfa";
+  const filePath: string | null = wantRfa ? version?.revit_file_path ?? null : version?.file_path ?? null;
+  if (!version || version.review_status !== "approved" || !filePath) {
+    return json({ error: wantRfa ? "no Revit family for this product" : "no approved file" }, 404);
   }
 
   const bucket = asset.type === "material" ? "materials" : "models";
   const { data: signed, error: signError } = await supabase.storage
     .from(bucket)
-    .createSignedUrl(version.file_path, SIGNED_URL_SECONDS);
+    .createSignedUrl(filePath, SIGNED_URL_SECONDS);
   if (signError || !signed?.signedUrl) return json({ error: "could not sign the file" }, 500);
 
   let thumbnailUrl: string | null = null;
@@ -79,8 +82,8 @@ Deno.serve(async (req: Request) => {
     type: asset.type,
     url: signed.signedUrl,
     version: version.version ?? 1,
-    file_name: basename(version.file_path),
-    file_path: version.file_path,
+    file_name: basename(filePath),
+    file_path: filePath,
     thumbnail_url: thumbnailUrl,
     tile_size_cm: asset.tile_w_cm ? [Number(asset.tile_w_cm), Number(asset.tile_h_cm ?? asset.tile_w_cm)] : null,
     expires_in: SIGNED_URL_SECONDS,

@@ -210,11 +210,11 @@ namespace Dirory.Revit
 
         private async Task LoadCatalog()
         {
-            var (code, body) = await _cloud.Send(HttpMethod.Get, "/catalog");
+            var (code, body) = await _cloud.Send(HttpMethod.Get, "/catalog?app=revit");
             if (code == 401 && _cloud.SignedIn)
             {
                 _cloud.Set("token", "");
-                (code, body) = await _cloud.Send(HttpMethod.Get, "/catalog");
+                (code, body) = await _cloud.Send(HttpMethod.Get, "/catalog?app=revit");
             }
             if (code < 200 || code >= 300)
             {
@@ -269,14 +269,20 @@ namespace Dirory.Revit
 
         private async Task InsertModel(Dictionary<string, object> d)
         {
-            string modelPath = Json.Str(d, "path");
-            if (!modelPath.EndsWith(".rfa", StringComparison.OrdinalIgnoreCase))
+            // The product's Revit family: its own file (rfa_path), or an older
+            // upload whose only file is an .rfa.
+            bool family = Json.Str(d, "rfa_path") != "" || Json.Str(d, "path").EndsWith(".rfa", StringComparison.OrdinalIgnoreCase);
+            if (!family)
             {
                 Toast("This product has no Revit family (.rfa) yet.");
                 return;
             }
             if (!_cloud.SignedIn) { _page.Call("diroryNeedSignIn", Json.Write(new { action = "load" })); return; }
-            string path = await _cloud.Download(Json.Str(d, "asset_id"), Json.Str(d, "version"));
+            Toast("Downloading " + Json.Str(d, "name") + "…");
+            string path;
+            try { path = await _cloud.Download(Json.Str(d, "asset_id"), Json.Str(d, "version"), Json.Str(d, "rfa_path") != "" ? "rfa" : ""); }
+            catch (UnauthorizedAccessException e) { _cloud.Set("token", ""); PushAccount(); Toast(e.Message); return; }
+            catch (Exception e) { Toast("Could not download the family: " + e.Message); return; }
             App.Ops.Run(app =>
             {
                 var uidoc = app.ActiveUIDocument;
