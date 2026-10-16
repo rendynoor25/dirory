@@ -99,6 +99,16 @@ function updateLoadingNote(text) {
 const HOST_NAME = IS_REVIT ? 'Revit' : 'SketchUp';
 document.querySelectorAll('.host-name').forEach((n) => { n.textContent = HOST_NAME; });
 
+// The usage report (which products a model uses) and its export, print and
+// brand controls are SketchUp-only for now; in Revit the Usage tab is the
+// quantities and the RAB, whose own buttons export Excel, CSV and print.
+if (IS_REVIT) {
+  ['usageRefresh', 'usageExport', 'usagePrint', 'usageSelectAll', 'usageToggleAll'].forEach((id) => {
+    const node = document.getElementById(id);
+    if (node) node.hidden = true;
+  });
+}
+
 window.addEventListener('load', () => {
   trackControlsHeight();
   document.getElementById('grid').appendChild(loadingState());
@@ -625,7 +635,8 @@ function render() {
   document.getElementById('search').hidden = usage;
   document.getElementById('searchGo').hidden = usage;
   document.getElementById('hint').hidden = usage;
-  document.getElementById('quoteBar').hidden = !usage;
+  // Quote requests are SketchUp-only for now (they come from the usage report).
+  document.getElementById('quoteBar').hidden = !usage || IS_REVIT;
   if (usage) document.getElementById('brandBanner').hidden = true;
 
   if (usage) {

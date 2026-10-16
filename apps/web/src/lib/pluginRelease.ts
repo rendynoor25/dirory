@@ -9,7 +9,7 @@ export const PLUGIN_VERSION = "0.10.1";
 export const PLUGIN_FILENAME = `DiroryLibrary-${PLUGIN_VERSION}.rbz`;
 
 /** Dirory for Revit (beta). Build with scripts/build-revit.ps1. */
-export const REVIT_VERSION = "0.1.5";
+export const REVIT_VERSION = "0.1.6";
 export const REVIT_FOR = "2024";
 export const REVIT_FILENAME = `DiroryRevit-${REVIT_FOR}-${REVIT_VERSION}.zip`;
 

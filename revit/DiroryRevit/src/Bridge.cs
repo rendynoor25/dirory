@@ -141,8 +141,25 @@ namespace Dirory.Revit
                 case "checkForUpdate":
                     break; // nothing to do in Revit yet; no usage data is sent
                 default:
-                    Toast("Not available in the Revit add-in yet.");
+                    Toast(Unsupported(name));
                     break;
+            }
+        }
+
+        /// What a panel button the add-in does not handle yet would have done.
+        private static string Unsupported(string name)
+        {
+            switch (name)
+            {
+                case "exportReport":
+                case "printSchedule":
+                    return "The product usage report is in SketchUp only for now. For the BoQ, click Estimate cost (RAB), then Export RAB (Excel) or Print RAB below the table.";
+                case "requestQuote":
+                    return "Quote requests are sent from SketchUp for now.";
+                case "downloadUpdate":
+                    return "To update Dirory for Revit, use Check for Updates on the Dirory tab.";
+                default:
+                    return $"This is not available in the Revit add-in yet ({name}).";
             }
         }
 
