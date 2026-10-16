@@ -32,7 +32,27 @@ export default async function Home() {
     { title: t(locale, "home.feat1Title"), text: t(locale, "home.feat1Text") },
     { title: t(locale, "home.feat2Title"), text: t(locale, "home.feat2Text") },
     { title: t(locale, "home.feat3Title"), text: t(locale, "home.feat3Text") },
+    { title: t(locale, "home.feat4Title"), text: t(locale, "home.feat4Text") },
+    { title: t(locale, "home.feat5Title"), text: t(locale, "home.feat5Text") },
+    { title: t(locale, "home.feat6Title"), text: t(locale, "home.feat6Text") },
   ];
+
+  const rabPoints = [t(locale, "home.rabB1"), t(locale, "home.rabB2"), t(locale, "home.rabB3"), t(locale, "home.rabB4")];
+
+  // The REKAP of a sample house model (scripts/test-rab-xlsx.mjs), DKI Jakarta
+  // prices: an illustration of the layout, labelled as an example, not a quote.
+  const rabExample: [string, number][] = [
+    [t(locale, "home.rabDiv1"), 219_491],
+    [t(locale, "home.rabDiv2"), 105_500_141],
+    [t(locale, "home.rabDiv3"), 73_204_741],
+    [t(locale, "home.rabDiv4"), 24_117_666],
+    [t(locale, "home.rabDiv5"), 33_664_276],
+    [t(locale, "home.rabDiv6"), 60_641_587],
+    [t(locale, "home.rabDiv7"), 24_622_848],
+    [t(locale, "home.rabDiv8"), 53_152_689],
+  ];
+  const rabSubtotal = rabExample.reduce((sum, [, v]) => sum + v, 0);
+  const rupiah = (n: number) => "Rp " + Math.round(n).toLocaleString("id-ID");
 
   const brands = [
     { name: "TOTO", note: t(locale, "brand.sanitaryware") },
@@ -43,6 +63,7 @@ export default async function Home() {
     { name: "Nippon Paint", note: t(locale, "brand.wallPaint") },
     { name: "Propan", note: t(locale, "brand.wallPaint") },
     { name: "Malka", note: t(locale, "brand.furniture") },
+    { name: "ALPHAMAX", note: t(locale, "brand.doorsWindows") },
   ];
 
   const insidePoints = [t(locale, "home.insideB1"), t(locale, "home.insideB2"), t(locale, "home.insideB3")];
@@ -77,7 +98,7 @@ export default async function Home() {
         </nav>
       </header>
 
-      <section className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-10 lg:grid-cols-[1.04fr_.96fr] lg:px-10 lg:pb-28 lg:pt-16">
+      <section className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 pb-20 pt-10 lg:grid-cols-[1.04fr_.96fr] lg:px-10 lg:pb-28 lg:pt-16">
         <div className="pointer-events-none absolute -left-40 top-4 h-96 w-96 rounded-full bg-brand-100/70 blur-3xl" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-3 py-1.5 text-xs font-semibold text-brand-700 shadow-sm">
@@ -223,13 +244,56 @@ export default async function Home() {
         </div>
       </section>
 
+      <section id="rab" className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
+        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr]">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">{t(locale, "home.rabTag")}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "home.rabHeading")}</h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600">{t(locale, "home.rabBody")}</p>
+            <ul className="mt-6 space-y-3 text-sm text-slate-700">
+              {rabPoints.map((line) => (
+                <li key={line} className="flex gap-3">
+                  <span aria-hidden="true" className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+                    ✓
+                  </span>
+                  {line}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm leading-6 text-brand-900">{t(locale, "home.rabPricing")}</p>
+            <Link href="/pro" className="mt-5 inline-flex rounded-full bg-brand-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-800">
+              {t(locale, "home.rabCta")} <span className="ml-2" aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <figure className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_28px_80px_-40px_rgba(33,48,108,.45)]">
+            <figcaption className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{t(locale, "home.rabMockTitle")}</figcaption>
+            <table className="mt-3 w-full text-sm">
+              <tbody>
+                {rabExample.map(([label, value], i) => (
+                  <tr key={label} className="border-b border-slate-100 last:border-0">
+                    <td className="w-7 py-2 text-xs font-semibold text-slate-400">{String.fromCharCode(65 + i)}</td>
+                    <td className="py-2 text-slate-700">{label}</td>
+                    <td className="py-2 text-right tabular-nums text-slate-900">{rupiah(value)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="mt-3 flex items-baseline justify-between rounded-xl bg-brand-900 px-4 py-3 text-white">
+              <span className="text-sm">{t(locale, "home.rabMockTotal")}</span>
+              <strong className="tabular-nums">{rupiah(rabSubtotal * 1.11)}</strong>
+            </div>
+            <p className="mt-3 text-xs text-slate-400">{t(locale, "home.rabMockNote")}</p>
+          </figure>
+        </div>
+      </section>
+
       <section id="brands" className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
         <div className="max-w-2xl">
           <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">{t(locale, "home.brandsTag")}</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "home.brandsHeading")}</h2>
           <p className="mt-4 text-sm leading-6 text-slate-600">{t(locale, "home.brandsBody")}</p>
         </div>
-        <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {brands.map((brand) => (
             <div key={brand.name} className="flex h-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 text-center transition hover:border-brand-200 hover:shadow-sm">
               <span className="text-sm font-semibold tracking-tight text-slate-800">{brand.name}</span>
