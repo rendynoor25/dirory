@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.10.0 (SketchUp) and 0.1.2 (Revit) — published on /download, 16 Oct 2026
+
+Everything in the "Unreleased" entries below, now downloadable from
+dirory.com/download: consent before sharing, the RAB with Jakarta prices
+(architecture, structure, MEP, demolition), Dirory Pro, live cost, phasing
+and demolition, own unit prices, the Excel RAB, the catalogue loading state,
+and (Revit) the installer that unblocks downloaded files.
+
+**Not on the auto-updater yet**, on purpose: 0.10.0 is unsigned and has not
+been tried in SketchUp. Existing 0.9.x installs are not offered it until it is
+signed and published with `scripts/upload-plugin-release.mjs` (RELEASE.md §3–4).
+The extension loader now reports 0.10.0 (it still said 0.9.9).
+
+
 ## Unreleased — RAB as an Excel workbook
 
 **Export RAB (Excel)** in the RAB view writes a workbook organised the way
