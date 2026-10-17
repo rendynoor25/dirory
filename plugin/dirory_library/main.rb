@@ -1536,6 +1536,18 @@ module Dirory
         @dialog.add_action_callback('printSchedule') { |_ctx| print_schedule }
         @dialog.add_action_callback('requestTakeoff') { |_ctx| send_takeoff }
         @dialog.add_action_callback('exportTakeoff') { |_ctx| export_takeoff_csv }
+        # "What is this?": mark the selection, or save the material/tag mapping,
+        # then re-measure so the panel shows the result.
+        @dialog.add_action_callback('markSelection') do |_ctx, payload|
+          model = Sketchup.active_model
+          n = Takeoff.mark(model, model.selection.to_a, parse_payload(payload)['role'].to_s)
+          UI.messagebox('Select the groups, components or faces to mark first.') if n.zero?
+          send_takeoff
+        end
+        @dialog.add_action_callback('saveMapping') do |_ctx, payload|
+          Takeoff.save_mapping(Sketchup.active_model, parse_payload(payload))
+          send_takeoff
+        end
         @dialog.add_action_callback('requestRab') do |_ctx, payload|
           data = parse_payload(payload)
           Cloud.fetch_rab(@dialog, data['region'])

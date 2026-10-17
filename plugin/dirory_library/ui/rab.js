@@ -18,6 +18,10 @@
  *   door_area          W x H per door
  *   window_area        W x H per window
  *
+ * Landscape (SketchUp: takeoff.landscape, faces the takeoff recognised or the
+ * architect marked as hardscape / softscape) has no AHSP item in the book:
+ * one line per material under 'site', for the architect to price.
+ *
  * Structure (Revit only; takeoff.structure, see StructureTakeoff.cs), per
  * member - footing, tie_beam (sloof), column, beam, slab, wall:
  *   concrete_<m>       concrete volume (m3)
@@ -69,7 +73,7 @@
   // rebar in Revit, or pass options.rebarRatio, for a real figure.
   const REBAR_RATIO = { footing: 90, tie_beam: 130, column: 180, beam: 160, slab: 110, wall: 120 };
 
-  const ELEMENTS = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep'];
+  const ELEMENTS = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep', 'site'];
 
   function round2(n) {
     return Math.round((Number(n) || 0) * 100) / 100;
@@ -408,6 +412,24 @@
     return Array.from(byId.values()).map((l) => Object.assign(l, { quantity: round2(l.quantity) }));
   }
 
+  function landscapeLines(takeoff) {
+    return ((takeoff && takeoff.landscape) || []).filter((r) => Number(r.area_m2) > 0).map((r) => {
+      const hard = r.role === 'landscape_hard';
+      return {
+        id: 'site|' + r.role + '|' + r.material,
+        element: 'site',
+        key: null,
+        basis: 'landscape',
+        name: (hard ? 'Hardscape (perkerasan): ' : 'Softscape (taman): ') + r.material,
+        quantity: round2(r.area_m2),
+        unit: 'm2',
+        needs_price: true,
+        reference: '',
+        price: 0,
+      };
+    });
+  }
+
   /**
    * computeRab(takeoff, book, options) ->
    *   { region, lines: [{id, element, key, name, basis, quantity, unit, unit_price, amount,
@@ -446,6 +468,7 @@
     });
     demolitionLines(takeoff, items, o).forEach((l) => lines.push(l));
     mepLines(takeoff, items).forEach((l) => lines.push(l));
+    landscapeLines(takeoff).forEach((l) => lines.push(l));
 
     const prices = o.prices || {};
     lines.forEach((l) => {

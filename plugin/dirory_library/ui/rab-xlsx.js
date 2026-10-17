@@ -33,11 +33,12 @@
     roof: 'PEKERJAAN ATAP',
     opening: 'PEKERJAAN KUSEN, PINTU DAN JENDELA',
     mep: 'PEKERJAAN MEKANIKAL, ELEKTRIKAL DAN PLUMBING',
+    site: 'PEKERJAAN LANSEKAP',
   };
-  const ORDER = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep'];
+  const ORDER = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep', 'site'];
   const AHS_SHEET = {
     demolition: 'AHS BONGKAR', structure: 'AHS STR', mep: 'AHS MEP',
-    wall: 'AHS ARS', floor: 'AHS ARS', ceiling: 'AHS ARS', roof: 'AHS ARS', opening: 'AHS ARS',
+    wall: 'AHS ARS', floor: 'AHS ARS', ceiling: 'AHS ARS', roof: 'AHS ARS', opening: 'AHS ARS', site: 'AHS ARS',
   };
   const MEP_SECTIONS = { Plumbing: 'Plumbing', Electrical: 'Elektrikal', Air: 'Tata udara', Fire: 'Proteksi kebakaran', MEP: 'Lain-lain' };
   const KIND_LABEL = { labour: 'TENAGA KERJA', material: 'BAHAN', equipment: 'PERALATAN' };
@@ -167,6 +168,7 @@
     if (b === 'steel') return 'Berat baja profil: volume × 7.850 kg/m³';
     if (b === 'mep') return 'Dihitung dari elemen MEP di model';
     if (b === 'demolition') return 'Elemen yang dibongkar pada fase ini';
+    if (b === 'landscape') return 'Luas bidang lansekap (perkerasan / taman) dari model';
     return '';
   }
 

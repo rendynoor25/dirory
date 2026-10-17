@@ -187,4 +187,15 @@ eq("the Jakarta book is not changed", book.items.find((i) => i.key === "wall_bri
 eq("a RAB in Sumedang costs Jakarta x factor", Math.round(computeRab(takeoff, cityBook).total / 1000),
   Math.round(computeRab(takeoff, book).total * factor / 1000));
 
+// Landscape (SketchUp "What is this?"): one line per material to price, under 'site'.
+const site = computeRab(Object.assign({}, takeoff, { landscape: [
+  { role: "landscape_soft", material: "Grass Light Green", area_m2: 202.63 },
+  { role: "landscape_hard", material: "Pavers", area_m2: 36.45 },
+] }), book, { prices: { "site|landscape_hard|Pavers": 150000 } });
+const siteLines = site.lines.filter((l) => l.element === "site");
+eq("landscape: one line per material", siteLines.length, 2);
+eq("landscape: grass needs a price", siteLines.find((l) => /Grass/.test(l.name)).needs_price, true);
+eq("landscape: own price used", site.subtotals.site, Math.round(36.45 * 150000));
+eq("landscape: does not change the floor", site.quantities.floor, computeRab(takeoff, book).quantities.floor);
+
 process.exit(failed ? 1 : 0);

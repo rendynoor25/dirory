@@ -1463,7 +1463,121 @@ const ELEMENT_LABELS = {
   roof: 'Roof (atap)',
   mep: 'MEP (mekanikal, elektrikal, plumbing)',
   demolition: 'Demolition (pembongkaran)',
+  site: 'Landscape (lansekap)',
 };
+
+/* "What is this?" (SketchUp): what each material and tag was measured as,
+   and the architect's corrections (takeoff.rb, roles). */
+const ROLE_LABELS = {
+  auto: 'Auto (by direction)',
+  wall: 'Wall',
+  floor: 'Floor',
+  ceiling: 'Ceiling',
+  roof: 'Roof',
+  landscape_hard: 'Hardscape (paving, gravel)',
+  landscape_soft: 'Softscape (grass, soil)',
+  glass: 'Glass (not a finish)',
+  frame: 'Timber / steel frame',
+  ignore: 'Ignore (not built)',
+  door: 'Door',
+  window: 'Window',
+};
+// A material or tag can be mapped to a surface role; door, window and frame
+// only make sense for a marked group or component.
+const MAP_ROLES = ['auto', 'wall', 'floor', 'ceiling', 'roof', 'landscape_hard', 'landscape_soft', 'glass', 'ignore'];
+const BUCKET_LABELS = {
+  wall: 'wall', floor: 'floor', ceiling: 'ceiling', roof: 'roof',
+  landscape_hard: 'hardscape', landscape_soft: 'softscape', landscape_edge: 'landscape edge',
+  glass: 'glass', edge: 'edge strip', underside: 'underside at ground', soffit: 'bare roof underside', ignore: 'ignored',
+};
+
+function roleSelect(roles, value, onChange) {
+  const select = el('select', 'map-role');
+  roles.forEach((r) => {
+    const o = el('option', '', ROLE_LABELS[r]);
+    o.value = r;
+    o.selected = r === value;
+    select.appendChild(o);
+  });
+  select.addEventListener('change', () => onChange(select.value));
+  return select;
+}
+
+function renderMapping(body, data) {
+  const classes = Array.isArray(data.classes) ? data.classes : null;
+  if (!classes) return;
+  const mapping = {
+    materials: Object.assign({}, (data.mapping && data.mapping.materials) || {}),
+    tags: Object.assign({}, (data.mapping && data.mapping.tags) || {}),
+  };
+  const box = el('details', 'map-box');
+  const changed = Object.keys(mapping.materials).length + Object.keys(mapping.tags).length;
+  box.open = !changed;
+  box.appendChild(el('summary', 'takeoff-element', 'What is this? Check what was measured'));
+  box.appendChild(el('p', 'usage-note',
+    'Each material (and tag) and what it was counted as. Change the role where the guess is wrong: ' +
+    'the model is measured again. Faces with no material ("Unpainted") are usually unfinished concrete or ' +
+    'construction lines: check them first.'));
+
+  // Mark the selection: for a group, component or face the material cannot tell.
+  const bar = el('div', 'map-bar');
+  bar.appendChild(el('span', '', 'Mark selection as '));
+  let markRole = 'ignore';
+  bar.appendChild(roleSelect(Object.keys(ROLE_LABELS), markRole, (r) => { markRole = r; }));
+  const mark = el('button', 'ghost-btn', 'Mark');
+  mark.addEventListener('click', () => {
+    byId('takeoffRun').disabled = true;
+    byId('takeoffRun').textContent = 'Measuring…';
+    sketchup.markSelection({ role: markRole });
+  });
+  bar.appendChild(mark);
+  box.appendChild(bar);
+
+  const save = () => {
+    byId('takeoffRun').disabled = true;
+    byId('takeoffRun').textContent = 'Measuring…';
+    sketchup.saveMapping(mapping);
+  };
+  const shown = classes.filter((c) => c.area_m2 >= 0.5 || c.source === 'user').slice(0, 60);
+  const rows = shown.map((c) => {
+    const list = c.kind === 'tag' ? mapping.tags : mapping.materials;
+    const measured = Object.entries(c.by || {})
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `${BUCKET_LABELS[k] || k} ${fmt2(v)}`)
+      .join(' · ');
+    const select = roleSelect(MAP_ROLES, list[c.name] || (c.role === 'auto' ? 'auto' : c.role), (r) => {
+      if (r === 'auto') delete list[c.name];
+      else list[c.name] = r;
+      save();
+    });
+    const cell = el('div');
+    cell.appendChild(el('div', c.name === 'Unpainted' ? 'map-check' : 'u-name',
+      (c.kind === 'tag' ? 'Tag: ' : '') + c.name + (c.source === 'user' ? ' ✓' : '')));
+    cell.appendChild(el('div', 'u-sub', measured + ' m²'));
+    return [[cell, ''], [select, 'num']];
+  });
+  box.appendChild(takeoffTable([['Material / tag · measured as'], ['Role', 'num']], rows));
+
+  // What was left out, and why.
+  const ex = data.excluded || {};
+  const out = [];
+  const names = (g) => ((g && g.names) || []).slice(0, 5).map((n) => n.name).join(', ');
+  if (ex.furniture && ex.furniture.count) out.push(`${ex.furniture.count} furniture / people (${names(ex.furniture)}…)`);
+  if (ex.frame && (ex.frame.members || ex.frame.panels)) {
+    out.push(`timber/steel frame: ${ex.frame.members} members, ${fmt2(ex.frame.length_m)} m, ` +
+      `${fmt2(ex.frame.volume_m3)} m³` + (ex.frame.panels ? `, ${ex.frame.panels} truss panels` : '') +
+      ' (roof structure is priced per m² of roof)');
+  }
+  if (ex.other_components && ex.other_components.count) {
+    out.push(`${ex.other_components.count} other components (${names(ex.other_components)}…): ` +
+      'mark one as Door or Window if it is one');
+  }
+  if (ex.marked_ignore && ex.marked_ignore.count) out.push(`${ex.marked_ignore.count} marked Ignore`);
+  const areas = ex.area_m2 || {};
+  Object.keys(areas).filter((k) => areas[k] >= 0.5).forEach((k) => out.push(`${BUCKET_LABELS[k] || k} ${fmt2(areas[k])} m²`));
+  if (out.length) box.appendChild(el('p', 'usage-note', 'Left out: ' + out.join('; ') + '.'));
+  body.appendChild(box);
+}
 
 function fmt2(n) {
   return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1519,7 +1633,9 @@ window.diroryTakeoff = function (data) {
     option.selected = p.id === data.phase;
     phaseSelect.appendChild(option);
   });
-  if (!rows.length && !openings.length && !structure.length && !mep.length && !demolition.length) {
+  const landscape = data.landscape || [];
+  renderMapping(body, data);
+  if (!rows.length && !openings.length && !structure.length && !mep.length && !demolition.length && !landscape.length) {
     body.appendChild(el('p', 'usage-note',
       'Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.'));
     byId('takeoffExport').hidden = true;
@@ -1542,6 +1658,14 @@ window.diroryTakeoff = function (data) {
     body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS[element]));
     body.appendChild(takeoffTable([['Material'], ['Area', 'num']], lines));
   });
+
+  if (landscape.length) {
+    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.site));
+    body.appendChild(takeoffTable([['Material'], ['Area', 'num']], landscape.map((r) => [
+      [`${r.role === 'landscape_hard' ? 'Hardscape' : 'Softscape'}: ${r.material}`, ''],
+      [fmt2(r.area_m2) + ' m²', 'num'],
+    ])));
+  }
 
   // Revit only: concrete, formwork and rebar per member, then steel.
   if (structure.length) {
@@ -1609,7 +1733,7 @@ window.diroryTakeoff = function (data) {
     notes.push(`Floor perimeter (for skirting, approx.): ${fmt2(data.floor_perimeter_m)} m¹.`);
   }
   if (!Array.isArray(data.notes)) notes.push('Wall areas are finish areas per side (paint, plaster, tiles); openings are already deducted.');
-  if (data.components_skipped) {
+  if (data.components_skipped && !data.excluded) {
     notes.push(`${data.components_skipped} component(s) were not measured (furniture and products). ` +
       'Draw walls, slabs and roofs as groups so they are counted.');
   }

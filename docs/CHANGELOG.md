@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased (SketchUp) — "What is this?" before pricing
+
+Real models are mostly unnamed groups full of furniture, people, timber and
+landscape. The SketchUp takeoff now gives every face a role and shows the
+architect what it measured, per material and tag, before the RAB:
+
+- **Left out automatically:** furniture and entourage (by name or tag); thin
+  timber/steel members and open truss panels (reported as a frame: members,
+  length, m³); glass; horizontal strips under 20 cm (wall tops, beam
+  soffits); undersides at ground level; bare raked roof undersides.
+- **Landscape:** grass/soil (softscape) and gravel/pavers (hardscape) facing
+  up are no longer floor; they get their own RAB section (PEKERJAAN
+  LANSEKAP), one line per material for the architect to price.
+- **Corrections:** a role per material or tag (saved in the model), and
+  "Mark selection as" (wall, floor, ceiling, roof, landscape, glass, frame,
+  ignore, door, window) for groups, components and faces.
+- Doors/windows also recognised by drawing codes (P1, PJ-2, J3, BV1).
+- Skirting length counts only floor edges where a wall rises, not slab edges.
+
+Sumedang house (architect's RAB in brackets): roof 283 m² of roof tile
+(275), ceilings 286 → 206 with "Unpainted" ignored (≈270), floor finishes
+223 with "Unpainted" ignored (≈218), skirting 148 m (≈109), 45 furniture
+items, 92 frame pieces and 372 m² of landscape left out of the floor.
+
 ## Security hardening against the OWASP Top 10 (17 Oct 2026)
 
 Full review and mapping in `docs/SECURITY.md`. Fixed:

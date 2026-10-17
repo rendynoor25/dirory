@@ -276,6 +276,13 @@ h1 {
 .usage-table tr.total td { font-weight: 700; background: #f4f5f9; }
 .usage-table .u-empty { color: #71717a; text-align: center; padding: 12px; }
 
+/* "What is this?" review (RAB mapping) */
+.map-box { margin: 8px 0 12px; }
+.map-box summary { cursor: pointer; }
+.map-bar { display: flex; align-items: center; gap: 6px; margin: 8px 0; font-size: 11px; flex-wrap: wrap; }
+.map-role { font-size: 11px; max-width: 170px; }
+.usage-table .map-check { color: #b45309; font-weight: 600; }
+
 .usage-note {
   margin: 10px 0 0;
   font-size: 10px;
