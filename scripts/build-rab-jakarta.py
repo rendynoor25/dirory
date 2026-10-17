@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-Build Dirory's Jakarta RAB price book - 15 architectural, 12 structural,
-87 MEP and 17 demolition work items, each with its AHSP coefficients and Jakarta's basic prices
+Build Dirory's Jakarta RAB price book - 21 architectural, 13 structural,
+2 railing, 87 MEP and 19 demolition work items, each with its AHSP coefficients and Jakarta's basic prices
 (HSD), plus 4 split AC units at market prices - and the national AHSP
 coefficients the book is built on.
 
@@ -59,6 +59,19 @@ ITEMS = [
     ("frame_alu", 1375, "Aluminium door/window frame", "opening", "opening_perimeter"),
     ("door_leaf", 2013, "Panel door leaf, timber class I/II", "opening", "door_area"),
     ("glass", 1816, "Clear glass 5 mm", "opening", "window_area"),
+    # Floor and roof finishes other than ceramic and concrete tiles: rab.js
+    # picks one from the floor's or roof's material (floorKind, roofKind).
+    ("floor_granite", 2735, "Granite floor tile 60 x 60 cm", "floor", "floor_granite"),
+    ("floor_homogeneous", 2405, "Homogeneous tile floor 60 x 60 cm, polished", "floor", "floor_homogeneous"),
+    ("floor_parquet", 2199, "Solid timber parquet floor", "floor", "floor_parquet"),
+    ("floor_carpet", 2194, "Carpet floor", "floor", "floor_carpet"),
+    ("roof_metal", 1460, "Metal sheet roofing", "roof", "roof_metal"),
+    ("roof_waterproof", 2415, "Torch-on waterproofing membrane (concrete roof deck)", "roof", "roof_concrete"),
+    # Stairs and railings (Revit). Railings are filed under "wall" in the
+    # book (rab_items.element); rab.js lists them in their own section.
+    ("formwork_stair", 3424, "Formwork, stair (3 uses)", "structure", "formwork_stair"),
+    ("railing_stair", 2095, "Stair / ramp railing and handrail", "wall", "railing_stair"),
+    ("railing", 2133, "Steel guard railing, 1.2 m high", "wall", "railing"),
     # Structure (Revit). Quantities come from structural elements: concrete
     # volume, formwork contact area and rebar weight per member, steel weight.
     ("concrete_rm", 5846, "Ready-mix concrete fc' 25 MPa, placed", "structure", "concrete"),
@@ -139,6 +152,8 @@ MEP = [("pipe_%s_%d" % (kind, dn), hsp, "%s DN %d" % (label, dn), "mep", "mep")
 DEMOLITION = [
     ("demo_brick", 3406, "Demolish brick masonry, manual", "demolition", "demolition"),
     ("demo_concrete", 3405, "Demolish concrete 20-40 MPa, jack hammer", "demolition", "demolition"),
+    ("demo_concrete_manual", 3402, "Demolish concrete over 20 MPa, by hand", "demolition", "demolition"),
+    ("demo_roof_metal", 5676, "Remove metal sheet roofing", "demolition", "demolition"),
     ("demo_ceiling", 1939, "Remove ceiling incl. frame (not reused)", "demolition", "demolition"),
     ("demo_floor_tile", 3535, "Remove ceramic floor tiles", "demolition", "demolition"),
     ("demo_roof_tile", 5670, "Remove concrete roof tiles", "demolition", "demolition"),

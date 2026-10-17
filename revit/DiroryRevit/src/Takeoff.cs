@@ -11,6 +11,11 @@
 //                             (StructureTakeoff.cs)
 //   mep                       pipe and duct runs, fixtures and devices
 //                             (MepTakeoff.cs)
+//   extras                    railings (m, on a stair or not), stairs that are
+//                             not concrete (per type) and casework (m, its
+//                             longest side): rab.js lists them under 'misc'
+// Rows carry `spec`, the type's layer materials, so rab.js can tell a hebel
+// wall from a brick one and a granite floor from a ceramic one.
 // A type is treated as tiled when its name or any layer material says so.
 // A wall with concrete in it is marked core = "concrete": rab.js prices its
 // finishes but not as brick or block masonry, since the structure section
@@ -28,6 +33,7 @@ namespace Dirory.Revit
     public static class Takeoff
     {
         private static readonly Regex TileRe = new Regex(@"\b(tile|tiles|keramik|ceramic|granit|granite|porselen|porcelain|homogen\w*)\b", RegexOptions.IgnoreCase);
+        private static readonly Regex StairRe = new Regex(@"stair|tangga|handrail", RegexOptions.IgnoreCase);
         private const double SqFtToM2 = 0.09290304;
         private const double FtToM = 0.3048;
 
@@ -36,10 +42,10 @@ namespace Dirory.Revit
         {
             var ph = Phasing.For(doc, phaseId);
             var rows = new Dictionary<string, Dictionary<string, object>>();
-            var (structure, concreteWalls) = StructureTakeoff.Run(doc, ph);
+            var (structure, concreteHosts) = StructureTakeoff.Run(doc, ph);
             var mep = MepTakeoff.Run(doc, ph);
 
-            void Add(string element, string material, string category, double areaM2, string core = "")
+            void Add(string element, string material, string category, double areaM2, string core = "", string spec = "")
             {
                 if (areaM2 <= 0) return;
                 string key = element + "|" + material + "|" + core;
@@ -52,6 +58,7 @@ namespace Dirory.Revit
                         ["faces"] = 0, ["area_m2"] = 0.0,
                     };
                     if (core != "") row["core"] = core;
+                    if (spec != "") row["spec"] = spec;
                     rows[key] = row;
                 }
                 row["faces"] = (int)row["faces"] + 1;
@@ -68,18 +75,21 @@ namespace Dirory.Revit
             {
                 if (w.WallType.Kind == WallKind.Curtain) continue;
                 string status = ph.Status(w);
-                if (status == "demolished" && !concreteWalls.Contains(w.Id))
+                if (status == "demolished" && !concreteHosts.Contains(w.Id))
                     ph.Demolish("masonry", w.WallType.Name, "m3", Volume(w));
                 if (status != "new") continue;
                 Add("wall", w.WallType.Name, IsTiled(doc, w.WallType) ? "Tiles" : "", 2 * Area(w),
-                    concreteWalls.Contains(w.Id) ? "concrete" : "");
+                    concreteHosts.Contains(w.Id) ? "concrete" : "", Spec(doc, w.WallType));
             }
             foreach (Floor f in new FilteredElementCollector(doc).OfClass(typeof(Floor)).WhereElementIsNotElementType())
             {
                 string status = ph.Status(f);
                 bool tiled = IsTiled(doc, f.FloorType);
-                if (status == "demolished") ph.Demolish(tiled ? "floor_tiled" : "floor", f.FloorType.Name, "m2", Area(f));
-                if (status == "new") Add("floor", f.FloorType.Name, tiled ? "Tiles" : "", Area(f));
+                // A bare concrete slab's demolition is its concrete (StructureTakeoff);
+                // only a finish on it is removed as well.
+                if (status == "demolished" && (tiled || !concreteHosts.Contains(f.Id)))
+                    ph.Demolish(tiled ? "floor_tiled" : "floor", f.FloorType.Name, "m2", Area(f));
+                if (status == "new") Add("floor", f.FloorType.Name, tiled ? "Tiles" : "", Area(f), "", Spec(doc, f.FloorType));
             }
             foreach (Element c in new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Ceilings).WhereElementIsNotElementType())
             {
@@ -91,7 +101,7 @@ namespace Dirory.Revit
             {
                 string status = ph.Status(r);
                 if (status == "demolished") ph.Demolish("roof", r.RoofType.Name, "m2", Area(r));
-                if (status == "new") Add("roof", r.RoofType.Name, "", Area(r));
+                if (status == "new") Add("roof", r.RoofType.Name, "", Area(r), "", Spec(doc, r.RoofType));
             }
 
             var openings = new Dictionary<string, Dictionary<string, object>>();
@@ -120,6 +130,47 @@ namespace Dirory.Revit
             }
             Opening(BuiltInCategory.OST_Doors, "door", BuiltInParameter.DOOR_WIDTH, BuiltInParameter.DOOR_HEIGHT);
             Opening(BuiltInCategory.OST_Windows, "window", BuiltInParameter.WINDOW_WIDTH, BuiltInParameter.WINDOW_HEIGHT);
+
+            // Railings, stairs that are not concrete, casework.
+            var extras = new Dictionary<string, Dictionary<string, object>>();
+            void Extra(Element e, string group, string name, string unit, double qty, bool onStair = false)
+            {
+                if (qty <= 0) return;
+                string status = ph.Status(e);
+                if (status == "demolished") ph.Demolish(group, name, unit, qty);
+                if (status != "new") return;
+                string key = group + "|" + name;
+                if (!extras.TryGetValue(key, out var x))
+                {
+                    x = new Dictionary<string, object>
+                    {
+                        ["group"] = group, ["name"] = name, ["unit"] = unit, ["quantity"] = 0.0, ["on_stair"] = onStair,
+                    };
+                    extras[key] = x;
+                }
+                x["quantity"] = (double)x["quantity"] + qty;
+            }
+            foreach (Railing rl in new FilteredElementCollector(doc).OfClass(typeof(Railing)).WhereElementIsNotElementType().Cast<Railing>())
+            {
+                double len = rl.GetPath().Sum(c => c.Length) * FtToM;
+                string name = StructureTakeoff.TypeName(doc, rl);
+                bool onStair = rl.HostId != ElementId.InvalidElementId && doc.GetElement(rl.HostId) is Stairs ||
+                               StairRe.IsMatch(name);
+                Extra(rl, "railing", name, "m", len, onStair);
+            }
+            foreach (Element st in new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Stairs).WhereElementIsNotElementType())
+            {
+                if (!(st is Stairs) && !(st is FamilyInstance)) continue;
+                if (concreteHosts.Contains(st.Id)) continue;
+                Extra(st, "stair", StructureTakeoff.TypeName(doc, st), "unit", 1);
+            }
+            foreach (FamilyInstance cw in new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Casework).OfClass(typeof(FamilyInstance)).Cast<FamilyInstance>())
+            {
+                var bb = cw.get_BoundingBox(null);
+                if (bb == null) continue;
+                double len = Math.Max(bb.Max.X - bb.Min.X, bb.Max.Y - bb.Min.Y) * FtToM;
+                Extra(cw, "casework", cw.Symbol.FamilyName + " : " + cw.Symbol.Name, "m", len);
+            }
 
             // Rooms belong to one phase; use the rooms of the priced phase.
             double perimeter = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Rooms)
@@ -160,6 +211,8 @@ namespace Dirory.Revit
                 ["structure"] = structure,
                 ["mep"] = mep,
                 ["demolition"] = demolition,
+                ["extras"] = extras.Values.Select(x => { x["quantity"] = Math.Round((double)x["quantity"], 2); return x; })
+                    .OrderBy(x => (string)x["group"]).ThenBy(x => (string)x["name"]).ToList(),
                 // Names the exported RAB; stays in the panel, never sent.
                 ["project"] = doc.Title ?? "",
                 ["phase"] = ph.PhaseId == ElementId.InvalidElementId ? "" : ph.PhaseId.Value.ToString(),
@@ -167,6 +220,16 @@ namespace Dirory.Revit
                 ["components_skipped"] = 0,
                 ["notes"] = notes,
             };
+        }
+
+        /// The type's layer material names, for rab.js to read (hebel, granit ...).
+        private static string Spec(Document doc, HostObjAttributes type)
+        {
+            var cs = type.GetCompoundStructure();
+            if (cs == null) return "";
+            return string.Join(", ", cs.GetLayers()
+                .Select(l => doc.GetElement(l.MaterialId)?.Name)
+                .Where(n => !string.IsNullOrEmpty(n)).Distinct());
         }
 
         private static bool IsTiled(Document doc, HostObjAttributes type)

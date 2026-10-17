@@ -34,11 +34,12 @@
     opening: 'PEKERJAAN KUSEN, PINTU DAN JENDELA',
     mep: 'PEKERJAAN MEKANIKAL, ELEKTRIKAL DAN PLUMBING',
     site: 'PEKERJAAN LANSEKAP',
+    misc: 'PEKERJAAN TANGGA, RAILING DAN INTERIOR',
   };
-  const ORDER = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep', 'site'];
+  const ORDER = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'misc', 'mep', 'site'];
   const AHS_SHEET = {
     demolition: 'AHS BONGKAR', structure: 'AHS STR', mep: 'AHS MEP',
-    wall: 'AHS ARS', floor: 'AHS ARS', ceiling: 'AHS ARS', roof: 'AHS ARS', opening: 'AHS ARS', site: 'AHS ARS',
+    wall: 'AHS ARS', floor: 'AHS ARS', ceiling: 'AHS ARS', roof: 'AHS ARS', opening: 'AHS ARS', site: 'AHS ARS', misc: 'AHS ARS',
   };
   const MEP_SECTIONS = { Plumbing: 'Plumbing', Electrical: 'Elektrikal', Air: 'Tata udara', Fire: 'Proteksi kebakaran', MEP: 'Lain-lain' };
   const KIND_LABEL = { labour: 'TENAGA KERJA', material: 'BAHAN', equipment: 'PERALATAN' };
@@ -152,6 +153,21 @@
     const b = line.basis;
     const fmt = (n) => (Math.round((Number(n) || 0) * 100) / 100).toLocaleString('id-ID');
     if (b === 'wall_core') return 'Luas dinding bata/hebel (dinding beton tidak termasuk); dinding dua muka dibagi 2';
+    if (b === 'wall_core_brick') return 'Luas dinding bata (menurut nama/material dinding); dinding dua muka dibagi 2';
+    if (b === 'wall_core_aac') return 'Luas dinding hebel/bata ringan (menurut nama/material dinding); dinding dua muka dibagi 2';
+    if (b === 'floor_tile') return 'Luas lantai keramik';
+    if (b === 'floor_granite') return 'Luas lantai granit';
+    if (b === 'floor_homogeneous') return 'Luas lantai homogenous tile';
+    if (b === 'floor_parquet') return 'Luas lantai kayu/parket';
+    if (b === 'floor_carpet') return 'Luas lantai karpet';
+    if (b === 'floor_other' || b === 'roof_other') return 'Luas menurut material di model; harga diisi arsitek';
+    if (b === 'roof_framed') return 'Luas atap genteng/metal (miring, sebenarnya)';
+    if (b === 'roof_tile') return 'Luas atap genteng (miring, sebenarnya)';
+    if (b === 'roof_metal') return 'Luas atap metal (miring, sebenarnya)';
+    if (b === 'roof_concrete') return 'Luas dak beton atap';
+    if (b === 'railing') return 'Panjang railing dari model';
+    if (b === 'stair') return 'Tangga non-beton dari model, per tipe';
+    if (b === 'casework') return 'Panjang kabinet/kitchen set dari model (sisi terpanjang)';
     if (b === 'wall_finish') return 'Luas muka dinding yang tidak dikeramik (kedua sisi)';
     if (b === 'wall_tiled') return 'Luas muka dinding berkeramik';
     if (b === 'floor') return 'Luas lantai';

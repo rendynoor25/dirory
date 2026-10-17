@@ -1464,6 +1464,7 @@ const ELEMENT_LABELS = {
   mep: 'MEP (mekanikal, elektrikal, plumbing)',
   demolition: 'Demolition (pembongkaran)',
   site: 'Landscape (lansekap)',
+  misc: 'Stairs, railings & casework (tangga, railing, interior)',
 };
 
 /* "What is this?" (SketchUp): what each material and tag was measured as,
@@ -1622,6 +1623,7 @@ window.diroryTakeoff = function (data) {
   const mep = data.mep || [];
   const demolition = data.demolition || [];
   byId('rabConcrete').hidden = !structure.some((s) => s.concrete_m3 > 0);
+  byId('rabDemo').hidden = !demolition.some((d) => d.group === 'concrete');
   // Revit phases: price one of them (the host remembers the choice).
   const phases = data.phases || [];
   const phaseSelect = byId('rabPhase');
@@ -1727,6 +1729,17 @@ window.diroryTakeoff = function (data) {
     ));
   }
 
+  // Revit only: railings, stairs that are not concrete, casework.
+  const extras = data.extras || [];
+  if (extras.length) {
+    const GROUPS = { railing: 'Railing', stair: 'Stair', casework: 'Casework' };
+    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.misc));
+    body.appendChild(takeoffTable([['Item'], ['Quantity', 'num']], extras.map((x) => [
+      [`${GROUPS[x.group] || x.group}: ${x.name}${x.on_stair ? ' (stair)' : ''}`, ''],
+      [`${x.unit === 'unit' ? x.quantity : fmt2(x.quantity)} ${x.unit === 'unit' ? '' : x.unit}`.trim(), 'num'],
+    ])));
+  }
+
   // A host can describe its own measuring rules (the Revit add-in does).
   const notes = Array.isArray(data.notes) ? data.notes.slice() : [];
   if (!Array.isArray(data.notes) && data.floor_perimeter_m > 0) {
@@ -1823,6 +1836,7 @@ function rabOptions() {
     wallType: byId('rabWall').value,
     wallsBothSides: byId('rabBothSides').checked,
     concrete: byId('rabConcrete').value,
+    demoConcrete: byId('rabDemo').value,
     prices: customPrices,
   };
 }
@@ -2064,7 +2078,7 @@ byId('rabRun').addEventListener('click', () => {
   byId('rabRun').textContent = 'Loading prices…';
   sketchup.requestRab(JSON.stringify({ region: region }));
 });
-['rabWall', 'rabConcrete', 'rabBothSides'].forEach((id) => byId(id).addEventListener('change', () => {
+['rabWall', 'rabConcrete', 'rabDemo', 'rabBothSides'].forEach((id) => byId(id).addEventListener('change', () => {
   if (rabBook) renderRab();
   renderLive();
 }));

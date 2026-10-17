@@ -1,7 +1,7 @@
 {
  "source": "AHSP Bidang Cipta Karya per Permen PUPR 8/2023 and its circulars (SE Dirjen Bina Konstruksi 182/SE/Dk/2025, 47/SE/Dk/2026), as applied item by item in Jakarta's published analyses. Prices are regional and not included.",
  "replaces": "Permen PUPR 1/2022, revoked by Permen PUPR 8/2023.",
- "fetched": "2026-10-16",
+ "fetched": "2026-10-18",
  "items": [
   {
    "key": "wall_brick",
@@ -871,6 +871,572 @@
      "name": "Silicone Sealent",
      "unit": "Tube",
      "coef": 0.05
+    }
+   ]
+  },
+  {
+   "key": "floor_granite",
+   "name": "Granite floor tile 60 x 60 cm",
+   "element": "floor",
+   "unit": "m2",
+   "title": "3.9.5.3 Pemasangan 1 m2 Lantai Ubin Granit Ukuran 60 cm x 60 cm (1SP : 2PP)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.25
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.0833
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0083
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0028
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Warna",
+     "unit": "Kg",
+     "coef": 1.5
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.027
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Granite  60x60",
+     "unit": "Buah",
+     "coef": 2.917
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 13.632
+    }
+   ]
+  },
+  {
+   "key": "floor_homogeneous",
+   "name": "Homogeneous tile floor 60 x 60 cm, polished",
+   "element": "floor",
+   "unit": "m2",
+   "title": "3.9.4.3 Pemasangan 1 m2 Lantai Homogenous Tile Polish Ukuran 60 cm x 60 cm (1SP : 2PP)",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.0833
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.25
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0083
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0028
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Homogenous Tile 60/60 Polished",
+     "unit": "Buah",
+     "coef": 2.917
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 13.632
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Warna",
+     "unit": "Kg",
+     "coef": 1.5
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.027
+    }
+   ]
+  },
+  {
+   "key": "floor_parquet",
+   "name": "Solid timber parquet floor",
+   "element": "floor",
+   "unit": "m2",
+   "title": "3.9.9.4 Pemasangan 1 m2 Lantai Parquet Kayu Solid",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.2
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.1
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Parquette Kayu Solid",
+     "unit": "M2",
+     "coef": 1.05
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lem Kayu",
+     "unit": "Kg",
+     "coef": 0.6
+    }
+   ]
+  },
+  {
+   "key": "floor_carpet",
+   "name": "Carpet floor",
+   "element": "floor",
+   "unit": "m2",
+   "title": "3.9.9.2 Pemasangan 1 m2 Lantai Karpet",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.17
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.017
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0057
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.17
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Karpet",
+     "unit": "M2",
+     "coef": 1.05
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lem Karet",
+     "unit": "Kg",
+     "coef": 0.35
+    }
+   ]
+  },
+  {
+   "key": "roof_metal",
+   "name": "Metal sheet roofing",
+   "element": "roof",
+   "unit": "m2",
+   "title": "3.1.3.7 Pemasangan 1 m2 Atap Metal Lembaran",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.13333
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.0667
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0067
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0022
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Genteng Metal",
+     "unit": "M2",
+     "coef": 1.3
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku Biasa",
+     "unit": "Kg",
+     "coef": 0.05
+    }
+   ]
+  },
+  {
+   "key": "roof_waterproof",
+   "name": "Torch-on waterproofing membrane (concrete roof deck)",
+   "element": "roof",
+   "unit": "m2",
+   "title": "3.4.1 Pemasangan 1 m2 Waterproofing Membran Bakar",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.05
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang cat/pelitur",
+     "unit": "OH",
+     "coef": 0.05
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Waterproofing Membran Bakar",
+     "unit": "M2",
+     "coef": 1.05
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cairan Primer Membran Bakar",
+     "unit": "Kg",
+     "coef": 0.3
+    }
+   ]
+  },
+  {
+   "key": "formwork_stair",
+   "name": "Formwork, stair (3 uses)",
+   "element": "structure",
+   "unit": "m2",
+   "title": "2.2.1.3.8 Pemasangan 1 m2 bekisting untuk tangga (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.66
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.33
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.033
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.4
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.15
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Balok Kayu Kelas II",
+     "unit": "M3",
+     "coef": 0.005
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Dolken kayu  dia. 8- 10/400 cm",
+     "unit": "Batang",
+     "coef": 0.65
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Triplek / Plywood tebal 12 mm",
+     "unit": "Lembar",
+     "coef": 0.127
+    }
+   ]
+  },
+  {
+   "key": "railing_stair",
+   "name": "Stair / ramp railing and handrail",
+   "element": "wall",
+   "unit": "m",
+   "title": "3.13.5 Pembuatan dan Pemasangan 1 m Railing Tangga/Ramp dan Hand Rail Tinggi 0.85 m dan 0.65 m",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.2
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang besi/besi beton",
+     "unit": "OH",
+     "coef": 0.1
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 3.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 2.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 1-1/2\" (40 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 2.0
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cat Zyncromate",
+     "unit": "Kg",
+     "coef": 0.1
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kawat Las Listrik",
+     "unit": "Kg",
+     "coef": 0.05
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa alat las listrik",
+     "unit": "Hari",
+     "coef": 0.1
+    }
+   ]
+  },
+  {
+   "key": "railing",
+   "name": "Steel guard railing, 1.2 m high",
+   "element": "wall",
+   "unit": "m",
+   "title": "3.13.4 Pembuatan dan Pemasangan 1 m Railing Besi Pengaman Tinggi 1.2 m",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.4551
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang besi/besi beton",
+     "unit": "OH",
+     "coef": 0.2275
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0228
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0076
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 4.8
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel)  MED CLASS ; DN. 1\" (25 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 9.9
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cat Zyncromate",
+     "unit": "Kg",
+     "coef": 0.1
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kawat Las Listrik",
+     "unit": "Kg",
+     "coef": 0.098
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa alat las listrik",
+     "unit": "Hari",
+     "coef": 0.2275
     }
    ]
   },
@@ -5801,6 +6367,103 @@
      "name": "Sewa genset diatas 5000w",
      "unit": "Hari",
      "coef": 0.05
+    }
+   ]
+  },
+  {
+   "key": "demo_concrete_manual",
+   "name": "Demolish concrete over 20 MPa, by hand",
+   "element": "demolition",
+   "unit": "m3",
+   "title": "1.6.4 Bongkar 1 m3 beton mutu sedang fc > 20 MPa secara Manual",
+   "reference": "Permen PUPR No. 8 Tahun 2023",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 3.6
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.18
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cuka Pelunak Beton",
+     "unit": "Liter",
+     "coef": 1.2
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Palu godam baja keras",
+     "unit": "buah",
+     "coef": 0.02
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Gergaji Besi",
+     "unit": "buah",
+     "coef": 0.1
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Pahat beton baja keras",
+     "unit": "buah",
+     "coef": 0.03
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Linggis baja keras",
+     "unit": "buah",
+     "coef": 0.05
+    }
+   ]
+  },
+  {
+   "key": "demo_roof_metal",
+   "name": "Remove metal sheet roofing",
+   "element": "demolition",
+   "unit": "m2",
+   "title": "1.6.41 Pembongkaran 1 m2 Penutup Atap Metal Lembaran",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.0317
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.0106
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0011
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0004
     }
    ]
   },

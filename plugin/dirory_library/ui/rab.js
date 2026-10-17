@@ -6,14 +6,26 @@
  *
  * How the takeoff becomes volumes:
  *   wall_core          masonry area = wall surfaces / 2 (a wall is drawn with
- *                      both faces), or the surfaces as-is for single-face walls
+ *                      both faces), or the surfaces as-is for single-face walls;
+ *                      split into wall_core_aac and wall_core_brick by the
+ *                      wall's name and materials (hebel, bata ringan, AAC ... or
+ *                      bata, brick), and options.wallType for walls that say
+ *                      neither
  *   wall_finish        plaster, skim coat, paint: every wall surface that is
  *                      not tiled
  *   wall_tiled         wall surfaces finished with a tile material
- *   floor              floor area
+ *   floor              floor area, all of it; priced per finish from the
+ *                      floor's name and materials (floorKind): floor_tile,
+ *                      floor_granite, floor_homogeneous, floor_parquet,
+ *                      floor_carpet; a bare concrete deck (dak beton) has no
+ *                      finish line, and any other finish (vinyl, marble ...)
+ *                      becomes a line for the architect to price
  *   floor_perimeter    skirting length (m')
  *   ceiling            ceiling area
- *   roof               roof area (true, slope included)
+ *   roof               roof area (true, slope included), per covering
+ *                      (roofKind): roof_tile, roof_metal, roof_concrete (a
+ *                      concrete deck: waterproofing, no truss); roof_framed is
+ *                      the area that needs a light-steel truss
  *   opening_perimeter  frame length: 2 x (W + H) per door/window
  *   door_area          W x H per door
  *   window_area        W x H per window
@@ -22,8 +34,13 @@
  * architect marked as hardscape / softscape) has no AHSP item in the book:
  * one line per material under 'site', for the architect to price.
  *
+ * Stairs, railings and casework (Revit: takeoff.extras) go under 'misc':
+ * railings per metre (stair railing or guard railing), steel or timber stairs
+ * and casework (kitchen sets, per metre) for the architect to price. Concrete
+ * stairs are structure (member 'stair').
+ *
  * Structure (Revit only; takeoff.structure, see StructureTakeoff.cs), per
- * member - footing, tie_beam (sloof), column, beam, slab, wall:
+ * member - footing, tie_beam (sloof), column, beam, slab, wall, stair:
  *   concrete_<m>       concrete volume (m3)
  *   formwork_<m>       formwork contact area (m2)
  *   rebar_<m>          modelled rebar (kg) plus, for members with no modelled
@@ -37,29 +54,50 @@
   'use strict';
 
   const TILE_RE = /\b(tile|tiles|keramik|ceramic|granit|granite|porselen|porcelain|homogen\w*|mosaic|mozaik)\b/i;
+  const AAC_RE = /\b(aac|alc|hebel|bata ringan|celcon|citicon|lightweight|light ?weight)\b/i;
+  const BRICK_RE = /\b(brick|bata|batako)\b/i;
+  const BARE_RE = /\b(beton|concrete|dak|slab|plat|screed|cor|rabat)\b/i;
 
-  // One RAB line per (item, basis). Wall masonry is the only either/or.
+  // One RAB line per (item, basis). `fallback`: the item to use when the
+  // price book does not have this one yet; `toPrice` and `unit`: the line to
+  // list for the architect to price when neither is in the book.
   const LINES = [
-    { item: 'wall_brick', basis: 'wall_core', when: (o) => o.wallType !== 'aac' },
-    { item: 'wall_aac', basis: 'wall_core', when: (o) => o.wallType === 'aac' },
+    { item: 'wall_brick', basis: 'wall_core_brick' },
+    { item: 'wall_aac', basis: 'wall_core_aac' },
     { item: 'plaster', basis: 'wall_finish' },
     { item: 'skim_coat', basis: 'wall_finish' },
     { item: 'paint_wall', basis: 'wall_finish' },
     { item: 'wall_tile', basis: 'wall_tiled' },
-    { item: 'floor_tile', basis: 'floor' },
+    { item: 'floor_tile', basis: 'floor_tile' },
+    { item: 'floor_granite', basis: 'floor_granite', fallback: 'floor_tile' },
+    { item: 'floor_homogeneous', basis: 'floor_homogeneous', fallback: 'floor_tile' },
+    { item: 'floor_parquet', basis: 'floor_parquet', toPrice: 'Timber / parquet floor', unit: 'm2' },
+    { item: 'floor_carpet', basis: 'floor_carpet', toPrice: 'Carpet floor', unit: 'm2' },
     { item: 'skirting', basis: 'floor_perimeter' },
     { item: 'ceiling_frame', basis: 'ceiling' },
     { item: 'ceiling_gypsum', basis: 'ceiling' },
     { item: 'paint_wall', basis: 'ceiling', label: 'Ceiling paint (primer + 2 coats)', element: 'ceiling' },
-    { item: 'roof_truss', basis: 'roof' },
-    { item: 'roof_tile', basis: 'roof' },
+    { item: 'roof_truss', basis: 'roof_framed' },
+    { item: 'roof_tile', basis: 'roof_tile' },
+    { item: 'roof_metal', basis: 'roof_metal', toPrice: 'Metal sheet roofing', unit: 'm2' },
+    { item: 'roof_waterproof', basis: 'roof_concrete', toPrice: 'Waterproofing, concrete roof deck', unit: 'm2' },
     { item: 'frame_alu', basis: 'opening_perimeter' },
     { item: 'door_leaf', basis: 'door_area' },
     { item: 'glass', basis: 'window_area' },
   ];
 
+  // Line ids before walls, floors and roofs were priced per material: a price
+  // the architect saved under the old id still applies.
+  const OLD_LINE_IDS = {
+    'wall_brick|wall_core_brick': 'wall_brick|wall_core',
+    'wall_aac|wall_core_aac': 'wall_aac|wall_core',
+    'floor_tile|floor_tile': 'floor_tile|floor',
+    'roof_truss|roof_framed': 'roof_truss|roof',
+    'roof_tile|roof_tile': 'roof_tile|roof',
+  };
+
   // Structure lines are per member, in the order an RAB lists them.
-  const MEMBERS = ['footing', 'tie_beam', 'column', 'beam', 'slab', 'wall'];
+  const MEMBERS = ['footing', 'tie_beam', 'column', 'beam', 'slab', 'wall', 'stair'];
   const MEMBER_LABELS = {
     footing: 'Footings (pondasi)',
     tie_beam: 'Sloof',
@@ -67,13 +105,14 @@
     beam: 'Beams (balok)',
     slab: 'Slabs (plat lantai)',
     wall: 'Concrete walls (dinding beton)',
+    stair: 'Concrete stairs (tangga beton)',
   };
   // Rebar where none is modelled, kg per m3 of concrete. Planning ratios for
   // ordinary low- to mid-rise buildings in Indonesia, not from AHSP: model the
   // rebar in Revit, or pass options.rebarRatio, for a real figure.
-  const REBAR_RATIO = { footing: 90, tie_beam: 130, column: 180, beam: 160, slab: 110, wall: 120 };
+  const REBAR_RATIO = { footing: 90, tie_beam: 130, column: 180, beam: 160, slab: 110, wall: 120, stair: 120 };
 
-  const ELEMENTS = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'mep', 'site'];
+  const ELEMENTS = ['demolition', 'structure', 'wall', 'floor', 'ceiling', 'roof', 'opening', 'misc', 'mep', 'site'];
 
   function round2(n) {
     return Math.round((Number(n) || 0) * 100) / 100;
@@ -81,6 +120,44 @@
 
   function isTiled(row) {
     return TILE_RE.test(String(row.category || '')) || TILE_RE.test(String(row.material || ''));
+  }
+
+  // Everything a row says about what it is made of: its material (SketchUp)
+  // or type name (Revit), category, and the type's layer materials (Revit).
+  function rowText(row) {
+    return [row.material, row.category, row.spec].filter(Boolean).join(' ');
+  }
+
+  // 'aac' or 'brick' for a masonry wall row; null for a concrete wall.
+  function wallCore(row, o) {
+    if (row.core === 'concrete') return null;
+    const t = rowText(row);
+    if (AAC_RE.test(t)) return 'aac';
+    if (BRICK_RE.test(t)) return 'brick';
+    return o.wallType === 'aac' ? 'aac' : 'brick';
+  }
+
+  // The finish a floor row is priced as. 'other' rows are listed to price.
+  function floorKind(row) {
+    const t = rowText(row);
+    if (/\b(carpet|karpet|permadani|rug)\b|\u0E1E\u0E23\u0E21/i.test(t)) return 'carpet';
+    if (/\b(vinyl|spc|lvt|laminat\w*|wpc|epoxy|terrazzo|teraso|marmer|marble|batu alam|stone)\b/i.test(t)) return 'other';
+    if (/\b(parquet|parket|timber|wood|wooden|kayu)\b/i.test(t)) return 'parquet';
+    if (/\bgranit/i.test(t)) return 'granite';
+    if (/\bhomogen/i.test(t)) return 'homogeneous';
+    if (TILE_RE.test(t)) return 'tile';
+    if (BARE_RE.test(t)) return 'bare';
+    return 'tile';
+  }
+
+  // The covering a roof row is priced as.
+  function roofKind(row) {
+    const t = rowText(row);
+    if (/\b(polycarbonate?|polikarbonat|upvc|pvc|onduline|bitumen|aspal|shingle|sirap|kaca|glass|alang)\b/i.test(t)) return 'other';
+    if (/\b(metal|zinc\w*|spandek|spandex|galvalum\w*|seng|alumin\w*|steel|baja)\b/i.test(t)) return 'metal';
+    if (/\b(genteng|tile|tiles|roof ?tile)\b/i.test(t)) return 'tile';
+    if (BARE_RE.test(t) || /\bdeck\b/i.test(t)) return 'concrete';
+    return 'tile';
   }
 
   // Quantities per basis, from a takeoff.
@@ -91,18 +168,36 @@
     const wall = sum((r) => r.element === 'wall');
     const masonry = sum((r) => r.element === 'wall' && r.core !== 'concrete');
     const tiled = sum((r) => r.element === 'wall' && isTiled(r));
+    const core = (kind) => {
+      const m2 = sum((r) => r.element === 'wall' && wallCore(r, o) === kind);
+      return round2(o.wallsBothSides ? m2 / 2 : m2);
+    };
+    const floorOf = (kind) => round2(sum((r) => r.element === 'floor' && floorKind(r) === kind));
+    const roofOf = (kind) => round2(sum((r) => r.element === 'roof' && roofKind(r) === kind));
     const openings = (takeoff && takeoff.openings) || [];
     const perimeter = openings.reduce((s, x) => s + 2 * ((x.width_m || 0) + (x.height_m || 0)) * (x.count || 0), 0);
     const area = (kind) =>
       openings.filter((x) => x.kind === kind).reduce((s, x) => s + (x.width_m || 0) * (x.height_m || 0) * (x.count || 0), 0);
     return Object.assign({
       wall_core: round2(o.wallsBothSides ? masonry / 2 : masonry),
+      wall_core_brick: core('brick'),
+      wall_core_aac: core('aac'),
       wall_finish: round2(wall - tiled),
       wall_tiled: round2(tiled),
       floor: round2(sum((r) => r.element === 'floor')),
+      floor_tile: floorOf('tile'),
+      floor_granite: floorOf('granite'),
+      floor_homogeneous: floorOf('homogeneous'),
+      floor_parquet: floorOf('parquet'),
+      floor_carpet: floorOf('carpet'),
+      floor_bare: floorOf('bare'),
       floor_perimeter: round2((takeoff && takeoff.floor_perimeter_m) || 0),
       ceiling: round2(sum((r) => r.element === 'ceiling')),
       roof: round2(sum((r) => r.element === 'roof')),
+      roof_tile: roofOf('tile'),
+      roof_metal: roofOf('metal'),
+      roof_concrete: roofOf('concrete'),
+      roof_framed: round2(sum((r) => r.element === 'roof' && roofKind(r) !== 'concrete')),
       opening_perimeter: round2(perimeter),
       door_area: round2(area('door')),
       window_area: round2(area('window')),
@@ -187,6 +282,8 @@
     return { key: prefix + dn, assumed: pk.assumed };
   }
 
+  const APPLIANCE_RE = /refrigerator|fridge|kulkas|freezer|microwave|\boven\b|dispenser|kettle|coffee|\btv\b|television|televisi|washing|mesin cuci|dryer|dishwasher|cooker|\bhob\b|kompor|blender/;
+
   function acKey(text) {
     let pk = null;
     const m = text.match(/(\d+(?:[.,]\d+)?|1\/2|½)\s*pk/i);
@@ -208,6 +305,9 @@
   // (cable and conduit) as a second item.
   function mepKey(row, items) {
     const t = (String(row.name || '') + ' ' + String(row.material || '')).toLowerCase();
+    // A 2D symbol or annotation family stands for an element modelled
+    // elsewhere (or nothing to build): never priced.
+    if (/\b(symbol|simbol|annotation|anotasi)\b/.test(t)) return null;
     switch (row.group) {
       case 'pipe': {
         const p = pipeKey(row, items);
@@ -219,9 +319,10 @@
         if (/urinal|urinoir/.test(t)) return ['urinal'];
         if (/shower/.test(t)) return ['shower_set'];
         if (/drain/.test(t)) return ['floor_drain'];
+        // A mixer or tap, also one whose name says sink: before the basins.
+        if (/faucet|\btap\b|kran|keran|mixer/.test(t)) return [/kitchen|dapur|\bsink\b/.test(t) ? 'tap_kitchen' : 'tap'];
         if (/kitchen|dapur/.test(t)) return [];
         if (/lavator|basin|wastafel|vanity|sink/.test(t)) return ['washbasin'];
-        if (/faucet|tap\b|kran|keran/.test(t)) return ['tap'];
         return [];
       case 'light': {
         let fitting = 'downlight';
@@ -237,6 +338,9 @@
         if (/data|tel|rj ?45|tv|lan/.test(t)) return [];
         return [/\bac\b|air ?con/.test(t) ? 'socket_ac' : 'socket', 'socket_point'];
       case 'panel':
+        // Appliances modelled as electrical equipment are the owner's, not
+        // part of the building (their socket is priced where one is modelled).
+        if (APPLIANCE_RE.test(t)) return null;
         if (/\bmdp\b|main distribution/.test(t)) return ['panel_mdp'];
         if (/\bsdp\b|sub[\s-]?distribution/.test(t)) return ['panel_sdp'];
         if (/mcb|consumer unit|\bbox\b/.test(t)) return ['mcb_box'];
@@ -244,6 +348,7 @@
         return [];
       case 'equipment':
         if (/outdoor|condens|\bodu\b|\bcdu\b/.test(t)) return null;
+        if (APPLIANCE_RE.test(t)) return null;
         if (/split|\bac\b|air ?con|indoor|fan ?coil|\bfcu\b|wall[\s-]?mount/.test(t)) return [acKey(t)];
         if (/exhaust|ventilat|propeller/.test(t)) return ['exhaust_fan'];
         return [];
@@ -353,11 +458,20 @@
     switch (row.group) {
       case 'masonry': return [['demo_brick', 1]];
       case 'wall_area': return [['demo_brick', (o.wallsBothSides ? 0.5 : 1) * DEMO_WALL_THICKNESS_M]];
-      case 'concrete': return [['demo_concrete', 1]];
+      // By hand unless the architect chooses a jack hammer: small volumes in
+      // an occupied house are usually broken by hand.
+      case 'concrete': return [[o.demoConcrete === 'jackhammer' ? 'demo_concrete' : 'demo_concrete_manual', 1]];
       case 'floor_tiled': return [['demo_floor_tile', 1]];
-      case 'floor': return TILE_RE.test(t) ? [['demo_floor_tile', 1]] : [];
+      case 'floor':
+        if (TILE_RE.test(t)) return [['demo_floor_tile', 1]];
+        // A bare concrete deck: its concrete is demolished as `concrete`.
+        return BARE_RE.test(t) ? null : [];
       case 'ceiling': return [['demo_ceiling', 1]];
-      case 'roof': return [['demo_roof_tile', 1], ['demo_roof_frame', 1]];
+      case 'roof': {
+        const kind = roofKind({ material: row.name });
+        if (kind === 'concrete') return null;
+        return [[kind === 'metal' ? 'demo_roof_metal' : 'demo_roof_tile', 1], ['demo_roof_frame', 1]];
+      }
       case 'door': return [[double ? 'demo_door_double' : 'demo_door', 1]];
       case 'window': return [[double ? 'demo_window_double' : 'demo_window', 1]];
       case 'light': return [['demo_light', 1]];
@@ -386,13 +500,17 @@
       if (!byId.has(id)) byId.set(id, Object.assign({ id: id, element: 'demolition', basis: 'demolition', quantity: 0 }, fields));
       byId.get(id).quantity += quantity;
     };
-    const perType = /^(door|window|plumbing_fixture|equipment|component)$/;
+    const perType = /^(door|window|plumbing_fixture|equipment|component|stair|railing|casework)$/;
+    // Items newer than some price books: use the older one meanwhile.
+    const FALLBACK = { demo_concrete_manual: 'demo_concrete', demo_roof_metal: 'demo_roof_tile' };
     rows.forEach((row) => {
       const qty = Number(row.quantity) || 0;
       if (qty <= 0) return;
       const matched = demoKey(row, o);
       if (matched === null) return;
-      const keys = matched.filter(([k]) => items.has(k));
+      const keys = matched
+        .map(([k, f]) => [items.has(k) ? k : FALLBACK[k] || k, f])
+        .filter(([k]) => items.has(k));
       if (!keys.length) {
         add('demo|' + row.group + '|' + row.name, {
           key: null, name: 'Demolish: ' + row.name, unit: row.unit || 'unit', needs_price: true, reference: '', price: 0,
@@ -408,6 +526,61 @@
             (row.group === 'wall_area' ? ' (' + Math.round(DEMO_WALL_THICKNESS_M * 100) + ' cm thick walls assumed)' : ''),
         }, qty * factor);
       });
+    });
+    return Array.from(byId.values()).map((l) => Object.assign(l, { quantity: round2(l.quantity) }));
+  }
+
+  // The element a basis belongs to, for a line the book has no item for.
+  function elementOf(basis) {
+    return String(basis).split('_')[0];
+  }
+
+  // Floor and roof finishes Dirory has no item for (vinyl, marble,
+  // polycarbonate ...): one line per material, for the architect to price.
+  function otherFinishLines(takeoff) {
+    const rows = (takeoff && takeoff.rows) || [];
+    const byId = new Map();
+    rows.forEach((r) => {
+      const floor = r.element === 'floor' && floorKind(r) === 'other';
+      const roof = r.element === 'roof' && roofKind(r) === 'other';
+      if (!floor && !roof || !(Number(r.area_m2) > 0)) return;
+      const id = r.element + '|other|' + r.material;
+      if (!byId.has(id)) {
+        byId.set(id, {
+          id: id, element: r.element, key: null, basis: r.element + '_other',
+          name: (floor ? 'Floor finish: ' : 'Roof covering: ') + r.material,
+          quantity: 0, unit: 'm2', needs_price: true, reference: '', price: 0,
+        });
+      }
+      byId.get(id).quantity += Number(r.area_m2);
+    });
+    return Array.from(byId.values()).map((l) => Object.assign(l, { quantity: round2(l.quantity) }));
+  }
+
+  // takeoff.extras (Revit): [{ group: railing | stair | casework, name, unit,
+  // quantity, on_stair }]. Railings are priced per metre; stairs that are not
+  // concrete and casework are listed for the architect to price.
+  function extraLines(takeoff, items) {
+    const rows = (takeoff && takeoff.extras) || [];
+    const byId = new Map();
+    rows.forEach((row) => {
+      const qty = Number(row.quantity) || 0;
+      if (qty <= 0) return;
+      let key = null;
+      if (row.group === 'railing') key = row.on_stair ? 'railing_stair' : 'railing';
+      const it = key && items.get(key);
+      const prefix = { railing: 'Railing', stair: 'Stair', casework: 'Casework / kitchen set' }[row.group] || row.group;
+      const id = 'misc|' + (it ? key : row.group) + '|' + row.name;
+      if (!byId.has(id)) {
+        byId.set(id, it ? {
+          id: id, element: 'misc', key: key, basis: row.group, name: it.name + ' · ' + row.name,
+          quantity: 0, unit: it.unit, reference: it.reference || '', price: Number(it.unit_price) || 0,
+        } : {
+          id: id, element: 'misc', key: null, basis: row.group, name: prefix + ': ' + row.name,
+          quantity: 0, unit: row.unit || 'unit', needs_price: true, reference: '', price: 0,
+        });
+      }
+      byId.get(id).quantity += qty;
     });
     return Array.from(byId.values()).map((l) => Object.assign(l, { quantity: round2(l.quantity) }));
   }
@@ -436,11 +609,12 @@
    *                      custom, needs_price, section}],
    *     subtotals: {wall: n, ...}, total, unpriced, missing: [item keys not in the book] }
    *
+   * options.demoConcrete: 'manual' (default) or 'jackhammer', for demolished concrete.
    * options.prices: { [line id]: unit price } - the architect's own prices,
    * which replace the book's for that line (or price a line the book cannot).
    */
   function computeRab(takeoff, book, options) {
-    const o = Object.assign({ wallType: 'brick', wallsBothSides: true, concrete: 'readymix' }, options || {});
+    const o = Object.assign({ wallType: 'brick', wallsBothSides: true, concrete: 'readymix', demoConcrete: 'manual' }, options || {});
     const q = quantities(takeoff, o);
     const items = new Map(((book && book.items) || []).map((it) => [it.key, it]));
     const lines = [];
@@ -449,15 +623,22 @@
       if (spec.when && !spec.when(o)) return;
       const quantity = q[spec.basis] || 0;
       if (quantity <= 0) return;
-      const it = items.get(spec.item);
+      const it = items.get(spec.item) || (spec.fallback && items.get(spec.fallback));
       if (!it) {
         if (missing.indexOf(spec.item) < 0) missing.push(spec.item);
+        if (spec.toPrice) {
+          lines.push({
+            id: spec.item + '|' + spec.basis, element: spec.element || elementOf(spec.basis), key: null,
+            name: spec.toPrice, basis: spec.basis, quantity: quantity, unit: spec.unit || 'm2',
+            needs_price: true, reference: '', price: 0,
+          });
+        }
         return;
       }
       lines.push({
         id: spec.item + '|' + spec.basis,
         element: spec.element || it.element,
-        key: spec.item,
+        key: it.key,
         name: spec.label || (spec.prefix ? spec.prefix + ': ' + it.name : it.name),
         basis: spec.basis,
         quantity: quantity,
@@ -468,11 +649,13 @@
     });
     demolitionLines(takeoff, items, o).forEach((l) => lines.push(l));
     mepLines(takeoff, items).forEach((l) => lines.push(l));
+    otherFinishLines(takeoff).forEach((l) => lines.push(l));
+    extraLines(takeoff, items).forEach((l) => lines.push(l));
     landscapeLines(takeoff).forEach((l) => lines.push(l));
 
     const prices = o.prices || {};
     lines.forEach((l) => {
-      const own = prices[l.id];
+      const own = l.id in prices ? prices[l.id] : prices[OLD_LINE_IDS[l.id]];
       if (typeof own === 'number' && isFinite(own) && own >= 0) {
         l.price = own;
         l.custom = true;

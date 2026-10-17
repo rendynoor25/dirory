@@ -39,7 +39,14 @@ const takeoff = {
     { group: "socket", name: "Stop kontak : Standard", unit: "unit", quantity: 14 },
     { group: "equipment", name: "Split AC Indoor : 1 PK", unit: "unit", quantity: 3 },
   ],
-  demolition: [{ group: "masonry", name: "Bata lama", unit: "m3", quantity: 2.4, width_m: 0 }],
+  demolition: [
+    { group: "masonry", name: "Bata lama", unit: "m3", quantity: 2.4, width_m: 0 },
+    { group: "concrete", name: "Plat lama", unit: "m3", quantity: 1.2, width_m: 0 },
+  ],
+  extras: [
+    { group: "railing", name: "Railing Tangga", unit: "m", quantity: 10.6, on_stair: true },
+    { group: "casework", name: "Kitchen Set", unit: "m", quantity: 7.25 },
+  ],
   phase: "1",
 };
 const rab = computeRab(takeoff, book, { prices: { "mep|closet_seat|TOTO CW633J : Monoblock": 5200000 } });

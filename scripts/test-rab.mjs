@@ -164,7 +164,7 @@ const demo = {
 const drab = computeRab(demo, book);
 const dline = (id) => drab.lines.find((l) => l.id === id);
 eq("demolished masonry by volume, plus SketchUp wall faces at 15 cm", dline("demo|demo_brick").quantity, 3.5 + 20 / 2 * 0.15);
-eq("demolished concrete", dline("demo|demo_concrete").quantity, 2);
+eq("demolished concrete, by hand by default", dline("demo|demo_concrete_manual").quantity, 2);
 eq("roof: tiles and frame", dline("demo|demo_roof_tile").quantity + dline("demo|demo_roof_frame").quantity, 80);
 eq("single door", dline("demo|demo_door|P1 : 90x210").quantity, 2);
 eq("a door over 1.2 m wide is double", dline("demo|demo_door_double|P2 : 150x210").quantity, 1);
@@ -197,5 +197,77 @@ eq("landscape: one line per material", siteLines.length, 2);
 eq("landscape: grass needs a price", siteLines.find((l) => /Grass/.test(l.name)).needs_price, true);
 eq("landscape: own price used", site.subtotals.site, Math.round(36.45 * 150000));
 eq("landscape: does not change the floor", site.quantities.floor, computeRab(takeoff, book).quantities.floor);
+
+// Renovation house in Serpong (Revit): finishes by material, stairs, railings,
+// casework, demolition and MEP names as that model has them.
+const reno = {
+  rows: [
+    { element: "wall", material: "Generic - 150mm", area_m2: 100 },
+    { element: "wall", material: "Dinding Hebel 10", area_m2: 40 },
+    { element: "floor", material: "HOMOGENOUS TILE 60X60", area_m2: 27.6 },
+    { element: "floor", material: "LANTAI DAK BETON 3", area_m2: 14.01 },
+    { element: "floor", material: "Standard Timber-Wood Finish", area_m2: 10.91 },
+    { element: "floor", material: "พรม", area_m2: 4.14 },
+    { element: "floor", material: "Marble Carrara", area_m2: 3 },
+    { element: "roof", material: "Cold Roof - Concrete 2", area_m2: 13.92 },
+    { element: "roof", material: "Atap Zincalum", area_m2: 20 },
+  ],
+  openings: [],
+  extras: [
+    { group: "railing", name: "Railing Tangga", unit: "m", quantity: 10.6, on_stair: true },
+    { group: "railing", name: "Balkon", unit: "m", quantity: 3, on_stair: false },
+    { group: "casework", name: "Kitchen Set Atas", unit: "m", quantity: 7.25 },
+    { group: "stair", name: "Tangga Baja", unit: "unit", quantity: 1 },
+  ],
+  demolition: [
+    { group: "concrete", name: "Floor : LANTAI DAK BETON 3", unit: "m3", quantity: 1, width_m: 0 },
+    { group: "floor", name: "LANTAI DAK BETON 3", unit: "m2", quantity: 10.04, width_m: 0 },
+    { group: "roof", name: "Atap Spandek", unit: "m2", quantity: 21.25, width_m: 0 },
+    { group: "stair", name: "Tangga Spiral", unit: "unit", quantity: 1, width_m: 0 },
+  ],
+  mep: [
+    { group: "plumbing_fixture", name: "SINK MIXER- 0643A04", unit: "unit", quantity: 1 },
+    { group: "equipment", name: "Industrial Exhaust Fan Symbol : IEA", unit: "unit", quantity: 1 },
+    { group: "equipment", name: "Panasonic FV35GS4 Exhaust Fan", unit: "unit", quantity: 1 },
+    { group: "panel", name: "TOSHIBA_WaterDispenser_RWF-W1830UVBK(T)", unit: "unit", quantity: 1 },
+  ],
+};
+const r2 = computeRab(reno, book, { wallType: "brick" });
+const r2q = r2.quantities;
+const r2line = (pred) => r2.lines.find(pred);
+eq("walls: hebel is AAC whatever the option", r2q.wall_core_aac, 20);
+eq("walls: unnamed walls follow the option", r2q.wall_core_brick, 50);
+eq("floors: homogeneous tile", r2q.floor_homogeneous, 27.6);
+eq("floors: timber is parquet", r2q.floor_parquet, 10.91);
+eq("floors: carpet (Thai material name)", r2q.floor_carpet, 4.14);
+eq("floors: a concrete deck gets no finish", r2q.floor_bare, 14.01);
+eq("floors: no ceramic tile line", r2q.floor_tile, 0);
+eq("floors: marble is listed for a price", r2line((l) => l.id === "floor|other|Marble Carrara").needs_price, true);
+eq("roofs: a concrete deck is waterproofed, not framed", r2q.roof_concrete, 13.92);
+eq("roofs: metal sheet", r2q.roof_metal, 20);
+eq("roofs: only the metal roof gets a truss", r2line((l) => l.key === "roof_truss").quantity, 20);
+eq("railing on a stair", r2line((l) => l.key === "railing_stair").quantity, 10.6);
+eq("guard railing", r2line((l) => l.key === "railing").quantity, 3);
+eq("casework is listed for a price", r2line((l) => l.id === "misc|casework|Kitchen Set Atas").needs_price, true);
+eq("misc subtotal", r2.subtotals.misc, r2.lines.filter((l) => l.element === "misc").reduce((s, l) => s + l.amount, 0));
+eq("demolition: the deck's floor is not listed again", r2.lines.filter((l) => /LANTAI DAK/.test(l.name)).length, 0);
+eq("demolition: concrete by hand", r2line((l) => l.id === "demo|demo_concrete_manual").quantity, 1);
+eq("demolition: jack hammer when chosen",
+  computeRab(reno, book, { demoConcrete: "jackhammer" }).lines.some((l) => l.id === "demo|demo_concrete"), true);
+eq("demolition: metal roof", r2line((l) => l.id === "demo|demo_roof_metal").quantity, 21.25);
+eq("demolition: spiral stair listed for a price", r2line((l) => l.id === "demo|stair|Tangga Spiral").needs_price, true);
+eq("MEP: a sink mixer is a kitchen tap, not a basin", r2line((l) => l.key === "tap_kitchen") ? 1 : 0, 1);
+eq("MEP: no washbasin", r2.lines.filter((l) => l.key === "washbasin").length, 0);
+eq("MEP: a fan symbol is not priced", r2line((l) => l.key === "exhaust_fan").quantity, 1);
+eq("MEP: a water dispenser is not priced", r2.lines.filter((l) => /Dispenser/.test(l.name)).length, 0);
+eq("a price saved under the old floor line id still applies",
+  computeRab({ rows: [{ element: "floor", material: "Keramik 40", area_m2: 10 }] }, book,
+    { prices: { "floor_tile|floor": 100000 } }).total, 1000000);
+const oldBook = Object.assign({}, book, { items: book.items.filter((i) => !/^(floor_homogeneous|floor_parquet|demo_concrete_manual)$/.test(i.key)) });
+const r3 = computeRab(reno, oldBook);
+eq("older book: homogeneous falls back to ceramic", r3.lines.find((l) => l.basis === "floor_homogeneous").key === "floor_tile", true);
+eq("older book: parquet is listed for a price", r3.lines.find((l) => l.basis === "floor_parquet").needs_price, true);
+eq("older book: manual demolition falls back to jack hammer", r3.lines.some((l) => l.id === "demo|demo_concrete"), true);
+console.log(`Renovation sample: Rp ${r2.total.toLocaleString("id-ID")}, ${r2.unpriced} line(s) to price`);
 
 process.exit(failed ? 1 : 0);

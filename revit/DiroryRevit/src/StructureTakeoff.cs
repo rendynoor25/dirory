@@ -6,8 +6,12 @@
 //   tie_beam   Structural Framing on the lowest level, or named sloof / tie beam
 //   column     Structural Columns
 //   beam       other Structural Framing
-//   slab       Floors with concrete in them
-//   wall       Walls with concrete in them (shear walls, core walls)
+//   slab       Floors with a concrete layer at least 50 mm thick: a floor type
+//              whose only concrete is a screed under the tiles is a finish,
+//              not a slab
+//   wall       Walls with such a concrete layer (shear walls, core walls)
+//   stair      Stairs whose runs and landings are concrete (formwork includes
+//              the soffit). Other stairs are listed by Takeoff for a price.
 //
 // Per element:
 //   concrete   volume of its concrete materials (Element.GetMaterialVolume),
@@ -25,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Structure;
 
 namespace Dirory.Revit
@@ -39,15 +44,19 @@ namespace Dirory.Revit
         private const double FtToM = 0.3048;
         private const double SteelKgPerM3 = 7850;
 
-        public static string[] Members = { "footing", "tie_beam", "column", "beam", "slab", "wall" };
+        public static string[] Members = { "footing", "tie_beam", "column", "beam", "slab", "wall", "stair" };
 
-        /// Rows grouped by member and type; walls with concrete in them, so the
-        /// architectural takeoff does not price them again as masonry.
+        // A concrete layer thinner than this is a screed or topping, not structure.
+        private const double MinStructuralLayerM = 0.05;
+
+        /// Rows grouped by member and type; the walls, floors and stairs counted
+        /// as concrete, so the architectural takeoff does not price them again
+        /// (as masonry, as a floor finish to demolish, as a stair to price).
         /// New construction in the priced phase; demolished concrete and steel go to `ph`.
-        public static (List<Dictionary<string, object>> rows, HashSet<ElementId> concreteWalls) Run(Document doc, Phasing ph)
+        public static (List<Dictionary<string, object>> rows, HashSet<ElementId> concreteHosts) Run(Document doc, Phasing ph)
         {
             var rows = new Dictionary<string, Dictionary<string, object>>();
-            var concreteWalls = new HashSet<ElementId>();
+            var concreteHosts = new HashSet<ElementId>();
             var rebarKg = RebarByHost(doc);
             double lowest = new FilteredElementCollector(doc).OfClass(typeof(Level)).Cast<Level>()
                 .Select(l => l.Elevation).DefaultIfEmpty(0).Min();
@@ -71,8 +80,9 @@ namespace Dirory.Revit
 
             void AddConcrete(Element e, string member, bool soffit)
             {
-                double m3 = ConcreteVolume(doc, e);
+                double m3 = e is HostObject ? LayeredConcreteVolume(doc, e) : ConcreteVolume(doc, e);
                 if (m3 <= 0) return;
+                concreteHosts.Add(e.Id);
                 string status = ph.Status(e);
                 if (status == "demolished") ph.Demolish("concrete", TypeName(doc, e), "m3", m3);
                 if (status != "new") return;
@@ -117,9 +127,29 @@ namespace Dirory.Revit
 
             foreach (Wall w in new FilteredElementCollector(doc).OfClass(typeof(Wall)).WhereElementIsNotElementType().Cast<Wall>())
             {
-                if (w.WallType.Kind == WallKind.Curtain || ConcreteVolume(doc, w) <= 0) continue;
-                concreteWalls.Add(w.Id);
+                if (w.WallType.Kind == WallKind.Curtain) continue;
                 AddConcrete(w, "wall", false);
+            }
+
+            // Cast-in-place stairs: the concrete of their runs and landings.
+            foreach (Stairs st in new FilteredElementCollector(doc).OfClass(typeof(Stairs)).WhereElementIsNotElementType().Cast<Stairs>())
+            {
+                var parts = st.GetStairsRuns().Concat(st.GetStairsLandings())
+                    .Select(id => doc.GetElement(id)).Where(p => p != null).ToList();
+                double m3 = parts.Sum(p => ConcreteVolume(doc, p));
+                if (m3 <= 0) continue;
+                concreteHosts.Add(st.Id);
+                string status = ph.Status(st);
+                if (status == "demolished") ph.Demolish("concrete", TypeName(doc, st), "m3", m3);
+                if (status != "new") continue;
+                var row = Row("stair", TypeName(doc, st));
+                row["count"] = (int)row["count"] + 1;
+                Bump(row, "concrete_m3", m3);
+                Bump(row, "formwork_m2", parts.Sum(p => Formwork(p, true)));
+                double kg = parts.Sum(p => rebarKg.TryGetValue(p.Id, out double v) ? v : 0) +
+                            (rebarKg.TryGetValue(st.Id, out double own) ? own : 0);
+                if (kg > 0) Bump(row, "rebar_kg", kg);
+                else Bump(row, "rebar_ratio_m3", m3);
             }
 
             var list = rows.Values.Select(r =>
@@ -130,13 +160,13 @@ namespace Dirory.Revit
             })
             .OrderBy(r => { int i = Array.IndexOf(Members, (string)r["member"]); return i < 0 ? 99 : i; })
             .ThenBy(r => (string)r["name"]).ToList();
-            return (list, concreteWalls);
+            return (list, concreteHosts);
         }
 
         private static IEnumerable<Element> Collect(Document doc, BuiltInCategory cat) =>
             new FilteredElementCollector(doc).OfCategory(cat).WhereElementIsNotElementType();
 
-        private static string TypeName(Document doc, Element e)
+        internal static string TypeName(Document doc, Element e)
         {
             var t = doc.GetElement(e.GetTypeId()) as ElementType;
             if (t == null) return e.Name;
@@ -173,9 +203,30 @@ namespace Dirory.Revit
             return m != null && (AssetClass(doc, m) == StructuralAssetClass.Metal || SteelRe.IsMatch(m.Name));
         }
 
+        /// Concrete volume of a wall or floor, m3, counting only concrete layers
+        /// at least MinStructuralLayerM thick: a tile floor type with a 1 cm
+        /// "concrete" screed is not a slab. Types without layers (in-place,
+        /// or a single-layer generic type) count all their concrete.
+        internal static double LayeredConcreteVolume(Document doc, Element e)
+        {
+            double all = ConcreteVolume(doc, e);
+            if (all <= 0) return 0;
+            var cs = (doc.GetElement(e.GetTypeId()) as HostObjAttributes)?.GetCompoundStructure();
+            if (cs == null) return all;
+            double thick = 0, total = 0;
+            foreach (CompoundStructureLayer l in cs.GetLayers())
+            {
+                if (!IsConcrete(doc, doc.GetElement(l.MaterialId) as Material)) continue;
+                total += l.Width;
+                if (l.Width * FtToM >= MinStructuralLayerM) thick += l.Width;
+            }
+            if (total <= 0) return all;
+            return all * thick / total;
+        }
+
         /// Volume of the element's concrete, m3. Families that declare
         /// themselves concrete but carry no material fall back to their volume.
-        private static double ConcreteVolume(Document doc, Element e)
+        internal static double ConcreteVolume(Document doc, Element e)
         {
             double ft3 = e.GetMaterialIds(false)
                 .Where(id => IsConcrete(doc, doc.GetElement(id) as Material))
@@ -189,7 +240,7 @@ namespace Dirory.Revit
 
         /// Formwork contact area, m2: vertical faces, plus downward faces when
         /// the member needs a soffit (beams, suspended slabs).
-        private static double Formwork(Element e, bool soffit)
+        internal static double Formwork(Element e, bool soffit)
         {
             double ft2 = 0;
             foreach (Solid s in Solids(e.get_Geometry(new Options { ComputeReferences = false, DetailLevel = ViewDetailLevel.Fine })))

@@ -4,7 +4,7 @@
  "currency": "IDR",
  "overhead_pct": 15.0,
  "source": "DCKTRP Bangun Jakarta HSP, public API (dcktrp.jakarta.go.id/bangunjakarta/hsp); coefficients per SE Dirjen Bina Konstruksi 182/SE/Dk/2025 and 47/SE/Dk/2026; wages per Kepgub DKI.",
- "fetched": "2026-10-16",
+ "fetched": "2026-10-18",
  "items": [
   {
    "key": "wall_brick",
@@ -1127,6 +1127,735 @@
     }
    ],
    "unit_price": 181925.81
+  },
+  {
+   "key": "floor_granite",
+   "name": "Granite floor tile 60 x 60 cm",
+   "element": "floor",
+   "quantity": "floor_granite",
+   "unit": "m2",
+   "title": "3.9.5.3 Pemasangan 1 m2 Lantai Ubin Granit Ukuran 60 cm x 60 cm (1SP : 2PP)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2735,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.25,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.0833,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0083,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0028,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Warna",
+     "unit": "Kg",
+     "coef": 1.5,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.027,
+     "price": 500000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Granite  60x60",
+     "unit": "Buah",
+     "coef": 2.917,
+     "price": 41300.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 13.632,
+     "price": 1500.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 304467.78
+  },
+  {
+   "key": "floor_homogeneous",
+   "name": "Homogeneous tile floor 60 x 60 cm, polished",
+   "element": "floor",
+   "quantity": "floor_homogeneous",
+   "unit": "m2",
+   "title": "3.9.4.3 Pemasangan 1 m2 Lantai Homogenous Tile Polish Ukuran 60 cm x 60 cm (1SP : 2PP)",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 2405,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.0833,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.25,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0083,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0028,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Homogenous Tile 60/60 Polished",
+     "unit": "Buah",
+     "coef": 2.917,
+     "price": 75800.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Portland",
+     "unit": "Kg",
+     "coef": 13.632,
+     "price": 1500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Semen Warna",
+     "unit": "Kg",
+     "coef": 1.5,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pasir Pasang",
+     "unit": "M3",
+     "coef": 0.027,
+     "price": 500000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 420199.75
+  },
+  {
+   "key": "floor_parquet",
+   "name": "Solid timber parquet floor",
+   "element": "floor",
+   "quantity": "floor_parquet",
+   "unit": "m2",
+   "title": "3.9.9.4 Pemasangan 1 m2 Lantai Parquet Kayu Solid",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 2199,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.2,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Parquette Kayu Solid",
+     "unit": "M2",
+     "coef": 1.05,
+     "price": 540000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lem Kayu",
+     "unit": "Kg",
+     "coef": 0.6,
+     "price": 45000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 767608.19
+  },
+  {
+   "key": "floor_carpet",
+   "name": "Carpet floor",
+   "element": "floor",
+   "quantity": "floor_carpet",
+   "unit": "m2",
+   "title": "3.9.9.2 Pemasangan 1 m2 Lantai Karpet",
+   "reference": "SE Dirjen Binkon No. 47/SE/Dk/2026",
+   "jakarta_hsp_id": 2194,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.17,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.017,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0057,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.17,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Karpet",
+     "unit": "M2",
+     "coef": 1.05,
+     "price": 334100.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Lem Karet",
+     "unit": "Kg",
+     "coef": 0.35,
+     "price": 146476.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 561267.33
+  },
+  {
+   "key": "roof_metal",
+   "name": "Metal sheet roofing",
+   "element": "roof",
+   "quantity": "roof_metal",
+   "unit": "m2",
+   "title": "3.1.3.7 Pemasangan 1 m2 Atap Metal Lembaran",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 1460,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.13333,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang",
+     "unit": "OH",
+     "coef": 0.0667,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0067,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0022,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Genteng Metal",
+     "unit": "M2",
+     "coef": 1.3,
+     "price": 39000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku Biasa",
+     "unit": "Kg",
+     "coef": 0.05,
+     "price": 28000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 116272.2
+  },
+  {
+   "key": "roof_waterproof",
+   "name": "Torch-on waterproofing membrane (concrete roof deck)",
+   "element": "roof",
+   "quantity": "roof_concrete",
+   "unit": "m2",
+   "title": "3.4.1 Pemasangan 1 m2 Waterproofing Membran Bakar",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2415,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.05,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang cat/pelitur",
+     "unit": "OH",
+     "coef": 0.05,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.005,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.002,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Waterproofing Membran Bakar",
+     "unit": "M2",
+     "coef": 1.05,
+     "price": 59800.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cairan Primer Membran Bakar",
+     "unit": "Kg",
+     "coef": 0.3,
+     "price": 200000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 170395.47
+  },
+  {
+   "key": "formwork_stair",
+   "name": "Formwork, stair (3 uses)",
+   "element": "structure",
+   "quantity": "formwork_stair",
+   "unit": "m2",
+   "title": "2.2.1.3.8 Pemasangan 1 m2 bekisting untuk tangga (3 kali pakai)",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 3424,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.66,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.33,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.033,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.011,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Paku 5 s/d 12 cm",
+     "unit": "Kg",
+     "coef": 0.4,
+     "price": 20000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Minyak bekisting / Mould Oil / Pelumas Bekisting",
+     "unit": "Liter",
+     "coef": 0.15,
+     "price": 74000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Balok Kayu Kelas II",
+     "unit": "M3",
+     "coef": 0.005,
+     "price": 10000000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Dolken kayu  dia. 8- 10/400 cm",
+     "unit": "Batang",
+     "coef": 0.65,
+     "price": 16000.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Triplek / Plywood tebal 12 mm",
+     "unit": "Lembar",
+     "coef": 0.127,
+     "price": 160000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 393705.08
+  },
+  {
+   "key": "railing_stair",
+   "name": "Stair / ramp railing and handrail",
+   "element": "wall",
+   "quantity": "railing_stair",
+   "unit": "m",
+   "title": "3.13.5 Pembuatan dan Pemasangan 1 m Railing Tangga/Ramp dan Hand Rail Tinggi 0.85 m dan 0.65 m",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2095,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.2,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang besi/besi beton",
+     "unit": "OH",
+     "coef": 0.1,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.01,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0033,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 3.0,
+     "price": 144500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 2\" (50 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 2.0,
+     "price": 37600.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 1-1/2\" (40 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 2.0,
+     "price": 33300.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cat Zyncromate",
+     "unit": "Kg",
+     "coef": 0.1,
+     "price": 34500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kawat Las Listrik",
+     "unit": "Kg",
+     "coef": 0.05,
+     "price": 50000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa alat las listrik",
+     "unit": "Hari",
+     "coef": 0.1,
+     "price": 350000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 793195.69
+  },
+  {
+   "key": "railing",
+   "name": "Steel guard railing, 1.2 m high",
+   "element": "wall",
+   "quantity": "railing",
+   "unit": "m",
+   "title": "3.13.4 Pembuatan dan Pemasangan 1 m Railing Besi Pengaman Tinggi 1.2 m",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 2133,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.4551,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang besi/besi beton",
+     "unit": "OH",
+     "coef": 0.2275,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0228,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0076,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel) MED CLASS ; DN. 3\" (80 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 4.8,
+     "price": 144500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Pipa BS (Black Steel)  MED CLASS ; DN. 1\" (25 mm) + fitting & aksesoris",
+     "unit": "M",
+     "coef": 9.9,
+     "price": 31700.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cat Zyncromate",
+     "unit": "Kg",
+     "coef": 0.1,
+     "price": 34500.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Kawat Las Listrik",
+     "unit": "Kg",
+     "coef": 0.098,
+     "price": 50000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Sewa alat las listrik",
+     "unit": "Hari",
+     "coef": 0.2275,
+     "price": 350000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1452042.79
   },
   {
    "key": "concrete_rm",
@@ -7480,6 +8209,131 @@
     }
    ],
    "unit_price": 146018.7
+  },
+  {
+   "key": "demo_concrete_manual",
+   "name": "Demolish concrete over 20 MPa, by hand",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m3",
+   "title": "1.6.4 Bongkar 1 m3 beton mutu sedang fc > 20 MPa secara Manual",
+   "reference": "Permen PUPR No. 8 Tahun 2023",
+   "jakarta_hsp_id": 3402,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 3.6,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.18,
+     "price": 277239.0,
+     "price_source": null
+    },
+    {
+     "kind": "material",
+     "code": null,
+     "name": "Cuka Pelunak Beton",
+     "unit": "Liter",
+     "coef": 1.2,
+     "price": 145000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Palu godam baja keras",
+     "unit": "buah",
+     "coef": 0.02,
+     "price": 300000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Gergaji Besi",
+     "unit": "buah",
+     "coef": 0.1,
+     "price": 156000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Pahat beton baja keras",
+     "unit": "buah",
+     "coef": 0.03,
+     "price": 150000.0,
+     "price_source": null
+    },
+    {
+     "kind": "equipment",
+     "code": null,
+     "name": "Linggis baja keras",
+     "unit": "buah",
+     "coef": 0.05,
+     "price": 200000.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 1247870.77
+  },
+  {
+   "key": "demo_roof_metal",
+   "name": "Remove metal sheet roofing",
+   "element": "demolition",
+   "quantity": "demolition",
+   "unit": "m2",
+   "title": "1.6.41 Pembongkaran 1 m2 Penutup Atap Metal Lembaran",
+   "reference": "SE Dirjen Binkon No. 182/SE/Dk/2025",
+   "jakarta_hsp_id": 5676,
+   "components": [
+    {
+     "kind": "labour",
+     "code": "L.01",
+     "name": "Pekerja",
+     "unit": "OH",
+     "coef": 0.0317,
+     "price": 229195.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.02",
+     "name": "Tukang kayu",
+     "unit": "OH",
+     "coef": 0.0106,
+     "price": 241112.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.03",
+     "name": "Kepala tukang",
+     "unit": "OH",
+     "coef": 0.0011,
+     "price": 262029.0,
+     "price_source": null
+    },
+    {
+     "kind": "labour",
+     "code": "L.04",
+     "name": "Mandor",
+     "unit": "OH",
+     "coef": 0.0004,
+     "price": 277239.0,
+     "price_source": null
+    }
+   ],
+   "unit_price": 11753.46
   },
   {
    "key": "demo_ceiling",

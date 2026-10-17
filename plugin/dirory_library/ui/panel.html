@@ -101,13 +101,17 @@
             <select id="rabCity" aria-label="Project location for prices"></select>
           </label>
           <select id="rabWall" aria-label="Wall type">
-            <option value="brick">Red brick walls</option>
-            <option value="aac">Lightweight block (AAC) walls</option>
+            <option value="brick" title="Walls named hebel / AAC / bata ringan are priced as AAC anyway">Red brick walls (unless named AAC)</option>
+            <option value="aac" title="Walls named bata / brick are priced as brick anyway">Lightweight block (AAC) walls (unless named brick)</option>
           </select>
           <select id="rabPhase" aria-label="Phase to price" title="Revit phase to price: new construction is counted, existing is not, demolished is priced as demolition" hidden></select>
           <select id="rabConcrete" aria-label="Concrete" hidden>
             <option value="readymix">Ready-mix concrete</option>
             <option value="site">Site-mixed concrete</option>
+          </select>
+          <select id="rabDemo" aria-label="Concrete demolition" hidden>
+            <option value="manual">Demolish concrete by hand</option>
+            <option value="jackhammer">Demolish concrete with a jack hammer</option>
           </select>
           <label class="usage-option"><input type="checkbox" id="rabBothSides" checked> Walls drawn with both faces</label>
           <label class="usage-option"><input type="checkbox" id="rabLive" checked> Show live cost while modelling</label>

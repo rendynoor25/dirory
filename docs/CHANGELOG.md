@@ -1,5 +1,40 @@
 # Changelog
 
+## Unreleased (Revit + SketchUp) — RAB fixes from the Serpong renovation
+
+Compared against an estimator's RAB for a real renovation model:
+
+- **Demolition double count.** A demolished concrete floor was listed twice:
+  as concrete (m³) and again as a floor "finish" to price. A bare concrete
+  slab is now only its concrete; a tiled one also has its tiles removed.
+- **Concrete demolition by hand by default** (Permen PUPR 8/2023 1.6.4,
+  Rp 1.25M/m³ in Jakarta), with a jack hammer as an option (1.6.6, Rp
+  146k/m³), which was the only choice before and is too cheap for most
+  renovations.
+- **Slabs.** A floor type whose only concrete is a thin screed under the
+  tiles is no longer counted as a structural slab: concrete layers under
+  50 mm are ignored (formwork and rebar with them).
+- **Finishes by material.** Floors: ceramic, granite, homogeneous tile,
+  timber/parquet, carpet; a bare concrete deck has no finish; others (vinyl,
+  marble ...) are listed to price. Roofs: tile, metal sheet, concrete deck
+  (waterproofing, no truss). Walls named hebel/AAC/bata ringan are priced as
+  AAC and walls named bata/brick as brick, whatever the wall-type option
+  (which now applies only to walls that say neither). Revit rows carry the
+  type's layer materials for this.
+- **Stairs, railings, casework (Revit).** Concrete stairs are priced as
+  structure (concrete, stair formwork, rebar); other stairs and casework
+  (kitchen sets, per metre) are listed to price; railings are priced per
+  metre (stair railing or guard railing). Demolished ones are listed under
+  demolition.
+- **MEP names.** A sink mixer is a kitchen tap, not a washbasin; appliances
+  modelled as electrical or mechanical equipment (fridge, dispenser,
+  microwave ...) are not priced; 2D symbol families are not counted.
+- Price book: 11 new Jakarta items (granite, homogeneous, parquet, carpet,
+  metal roof, waterproofing, stair formwork, two railings, manual concrete
+  demolition, metal roof removal). Until the new book is loaded, the old one
+  still works: those lines fall back or are listed to price. Custom prices
+  saved under the old wall, floor and roof line ids still apply.
+
 ## Unreleased (SketchUp) — "What is this?" before pricing
 
 Real models are mostly unnamed groups full of furniture, people, timber and
