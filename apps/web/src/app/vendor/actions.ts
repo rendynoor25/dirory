@@ -1,5 +1,6 @@
 "use server";
 
+import { normaliseWebUrl } from "@/lib/webUrl";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -27,7 +28,15 @@ const RegisterSchema = z.object({
   brand_name: z.string().min(1),
   email: z.string().email(),
   whatsapp: z.string().min(6),
-  website: z.string().optional(),
+  // Only an http(s) address (OWASP A05); "example.com" becomes https://example.com.
+  website: z.string().optional().transform((v, ctx) => {
+    const url = normaliseWebUrl(v);
+    if (url === undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Enter the website as a web address, e.g. example.com." });
+      return z.NEVER;
+    }
+    return url ?? "";
+  }),
   npwp: z.string().optional(),
 });
 
@@ -145,7 +154,15 @@ const AssetSchema = z.object({
   category_id: z.string().uuid().optional().or(z.literal("")),
   tags: z.string().optional(),
   sku: z.string().optional(),
-  product_url: z.string().optional(),
+  // Opened by the plugin with the system shell: http(s) only (OWASP A05).
+  product_url: z.string().optional().transform((v, ctx) => {
+    const url = normaliseWebUrl(v);
+    if (url === undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "The product link must be a web address." });
+      return z.NEVER;
+    }
+    return url ?? "";
+  }),
   tile_w_cm: z.coerce.number().optional(),
   tile_h_cm: z.coerce.number().optional(),
   file_path: z.string().min(1),
@@ -176,6 +193,9 @@ export async function createAsset(formData: FormData) {
     .split(",")
     .map((t) => t.trim())
     .filter(Boolean);
+
+  // The file must be one this vendor uploaded: under its own storage folder.
+  if (!ownStoragePath(parsed.data.file_path, vendor.vendor_id)) return;
 
   const { data: asset, error } = await supabase
     .from("assets")
@@ -211,6 +231,8 @@ export async function submitNewVersion(formData: FormData) {
   const assetId = String(formData.get("asset_id") ?? "");
   const filePath = String(formData.get("file_path") ?? "");
   if (!assetId || !filePath) return;
+  // submit_asset_version also checks the path belongs to the asset's vendor.
+  if (!/^[0-9a-f-]{36}\/[^\\]+$/i.test(filePath) || filePath.includes("..")) return;
 
   await supabase.rpc("submit_asset_version", {
     p_asset: assetId,
@@ -306,4 +328,9 @@ export async function submitPayment(formData: FormData) {
 
   revalidatePath(`/vendor/subscription/invoice/${parsed.data.invoice_id}`);
   revalidatePath("/vendor/subscription");
+}
+
+/** A storage key under this vendor's own folder, without path tricks. */
+function ownStoragePath(path: string, vendorId: string): boolean {
+  return path.startsWith(`${vendorId}/`) && !path.includes("..") && !path.includes("\\");
 }

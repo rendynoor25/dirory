@@ -104,8 +104,7 @@ namespace Dirory.Revit
                 case "openSignInPage": Cloud.Open(Json.Str(_pending, "verification_url_complete") is var u && u != "" ? u : Json.Str(_pending, "verification_url")); break;
                 case "cancelSignIn": _pending = null; PushAccount(); break;
                 case "signOut":
-                    _cloud.Set("token", ""); _cloud.Set("name", ""); _cloud.Set("email", "");
-                    PushAccount();
+                    _ = SignOut();
                     break;
                 case "applyMaterial": _ = ApplyMaterial(data); break;
                 case "insertModel": _ = InsertModel(data); break;
@@ -181,6 +180,16 @@ namespace Dirory.Revit
         };
 
         private void PushAccount(string error = null) => _page.Call("diroryAccount", Json.Write(AccountState(error)));
+
+        /// Sign out: revoke the token on the server first (so a copy of it stops
+        /// working too), then forget it here even if the server is unreachable.
+        private async Task SignOut()
+        {
+            try { if (_cloud.SignedIn) await _cloud.Send(HttpMethod.Post, "/auth-device/revoke", new { }); }
+            catch (Exception) { /* offline: the token still expires after 90 idle days */ }
+            _cloud.Set("token", ""); _cloud.Set("name", ""); _cloud.Set("email", "");
+            PushAccount();
+        }
 
         private async Task SignInStart()
         {

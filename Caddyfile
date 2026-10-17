@@ -14,7 +14,11 @@
 	# resolved on the compose network.
 	reverse_proxy web:3000
 
-	# Security headers (OWASP A05). Caddy adds HSTS itself once TLS is active.
+	# Security headers (OWASP A02 misconfiguration / A04 cryptographic failures).
+	#
+	# HSTS: Caddy does NOT add it by itself (checked 17 Oct 2026: the header was
+	# missing). One year, this host only: includeSubDomains is left out until
+	# every subdomain is known to serve HTTPS.
 	#
 	# The CSP is deliberately limited to directives that cannot break the app:
 	# object-src, base-uri, frame-ancestors and form-action stop the classic
@@ -23,6 +27,7 @@
 	# tested against the Midtrans Snap payment page first — a wrong source there
 	# silently breaks paying, so it is not worth guessing at.
 	header {
+		Strict-Transport-Security "max-age=31536000"
 		X-Content-Type-Options nosniff
 		X-Frame-Options DENY
 		Referrer-Policy strict-origin-when-cross-origin

@@ -60,8 +60,16 @@ export interface PluginIdentity {
 }
 
 /**
- * Resolve a plugin token to its profile. Returns null for an unknown or
- * malformed token. Touches `last_used_at`; failures there are non-fatal.
+ * A token nobody has used for this long is refused and deleted (OWASP A07):
+ * a token copied off an old computer must not work forever. Active plugins
+ * touch last_used_at on every call, so this only signs out idle installs.
+ */
+const IDLE_DAYS = 90;
+
+/**
+ * Resolve a plugin token to its profile. Returns null for an unknown,
+ * malformed or idle-expired token. Touches `last_used_at`; failures there are
+ * non-fatal.
  */
 export async function resolvePluginToken(token: string | null): Promise<PluginIdentity | null> {
   if (!token) return null;
@@ -70,10 +78,16 @@ export async function resolvePluginToken(token: string | null): Promise<PluginId
 
   const { data: row } = await supabase
     .from("plugin_tokens")
-    .select("id, profile_id")
+    .select("id, profile_id, created_at, last_used_at")
     .eq("token_hash", hash)
     .maybeSingle();
   if (!row) return null;
+
+  const lastSeen = Date.parse(row.last_used_at ?? row.created_at);
+  if (Number.isFinite(lastSeen) && Date.now() - lastSeen > IDLE_DAYS * 24 * 60 * 60 * 1000) {
+    await supabase.from("plugin_tokens").delete().eq("id", row.id);
+    return null;
+  }
 
   const { data: profile } = await supabase
     .from("profiles")

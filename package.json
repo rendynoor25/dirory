@@ -28,5 +28,10 @@
   },
   "devDependencies": {
     "@ruby/prism": "^1.9.0"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.30"
+    }
   }
 }

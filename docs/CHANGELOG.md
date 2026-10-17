@@ -1,5 +1,29 @@
 # Changelog
 
+## Security hardening against the OWASP Top 10 (17 Oct 2026)
+
+Full review and mapping in `docs/SECURITY.md`. Fixed:
+
+- **A01** Vendors could approve themselves, their products and versions, and
+  mark their own invoices paid through the API: migration 0045 pins those
+  columns for non-admin users. Pending sign-in codes are no longer readable by
+  every signed-in user (`approve_device_code()`). A vendor product must use the
+  vendor's own storage file.
+- **A05** Product links and vendor websites are http(s) only (forms, database
+  constraints, and both hosts open only http(s)): a link to a program or share
+  could otherwise run on an architect's computer.
+- **A07** Plugin tokens expire after 90 idle days; Revit sign-out revokes the
+  token on the server.
+- **A06** Starting a sign-in is limited to 60 codes a minute.
+- **A09** Audit entries can only be written by Dirory's functions and admins.
+- **A02/A04** HSTS added. **A03** postcss inside Next pinned to a fixed version
+  (`npm audit`: 0).
+
+Test: `supabase/tests/security_hardening_test.sql`, 11 checks, run against
+production in a rolled-back transaction. SketchUp 0.10.2 (download only) and
+Revit 0.1.7 carry the client fixes.
+
+
 ## SketchUp 0.10.1 and Revit 0.1.5 — city prices, two free estimates, Revit ribbon
 
 **Prices for any city.** Before estimating, the RAB asks for the project

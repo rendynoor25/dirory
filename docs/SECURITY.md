@@ -1,4 +1,116 @@
-# Security — OWASP Top 10 (2021)
+# Dirory — security against the OWASP Top 10 (2025)
+
+Reviewed 17 Oct 2026 across the website (Next.js), Supabase (Postgres RLS,
+Edge Functions, Storage), the SketchUp plugin, the Revit add-in and the VPS
+(Caddy). "Fixed" items landed in migration 0045, SketchUp 0.10.2 and Revit
+0.1.7. Re-run the checks below after any change to access rules.
+
+## A01 Broken Access Control
+
+- Every table in `public` has RLS on; tables without policies (plugin tokens)
+  are reachable only with the service role. Storage: only `brands` (logos) is
+  public; models, materials and plugin releases are private and served through
+  short-lived signed links.
+- Admin server actions each call `requireAdmin()`; RLS is the second layer.
+- **Fixed:** a vendor editor could, straight through the API, approve its own
+  vendor account or make it a platform brand, approve its own products and
+  versions, and mark its own invoice paid or change the amount. Triggers now
+  pin those columns for any direct change by a non-admin user
+  (`can_change_protected()`); Dirory's own checked functions, the service role
+  and cron are unaffected.
+- **Fixed:** any signed-in user could read all pending plugin sign-in codes.
+  Codes are now readable only by their owner; approval goes through
+  `approve_device_code()`.
+- **Fixed:** a vendor could attach another brand's storage file to its product;
+  the portal and `submit_asset_version()` now require the vendor's own folder.
+
+Test: `supabase/tests/security_hardening_test.sql` (run in a transaction that
+is rolled back; it plays a non-admin vendor owner and tries each attack).
+
+## A02 Security Misconfiguration
+
+- Caddy sends X-Content-Type-Options, X-Frame-Options DENY, Referrer-Policy,
+  Permissions-Policy, a restrictive CSP (object-src, base-uri,
+  frame-ancestors, form-action) and hides `Server`; Next sends no
+  `X-Powered-By`.
+- **Fixed:** HSTS was missing (the Caddyfile assumed Caddy adds it; it does
+  not). Now `Strict-Transport-Security: max-age=31536000`.
+- Open: a full `script-src`/`style-src` CSP needs testing against the Midtrans
+  Snap page first (see the Caddyfile note).
+
+## A03 Software Supply Chain Failures
+
+- Lockfile committed; Deno imports pinned (`supabase-js@2.45.4`); the Supabase
+  CLI is pinned in every command.
+- **Fixed:** `npm audit` reported postcss (high) inside Next. An `overrides`
+  entry pins Next's postcss to ^8.5.30; `npm audit --omit=dev`: 0.
+- Keep: run `npm audit --omit=dev` before each release.
+
+## A04 Cryptographic Failures
+
+- HTTPS everywhere (Let's Encrypt via Caddy), HSTS (above). Plugin tokens are
+  random 256-bit values stored only as SHA-256 hashes; device codes likewise.
+  Midtrans notifications are verified with SHA-512 and a constant-time compare.
+
+## A05 Injection
+
+- Database access goes through PostgREST and parameterised RPCs; no SQL is
+  built from strings. Inputs to server actions are validated with Zod. The
+  plugin panel puts no catalogue data into `innerHTML`; printed RABs escape
+  every value.
+- **Fixed (could run a program):** product links and vendor websites were free
+  text, and both hosts opened them with the system shell, which also runs a
+  program path, a network share or a `file://` link. Now: web forms keep only
+  http(s) addresses (`lib/webUrl.ts`), the database rejects anything else
+  (check constraints), and SketchUp (`web_url?`) and Revit (`IsWebUrl`) open
+  only http(s).
+
+## A06 Insecure Design
+
+- Free estimates are counted per account on the server, by model hash, with a
+  hard limit of two; Pro passes bind to one model.
+- **Fixed:** starting a plugin sign-in needs no account, so it is now limited
+  to 60 new codes a minute (HTTP 429 above that).
+
+## A07 Authentication Failures
+
+- Website sign-in is Supabase (Google OAuth or a one-time email link; no
+  passwords). Plugins use the device flow; the browser page now asks before
+  connecting an already-signed-in browser and names the app.
+- **Fixed:** plugin tokens never expired. A token unused for 90 days is now
+  refused and deleted.
+- **Fixed:** signing out in Revit only forgot the token locally; it now revokes
+  it on the server, as SketchUp already did.
+
+## A08 Software or Data Integrity Failures
+
+- Payment results are trusted only from signed Midtrans notifications;
+  settling is idempotent and checks the exact amount.
+- The SketchUp updater installs only a complete archive and keeps a backup.
+- Open: sign each SketchUp release in the Extension Warehouse (RELEASE.md §3)
+  so a tampered archive is detected by SketchUp; the Revit add-in is unsigned.
+
+## A09 Security Logging and Alerting Failures
+
+- `audit_log` (admin actions), `security_events`, `payment_events`,
+  `unhandled_events` and `ingest_log`; security alerts in
+  `lib/securityAlerts.ts`.
+- **Fixed:** `write_audit()` could be called by anyone to write fake entries;
+  now only Dirory's own functions and admins can write.
+
+## A10 Mishandling of Exceptional Conditions
+
+- Checks fail closed: an unknown or expired token is "signed out", a failed
+  Pro lookup is "no Pro", a malformed payment notification is rejected and
+  logged. Edge Functions answer generic errors without stack traces.
+
+---
+
+# Earlier review: OWASP Top 10 (2021), release 0.17.18
+
+> Kept for its detail. Correction (17 Oct 2026): it says HSTS is set by Caddy;
+> it was not until the 2025 review above added it.
+
 
 How Dirory stands against the OWASP Top 10, what changed in 0.17.18, and what is
 deliberately left open. Written to be honest rather than reassuring: a category

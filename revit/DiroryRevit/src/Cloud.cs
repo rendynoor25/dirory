@@ -102,10 +102,18 @@ namespace Dirory.Revit
             }
         }
 
+        /// Open a web page in the browser. Only absolute http(s) URLs: a product
+        /// link comes from vendor data, and the shell would also run a program
+        /// path, a network share or a file:// link (OWASP A05).
         public static void Open(string url)
         {
-            if (string.IsNullOrEmpty(url)) return;
+            if (!IsWebUrl(url)) return;
             try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); } catch { }
         }
+
+        public static bool IsWebUrl(string url) =>
+            Uri.TryCreate(url ?? "", UriKind.Absolute, out var u) &&
+            (u.Scheme == Uri.UriSchemeHttps || u.Scheme == Uri.UriSchemeHttp) &&
+            !string.IsNullOrEmpty(u.Host);
     }
 }

@@ -394,6 +394,15 @@ module Dirory
     SQIN_TO_SQM = 0.00064516
 
     # The panel sends { path, name, category, brand } as a JSON string.
+    # True for an absolute http(s) URL with a host - the only links the panel
+    # may open (see the openURL callback).
+    def self.web_url?(url)
+      uri = URI.parse(url.to_s)
+      %w[http https].include?(uri.scheme.to_s.downcase) && !uri.host.to_s.empty?
+    rescue URI::InvalidURIError
+      false
+    end
+
     def self.parse_payload(arg)
       data = arg
       if arg.is_a?(String)
@@ -1624,7 +1633,10 @@ module Dirory
         @dialog.add_action_callback('openURL') do |_ctx, payload|
           data = parse_payload(payload)
           url = data['url'].to_s
-          UI.openURL(url) unless url.empty?
+          # Only absolute http(s) pages: a product link comes from vendor data,
+          # and UI.openURL would also open a file, a program or a network share
+          # (OWASP A05).
+          UI.openURL(url) if web_url?(url)
         end
         @dialog.add_action_callback('toggleFavourite') { |_ctx, key| toggle_favourite(key) }
         # Search returned 0 results across the whole library.

@@ -1,5 +1,6 @@
 "use server";
 
+import { normaliseWebUrl } from "@/lib/webUrl";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
@@ -125,13 +126,12 @@ export async function registerProduct(input: RegisterProductInput) {
   }
   const d = parsed.data;
 
-  // Accept "example.com" as well as a full URL: the plugin opens this with the
-  // system browser, which needs a scheme.
-  const productUrl = d.product_url
-    ? /^https?:\/\//i.test(d.product_url)
-      ? d.product_url
-      : `https://${d.product_url}`
-    : null;
+  // Accept "example.com" as well as a full URL; only http(s) addresses, since
+  // the plugin opens this with the system shell (OWASP A05).
+  const productUrl = normaliseWebUrl(d.product_url);
+  if (productUrl === undefined) {
+    return { ok: false as const, error: "The product link must be a web address, e.g. example.com/product." };
+  }
 
   // Both storage paths must live under the chosen vendor, so a bad path cannot
   // attach a product to the wrong brand's file. The form always builds them so.

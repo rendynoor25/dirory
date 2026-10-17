@@ -81,14 +81,9 @@ export default async function DevicePage({
   const freshSignIn =
     !!user.last_sign_in_at && Date.now() - Date.parse(user.last_sign_in_at) < 10 * 60 * 1000;
   if (!status && params.signed_in === "1" && freshSignIn && DEVICE_CODE_RE.test(code)) {
-    const { data } = await supabase
-      .from("plugin_device_codes")
-      .update({ status: "approved", profile_id: user.id, approved_at: new Date().toISOString() })
-      .eq("user_code", code)
-      .eq("status", "pending")
-      .gt("expires_at", new Date().toISOString())
-      .select("user_code");
-    status = data && data.length > 0 ? "approved" : "invalid";
+    // approve_device_code (migration 0045): approves this code, for this user.
+    const { data } = await supabase.rpc("approve_device_code", { p_code: code });
+    status = data === true ? "approved" : "invalid";
   }
 
   // Already signed in in this browser: confirm the account before connecting.

@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.10.1'.freeze
+      PLUGIN_VERSION = '0.10.2'.freeze
       # The privacy-policy edition the consent dialog asks about. Bump it to
       # ask every architect again (UU PDP A3/A12).
       CONSENT_VERSION = '2026-10'.freeze
@@ -482,7 +482,7 @@ module Dirory
 
       def self.open_sign_in_page
         url = sign_in_url
-        UI.openURL(url) if url
+        UI.openURL(url) if url && url =~ %r{\Ahttps?://}i
       end
 
       def self.cancel_sign_in

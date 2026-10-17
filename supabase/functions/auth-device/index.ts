@@ -29,6 +29,7 @@ import {
 } from "../_shared/plugin-auth.ts";
 
 const DEVICE_TTL_SECONDS = 900; // 15 minutes
+const START_LIMIT_PER_MINUTE = 60;
 const POLL_INTERVAL_SECONDS = 5;
 
 function siteUrl(): string {
@@ -54,6 +55,18 @@ async function start(req: Request): Promise<Response> {
 
   // Housekeeping: drop codes nobody can approve any more.
   await supabase.rpc("purge_expired_device_codes").then(() => {}, () => {});
+
+  // Anyone can start a sign-in, so cap how fast codes are created (OWASP A06):
+  // a script cannot fill the table or crowd out real codes. Real use is a
+  // handful a minute at most.
+  const since = new Date(Date.now() - 60_000).toISOString();
+  const { count } = await supabase
+    .from("plugin_device_codes")
+    .select("user_code", { count: "exact", head: true })
+    .gt("created_at", since);
+  if ((count ?? 0) >= START_LIMIT_PER_MINUTE) {
+    return json({ error: "too many sign-in attempts, try again in a minute" }, 429);
+  }
 
   const deviceCode = randomToken(32);
   const deviceCodeHash = await sha256Hex(deviceCode);

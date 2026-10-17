@@ -42,15 +42,11 @@ export async function approveDevice(formData: FormData) {
   if (!parsed.success) redirect(devicePath("", app, "invalid"));
   if (!user) redirect(devicePath(parsed.data, app));
 
-  const { data, error } = await supabase
-    .from("plugin_device_codes")
-    .update({ status: "approved", profile_id: user.id, approved_at: new Date().toISOString() })
-    .eq("user_code", parsed.data)
-    .eq("status", "pending")
-    .gt("expires_at", new Date().toISOString())
-    .select("user_code");
+  // approve_device_code (migration 0045) binds the pending, unexpired code to
+  // the signed-in user and nothing else; codes are not readable directly.
+  const { data, error } = await supabase.rpc("approve_device_code", { p_code: parsed.data });
 
-  if (error || !data || data.length === 0) redirect(devicePath(parsed.data, app, "invalid"));
+  if (error || data !== true) redirect(devicePath(parsed.data, app, "invalid"));
   redirect(devicePath(parsed.data, app, "approved"));
 }
 
