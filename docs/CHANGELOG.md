@@ -22,7 +22,8 @@ Compared against an estimator's RAB for a real renovation model:
   (which now applies only to walls that say neither). Revit rows carry the
   type's layer materials for this.
 - **Stairs, railings, casework (Revit).** Concrete stairs are priced as
-  structure (concrete, stair formwork, rebar); other stairs and casework
+  structure (concrete, stair formwork, rebar), unless the type says steel
+  (a steel stair with concrete-filled pans); other stairs and casework
   (kitchen sets, per metre) are listed to price; railings are priced per
   metre (stair railing or guard railing). Demolished ones are listed under
   demolition.

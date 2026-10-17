@@ -134,6 +134,9 @@ namespace Dirory.Revit
             // Cast-in-place stairs: the concrete of their runs and landings.
             foreach (Stairs st in new FilteredElementCollector(doc).OfClass(typeof(Stairs)).WhereElementIsNotElementType().Cast<Stairs>())
             {
+                // A steel stair with concrete-filled pans is a steel stair (listed
+                // by Takeoff for a price), not a cast-in-place one.
+                if (SteelRe.IsMatch(TypeName(doc, st))) continue;
                 var parts = st.GetStairsRuns().Concat(st.GetStairsLandings())
                     .Select(id => doc.GetElement(id)).Where(p => p != null).ToList();
                 double m3 = parts.Sum(p => ConcreteVolume(doc, p));
