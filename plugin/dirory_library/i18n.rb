@@ -33,7 +33,7 @@ module Dirory
           'filter.show_all_brands' => 'Show all brands',
           'brand.materials' => '%{count} materials',
           'brand.models' => '%{count} models',
-          'hint.main' => '📦 Click a model card, then click in the model to place it. ☆ Star a card to keep it in Favourite. 🎨 Click a material card — the Paint Bucket activates with that material, ready to click a surface.',
+          'hint.main' => 'Click a model card, then click in the model to place it. Click a material card: the Paint Bucket starts with that material, ready to click a surface. Star a card to keep it in Favourite.',
           # empty states
           'empty.default' => 'No items found. Try another category or brand, or drop a .skp file anywhere inside your library folder and click ⟳ to rescan.',
           'empty.no_results' => 'No results for “%{query}”.',
@@ -134,7 +134,7 @@ module Dirory
           'filter.show_all_brands' => 'Tampilkan semua merek',
           'brand.materials' => '%{count} material',
           'brand.models' => '%{count} model',
-          'hint.main' => '📦 Klik kartu model, lalu klik di dalam model untuk menempatkannya. ☆ Bintangi kartu untuk menyimpannya ke Favorit. 🎨 Klik kartu material — Paint Bucket aktif dengan material tersebut, siap diklik ke permukaan.',
+          'hint.main' => 'Klik kartu model, lalu klik di dalam model untuk menempatkannya. Klik kartu material: Paint Bucket aktif dengan material tersebut, siap diklik ke permukaan. Bintangi kartu untuk menyimpannya ke Favorit.',
           'empty.default' => 'Tidak ada item. Coba kategori atau merek lain, atau letakkan file .skp di dalam folder pustaka Anda lalu klik ⟳ untuk memindai ulang.',
           'empty.no_results' => 'Tidak ada hasil untuk “%{query}”.',
           'empty.no_results_reported' => 'Tidak ada hasil untuk “%{query}”. Belum ada di pustaka — pencarian Anda sudah kami catat agar tim Dirory menambahkannya.',

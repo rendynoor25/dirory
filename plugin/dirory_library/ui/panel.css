@@ -982,27 +982,6 @@ button .ic { pointer-events: none; }
 span[data-icon] > .ic { margin-right: 6px; }
 
 /* ================================================================== */
-/* Header: logo, Library / Cost switch, toolbar                        */
-/* ================================================================== */
-header { gap: 8px; }
-.brand { flex: none; }
-.brand img { width: 24px; height: 24px; }
-.section-nav { flex: 1; min-width: 0; display: flex; gap: 2px; padding: 3px; border-radius: 9px; background: rgba(255, 255, 255, 0.16); }
-.section-btn { flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-  border: 0; border-radius: 7px; padding: 5px 6px; background: transparent; color: rgba(255, 255, 255, 0.86);
-  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-.section-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }
-.section-btn.active { background: #fff; color: #39509f; }
-.toolbar { flex: none; display: flex; }
-.toolbar button { margin-left: 4px; }
-@media (max-width: 400px) {
-  .brand h1 { display: none; }
-}
-@media (max-width: 330px) {
-  .section-btn .ic { display: none; }
-}
-
-/* ================================================================== */
 /* Cost (RAB) section                                                  */
 /* ================================================================== */
 body.in-cost .live-cost { display: none; }
@@ -1019,21 +998,6 @@ body.in-cost.has-live-cost { padding-bottom: 0; }
 .cost-project-text span { font-size: 11px; color: #6b6b70; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cost-badge { flex: none; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; background: #eceef7; color: #39509f; }
 .cost-badge.pro { background: #39509f; color: #fff; }
-
-.cost-steps { position: sticky; top: var(--header-h, 0px); z-index: 15; display: flex; background: #fff; border-bottom: 1px solid #e4e4ef; padding: 0 6px; }
-.cost-step-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 4px 9px;
-  border: 0; border-bottom: 2px solid transparent; background: transparent; font: inherit; font-size: 12px; color: #6b6b70; cursor: pointer; }
-.cost-step-btn:hover { color: #1c1c1e; }
-.cost-step-btn.active { color: #39509f; font-weight: 600; border-bottom-color: #39509f; }
-.step-no { width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
-  font-size: 10.5px; font-weight: 700; background: #eceef7; color: #52525b; }
-.cost-step-btn.active .step-no { background: #39509f; color: #fff; }
-.cost-step-btn.done .step-no { background: #1f7a4f; color: #fff; font-size: 0; }
-.cost-step-btn.done .step-no::after { content: ""; width: 7px; height: 4px; border-left: 2px solid #fff; border-bottom: 2px solid #fff;
-  transform: translateY(-1px) rotate(-45deg); }
-.step-badge { min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #f59e0b; color: #fff; font-size: 10px; font-weight: 700;
-  display: inline-flex; align-items: center; justify-content: center; }
-.step-badge[hidden] { display: none; }
 
 .cost-panel { flex: 1; padding: 12px; }
 .cost-panel[hidden] { display: none; }
@@ -1114,3 +1078,56 @@ body.in-cost.has-live-cost { padding-bottom: 0; }
 .cost-menu button:disabled { color: #a1a1aa; cursor: default; }
 .cost-menu button .ic { color: #39509f; }
 .cost-menu button:disabled .ic { color: #c4c4cc; }
+
+/* ================================================================== */
+/* Header and the four sections (Models, Materials, Quantifier, BoQ)   */
+/* ================================================================== */
+header { display: block; padding: 0; background: #fff; box-shadow: 0 1px 0 #e4e4ef; }
+.header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px;
+  background: var(--brand-gradient); color: #fff; }
+.brand img { width: 24px; height: 24px; }
+.toolbar { display: flex; }
+.toolbar button { margin-left: 4px; }
+.main-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #fff; }
+.main-tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 0;
+  padding: 8px 2px 7px; border: 0; border-bottom: 2px solid transparent; background: transparent;
+  color: #52525b; font: inherit; cursor: pointer; }
+.main-tab:hover { background: #f4f5f9; color: #1c1c1e; }
+.main-tab.active { color: #39509f; border-bottom-color: #39509f; background: #f7f8fc; }
+.main-tab-icon { display: inline-flex; }
+.main-tab-icon .ic { width: 22px; height: 22px; }
+.main-tab-label { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; line-height: 1.2;
+  white-space: nowrap; }
+.pro-tag { display: inline-block; padding: 1px 4px; border-radius: 4px; background: #f0a92b; color: #2b2b30;
+  font-size: 8.5px; font-weight: 800; letter-spacing: 0.4px; line-height: 1.3; vertical-align: middle; }
+.pro-tag.on-primary { margin-left: 4px; background: #fff; color: #39509f; }
+@media (max-width: 300px) {
+  .main-tab-label { font-size: 10.5px; }
+}
+
+/* Quantifier */
+.qty { padding-bottom: 16px; }
+.qty[hidden] { display: none; }
+.qty-head { position: sticky; top: var(--header-h, 0px); z-index: 12; display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: #fff; border-bottom: 1px solid #e4e4ef; }
+.qty-head-text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.qty-head-text strong { font-size: 13px; }
+.qty-head-text span { font-size: 11px; color: #6b6b70; }
+.qty-head .primary-btn { width: auto; flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; font-size: 12.5px; }
+.qty-body { padding: 12px; }
+.qty-body > .ghost-btn { margin: 0 0 6px; }
+.qty-body .usage { padding: 0; margin-top: 18px; }
+.qty-body .usage[hidden] { display: none; }
+.qty-sub { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; font-size: 13px; color: #39509f; }
+.qty-body .usage-toolbar { top: calc(var(--header-h, 0px) + 54px); }
+
+/* BoQ */
+.boq-intro { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 18px 12px;
+  border: 1px dashed #c9cde3; border-radius: 10px; background: #fff; color: #3f3f46; }
+.boq-intro .ic { color: #39509f; stroke-width: 1.5; }
+.boq-intro strong { font-size: 13px; color: #1c1c1e; }
+.boq-intro p { margin: 0; font-size: 11.5px; line-height: 1.5; }
+.boq-intro-note { color: #8a4b00; font-weight: 600; }
+.bar-ghost { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; font-size: 12px; }
+.bar-ghost[hidden] { display: none; }
+.cost-bar .primary-btn { white-space: nowrap; }

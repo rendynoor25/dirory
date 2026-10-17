@@ -1,23 +1,21 @@
 # Changelog
 
-## Unreleased (SketchUp + Revit) — the cost estimate gets its own section
+## Unreleased (SketchUp + Revit) — four sections, and the BoQ in one click
 
-- **Two sections in the header:** Library and Cost (RAB), next to the Dirory
-  logo. The RAB no longer sits inside the Usage tab, which is now "In this
-  model" (SketchUp only).
-- **Cost in three steps:** Project (location, Revit phase, assumptions
-  folded away), Quantities (summary cards, "How Dirory reads your model" -
-  each floor, roof and wall type and what it is priced as - the SketchUp
-  "What is this?" review, and all quantities by material), Cost (one row per
-  section with its subtotal; open a row to see and edit its lines; a chip
-  shows only the lines that need your price).
-- **A bar that is always at the bottom:** the next step (Measure model, Price
-  it), then the total including PPN and **Export Excel**, with Measure again,
-  quantities CSV, RAB CSV and Print in its menu.
-- The project bar shows the project, the prices' location, the phase, and
-  Pro or the free estimates left. Live cost opens the Cost section.
-- Line icons (icons.js) replace the emoji in the toolbar, buttons, cards and
-  menus.
+- **Four sections under the header, each an icon with its name:** Models
+  (wardrobe), Materials (paint roller), Quantifier (calculator) and BoQ
+  (scroll with a dollar sign, marked PRO). Names are always shown, not only
+  on hover. Models and Materials keep All / Favourite.
+- **Quantifier:** what the model is made of. It measures on opening: quantity
+  cards, how Dirory reads each floor, roof and wall type, the SketchUp "What
+  is this?" review, all quantities by material (CSV), and in SketchUp the
+  Dirory products used, with Ask for a Quote.
+- **BoQ (Pro, 2 free estimates):** location and assumptions, then one row per
+  section with its subtotal, and **Export Excel** as the main button in the
+  bottom bar: it measures and prices first when needed, then saves the
+  workbook. Estimate, Print and RAB CSV are beside it.
+- Line icons (icons.js) replace the emoji everywhere in the panel. The
+  SketchUp panel opens at 400 x 640.
 
 ## Unreleased (Revit + SketchUp) — RAB fixes from the Serpong renovation
 

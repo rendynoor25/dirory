@@ -387,7 +387,7 @@ module Dirory
     # ------------------------------------------------------------------
     # Everything Dirory puts into a SketchUp model (component definitions and
     # materials) is tagged with an attribute dictionary. That tag is what the
-    # Usage tab reads to count models and painted areas, and it survives
+    # Quantifier section reads to count models and painted areas, and it survives
     # saving/reopening the .skp.
     # ------------------------------------------------------------------
     ATTR_DICT = 'Dirory'.freeze
@@ -1310,7 +1310,7 @@ module Dirory
     end
 
     # ------------------------------------------------------------------
-    # Ask for a Quote: the user ticks one or more brands in the Usage tab and
+    # Ask for a Quote: the user ticks one or more brands in the Quantifier and
     # we open WhatsApp with a ready-made message listing what is used in the
     # model for those brands.
     # ------------------------------------------------------------------
@@ -1512,8 +1512,10 @@ module Dirory
           preferences_key: 'com.dirory.library',
           scrollable: true,
           resizable: true,
-          width: 360,
-          height: 580,
+          # Wide enough for the four sections (Models, Materials, Quantifier,
+          # BoQ) with their names; SketchUp remembers the size the user picks.
+          width: 400,
+          height: 640,
           min_width: 300,
           min_height: 400,
           style: UI::HtmlDialog::STYLE_DIALOG
