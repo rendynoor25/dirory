@@ -8,16 +8,22 @@
 <body>
   <header>
     <div class="brand">
-      <img src="logo_white.png" alt="">
+      <img src="logo_white.png" alt="Dirory">
       <h1>Dirory</h1>
     </div>
+    <!-- The two halves of the panel: the product library, and the cost
+         estimate (RAB / BoQ) of the open model. -->
+    <nav class="section-nav" role="tablist" aria-label="Section">
+      <button id="navLibrary" class="section-btn active" role="tab" aria-selected="true" data-section="library" data-icon="library">Library</button>
+      <button id="navCost" class="section-btn" role="tab" aria-selected="false" data-section="cost" data-icon="calculator">Cost (RAB)</button>
+    </nav>
     <div class="toolbar">
-      <button id="updateBtn" class="update-btn" title="Update" hidden>⬆</button>
+      <button id="updateBtn" class="update-btn" title="Update" aria-label="Update" data-icon="upgrade" hidden></button>
       <!-- Inspector (after Thudio) is parked until the catalogue carries the
            purchase details it is meant to show. The code stays wired up. -->
-      <button id="inspectorBtn" title="Inspector" hidden>🔍</button>
-      <button id="settingsBtn" title="Settings">⚙</button>
-      <button id="accountBtn" title="Sign in">👤</button>
+      <button id="inspectorBtn" title="Inspector" aria-label="Inspector" data-icon="search" hidden></button>
+      <button id="settingsBtn" title="Settings" aria-label="Settings" data-icon="settings"></button>
+      <button id="accountBtn" title="Sign in" aria-label="Account" data-icon="user"></button>
     </div>
   </header>
 
@@ -39,7 +45,7 @@
       <button class="tab" data-filter="model" data-i18n="tab.model">Models</button>
       <button class="tab" data-filter="material" data-i18n="tab.material">Materials</button>
       <button class="tab" data-filter="favourite" data-i18n="tab.favourite">★ Favourite</button>
-      <button class="tab tab-usage" data-filter="usage" data-i18n="tab.usage">Usage</button>
+      <button class="tab tab-usage" data-filter="usage" data-i18n="tab.usage">In this model</button>
     </div>
 
     <div id="filters" class="filters">
@@ -66,11 +72,11 @@
   <section id="usage" class="usage" hidden>
     <div class="usage-toolbar">
       <div class="usage-actions">
-        <button id="usageRefresh" class="ghost-btn">⟳ Refresh</button>
-        <button id="usageExport" class="ghost-btn">⭳ Export CSV</button>
-        <button id="usagePrint" class="ghost-btn" title="Finish &amp; fixture schedule, to print or save as PDF">🖨 Print schedule</button>
-        <button id="usageSelectAll" class="ghost-btn">☑ Select all brands</button>
-        <button id="usageToggleAll" class="ghost-btn">▴ Collapse all</button>
+        <button id="usageRefresh" class="ghost-btn" data-icon="refresh">Refresh</button>
+        <button id="usageExport" class="ghost-btn" data-icon="csv">Export CSV</button>
+        <button id="usagePrint" class="ghost-btn" data-icon="printer" title="Finish and fixture schedule, to print or save as PDF">Print schedule</button>
+        <button id="usageSelectAll" class="ghost-btn" data-icon="check">Select all brands</button>
+        <button id="usageToggleAll" class="ghost-btn">Collapse all</button>
       </div>
       <label class="usage-option">
         <input type="checkbox" id="hideUnused"> Hide unused materials / models
@@ -80,53 +86,6 @@
 
     <div id="brandGroups"></div>
 
-    <!-- Quantity takeoff (RAB step 1): the architecture itself, not only
-         Dirory products. Volumes only; prices come with the AHSP step. -->
-    <section id="takeoff" class="takeoff">
-      <div class="takeoff-head">
-        <h3>📐 Quantities (volume pekerjaan)</h3>
-        <div class="usage-actions">
-          <button id="takeoffRun" class="ghost-btn">⟳ Measure model</button>
-          <button id="takeoffExport" class="ghost-btn" hidden>⭳ Export quantities</button>
-        </div>
-      </div>
-      <!-- RAB step 2: AHSP x regional prices. Shown once the model is measured. -->
-      <div id="rabBox" class="rab-box" hidden>
-        <div class="rab-controls">
-          <select id="rabRegion" aria-label="Price book" hidden>
-            <option value="jakarta">DKI Jakarta</option>
-          </select>
-          <label class="rab-city">
-            <span>Project location (prices)</span>
-            <select id="rabCity" aria-label="Project location for prices"></select>
-          </label>
-          <select id="rabWall" aria-label="Wall type">
-            <option value="brick" title="Walls named hebel / AAC / bata ringan are priced as AAC anyway">Red brick walls (unless named AAC)</option>
-            <option value="aac" title="Walls named bata / brick are priced as brick anyway">Lightweight block (AAC) walls (unless named brick)</option>
-          </select>
-          <select id="rabPhase" aria-label="Phase to price" title="Revit phase to price: new construction is counted, existing is not, demolished is priced as demolition" hidden></select>
-          <select id="rabConcrete" aria-label="Concrete" hidden>
-            <option value="readymix">Ready-mix concrete</option>
-            <option value="site">Site-mixed concrete</option>
-          </select>
-          <select id="rabDemo" aria-label="Concrete demolition" hidden>
-            <option value="manual">Demolish concrete by hand</option>
-            <option value="jackhammer">Demolish concrete with a jack hammer</option>
-          </select>
-          <label class="usage-option"><input type="checkbox" id="rabBothSides" checked> Walls drawn with both faces</label>
-          <label class="usage-option"><input type="checkbox" id="rabLive" checked> Show live cost while modelling</label>
-          <button id="rabRun" class="primary-btn">💰 Estimate cost (RAB)</button>
-        </div>
-        <div id="rabBody"></div>
-      </div>
-      <div id="takeoffBody" class="takeoff-body">
-        <p class="usage-note">
-          Measures wall, floor, ceiling and roof finish areas per material, and counts doors
-          and windows. Click <strong>Measure model</strong>; large models take a moment.
-        </p>
-      </div>
-    </section>
-
     <p class="usage-note">
       Grouped by brand and counted from the open model, so it stays correct after undo or delete.
       Only models and materials inserted with this version of Dirory are counted.
@@ -135,8 +94,113 @@
   </section>
 
   <div id="quoteBar" class="quote-bar" hidden>
-    <button id="quoteBtn" class="quote-btn" disabled>🛒 Ask for a Quote</button>
+    <button id="quoteBtn" class="quote-btn" disabled>Ask for a Quote</button>
   </div>
+
+  <!-- Cost (RAB / BoQ): 1 Project (where, which phase, assumptions),
+       2 Quantities (measured from the model, what to check), 3 Cost (priced
+       lines per section). The bar at the bottom always holds the next step,
+       and Export Excel once there is an estimate. -->
+  <section id="cost" class="cost" hidden>
+    <div class="cost-project">
+      <span class="cost-project-icon" data-icon="building"></span>
+      <div class="cost-project-text">
+        <strong id="costProject">This model</strong>
+        <span id="costWhere">DKI Jakarta prices</span>
+      </div>
+      <span id="costAccess" class="cost-badge" hidden></span>
+    </div>
+
+    <nav class="cost-steps" role="tablist" aria-label="Estimate steps">
+      <button class="cost-step-btn active" role="tab" data-step="1"><span class="step-no">1</span> Project</button>
+      <button class="cost-step-btn" role="tab" data-step="2"><span class="step-no">2</span> Quantities</button>
+      <button class="cost-step-btn" role="tab" data-step="3"><span class="step-no">3</span> Cost <span id="costStepBadge" class="step-badge" hidden></span></button>
+    </nav>
+
+    <div id="costStep1" class="cost-panel">
+      <label class="field">
+        <span class="field-label" data-icon="pin">Project location (prices)</span>
+        <select id="rabCity" aria-label="Project location for prices"></select>
+      </label>
+      <label class="field" id="rabPhaseField" hidden>
+        <span class="field-label" data-icon="layers">Revit phase to price</span>
+        <select id="rabPhase" aria-label="Phase to price" title="New construction is counted, existing is not, demolished is priced as demolition"></select>
+      </label>
+      <select id="rabRegion" aria-label="Price book" hidden>
+        <option value="jakarta">DKI Jakarta</option>
+      </select>
+      <details class="assumptions">
+        <summary><span data-icon="sliders">Assumptions</span><span class="assumptions-hint">wall type, concrete, demolition</span></summary>
+        <div class="assumptions-body">
+          <label class="field">
+            <span class="field-label">Walls the model does not name</span>
+            <select id="rabWall" aria-label="Wall type">
+              <option value="brick">Red brick (walls named hebel / AAC stay AAC)</option>
+              <option value="aac">Lightweight block, AAC (walls named bata stay brick)</option>
+            </select>
+          </label>
+          <label class="field" id="rabConcreteField" hidden>
+            <span class="field-label">Concrete</span>
+            <select id="rabConcrete" aria-label="Concrete">
+              <option value="readymix">Ready-mix</option>
+              <option value="site">Site-mixed</option>
+            </select>
+          </label>
+          <label class="field" id="rabDemoField" hidden>
+            <span class="field-label">Demolishing concrete</span>
+            <select id="rabDemo" aria-label="Concrete demolition">
+              <option value="manual">By hand</option>
+              <option value="jackhammer">With a jack hammer</option>
+            </select>
+          </label>
+          <label class="usage-option" id="rabBothSidesField"><input type="checkbox" id="rabBothSides" checked> Walls drawn with both faces</label>
+          <label class="usage-option"><input type="checkbox" id="rabLive" checked> Show live cost while modelling</label>
+        </div>
+      </details>
+      <p class="usage-note">
+        Dirory measures walls, floors, ceilings, roofs, doors and windows (and in Revit the structure, MEP,
+        stairs and railings) from the open model, then prices them with AHSP and the location's prices.
+      </p>
+    </div>
+
+    <div id="costStep2" class="cost-panel" hidden>
+      <div id="takeoffSummary" class="takeoff-summary"></div>
+      <div id="takeoffChecks" class="takeoff-checks"></div>
+      <details id="takeoffDetails" class="takeoff-details">
+        <summary><span data-icon="ruler">All quantities by material</span></summary>
+        <div id="takeoffBody" class="takeoff-body">
+          <p class="usage-note">Measure the model first (step 1).</p>
+        </div>
+      </details>
+    </div>
+
+    <div id="costStep3" class="cost-panel" hidden>
+      <div id="rabFilters" class="rab-filters" hidden>
+        <button id="rabFilterAll" class="chip active">All sections</button>
+        <button id="rabFilterTodo" class="chip chip-warn" data-icon="alert"></button>
+      </div>
+      <div id="rabBody" class="rab-body">
+        <p class="usage-note">Price the quantities (step 2) to see the cost.</p>
+      </div>
+    </div>
+
+    <div id="costBar" class="cost-bar">
+      <div class="cost-bar-figure">
+        <span id="costBarLabel" class="cost-bar-label">No estimate yet</span>
+        <strong id="costBarTotal"></strong>
+      </div>
+      <button id="takeoffRun" class="primary-btn" data-icon="ruler">Measure model</button>
+      <button id="rabRun" class="primary-btn" data-icon="calculator" hidden>Price it</button>
+      <button id="costExport" class="primary-btn" data-icon="sheet" hidden>Export Excel</button>
+      <button id="costMore" class="icon-btn" aria-label="More" title="More" aria-haspopup="menu" data-icon="dots"></button>
+      <div id="costMenu" class="cost-menu" role="menu" hidden>
+        <button id="costMenuMeasure" role="menuitem" data-icon="refresh">Measure again</button>
+        <button id="takeoffExport" role="menuitem" data-icon="csv">Export quantities (CSV)</button>
+        <button id="costMenuCsv" role="menuitem" data-icon="csv">Export RAB (CSV)</button>
+        <button id="costMenuPrint" role="menuitem" data-icon="printer">Print or save as PDF</button>
+      </div>
+    </div>
+  </section>
 
   <p id="hint" class="hint">
     📦 Click a model card, then click in the model to place it. ☆ Star a card to keep it in Favourite.
@@ -350,11 +414,12 @@
       <span id="liveCostNote" class="live-cost-note"></span>
     </div>
     <button id="liveCostDetails" class="live-cost-btn">Breakdown</button>
-    <button id="liveCostClose" class="live-cost-close" aria-label="Hide live cost" title="Hide live cost">×</button>
+    <button id="liveCostClose" class="live-cost-close" aria-label="Hide live cost" title="Hide live cost" data-icon="close"></button>
   </div>
 
   <div id="toast" class="toast" hidden></div>
 
+  <script src="icons.js"></script>
   <script src="ikk.js"></script>
   <script src="rab.js"></script>
   <script src="xlsx.js"></script>

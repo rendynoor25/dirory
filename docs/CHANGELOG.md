@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased (SketchUp + Revit) — the cost estimate gets its own section
+
+- **Two sections in the header:** Library and Cost (RAB), next to the Dirory
+  logo. The RAB no longer sits inside the Usage tab, which is now "In this
+  model" (SketchUp only).
+- **Cost in three steps:** Project (location, Revit phase, assumptions
+  folded away), Quantities (summary cards, "How Dirory reads your model" -
+  each floor, roof and wall type and what it is priced as - the SketchUp
+  "What is this?" review, and all quantities by material), Cost (one row per
+  section with its subtotal; open a row to see and edit its lines; a chip
+  shows only the lines that need your price).
+- **A bar that is always at the bottom:** the next step (Measure model, Price
+  it), then the total including PPN and **Export Excel**, with Measure again,
+  quantities CSV, RAB CSV and Print in its menu.
+- The project bar shows the project, the prices' location, the phase, and
+  Pro or the free estimates left. Live cost opens the Cost section.
+- Line icons (icons.js) replace the emoji in the toolbar, buttons, cards and
+  menus.
+
 ## Unreleased (Revit + SketchUp) — RAB fixes from the Serpong renovation
 
 Compared against an estimator's RAB for a real renovation model:

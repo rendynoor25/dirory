@@ -128,13 +128,20 @@
     return [row.material, row.category, row.spec].filter(Boolean).join(' ');
   }
 
-  // 'aac' or 'brick' for a masonry wall row; null for a concrete wall.
-  function wallCore(row, o) {
+  // 'aac' or 'brick' when a wall row's name or materials say which; null
+  // when they do not (or for a concrete wall).
+  function wallCoreNamed(row) {
     if (row.core === 'concrete') return null;
     const t = rowText(row);
     if (AAC_RE.test(t)) return 'aac';
     if (BRICK_RE.test(t)) return 'brick';
-    return o.wallType === 'aac' ? 'aac' : 'brick';
+    return null;
+  }
+
+  // 'aac' or 'brick' for a masonry wall row; null for a concrete wall.
+  function wallCore(row, o) {
+    if (row.core === 'concrete') return null;
+    return wallCoreNamed(row) || (o.wallType === 'aac' ? 'aac' : 'brick');
   }
 
   // The finish a floor row is priced as. 'other' rows are listed to price.
@@ -714,6 +721,9 @@
     bookForCity: bookForCity,
     quantities: quantities,
     mepKey: mepKey,
+    floorKind: floorKind,
+    roofKind: roofKind,
+    wallCoreNamed: wallCoreNamed,
     ELEMENTS: ELEMENTS,
     MEMBERS: MEMBERS,
     MEMBER_LABELS: MEMBER_LABELS,

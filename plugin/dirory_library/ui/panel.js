@@ -1,5 +1,6 @@
 let allItems = [];
 let currentFilter = 'all'; // 'all' | 'model' | 'material' | 'usage'
+let currentSection = 'library'; // 'library' | 'cost' (RAB)
 let selectedCategory = '';
 let selectedBrand = '';
 let heardFromRuby = false;
@@ -107,6 +108,8 @@ if (IS_REVIT) {
     const node = document.getElementById(id);
     if (node) node.hidden = true;
   });
+  document.querySelector('.tab-usage').hidden = true;
+  byId('rabBothSidesField').hidden = true;   // Revit measures both faces itself
 }
 
 window.addEventListener('load', () => {
@@ -628,6 +631,7 @@ function checkSearchMiss() {
 }
 
 function render() {
+  if (currentSection === 'cost') return;
   const usage = currentFilter === 'usage';
   document.getElementById('usage').hidden = !usage;
   document.getElementById('grid').hidden = usage;
@@ -718,11 +722,11 @@ function render() {
         (/^https?:/i.test(item.thumbnail) ? item.thumbnail : 'file:///' + item.thumbnail.replace(/\\/g, '/'));
       img.onerror = () => {
         img.remove();
-        thumb.prepend(document.createTextNode(item.type === 'material' ? '🎨' : '📦'));
+        thumb.prepend(DiroryIcon.svg(item.type === 'material' ? 'palette' : 'box'));
       };
       thumb.appendChild(img);
     } else {
-      thumb.textContent = item.type === 'material' ? '🎨' : '📦';
+      thumb.appendChild(DiroryIcon.svg(item.type === 'material' ? 'palette' : 'box'));
     }
     thumb.addEventListener('dragstart', (event) => event.preventDefault());
     card.addEventListener('dragstart', (event) => event.preventDefault());
@@ -737,11 +741,11 @@ function render() {
     const isCloud = !!item.asset_id;
     if (isCloud) {
       if (downloading.has(item.asset_id)) {
-        thumb.appendChild(el('span', 'dl-badge busy', '⤓'));
+        thumb.appendChild(DiroryIcon.set(el('span', 'dl-badge busy'), 'download'));
       } else if (downloaded.has(item.asset_id)) {
-        thumb.appendChild(el('span', 'dl-badge done', '✓'));
+        thumb.appendChild(DiroryIcon.set(el('span', 'dl-badge done'), 'check'));
       } else {
-        thumb.appendChild(el('span', 'dl-badge', '⤓'));
+        thumb.appendChild(DiroryIcon.set(el('span', 'dl-badge'), 'download'));
       }
     }
     // No per-card info button: product details are in the Inspector (🔍), which
@@ -855,7 +859,7 @@ function render() {
       if (section !== lastSection) {
         lastSection = section;
         grid.appendChild(
-          el('div', 'grid-heading', section === 'star' ? '★ Starred' : '🕘 Used before')
+          DiroryIcon.set(el('div', 'grid-heading'), section === 'star' ? 'star' : 'clock', section === 'star' ? 'Starred' : 'Used before')
         );
       }
     }
@@ -983,7 +987,7 @@ function updateQuoteButton() {
   const btn = document.getElementById('quoteBtn');
   const n = quoteBrands.size;
   btn.disabled = n === 0;
-  btn.textContent = n === 0 ? '🛒 Ask for a Quote' : `🛒 Ask for a Quote (${n} brand${n > 1 ? 's' : ''})`;
+  DiroryIcon.set(btn, 'cart', n === 0 ? 'Ask for a Quote' : `Ask for a Quote (${n} brand${n > 1 ? 's' : ''})`);
 }
 
 // Brands shown in the Usage tab (unused brands are dropped when "Hide unused" is on).
@@ -995,7 +999,7 @@ function visibleGroups(data) {
 function updateToggleAll(groups) {
   const btn = document.getElementById('usageToggleAll');
   const allFolded = groups.length > 0 && groups.every((g) => collapsedBrands.has(g.brand));
-  btn.textContent = allFolded ? '▾ Expand all' : '▴ Collapse all';
+  DiroryIcon.set(btn, allFolded ? 'chevronDown' : 'chevronRight', allFolded ? 'Expand all' : 'Collapse all');
   btn.disabled = groups.length === 0;
 }
 
@@ -1108,11 +1112,11 @@ function updateAccountButton() {
   if (account.signedIn) {
     // Show who is signed in: the name, or the part of the email before "@".
     const label = (account.name || '').trim() || String(account.email || '').split('@')[0] || 'Account';
-    btn.textContent = label;
+    DiroryIcon.set(btn, 'user', label);
     btn.title = `Signed in as ${account.name ? account.name + ' · ' : ''}${account.email || ''}`;
     if (account.consentNeeded) btn.title += ' · please confirm what you share';
   } else {
-    btn.textContent = '👤';
+    DiroryIcon.set(btn, 'user');
     btn.title = 'Sign in';
   }
 }
@@ -1506,15 +1510,17 @@ function roleSelect(roles, value, onChange) {
 
 function renderMapping(body, data) {
   const classes = Array.isArray(data.classes) ? data.classes : null;
+  body.innerHTML = '';
+  renderReadAs(body, data);
   if (!classes) return;
   const mapping = {
     materials: Object.assign({}, (data.mapping && data.mapping.materials) || {}),
     tags: Object.assign({}, (data.mapping && data.mapping.tags) || {}),
   };
   const box = el('details', 'map-box');
-  const changed = Object.keys(mapping.materials).length + Object.keys(mapping.tags).length;
-  box.open = !changed;
-  box.appendChild(el('summary', 'takeoff-element', 'What is this? Check what was measured'));
+  const summary = el('summary', 'takeoff-element');
+  DiroryIcon.set(summary, 'help', 'What is this? Check what was measured');
+  box.appendChild(summary);
   box.appendChild(el('p', 'usage-note',
     'Each material (and tag) and what it was counted as. Change the role where the guess is wrong: ' +
     'the model is measured again. Faces with no material ("Unpainted") are usually unfinished concrete or ' +
@@ -1525,7 +1531,7 @@ function renderMapping(body, data) {
   bar.appendChild(el('span', '', 'Mark selection as '));
   let markRole = 'ignore';
   bar.appendChild(roleSelect(Object.keys(ROLE_LABELS), markRole, (r) => { markRole = r; }));
-  const mark = el('button', 'ghost-btn', 'Mark');
+  const mark = DiroryIcon.set(el('button', 'ghost-btn'), 'edit', 'Mark');
   mark.addEventListener('click', () => {
     byId('takeoffRun').disabled = true;
     byId('takeoffRun').textContent = 'Measuring…';
@@ -1611,23 +1617,22 @@ function takeoffTable(head, rows) {
 
 window.diroryTakeoff = function (data) {
   lastTakeoff = data;
-  byId('rabBox').hidden = false;
   if (typeof renderRab === 'function' && rabBook) renderRab();
   const body = byId('takeoffBody');
   body.innerHTML = '';
   byId('takeoffRun').disabled = false;
-  byId('takeoffRun').textContent = '⟳ Measure again';
+  DiroryIcon.set(byId('takeoffRun'), 'ruler', 'Measure model');
   const rows = data.rows || [];
   const openings = data.openings || [];
   const structure = data.structure || [];
   const mep = data.mep || [];
   const demolition = data.demolition || [];
-  byId('rabConcrete').hidden = !structure.some((s) => s.concrete_m3 > 0);
-  byId('rabDemo').hidden = !demolition.some((d) => d.group === 'concrete');
+  byId('rabConcreteField').hidden = !structure.some((s) => s.concrete_m3 > 0);
+  byId('rabDemoField').hidden = !demolition.some((d) => d.group === 'concrete');
   // Revit phases: price one of them (the host remembers the choice).
   const phases = data.phases || [];
   const phaseSelect = byId('rabPhase');
-  phaseSelect.hidden = phases.length < 2;
+  byId('rabPhaseField').hidden = phases.length < 2;
   phaseSelect.innerHTML = '';
   phases.forEach((p) => {
     const option = el('option', '', `Phase: ${p.name}`);
@@ -1636,11 +1641,17 @@ window.diroryTakeoff = function (data) {
     phaseSelect.appendChild(option);
   });
   const landscape = data.landscape || [];
-  renderMapping(body, data);
+  renderTakeoffSummary(data);
+  updateCostProject();
+  renderMapping(byId('takeoffChecks'), data);
+  if (takeoffAsked) {
+    takeoffAsked = false;
+    showStep(2);
+  }
+  updateCostBar();
   if (!rows.length && !openings.length && !structure.length && !mep.length && !demolition.length && !landscape.length) {
     body.appendChild(el('p', 'usage-note',
       'Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.'));
-    byId('takeoffExport').hidden = true;
     return;
   }
 
@@ -1755,15 +1766,21 @@ window.diroryTakeoff = function (data) {
     notes.unshift(`Floor perimeter (for skirting): ${fmt2(data.floor_perimeter_m)} m¹.`);
   }
   body.appendChild(el('p', 'usage-note', notes.join(' ')));
-  byId('takeoffExport').hidden = false;
 };
 
-byId('takeoffRun').addEventListener('click', () => {
+let takeoffAsked = false;   // the architect asked: show step 2 when it arrives
+
+function measure() {
+  takeoffAsked = true;
   byId('takeoffRun').disabled = true;
   byId('takeoffRun').textContent = 'Measuring…';
   sketchup.requestTakeoff();
+}
+byId('takeoffRun').addEventListener('click', measure);
+byId('takeoffExport').addEventListener('click', () => {
+  closeCostMenu();
+  sketchup.exportTakeoff();
 });
-byId('takeoffExport').addEventListener('click', () => sketchup.exportTakeoff());
 
 /* ------------------------------------------------------------------ */
 /* RAB: takeoff x regional price book (rab.js does the arithmetic)      */
@@ -1822,6 +1839,7 @@ function forCity(book) {
     }
     if (rabBook && lastTakeoff) renderRab();
     renderLive();
+    updateCostProject();
   });
 })();
 let lastRab = null;
@@ -1844,17 +1862,43 @@ function rabOptions() {
 function renderRab() {
   const body = byId('rabBody');
   body.innerHTML = '';
-  if (!lastTakeoff || !rabBook) return;
-  lastRab = window.DiroryRab.computeRab(lastTakeoff, rabBook, rabOptions());
-  if (!lastRab.lines.length) {
-    body.appendChild(el('p', 'usage-note', 'Nothing to price yet: measure a model with walls, floors, ceilings, roofs or structure.'));
+  if (!lastTakeoff || !rabBook) {
+    updateCostBar();
     return;
   }
+  lastRab = window.DiroryRab.computeRab(lastTakeoff, rabBook, rabOptions());
+  if (!lastRab.unpriced) rabOnlyTodo = false;   // nothing left to price: show everything
+  if (!lastRab.lines.length) {
+    body.appendChild(el('p', 'usage-note', 'Nothing to price yet: measure a model with walls, floors, ceilings, roofs or structure.'));
+    updateCostBar();
+    return;
+  }
+  const largest = Math.max(1, ...window.DiroryRab.ELEMENTS.map((e) => lastRab.subtotals[e] || 0));
   window.DiroryRab.ELEMENTS.forEach((element) => {
     const lines = lastRab.lines.filter((l) => l.element === element);
     if (!lines.length) return;
-    body.appendChild(el('h4', 'takeoff-element', RAB_ELEMENT_LABELS[element] || element));
-    const rows = lines.map((l) => {
+    const todo = lines.filter((l) => l.needs_price).length;
+    if (rabOnlyTodo && !todo) return;
+    const sec = el('details', 'rab-sec' + (todo ? ' has-todo' : ''));
+    sec.open = rabOnlyTodo ? todo > 0 : openSections.has(element);
+    sec.addEventListener('toggle', () => {
+      if (sec.open) openSections.add(element);
+      else openSections.delete(element);
+    });
+    const head = el('summary', 'rab-sec-head');
+    const name = el('span', 'rab-sec-name');
+    name.appendChild(document.createTextNode(RAB_ELEMENT_LABELS[element] || element));
+    if (todo) name.appendChild(DiroryIcon.svg('alert'));
+    const bar = el('span', 'rab-sec-bar');
+    const fill = el('span', 'rab-sec-fill');
+    fill.style.width = Math.max(2, Math.round((lastRab.subtotals[element] || 0) / largest * 100)) + '%';
+    bar.appendChild(fill);
+    name.appendChild(bar);
+    head.appendChild(name);
+    head.appendChild(el('span', 'rab-sec-amount', rupiahShort(lastRab.subtotals[element])));
+    head.appendChild(DiroryIcon.svg('chevronRight'));
+    sec.appendChild(head);
+    const rows = lines.filter((l) => !rabOnlyTodo || l.needs_price).map((l) => {
       const row = [
         [lineName(l), ''],
         [`${fmt2(l.quantity)} ${l.unit}`, 'num'],
@@ -1864,44 +1908,28 @@ function renderRab() {
       if (l.needs_price) row.className = 'needs-price';
       return row;
     });
-    const sub = [['Subtotal', ''], ['', ''], ['', ''], [rupiah(lastRab.subtotals[element]), 'num']];
-    sub.className = 'total';
-    rows.push(sub);
-    body.appendChild(takeoffTable([['Work item'], ['Volume', 'num'], ['Unit price', 'num'], ['Amount', 'num']], rows));
+    sec.appendChild(takeoffTable([['Work item'], ['Volume', 'num'], ['Unit price', 'num'], ['Amount', 'num']], rows));
+    body.appendChild(sec);
   });
+  const summary = el('div', 'rab-summary');
+  summary.appendChild(el('span', '', 'Total, excluding PPN'));
+  summary.appendChild(el('strong', '', rupiah(lastRab.total)));
+  body.appendChild(summary);
   if (lastRab.unpriced) {
     body.appendChild(el('p', 'rab-unpriced',
       `${lastRab.unpriced} line(s) have no price yet and are not in the total: type the unit price from your quote in the highlighted rows.`));
   }
-  const total = el('p', 'rab-total');
-  total.appendChild(el('span', '', 'Estimated total'));
-  total.appendChild(el('strong', '', rupiah(lastRab.total)));
-  body.appendChild(total);
   const note = [
-    `Unit prices: ${rabBook.name}, AHSP coefficients with regional basic prices, including ${rabBook.overhead_pct}% overhead and profit. Excludes PPN.`,
+    `Unit prices: ${rabBook.name}, AHSP coefficients with regional basic prices, including ${rabBook.overhead_pct}% overhead and profit.`,
     rabBook.source ? `Source: ${rabBook.source}` : '',
     rebarNote(),
-    rabAccess && !rabAccess.pro && rabAccess.free_limit
-      ? `Free estimate: ${rabAccess.free_used} of ${rabAccess.free_limit} used (this project counts once). After that, more estimates need Dirory Pro.`
-      : '',
     lastRab.lines.some((l) => !l.custom && /^Market estimate/.test(l.reference))
       ? 'Split AC units have no AHSP analysis: they are market estimates (retail listings, mid-2026, unit plus installation). Type your quote over them.'
       : '',
     'An estimate from the model, not a tender document. Check volumes and specifications with your quantity surveyor.',
   ].filter(Boolean).join(' ');
   body.appendChild(el('p', 'usage-note', note));
-  const actions = el('div', 'usage-actions');
-  const print = el('button', 'ghost-btn', '🖨 Print RAB');
-  print.addEventListener('click', printRab);
-  const csv = el('button', 'ghost-btn', '⭳ Export RAB (CSV)');
-  csv.addEventListener('click', exportRabCsv);
-  const xlsx = el('button', 'ghost-btn', '⭳ Export RAB (Excel)');
-  xlsx.title = 'REKAP, RAB, AHS per discipline, basic prices and volumes, linked by formulas';
-  xlsx.addEventListener('click', exportRabXlsx);
-  actions.appendChild(print);
-  actions.appendChild(xlsx);
-  actions.appendChild(csv);
-  body.appendChild(actions);
+  updateCostBar();
 }
 
 // The architect's own unit prices, by RAB line id. Kept by the host (SketchUp
@@ -2033,35 +2061,36 @@ window.diroryRabBook = function (book) {
   // With Pro (or this project's free BoQ) the live strip can open the breakdown.
   if (liveBook && !liveBook.pro && rabAccess && rabAccess.pro) {
     liveBook.pro = true;
-    byId('liveCostDetails').textContent = 'Breakdown';
+    byId('liveCostDetails').textContent = 'Open cost';
     byId('liveCostDetails').title = 'Open the itemised RAB';
   }
   if (!customPricesLoaded) {
     try { sketchup.loadPrices(); } catch (e) { /* an older host keeps no prices */ }
   }
-  byId('rabRun').disabled = false;
-  byId('rabRun').textContent = '💰 Estimate cost (RAB)';
+  resetRabRun();
   renderRab();
+  updateCostProject();
+  showStep(3);
 };
 
 // The estimate needs Dirory Pro: explain and offer the payment page.
 window.diroryRabUpgrade = function (url) {
-  byId('rabRun').disabled = false;
-  byId('rabRun').textContent = '💰 Estimate cost (RAB)';
+  resetRabRun();
+  showStep(3);
   const body = byId('rabBody');
   body.innerHTML = '';
   const box = el('div', 'consent-needed');
   box.appendChild(el('p', '', 'You have used your 2 free cost estimates (RAB / BoQ). More estimates are part of Dirory Pro: ' +
-    'Rp 99.000 a month, or Rp 49.000 for one project. Pay with QRIS, then click Estimate cost again.'));
-  const go = el('button', 'primary-btn', '⭐ Get Dirory Pro');
+    'Rp 99.000 a month, or Rp 49.000 for one project. Pay with QRIS, then click Price it again.'));
+  const go = DiroryIcon.set(el('button', 'primary-btn'), 'sparkle', 'Get Dirory Pro');
   go.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: url || 'https://dirory.com/pro' })));
   box.appendChild(go);
   body.appendChild(box);
 };
 
 window.diroryRabError = function (message) {
-  byId('rabRun').disabled = false;
-  byId('rabRun').textContent = '💰 Estimate cost (RAB)';
+  resetRabRun();
+  showStep(3);
   byId('rabBody').innerHTML = '';
   byId('rabBody').appendChild(el('p', 'usage-note', message));
 };
@@ -2072,6 +2101,7 @@ byId('rabRun').addEventListener('click', () => {
   // estimate per project (the same project again is not counted twice).
   if (rabBook && rabBook.region === region && rabAccess && rabAccess.pro) {
     renderRab();
+    showStep(3);
     return;
   }
   byId('rabRun').disabled = true;
@@ -2083,6 +2113,7 @@ byId('rabRun').addEventListener('click', () => {
   renderLive();
 }));
 byId('rabPhase').addEventListener('change', () => {
+  updateCostProject();
   sketchup.requestTakeoff(JSON.stringify({ phase: byId('rabPhase').value }));
 });
 
@@ -2135,7 +2166,7 @@ window.diroryLiveBook = function (book) {
   liveBook = forCity(book);
   byId('liveCostRegion').textContent = `· ${liveBook.name}`;
   const freeLeft = !book.pro && (book.free_this_model || (book.free_used || 0) < (book.free_limit || 0));
-  byId('liveCostDetails').textContent = book.pro ? 'Breakdown' : freeLeft ? 'Breakdown (free)' : 'Breakdown ⭐';
+  byId('liveCostDetails').textContent = book.pro ? 'Open cost' : freeLeft ? 'Open cost (free)' : 'Open cost (Pro)';
   byId('liveCostDetails').title = book.pro
     ? 'Open the itemised RAB'
     : freeLeft
@@ -2168,12 +2199,10 @@ function renderLive() {
 }
 
 byId('liveCostDetails').addEventListener('click', () => {
-  const usageTab = document.querySelector('.tab-usage');
-  if (usageTab && currentFilter !== 'usage') usageTab.click();
+  showSection('cost');
   if (liveTakeoff) window.diroryTakeoff(liveTakeoff);
   // Pro gets the itemised RAB; anyone else gets the upgrade offer (402).
   byId('rabRun').click();
-  byId('rabBox').scrollIntoView({ block: 'start' });
 });
 
 byId('liveCostClose').addEventListener('click', () => {
@@ -2189,6 +2218,217 @@ byId('rabLive').addEventListener('change', () => {
   if (on) startLive();
   else stopLive();
 });
+
+/* ------------------------------------------------------------------ */
+/* Sections (Library / Cost) and the Cost steps                        */
+/* ------------------------------------------------------------------ */
+
+let costStep = 1;
+let rabOnlyTodo = false;          // show only the lines that need a price
+const openSections = new Set();   // RAB sections the architect opened
+
+function showSection(name) {
+  currentSection = name === 'cost' ? 'cost' : 'library';
+  const cost = currentSection === 'cost';
+  document.querySelectorAll('.section-btn').forEach((b) => {
+    const on = b.dataset.section === currentSection;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.body.classList.toggle('in-cost', cost);
+  byId('cost').hidden = !cost;
+  ['controls', 'grid', 'empty', 'brandBanner', 'usage', 'quoteBar'].forEach((id) => {
+    if (cost) byId(id).hidden = true;
+  });
+  if (cost) {
+    byId('controls').hidden = true;
+    updateCostProject();
+    updateCostBar();
+  } else {
+    byId('controls').hidden = false;
+    render();
+  }
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.section-btn').forEach((b) => b.addEventListener('click', () => showSection(b.dataset.section)));
+
+function showStep(n) {
+  costStep = n;
+  document.querySelectorAll('.cost-step-btn').forEach((b) => {
+    const step = Number(b.dataset.step);
+    b.classList.toggle('active', step === n);
+    b.classList.toggle('done', step < n || (step === 1 && !!lastTakeoff) || (step === 2 && !!lastRab));
+    b.setAttribute('aria-selected', step === n ? 'true' : 'false');
+  });
+  [1, 2, 3].forEach((i) => { byId('costStep' + i).hidden = i !== n; });
+  if (n === 2 && !lastTakeoff) {
+    byId('takeoffSummary').innerHTML = '';
+    byId('takeoffSummary').appendChild(el('p', 'usage-note', 'Measure the model first: the button is at the bottom.'));
+  }
+  updateCostBar();
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.cost-step-btn').forEach((b) => b.addEventListener('click', () => showStep(Number(b.dataset.step))));
+
+function rupiahShort(n) {
+  const v = Number(n) || 0;
+  if (v >= 1e9) return 'Rp ' + (v / 1e9).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' M';
+  if (v >= 1e6) return 'Rp ' + (v / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' jt';
+  return rupiah(v);
+}
+
+// PPN as the Excel REKAP adds it: 12% on a DPP of 11/12 (PMK 131/2024).
+const PPN_RATE = 0.11;
+
+function resetRabRun() {
+  byId('rabRun').disabled = false;
+  DiroryIcon.set(byId('rabRun'), 'calculator', 'Price it');
+}
+
+// The bottom bar: the next thing to do, or the total and Export Excel.
+function updateCostBar() {
+  const priced = !!(lastRab && lastRab.lines && lastRab.lines.length && rabBook);
+  byId('takeoffRun').hidden = !!lastTakeoff;
+  byId('rabRun').hidden = !lastTakeoff || priced;
+  byId('costExport').hidden = !priced;
+  if (priced) {
+    byId('costBarLabel').textContent = `Incl. PPN 11% · ${rabBook.name}`;
+    byId('costBarTotal').textContent = rupiah(Math.round(lastRab.total * (1 + PPN_RATE)));
+  } else if (lastTakeoff) {
+    byId('costBarLabel').textContent = 'Quantities measured';
+    byId('costBarTotal').textContent = 'Next: price them';
+  } else {
+    byId('costBarLabel').textContent = 'No estimate yet';
+    byId('costBarTotal').textContent = 'Start by measuring';
+  }
+  byId('costMenuCsv').disabled = !priced;
+  byId('costMenuPrint').disabled = !priced;
+  byId('takeoffExport').disabled = !lastTakeoff;
+  byId('costMenuMeasure').disabled = !lastTakeoff;
+  const todo = priced ? lastRab.unpriced : 0;
+  byId('costStepBadge').hidden = !todo;
+  byId('costStepBadge').textContent = String(todo || '');
+  byId('rabFilters').hidden = !priced || !todo;
+  if (todo) DiroryIcon.set(byId('rabFilterTodo'), 'alert', `${todo} line${todo > 1 ? 's' : ''} need${todo > 1 ? '' : 's'} your price`);
+  if (!todo && rabOnlyTodo) rabOnlyTodo = false;
+  byId('rabFilterAll').classList.toggle('active', !rabOnlyTodo);
+  byId('rabFilterTodo').classList.toggle('active', rabOnlyTodo);
+  document.querySelectorAll('.cost-step-btn').forEach((b) => {
+    const step = Number(b.dataset.step);
+    b.classList.toggle('done', step !== costStep && ((step === 1 && !!lastTakeoff) || (step === 2 && priced)));
+  });
+}
+
+// Project, where its prices come from, which phase, and the account's access.
+function updateCostProject() {
+  byId('costProject').textContent = (lastTakeoff && lastTakeoff.project) || 'This model';
+  const city = selectedCity();
+  const where = [city ? city.name.replace(/^Kota Administrasi /, 'Kota ') : 'DKI Jakarta'];
+  const phase = byId('rabPhase');
+  if (!byId('rabPhaseField').hidden && phase.selectedIndex >= 0) {
+    where.push(phase.options[phase.selectedIndex].textContent.replace(/^Phase: /, ''));
+  }
+  byId('costWhere').textContent = where.join(' · ');
+  const badge = byId('costAccess');
+  if (rabAccess && rabAccess.pro) {
+    badge.hidden = false;
+    badge.className = 'cost-badge pro';
+    badge.textContent = 'Pro';
+  } else if (rabAccess && rabAccess.free_limit) {
+    const left = Math.max(0, rabAccess.free_limit - (rabAccess.free_used || 0));
+    badge.hidden = false;
+    badge.className = 'cost-badge';
+    badge.textContent = `${left} free left`;
+  } else {
+    badge.hidden = true;
+  }
+}
+
+// Step 2: the headline quantities, as cards.
+function renderTakeoffSummary(data) {
+  const box = byId('takeoffSummary');
+  box.innerHTML = '';
+  const totals = data.totals || {};
+  const count = (list) => (list || []).reduce((n, o) => n + (Number(o.count) || 0), 0);
+  const concrete = (data.structure || []).reduce((n, s) => n + (Number(s.concrete_m3) || 0), 0);
+  const cards = [
+    ['Walls', totals.wall, 'm²'],
+    ['Floors', totals.floor, 'm²'],
+    ['Ceilings', totals.ceiling, 'm²'],
+    ['Roof', totals.roof, 'm²'],
+    ['Doors and windows', count(data.openings), ''],
+    ['Concrete', concrete, 'm³'],
+    ['MEP items', (data.mep || []).length, ''],
+    ['To demolish', (data.demolition || []).length, 'items'],
+  ].filter((c) => Number(c[1]) > 0);
+  if (!cards.length) {
+    box.appendChild(el('p', 'usage-note', 'Nothing measured: draw walls and slabs as raw geometry or groups (SketchUp), or model walls, floors and roofs (Revit).'));
+    return;
+  }
+  cards.forEach(([label, value, unit]) => {
+    const card = el('div', 'qty-card');
+    card.appendChild(el('span', 'qty-label', label));
+    const v = Number(value);
+    card.appendChild(el('strong', 'qty-value', `${Number.isInteger(v) ? v : fmt2(v).replace(/\.00$/, '')}${unit ? ' ' + unit : ''}`));
+    box.appendChild(card);
+  });
+}
+
+// How Dirory reads the model's floors, roofs and walls (rab.js), so a wrong
+// guess - a roof type read as metal - is seen before pricing.
+function renderReadAs(box, data) {
+  const rab = window.DiroryRab;
+  if (!rab || !rab.floorKind) return;
+  const FLOOR = { tile: 'ceramic tile', granite: 'granite', homogeneous: 'homogeneous tile', parquet: 'timber / parquet', carpet: 'carpet', bare: 'bare concrete, no finish', other: 'your price' };
+  const ROOF = { tile: 'roof tile', metal: 'metal sheet', concrete: 'concrete deck (waterproofing)', other: 'your price' };
+  const items = [];
+  const seen = new Set();
+  (data.rows || []).forEach((r) => {
+    const key = r.element + '|' + r.material;
+    if (seen.has(key) || !(r.area_m2 > 0)) return;
+    seen.add(key);
+    if (r.element === 'floor') items.push(['Floor', r.material, FLOOR[rab.floorKind(r)]]);
+    else if (r.element === 'roof') items.push(['Roof', r.material, ROOF[rab.roofKind(r)]]);
+    else if (r.element === 'wall' && r.core !== 'concrete') {
+      const named = rab.wallCoreNamed(r);
+      items.push(['Wall', r.material, named ? (named === 'aac' ? 'lightweight block (AAC)' : 'red brick') : 'per Assumptions']);
+    }
+  });
+  if (!items.length) return;
+  const wrap = el('details', 'read-as');
+  wrap.open = true;
+  const head = el('summary', 'takeoff-element');
+  DiroryIcon.set(head, 'info', 'How Dirory reads your model');
+  wrap.appendChild(head);
+  const list = el('ul', 'read-as-list');
+  items.slice(0, 40).forEach(([kind, name, as]) => {
+    const li = el('li');
+    li.appendChild(el('span', 'read-as-name', `${kind}: ${name}`));
+    li.appendChild(el('span', 'read-as-value', as));
+    list.appendChild(li);
+  });
+  wrap.appendChild(list);
+  wrap.appendChild(el('p', 'usage-note', 'Wrong? Rename the type or material in the model (for example add "zincalum", "granit" or "hebel") and measure again.'));
+  box.appendChild(wrap);
+}
+
+byId('costExport').addEventListener('click', exportRabXlsx);
+byId('costMore').addEventListener('click', (event) => {
+  event.stopPropagation();
+  byId('costMenu').hidden = !byId('costMenu').hidden;
+});
+function closeCostMenu() { byId('costMenu').hidden = true; }
+document.addEventListener('click', (event) => {
+  if (!byId('costMenu').hidden && !byId('costMenu').contains(event.target)) closeCostMenu();
+});
+byId('costMenuMeasure').addEventListener('click', () => { closeCostMenu(); measure(); });
+byId('costMenuCsv').addEventListener('click', () => { closeCostMenu(); exportRabCsv(); });
+byId('costMenuPrint').addEventListener('click', () => { closeCostMenu(); printRab(); });
+byId('rabFilterAll').addEventListener('click', () => { rabOnlyTodo = false; renderRab(); });
+byId('rabFilterTodo').addEventListener('click', () => { rabOnlyTodo = true; renderRab(); });
+resetRabRun();
 
 /* ------------------------------------------------------------------ */
 /* Product info + Inspector                                            */
