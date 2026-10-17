@@ -981,6 +981,15 @@ button .ic { pointer-events: none; }
 .grid-heading .ic, .ghost-btn .ic, .quote-btn .ic { margin-right: 2px; }
 span[data-icon] > .ic { margin-right: 6px; }
 
+/* Account: rename */
+.acct-name { margin: 12px 0; }
+.acct-name-row { display: flex; gap: 6px; }
+.acct-name-row input { flex: 1; min-width: 0; padding: 7px 8px; border: 1px solid #d7d9e6; border-radius: 7px; font: inherit; font-size: 12.5px; }
+.acct-name-row input:focus { outline: none; border-color: var(--brand-light); box-shadow: 0 0 0 2px rgba(96, 115, 179, 0.25); }
+.acct-name-row .ghost-btn { flex: none; display: inline-flex; align-items: center; gap: 4px; }
+.acct-name-msg { min-height: 14px; font-size: 11px; color: #6b6b70; }
+#settingsUpdateMsg .ghost-btn { margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; }
+
 /* ================================================================== */
 /* Cost (RAB) section                                                  */
 /* ================================================================== */

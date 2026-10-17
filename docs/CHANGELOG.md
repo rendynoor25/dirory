@@ -3,7 +3,7 @@
 ## Unreleased (SketchUp + Revit) — four sections, and the BoQ in one click
 
 - **Four sections under the header, each an icon with its name:** Models
-  (wardrobe), Materials (paint roller), Quantifier (calculator) and BoQ
+  (water closet: sanitary is Dirory's core range), Materials (paint roller), Quantifier (calculator) and BoQ
   (scroll with a dollar sign, marked PRO). Names are always shown, not only
   on hover. Models and Materials keep All / Favourite.
 - **Quantifier:** what the model is made of. It measures on opening: quantity
@@ -14,8 +14,14 @@
   section with its subtotal, and **Export Excel** as the main button in the
   bottom bar: it measures and prices first when needed, then saves the
   workbook. Estimate, Print and RAB CSV are beside it.
-- Line icons (icons.js) replace the emoji everywhere in the panel. The
+- Line icons (icons.js) replace the emoji everywhere in the panel. The
   SketchUp panel opens at 400 x 640.
+- **Your name:** signed-in architects can change the name Dirory shows
+  (Account > Your name). It is saved on the server (profiles.full_name, via
+  the new `auth-device/profile`), so the web app shows it too.
+- **Settings in Revit** now shows the add-in's version and Check for updates
+  says whether a newer version exists, with a link to the download page.
+  The language choice is hidden in Revit, which has no translations yet.
 
 ## Unreleased (Revit + SketchUp) — RAB fixes from the Serpong renovation
 

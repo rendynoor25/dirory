@@ -1172,6 +1172,39 @@ window.diroryI18n = function (data) {
 function openSettings() {
   byId('settingsModal').hidden = false;
 }
+
+// The host's name and version for Settings (Revit sends it; SketchUp sends
+// it with its translations).
+window.diroryHostInfo = function (info) {
+  const version = (info && info.version) || '';
+  byId('settingsVersion').textContent = `Dirory for ${HOST_NAME} ${version}`.trim();
+};
+
+// The answer to Check for updates where the host cannot update itself in
+// place (Revit): say what is installed and, if newer, where to get it.
+window.diroryUpdateCheck = function (r) {
+  const msg = byId('settingsUpdateMsg');
+  msg.textContent = '';
+  if (!r || !r.ok) {
+    msg.textContent = 'Could not reach dirory.com. Check your internet connection and try again.';
+    return;
+  }
+  if (!r.newer) {
+    msg.textContent = `You have the latest version (${r.current}).`;
+    return;
+  }
+  msg.textContent = `Dirory ${r.latest} is available (you have ${r.current}). Download it, close ${HOST_NAME}, then run the installer.`;
+  const go = DiroryIcon.set(el('button', 'ghost-btn'), 'download', 'Open the download page');
+  go.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: r.url || 'https://dirory.com/download' })));
+  msg.appendChild(document.createElement('br'));
+  msg.appendChild(go);
+};
+
+// Revit has no translations yet: no language choice there.
+if (IS_REVIT) {
+  const languageRow = byId('languageSelect').closest('label');
+  if (languageRow) languageRow.hidden = true;
+}
 function closeSettings() {
   byId('settingsModal').hidden = true;
 }
@@ -1260,6 +1293,40 @@ byId('updateBtn').addEventListener('click', () => {
   byId('settingsUpdateMsg').textContent = t('update.downloading_unknown');
   sketchup.downloadUpdate();
 });
+// Rename: the server keeps it (the web app shows the same name).
+function saveName() {
+  const name = byId('acctName').value.replace(/\s+/g, ' ').trim();
+  if (!name || name.length > 80) {
+    byId('acctNameMsg').textContent = 'Enter a name of 1 to 80 characters.';
+    return;
+  }
+  if (name === (account.name || '')) {
+    byId('acctNameMsg').textContent = 'That is already your name.';
+    return;
+  }
+  byId('acctNameSave').disabled = true;
+  byId('acctNameMsg').textContent = 'Saving…';
+  sketchup.setName(JSON.stringify({ name: name }));
+}
+byId('acctNameSave').addEventListener('click', saveName);
+byId('acctName').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    saveName();
+  }
+});
+window.diroryNameSaved = function (r) {
+  byId('acctNameSave').disabled = false;
+  if (r && r.ok) {
+    account.name = r.name;
+    byId('acctName').value = r.name;
+    byId('acctNameMsg').textContent = 'Saved.';
+    updateAccountButton();
+  } else {
+    byId('acctNameMsg').textContent = (r && r.error) || 'Could not save the name.';
+  }
+};
+
 byId('settingsUpdate').addEventListener('click', () => {
   byId('settingsUpdateMsg').textContent = t('update.checking');
   sketchup.checkForUpdate();
@@ -1287,7 +1354,9 @@ window.diroryToast = function (data) {
 function openAccount() {
   byId('signInView').hidden = !!account.signedIn;
   byId('accountView').hidden = !account.signedIn;
-  byId('acctWho').textContent = account.signedIn ? `${account.name || ''}${account.name ? ' · ' : ''}${account.email}` : '';
+  byId('acctWho').textContent = account.signedIn ? account.email || '' : '';
+  byId('acctName').value = account.name || '';
+  byId('acctNameMsg').textContent = '';
   byId('shareUsage').checked = !!account.shareUsage;
   byId('shareProject').checked = !!account.shareProject;
   // The project-name switch is meaningless while anonymous reporting is off.

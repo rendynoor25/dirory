@@ -13,6 +13,9 @@
 //   POST /auth-device/revoke  (Authorization: Bearer <token>)
 //     -> { ok: true }
 //
+//   POST /auth-device/profile (Authorization: Bearer <token>)  { name }
+//     -> { name }   the architect's display name, changed from the plugin
+//
 // The plugin opens `verification_url` in the browser. The architect signs in on
 // the web app and approves the code; `poll` then issues the opaque token the
 // plugin stores. Only hashes are kept at rest (migration 0007).
@@ -23,6 +26,7 @@ import { corsHeaders, json } from "../_shared/cors.ts";
 import {
   bearerToken,
   randomToken,
+  resolvePluginToken,
   serviceClient,
   sha256Hex,
   userCode,
@@ -169,6 +173,34 @@ async function revoke(req: Request): Promise<Response> {
   return json({ ok: true });
 }
 
+// A display name: 1 to 80 characters once trimmed, no control characters,
+// inner whitespace collapsed. Pure, for tests.
+export function cleanName(input: unknown): string | null {
+  if (typeof input !== "string") return null;
+  const name = input.replace(/\s+/g, " ").trim();
+  if (name.length < 1 || name.length > 80) return null;
+  if (/[\u0000-\u001f\u007f<>]/.test(name)) return null;
+  return name;
+}
+
+// The signed-in architect renames themselves (profiles.full_name, the name
+// the web app shows too). Only their own profile, by their plugin token.
+async function profile(req: Request): Promise<Response> {
+  const who = await resolvePluginToken(bearerToken(req));
+  if (!who) return json({ error: "not signed in" }, 401);
+  let body: Record<string, unknown> = {};
+  try {
+    body = await req.json();
+  } catch {
+    return json({ error: "invalid body" }, 400);
+  }
+  const name = cleanName(body.name);
+  if (!name) return json({ error: "Enter a name of 1 to 80 characters." }, 422);
+  const { error } = await serviceClient().from("profiles").update({ full_name: name }).eq("id", who.profileId);
+  if (error) return json({ error: "could not save the name" }, 500);
+  return json({ name });
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
@@ -181,6 +213,8 @@ Deno.serve(async (req: Request) => {
       return poll(req);
     case "revoke":
       return revoke(req);
+    case "profile":
+      return profile(req);
     default:
       // Also accept the action in the body, so `/auth-device` alone works.
       return json({ error: "unknown action" }, 404);

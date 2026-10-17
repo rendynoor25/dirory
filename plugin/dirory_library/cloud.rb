@@ -584,6 +584,44 @@ module Dirory
         result
       end
 
+      # The signed-in architect renames themselves (profiles.full_name, the
+      # name the web app shows too). Answers the panel with
+      # window.diroryNameSaved({ ok, name, error }).
+      def self.set_name(dialog, name)
+        say = lambda do |value|
+          dialog && dialog.execute_script("window.diroryNameSaved && window.diroryNameSaved(#{value.to_json});")
+        end
+        clean = name.to_s.gsub(/\s+/, ' ').strip
+        if clean.empty? || clean.length > 80 || clean =~ /[\x00-\x1f\x7f<>]/
+          return say.call('ok' => false, 'error' => 'Enter a name of 1 to 80 characters.')
+        end
+        unless configured? && signed_in? && defined?(Sketchup::Http::Request)
+          return say.call('ok' => false, 'error' => 'Sign in first.')
+        end
+        request = new_request("#{api_base_url}/auth-device/profile", Sketchup::Http::POST)
+        request.headers = request_headers
+        request.body = { 'name' => clean }.to_json
+        request.start do |_req, response|
+          release_request(request)
+          safely do
+            code = response.status_code.to_i
+            if code == 200
+              saved = ((JSON.parse(response.body.to_s)['name'] rescue nil) || clean).to_s
+              write('account_name', saved)
+              Dirory::Library.push_account
+              say.call('ok' => true, 'name' => saved)
+            elsif code == 401
+              unauthorized!
+              say.call('ok' => false, 'error' => 'Your session has expired. Please sign in again.')
+            else
+              err = (JSON.parse(response.body.to_s)['error'] rescue nil) || "HTTP #{code}"
+              say.call('ok' => false, 'error' => "Could not save the name (#{err}).")
+            end
+          end
+        end
+        nil
+      end
+
       # --------------------------------------------------------------
       # A rejected token must heal itself
       #

@@ -252,6 +252,15 @@
       <div id="accountView" hidden>
         <h2 data-i18n="account.your_account">Your account</h2>
         <p id="acctWho" class="modal-lead"></p>
+        <!-- The name Dirory shows (the plugin, the web app, quote requests). -->
+        <label class="field acct-name">
+          <span class="field-label">Your name</span>
+          <span class="acct-name-row">
+            <input id="acctName" type="text" maxlength="80" autocomplete="name" placeholder="Budi Santoso">
+            <button id="acctNameSave" class="ghost-btn" data-icon="check">Save</button>
+          </span>
+          <span id="acctNameMsg" class="acct-name-msg" role="status"></span>
+        </label>
         <button id="acctSignOut" class="ghost-btn" data-i18n="account.sign_out">Sign out</button>
       </div>
 

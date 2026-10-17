@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Autodesk.Revit.UI;
 
@@ -96,6 +97,7 @@ namespace Dirory.Revit
                 case "ready":
                 case "rescan":
                     _ = LoadCatalog();
+                    if (name == "ready") _page.Call("diroryHostInfo", Json.Write(new { host = "revit", version = App.Version }));
                     if (name == "ready" && RevitUpdate.NewerAvailable)
                         Toast($"Dirory for Revit {RevitUpdate.Latest} is available (you have {App.Version}). Click Check for Updates on the Dirory tab.");
                     _page.Script("var h=document.getElementById('hint'); if(h) h.textContent='Click a material card, then click faces in the model to paint it (Esc to finish). Models load as Revit families where a .rfa is available.';");
@@ -106,6 +108,8 @@ namespace Dirory.Revit
                 case "signOut":
                     _ = SignOut();
                     break;
+                case "setName": _ = SetName(Json.Str(data, "name")); break;
+                case "checkForUpdate": _ = CheckUpdate(); break;
                 case "applyMaterial": _ = ApplyMaterial(data); break;
                 case "insertModel": _ = InsertModel(data); break;
                 case "requestTakeoff":
@@ -137,7 +141,6 @@ namespace Dirory.Revit
                 case "openPrivacy": Cloud.Open("https://dirory.com/privacy"); break;
                 case "toggleFavourite": case "searchMiss": case "setLanguage":
                 case "setShareUsage": case "setShareProject": case "setShareSearchMiss": case "consentSave":
-                case "checkForUpdate":
                     break; // nothing to do in Revit yet; no usage data is sent
                 default:
                     Toast(Unsupported(name));
@@ -189,6 +192,59 @@ namespace Dirory.Revit
             catch (Exception) { /* offline: the token still expires after 90 idle days */ }
             _cloud.Set("token", ""); _cloud.Set("name", ""); _cloud.Set("email", "");
             PushAccount();
+        }
+
+        /// Rename the signed-in architect (profiles.full_name; the web app shows
+        /// the same name). Answers the panel with diroryNameSaved.
+        private async Task SetName(string name)
+        {
+            void Say(object r) => _page.Call("diroryNameSaved", Json.Write(r));
+            name = Regex.Replace(name ?? "", @"\s+", " ").Trim();
+            if (name.Length < 1 || name.Length > 80 || Regex.IsMatch(name, @"[\u0000-\u001f\u007f<>]"))
+            {
+                Say(new { ok = false, error = "Enter a name of 1 to 80 characters." });
+                return;
+            }
+            if (!_cloud.SignedIn) { Say(new { ok = false, error = "Sign in first." }); return; }
+            try
+            {
+                var (code, body) = await _cloud.Send(HttpMethod.Post, "/auth-device/profile", new { name });
+                if (code == 200)
+                {
+                    string saved = Json.Str(Json.Read(body), "name");
+                    if (saved == "") saved = name;
+                    _cloud.Set("name", saved);
+                    PushAccount();
+                    Say(new { ok = true, name = saved });
+                }
+                else if (code == 401)
+                {
+                    _cloud.Set("token", "");
+                    PushAccount();
+                    Say(new { ok = false, error = "Your session has expired. Please sign in again." });
+                }
+                else
+                {
+                    string err = Json.Str(Json.Read(body), "error");
+                    Say(new { ok = false, error = $"Could not save the name ({(err == "" ? "HTTP " + code : err)})." });
+                }
+            }
+            catch (Exception e) { Say(new { ok = false, error = "Could not reach Dirory: " + e.Message }); }
+        }
+
+        /// Settings > Check for updates: Revit cannot replace the add-in while
+        /// it runs, so the panel says what is installed and where to get a newer one.
+        private async Task CheckUpdate()
+        {
+            await RevitUpdate.CheckAsync(quiet: true);
+            _page.Call("diroryUpdateCheck", Json.Write(new
+            {
+                ok = RevitUpdate.Checked,
+                latest = RevitUpdate.Latest,
+                current = App.Version,
+                newer = RevitUpdate.NewerAvailable,
+                url = "https://dirory.com/download",
+            }));
         }
 
         private async Task SignInStart()

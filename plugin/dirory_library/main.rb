@@ -1642,6 +1642,9 @@ module Dirory
           push_i18n
         end
         @dialog.add_action_callback('checkForUpdate') { |_ctx| Cloud.check_for_update(@dialog) }
+        @dialog.add_action_callback('setName') do |_ctx, payload|
+          Cloud.set_name(@dialog, parse_payload(payload)['name'])
+        end
         @dialog.add_action_callback('downloadUpdate') { |_ctx| Cloud.download_update(@dialog) }
         @dialog.add_action_callback('inspectSelection') { |_ctx| inspect_selection }
         @dialog.add_action_callback('openURL') do |_ctx, payload|
