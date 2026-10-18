@@ -434,7 +434,10 @@
    "phrase.You have the latest version ({current}).": "Anda sudah memakai versi terbaru ({current}).",
    "phrase.Dirory {latest} is available (you have {current}). Download it, close {host}, then run the installer.": "Dirory {latest} tersedia (Anda memakai {current}). Unduh, tutup {host}, lalu jalankan installer.",
    "hint.revit": "Klik kartu material, lalu klik bidang di model untuk mengecatnya (Esc untuk selesai). Model dimuat sebagai family Revit jika tersedia file .rfa.",
-   "phrase.Dirory for {host} {version}": "Dirory untuk {host} {version}"
+   "phrase.Dirory for {host} {version}": "Dirory untuk {host} {version}",
+   "phrase.Type a city or regency…": "Ketik kota atau kabupaten…",
+   "phrase.No match. Try the city or regency name.": "Tidak ditemukan. Coba nama kota atau kabupaten.",
+   "phrase.{area} is in {city}": "{area} ada di {city}"
   }
  }
 }

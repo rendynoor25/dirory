@@ -1165,6 +1165,7 @@ function refreshDynamicTexts() {
   if (!byId('rabRun').disabled) resetRabRun();
   const firstCity = byId('rabCity') && byId('rabCity').options[0];
   if (firstCity && !firstCity.value) firstCity.textContent = tx('DKI Jakarta (official Jakarta prices)');
+  if (window.diroryCityLabelRefresh) window.diroryCityLabelRefresh();
   if (lastTakeoff) window.diroryTakeoff(lastTakeoff);
   if (typeof renderRab === 'function') renderRab();
   updateCostProject();
@@ -1952,6 +1953,153 @@ function forCity(book) {
     updateCostProject();
   });
 })();
+/* Project location: type a few letters to find the city. Matches the name
+   without "Kota"/"Kabupaten", then any word of it, then the province, plus a
+   few well-known areas that are not a kabupaten/kota of their own. */
+const CITY_AREAS = [
+  ['Serpong', '3674'], ['BSD', '3674'], ['Pamulang', '3674'], ['Ciputat', '3674'],
+  ['Cikarang', '3216'], ['Cibinong', '3201'], ['Sentul', '3201'],
+  ['Kuta', '5103'], ['Seminyak', '5103'], ['Canggu', '5103'], ['Jimbaran', '5103'], ['Nusa Dua', '5103'],
+  ['Ubud', '5104'], ['Lembang', '3217'], ['Jatinangor', '3211'],
+];
+
+function cityLabel(c) {
+  return c.name.replace(/^Kota Administrasi /, 'Kota ');
+}
+
+function fold(text) {
+  return String(text || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// [{ code, label, meta, score }] best first; '' is DKI Jakarta's own book.
+function findCities(query) {
+  const q = fold(query);
+  const out = [];
+  const jakarta = { code: '', label: tx('DKI Jakarta (official Jakarta prices)'), meta: 'DKI Jakarta · IKK 114,5' };
+  if (!q || 'dki jakarta'.indexOf(q) >= 0 || q.indexOf('jakarta') === 0) out.push(Object.assign({ score: q ? 0 : -1 }, jakarta));
+  const cities = (IKK_DATA && IKK_DATA.cities) || [];
+  cities.forEach((c) => {
+    const full = fold(cityLabel(c));
+    const base = full.replace(/^(kota|kabupaten) /, '');
+    let score = -1;
+    if (!q) score = 5;
+    else if (base.indexOf(q) === 0) score = 0;
+    else if (full.indexOf(q) === 0) score = 1;
+    else if ((' ' + base).indexOf(' ' + q) >= 0) score = 2;
+    else if (full.indexOf(q) >= 0) score = 3;
+    else if (fold(c.province).indexOf(q) >= 0) score = 4;
+    if (score >= 0) {
+      out.push({ code: c.code, label: cityLabel(c), meta: `${c.province} · IKK ${String(c.ikk).replace('.', ',')}`, score: score, base: base });
+    }
+  });
+  if (q) {
+    CITY_AREAS.forEach(([area, code]) => {
+      if (fold(area).indexOf(q) !== 0) return;
+      const c = cities.find((x) => x.code === code);
+      if (!c) return;
+      out.push({ code: code, label: cityLabel(c), meta: tx('{area} is in {city}', { area: area, city: cityLabel(c) }), score: 0.5 });
+    });
+  }
+  // Best match first; among equals the shortest name (Bandung before Bandung Barat).
+  out.sort((a, b) => a.score - b.score || (a.base || '').length - (b.base || '').length || a.label.localeCompare(b.label));
+  const seen = new Set();
+  return out.filter((r) => {
+    const key = r.code + '|' + r.meta;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 60);
+}
+
+(function cityPicker() {
+  const input = byId('rabCitySearch');
+  const list = byId('rabCityList');
+  const select = byId('rabCity');
+  if (!input || !list || !select) return;
+  let results = [];
+  let active = 0;
+
+  const currentLabel = () => {
+    const city = selectedCity();
+    return city ? cityLabel(city) : tx('DKI Jakarta (official Jakarta prices)');
+  };
+  const show = (open) => {
+    list.hidden = !open;
+    input.setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+  const draw = () => {
+    list.innerHTML = '';
+    if (!results.length) {
+      list.appendChild(el('li', 'city-empty', tx('No match. Try the city or regency name.')));
+      return;
+    }
+    results.forEach((r, i) => {
+      const li = el('li', 'city-option' + (i === active ? ' active' : ''));
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', i === active ? 'true' : 'false');
+      li.appendChild(el('span', 'city-name', r.label));
+      li.appendChild(el('span', 'city-meta', r.meta));
+      // mousedown, not click: picks before the field loses focus.
+      li.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        choose(r);
+      });
+      list.appendChild(li);
+    });
+    const node = list.children[active];
+    if (node && node.scrollIntoView) node.scrollIntoView({ block: 'nearest' });
+  };
+  const search = () => {
+    results = findCities(input.value);
+    active = 0;
+    draw();
+    show(true);
+  };
+  function choose(r) {
+    if (select.value !== r.code) {
+      select.value = r.code;
+      select.dispatchEvent(new Event('change'));
+    }
+    input.value = currentLabel();
+    show(false);
+    input.blur();
+  }
+
+  input.addEventListener('focus', () => {
+    input.select();
+    results = findCities('');
+    active = Math.max(0, results.findIndex((r) => r.code === select.value));
+    draw();
+    show(true);
+  });
+  input.addEventListener('input', search);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (list.hidden) search();
+      active = Math.max(0, Math.min(results.length - 1, active + (e.key === 'ArrowDown' ? 1 : -1)));
+      draw();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (results[active]) choose(results[active]);
+    } else if (e.key === 'Escape') {
+      input.value = currentLabel();
+      show(false);
+      input.blur();
+    }
+  });
+  input.addEventListener('blur', () => {
+    show(false);
+    input.value = currentLabel();
+  });
+  select.addEventListener('change', () => { if (document.activeElement !== input) input.value = currentLabel(); });
+  input.value = currentLabel();
+  window.diroryCityLabelRefresh = () => {
+    input.placeholder = tx('Type a city or regency…');
+    if (document.activeElement !== input) input.value = currentLabel();
+  };
+})();
+
 let lastRab = null;
 const RAB_ELEMENT_LABELS = Object.assign({}, ELEMENT_LABELS, { opening: 'Doors & windows (kusen, pintu, jendela)' });
 

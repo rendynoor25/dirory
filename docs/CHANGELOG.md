@@ -1,5 +1,14 @@
 # Changelog
 
+## SketchUp 0.10.7 and Revit 0.1.12 (built, not released) — type to find the project location
+
+- Project location (prices) is a search field: type a few letters and the
+  matching kabupaten/kota appear (name, then any word of it, then province),
+  with province and IKK; arrow keys and Enter, or click. Well-known areas that
+  are not a kabupaten/kota of their own also work: Serpong, BSD, Pamulang,
+  Ciputat, Cikarang, Cibinong, Sentul, Kuta, Seminyak, Canggu, Jimbaran,
+  Nusa Dua, Ubud, Lembang, Jatinangor.
+
 ## SketchUp 0.10.6 and Revit 0.1.11 (built, not released) — Revit in Bahasa Indonesia
 
 - The translations moved to `ui/i18n.json`, read by both the SketchUp plugin

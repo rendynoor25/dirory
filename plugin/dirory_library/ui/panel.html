@@ -149,10 +149,18 @@
       <details id="boqSettings" class="assumptions" open>
         <summary><span data-icon="pin" data-tx>Location and assumptions</span><span id="boqSettingsHint" class="assumptions-hint"></span></summary>
         <div class="assumptions-body">
-          <label class="field">
+          <div class="field">
             <span class="field-label" data-tx>Project location (prices)</span>
-            <select id="rabCity" aria-label="Project location for prices"></select>
-          </label>
+            <!-- Type to find one of the 514 kabupaten/kota; the hidden select
+                 holds the value the rest of the panel reads. -->
+            <div class="city-picker">
+              <input id="rabCitySearch" type="text" autocomplete="off" spellcheck="false" role="combobox"
+                     aria-autocomplete="list" aria-expanded="false" aria-controls="rabCityList"
+                     aria-label="Project location for prices" placeholder="Type a city or regency…">
+              <ul id="rabCityList" class="city-list" role="listbox" hidden></ul>
+            </div>
+            <select id="rabCity" aria-hidden="true" tabindex="-1" hidden></select>
+          </div>
           <label class="field" id="rabPhaseField" hidden>
             <span class="field-label" data-tx>Revit phase to price</span>
             <select id="rabPhase" aria-label="Phase to price" title="New construction is counted, existing is not, demolished is priced as demolition"></select>
