@@ -31,9 +31,9 @@ export async function GET(request: Request) {
       // The most recent user-visible changes, newest first. Keep this short —
       // it is shown inside the plugin's update prompt.
       notes: [
-        "Cost estimate (RAB) with Jakarta prices, exported to Excel like a QS workbook.",
-        "Live cost of the model while you design.",
-        "You choose what is shared before anything is sent.",
+        "New panel: Models, Materials, Quantifier and BoQ, with clear icons.",
+        "BoQ: one click on Export Excel measures, prices and saves the RAB.",
+        "Floors, roofs and walls priced by their material; stairs and railings in Revit.",
       ],
     },
     { headers: { "Cache-Control": "public, max-age=300" } },

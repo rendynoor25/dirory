@@ -12,7 +12,7 @@ module Dirory
     unless file_loaded?(__FILE__)
       ext = SketchupExtension.new('Dirory', File.join(File.dirname(__FILE__), 'dirory_library', 'main.rb'))
       ext.description = 'Browse the Dirory product library inside SketchUp: search, insert models and paint materials from real Indonesian brands.'
-      ext.version     = '0.10.3'
+      ext.version     = '0.10.4'
       ext.creator     = 'Dirory'
       ext.copyright   = '2026'
       self.extension  = ext

@@ -5,11 +5,11 @@
  * never disagree about what "latest" means. Update this one value (and drop the
  * matching .rbz into apps/web/private/) when you cut a release.
  */
-export const PLUGIN_VERSION = "0.10.2";
+export const PLUGIN_VERSION = "0.10.4";
 export const PLUGIN_FILENAME = `DiroryLibrary-${PLUGIN_VERSION}.rbz`;
 
 /** Dirory for Revit (beta). Build with scripts/build-revit.ps1. */
-export const REVIT_VERSION = "0.1.7";
+export const REVIT_VERSION = "0.1.9";
 export const REVIT_FOR = "2024";
 export const REVIT_FILENAME = `DiroryRevit-${REVIT_FOR}-${REVIT_VERSION}.zip`;
 
