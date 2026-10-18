@@ -1,5 +1,13 @@
 # Changelog
 
+## SketchUp 0.10.4 (built, not released) — Settings and Account open again in SketchUp
+
+SketchUp 2021 draws the panel with Chrome 64, which ignores `inset` and flex
+`gap`. The Settings and Account windows used `inset: 0`, so they opened
+below the bottom of the panel, out of sight. They now use top/right/bottom/left,
+and the new layout gets margins where Chrome 64 has no `gap`. Checked in
+SketchUp 2021's own HtmlDialog: both windows open on screen.
+
 ## SketchUp 0.10.3 and Revit 0.1.8 (built, not released) — four sections, and the BoQ in one click
 
 - **Four sections under the header, each an icon with its name:** Models
