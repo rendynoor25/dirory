@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (SketchUp + Revit) — four sections, and the BoQ in one click
+## SketchUp 0.10.3 and Revit 0.1.8 (built, not released) — four sections, and the BoQ in one click
 
 - **Four sections under the header, each an icon with its name:** Models
   (water closet: sanitary is Dirory's core range), Materials (paint roller), Quantifier (calculator) and BoQ
