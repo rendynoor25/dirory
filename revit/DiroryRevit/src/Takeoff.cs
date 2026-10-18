@@ -188,18 +188,18 @@ namespace Dirory.Revit
 
             var notes = new List<string>
             {
-                "Measured from Revit elements: wall areas count both faces, openings are already deducted.",
-                perimeter > 0 ? "Skirting uses the perimeter of the placed rooms." : "Place rooms to get the skirting length.",
-                structure.Count > 0
+                Lang.T("Measured from Revit elements: wall areas count both faces, openings are already deducted."),
+                Lang.T(perimeter > 0 ? "Skirting uses the perimeter of the placed rooms." : "Place rooms to get the skirting length."),
+                Lang.T(structure.Count > 0
                     ? "Structure: concrete volumes from concrete materials; formwork from the vertical faces, plus soffits of beams and suspended slabs; rebar weight from modelled rebar, otherwise estimated per m3 of concrete."
-                    : "No structural members found: model foundations, columns, beams and slabs with concrete materials to price the structure.",
-                mep.Count > 0
+                    : "No structural members found: model foundations, columns, beams and slabs with concrete materials to price the structure."),
+                Lang.T(mep.Count > 0
                     ? "MEP: pipe lengths per system and size (fittings are included in the pipe rates), duct surface areas, and fixtures and devices counted per type."
-                    : "No MEP elements found.",
+                    : "No MEP elements found."),
                 ph.PhaseName != ""
-                    ? $"Phase \"{ph.PhaseName}\": new construction is priced, existing elements are not, and elements this phase demolishes are priced as demolition."
+                    ? Lang.T("Phase \"{phase}\": new construction is priced, existing elements are not, and elements this phase demolishes are priced as demolition.", "phase", ph.PhaseName)
                     : "",
-                "An estimate from the model: check it before a tender.",
+                Lang.T("An estimate from the model: check it before a tender."),
             };
             notes.RemoveAll(n => n == "");
             return new Dictionary<string, object>

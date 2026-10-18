@@ -97,10 +97,10 @@ namespace Dirory.Revit
                 case "ready":
                 case "rescan":
                     _ = LoadCatalog();
-                    if (name == "ready") _page.Call("diroryHostInfo", Json.Write(new { host = "revit", version = App.Version }));
+                    if (name == "ready") PushI18n();
                     if (name == "ready" && RevitUpdate.NewerAvailable)
-                        Toast($"Dirory for Revit {RevitUpdate.Latest} is available (you have {App.Version}). Click Check for Updates on the Dirory tab.");
-                    _page.Script("var h=document.getElementById('hint'); if(h) h.textContent='Click a material card, then click faces in the model to paint it (Esc to finish). Models load as Revit families where a .rfa is available.';");
+                        Toast(Lang.T("Dirory for Revit {latest} is available (you have {current}). Click Check for Updates on the Dirory tab.",
+                            "latest", RevitUpdate.Latest, "current", App.Version));
                     break;
                 case "signIn": _ = SignInStart(); break;
                 case "openSignInPage": Cloud.Open(Json.Str(_pending, "verification_url_complete") is var u && u != "" ? u : Json.Str(_pending, "verification_url")); break;
@@ -109,6 +109,11 @@ namespace Dirory.Revit
                     _ = SignOut();
                     break;
                 case "setName": _ = SetName(Json.Str(data, "name")); break;
+                case "setLanguage":
+                    Lang.Set(Json.Str(data, "language"));
+                    _cloud.Set("language", Lang.Current);
+                    PushI18n();
+                    break;
                 case "checkForUpdate": _ = CheckUpdate(); break;
                 case "applyMaterial": _ = ApplyMaterial(data); break;
                 case "insertModel": _ = InsertModel(data); break;
@@ -116,7 +121,7 @@ namespace Dirory.Revit
                     App.Ops.Run(app =>
                     {
                         var doc = app.ActiveUIDocument?.Document;
-                        if (doc == null) { Toast("Open a Revit project first."); return; }
+                        if (doc == null) { Toast(Lang.T("Open a Revit project first.")); return; }
                         if (data.ContainsKey("phase")) _phase = Json.Str(data, "phase");
                         _lastTakeoff = Takeoff.Run(doc, _phase);
                         _page.Call("diroryTakeoff", Json.Write(_lastTakeoff));
@@ -139,7 +144,7 @@ namespace Dirory.Revit
                 case "saveBinary": SaveBinary(Json.Str(data, "title"), Json.Str(data, "filename"), Json.Str(data, "base64")); break;
                 case "openURL": Cloud.Open(Json.Str(data, "url")); break;
                 case "openPrivacy": Cloud.Open("https://dirory.com/privacy"); break;
-                case "toggleFavourite": case "searchMiss": case "setLanguage":
+                case "toggleFavourite": case "searchMiss":
                 case "setShareUsage": case "setShareProject": case "setShareSearchMiss": case "consentSave":
                     break; // nothing to do in Revit yet; no usage data is sent
                 default:
@@ -155,13 +160,13 @@ namespace Dirory.Revit
             {
                 case "exportReport":
                 case "printSchedule":
-                    return "The product usage report is in SketchUp only for now. For the BoQ, click Estimate cost (RAB), then Export RAB (Excel) or Print RAB below the table.";
+                    return Lang.T("The product usage report is in SketchUp only for now. For the BoQ, open BoQ and click Export Excel.");
                 case "requestQuote":
-                    return "Quote requests are sent from SketchUp for now.";
+                    return Lang.T("Quote requests are sent from SketchUp for now.");
                 case "downloadUpdate":
-                    return "To update Dirory for Revit, use Check for Updates on the Dirory tab.";
+                    return Lang.T("To update Dirory for Revit, use Check for Updates on the Dirory tab.");
                 default:
-                    return $"This is not available in the Revit add-in yet ({name}).";
+                    return Lang.T("This is not available in the Revit add-in yet ({name}).", "name", name);
             }
         }
 
@@ -202,10 +207,10 @@ namespace Dirory.Revit
             name = Regex.Replace(name ?? "", @"\s+", " ").Trim();
             if (name.Length < 1 || name.Length > 80 || Regex.IsMatch(name, @"[\u0000-\u001f\u007f<>]"))
             {
-                Say(new { ok = false, error = "Enter a name of 1 to 80 characters." });
+                Say(new { ok = false, error = Lang.T("Enter a name of 1 to 80 characters.") });
                 return;
             }
-            if (!_cloud.SignedIn) { Say(new { ok = false, error = "Sign in first." }); return; }
+            if (!_cloud.SignedIn) { Say(new { ok = false, error = Lang.T("Sign in first.") }); return; }
             try
             {
                 var (code, body) = await _cloud.Send(HttpMethod.Post, "/auth-device/profile", new { name });
@@ -221,15 +226,15 @@ namespace Dirory.Revit
                 {
                     _cloud.Set("token", "");
                     PushAccount();
-                    Say(new { ok = false, error = "Your session has expired. Please sign in again." });
+                    Say(new { ok = false, error = Lang.T("Your session has expired. Please sign in again.") });
                 }
                 else
                 {
                     string err = Json.Str(Json.Read(body), "error");
-                    Say(new { ok = false, error = $"Could not save the name ({(err == "" ? "HTTP " + code : err)})." });
+                    Say(new { ok = false, error = Lang.T("Could not save the name ({error}).", "error", err == "" ? "HTTP " + code : err) });
                 }
             }
-            catch (Exception e) { Say(new { ok = false, error = "Could not reach Dirory: " + e.Message }); }
+            catch (Exception e) { Say(new { ok = false, error = Lang.T("Could not reach Dirory: {error}", "error", e.Message) }); }
         }
 
         /// Settings > Check for updates: Revit cannot replace the add-in while
@@ -247,6 +252,20 @@ namespace Dirory.Revit
             }));
         }
 
+        /// The panel's language: translations, the language choice, and the
+        /// add-in's name and version for Settings.
+        private void PushI18n()
+        {
+            _page.Call("diroryI18n", Json.Write(new
+            {
+                strings = Lang.Dictionary(),
+                languages = Lang.Supported,
+                language = Lang.Current,
+                version = App.Version,
+            }));
+            _page.Call("diroryHostInfo", Json.Write(new { host = "revit", version = App.Version }));
+        }
+
         private async Task SignInStart()
         {
             var (code, body) = await _cloud.Send(HttpMethod.Post, "/auth-device/start",
@@ -254,7 +273,7 @@ namespace Dirory.Revit
             var d = Json.Read(body);
             if (code < 200 || code >= 300 || Json.Str(d, "device_code") == "")
             {
-                PushAccount($"Could not start sign-in (HTTP {code}). Please try again.");
+                PushAccount(Lang.T("Could not start sign-in (HTTP {code}). Please try again.", "code", code));
                 return;
             }
             _pending = d;
@@ -284,7 +303,7 @@ namespace Dirory.Revit
                 if (status == "expired" || status == "denied")
                 {
                     _pending = null;
-                    PushAccount("Sign-in was not completed. Please try again.");
+                    PushAccount(Lang.T("Sign-in was not completed. Please try again."));
                     return;
                 }
             }
@@ -302,7 +321,7 @@ namespace Dirory.Revit
             }
             if (code < 200 || code >= 300)
             {
-                _page.Call("diroryError", Json.Write($"Could not load the Dirory catalogue (HTTP {code})."));
+                _page.Call("diroryError", Json.Write(Lang.T("Could not load the Dirory catalogue (HTTP {code}).", "code", code)));
                 return;
             }
             var data = Json.Read(body);
@@ -322,15 +341,15 @@ namespace Dirory.Revit
                 ["recent"] = new string[0],
             }));
             int models = usable.Count(i => Json.Str(i, "type") != "material");
-            if (models == 0) Toast("Materials are ready. Revit families (.rfa) for Dirory products are coming soon.");
+            if (models == 0) Toast(Lang.T("Materials are ready. Revit families (.rfa) for Dirory products are coming soon."));
         }
 
         private async Task ApplyMaterial(Dictionary<string, object> d)
         {
             if (!_cloud.SignedIn) { _page.Call("diroryNeedSignIn", Json.Write(new { action = "material" })); return; }
             string assetId = Json.Str(d, "asset_id");
-            if (assetId == "") { Toast("This material is not available from the cloud."); return; }
-            Toast("Downloading " + Json.Str(d, "name") + "…");
+            if (assetId == "") { Toast(Lang.T("This material is not available from the cloud.")); return; }
+            Toast(Lang.T("Downloading {name}…", "name", Json.Str(d, "name")));
             string path;
             try { path = await _cloud.Download(assetId, Json.Str(d, "version")); }
             catch (UnauthorizedAccessException e) { _cloud.Set("token", ""); PushAccount(); Toast(e.Message); return; }
@@ -344,7 +363,7 @@ namespace Dirory.Revit
             App.Ops.Run(app =>
             {
                 var uidoc = app.ActiveUIDocument;
-                if (uidoc == null) { Toast("Open a Revit project first."); return; }
+                if (uidoc == null) { Toast(Lang.T("Open a Revit project first.")); return; }
                 var id = RevitOps.EnsureMaterial(uidoc.Document, app.Application, label, path, w, h);
                 int n = RevitOps.PaintLoop(uidoc, id, label);
                 if (n > 0) Toast($"Painted {n} face(s) with {label}.");
@@ -358,19 +377,19 @@ namespace Dirory.Revit
             bool family = Json.Str(d, "rfa_path") != "" || Json.Str(d, "path").EndsWith(".rfa", StringComparison.OrdinalIgnoreCase);
             if (!family)
             {
-                Toast("This product has no Revit family (.rfa) yet.");
+                Toast(Lang.T("This product has no Revit family (.rfa) yet."));
                 return;
             }
             if (!_cloud.SignedIn) { _page.Call("diroryNeedSignIn", Json.Write(new { action = "load" })); return; }
-            Toast("Downloading " + Json.Str(d, "name") + "…");
+            Toast(Lang.T("Downloading {name}…", "name", Json.Str(d, "name")));
             string path;
             try { path = await _cloud.Download(Json.Str(d, "asset_id"), Json.Str(d, "version"), Json.Str(d, "rfa_path") != "" ? "rfa" : ""); }
             catch (UnauthorizedAccessException e) { _cloud.Set("token", ""); PushAccount(); Toast(e.Message); return; }
-            catch (Exception e) { Toast("Could not download the family: " + e.Message); return; }
+            catch (Exception e) { Toast(Lang.T("Could not download the family: {error}", "error", e.Message)); return; }
             App.Ops.Run(app =>
             {
                 var uidoc = app.ActiveUIDocument;
-                if (uidoc == null) { Toast("Open a Revit project first."); return; }
+                if (uidoc == null) { Toast(Lang.T("Open a Revit project first.")); return; }
                 RevitOps.LoadAndPlace(uidoc, path);
             });
         }
@@ -384,7 +403,7 @@ namespace Dirory.Revit
             if (!_cloud.SignedIn)
             {
                 if (live) _page.Call("diroryLiveBook", "null");
-                else _page.Call("diroryRabError", Json.Write("Sign in to estimate costs."));
+                else _page.Call("diroryRabError", Json.Write(Lang.T("Sign in to estimate costs.")));
                 return;
             }
             // A project pass binds to one project: only a hash of its id is sent.
@@ -400,8 +419,8 @@ namespace Dirory.Revit
             if (live) { _page.Call("diroryLiveBook", code == 200 ? body : "null"); return; }
             if (code == 200) _page.Call("diroryRabBook", body);
             else if (code == 402) _page.Call("diroryRabUpgrade", Json.Write(Json.Str(Json.Read(body), "upgrade_url")));
-            else if (code == 401) { _cloud.Set("token", ""); PushAccount(); _page.Call("diroryRabError", Json.Write("Your session has expired. Please sign in again.")); }
-            else _page.Call("diroryRabError", Json.Write($"Could not load the {region} price book (HTTP {code})."));
+            else if (code == 401) { _cloud.Set("token", ""); PushAccount(); _page.Call("diroryRabError", Json.Write(Lang.T("Your session has expired. Please sign in again."))); }
+            else _page.Call("diroryRabError", Json.Write(Lang.T("Could not load the {region} price book (HTTP {code}).", "region", region, "code", code)));
         }
 
         // ------------------------------------------------------------ files
@@ -424,7 +443,7 @@ namespace Dirory.Revit
 
         private void ExportTakeoff()
         {
-            if (_lastTakeoff == null) { Toast("Measure the model first."); return; }
+            if (_lastTakeoff == null) { Toast(Lang.T("Measure the model first.")); return; }
             var sb = new StringBuilder("Element,Material,Unit,Quantity\r\n");
             foreach (Dictionary<string, object> r in (IEnumerable<object>)_lastTakeoff["rows"])
                 sb.Append($"{r["element"]},\"{Json.Str(r, "material").Replace("\"", "\"\"")}\",m2,{Json.Str(r, "area_m2")}\r\n");
@@ -459,7 +478,7 @@ namespace Dirory.Revit
         {
             byte[] bytes;
             try { bytes = Convert.FromBase64String(base64 ?? ""); }
-            catch (FormatException) { Toast("Dirory could not read the file to save."); return; }
+            catch (FormatException) { Toast(Lang.T("Dirory could not read the file to save.")); return; }
             _page.Dispatcher.BeginInvoke(new Action(() =>
             {
                 using (var dlg = new System.Windows.Forms.SaveFileDialog { Title = title, FileName = filename })
@@ -470,9 +489,9 @@ namespace Dirory.Revit
                     try
                     {
                         File.WriteAllBytes(dlg.FileName, bytes);
-                        Toast("Saved to " + dlg.FileName);
+                        Toast(Lang.T("Saved to {path}", "path", dlg.FileName));
                     }
-                    catch (Exception e) { Toast("Dirory could not save the file: " + e.Message); }
+                    catch (Exception e) { Toast(Lang.T("Dirory could not save the file: {error}", "error", e.Message)); }
                 }
             }));
         }
@@ -487,7 +506,7 @@ namespace Dirory.Revit
                     if (ext != "") dlg.Filter = $"{ext.TrimStart('.').ToUpper()} files|*{ext}|All files|*.*";
                     if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     File.WriteAllText(dlg.FileName, content ?? "", new UTF8Encoding(true));
-                    Toast("Saved to " + dlg.FileName);
+                    Toast(Lang.T("Saved to {path}", "path", dlg.FileName));
                 }
             }));
         }

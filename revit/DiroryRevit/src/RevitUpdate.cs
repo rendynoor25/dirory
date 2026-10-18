@@ -43,21 +43,21 @@ namespace Dirory.Revit
             var dlg = new TaskDialog("Dirory for Revit") { MainInstruction = $"Dirory for Revit {App.Version}" };
             if (!Checked)
             {
-                dlg.MainContent = "Could not reach dirory.com to check for updates. Check your internet connection and try again.";
+                dlg.MainContent = Lang.T("Could not reach dirory.com to check for updates. Check your internet connection and try again.");
                 dlg.CommonButtons = TaskDialogCommonButtons.Close;
                 dlg.Show();
                 return;
             }
             if (!NewerAvailable)
             {
-                dlg.MainContent = $"You have the latest version ({App.Version}).";
+                dlg.MainContent = Lang.T("You have the latest version ({version}).", "version", App.Version);
                 dlg.CommonButtons = TaskDialogCommonButtons.Close;
                 dlg.Show();
                 return;
             }
-            dlg.MainInstruction = $"Dirory for Revit {Latest} is available";
-            dlg.MainContent = $"You have {App.Version}. To update: download it, close Revit, extract the .zip and run Install-Dirory.cmd. Your sign-in and settings are kept.";
-            dlg.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, "Open the download page", "dirory.com/download (choose Revit)");
+            dlg.MainInstruction = Lang.T("Dirory for Revit {version} is available", "version", Latest);
+            dlg.MainContent = Lang.T("You have {current}. To update: download it, close Revit, extract the .zip and run Install-Dirory.cmd. Your sign-in and settings are kept.", "current", App.Version);
+            dlg.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, Lang.T("Open the download page"), Lang.T("dirory.com/download (choose Revit)"));
             dlg.CommonButtons = TaskDialogCommonButtons.Close;
             if (dlg.Show() == TaskDialogResult.CommandLink1) Cloud.Open(DownloadPage);
         }

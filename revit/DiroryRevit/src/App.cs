@@ -19,7 +19,7 @@ namespace Dirory.Revit
 {
     public class App : IExternalApplication
     {
-        public const string Version = "0.1.10";
+        public const string Version = "0.1.11";
         public static readonly DockablePaneId PaneId = new DockablePaneId(new Guid("6E3B2D3A-6A0E-4C55-9C8E-2B1F7A5D9E41"));
 
         public static PanelPage Panel { get; private set; }
@@ -42,23 +42,24 @@ namespace Dirory.Revit
                     if (e.PreviousActiveView?.Document != e.CurrentActiveView?.Document) Panel.Bridge.MarkChanged();
                 };
 
+                Lang.Init();
                 const string tab = "Dirory";
                 try { application.CreateRibbonTab(tab); } catch (Autodesk.Revit.Exceptions.ArgumentException) { /* exists */ }
                 RibbonPanel panel = application.CreateRibbonPanel(tab, "Dirory");
                 var button = new PushButtonData(
-                    "DiroryShowLibrary", "Dirory\nLibrary",
+                    "DiroryShowLibrary", Lang.T("Dirory\nLibrary"),
                     Assembly.GetExecutingAssembly().Location, typeof(ShowPaneCommand).FullName)
                 {
-                    ToolTip = "Open the Dirory panel: Indonesian building products, materials and the RAB cost estimate.",
+                    ToolTip = Lang.T("Open the Dirory panel: Indonesian building products, materials and the RAB cost estimate."),
                     LargeImage = Icon("dirory32.png"),
                     Image = Icon("dirory16.png"),
                 };
                 panel.AddItem(button);
                 var update = new PushButtonData(
-                    "DiroryCheckUpdate", "Check for\nUpdates",
+                    "DiroryCheckUpdate", Lang.T("Check for\nUpdates"),
                     Assembly.GetExecutingAssembly().Location, typeof(CheckUpdateCommand).FullName)
                 {
-                    ToolTip = $"Dirory for Revit {Version}. Checks dirory.com for a newer version.",
+                    ToolTip = Lang.T("Dirory for Revit {version}. Checks dirory.com for a newer version.", "version", Version),
                     LargeImage = Icon("update32.png"),
                     Image = Icon("update16.png"),
                 };
@@ -70,7 +71,7 @@ namespace Dirory.Revit
             }
             catch (Exception e)
             {
-                TaskDialog.Show("Dirory", "Dirory could not start:\n" + e.Message);
+                TaskDialog.Show("Dirory", Lang.T("Dirory could not start:") + "\n" + e.Message);
                 return Result.Failed;
             }
         }

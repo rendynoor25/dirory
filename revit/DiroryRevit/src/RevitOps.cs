@@ -122,8 +122,9 @@ namespace Dirory.Revit
 
             Log($"material \"{mat.Name}\" texture \"{texturePath}\": {problem ?? "ok"}");
             if (problem != null)
-                App.Panel.Bridge.Toast($"Dirory created \"{mat.Name}\" but could not attach its texture ({problem}). " +
-                                       "The colour and tile pattern are set. Details: %LOCALAPPDATA%\\Dirory\\revit.log");
+                App.Panel.Bridge.Toast(Lang.T("Dirory created \"{material}\" but could not attach its texture ({problem}). " +
+                                              "The colour and tile pattern are set. Details: %LOCALAPPDATA%\\Dirory\\revit.log",
+                                              "material", mat.Name, "problem", problem));
         }
 
         /// True when the material's appearance has an image in its Image slot.
@@ -290,7 +291,7 @@ namespace Dirory.Revit
                     catch
                     {
                         t.RollBack();
-                        TaskDialog.Show("Dirory", "This face cannot be painted. Try a wall, floor, ceiling or roof face.");
+                        TaskDialog.Show("Dirory", Lang.T("This face cannot be painted. Try a wall, floor, ceiling or roof face."));
                     }
                 }
             }
@@ -318,7 +319,7 @@ namespace Dirory.Revit
                 if (family == null)
                 {
                     t.RollBack();
-                    throw new Exception("Revit could not load this family.");
+                    throw new Exception(Lang.T("Revit could not load this family."));
                 }
                 var symbol = (FamilySymbol)doc.GetElement(family.GetFamilySymbolIds().First());
                 if (!symbol.IsActive) symbol.Activate();

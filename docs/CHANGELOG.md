@@ -1,5 +1,15 @@
 # Changelog
 
+## SketchUp 0.10.6 and Revit 0.1.11 (built, not released) — Revit in Bahasa Indonesia
+
+- The translations moved to `ui/i18n.json`, read by both the SketchUp plugin
+  (i18n.rb) and the Revit add-in (new Lang.cs), so both speak the same Indonesian.
+- Revit: Settings has the language choice (saved in revit.json; the first time it
+  follows Windows). The whole panel switches, and so do the add-in's own messages,
+  the quantity notes, the Check for Updates dialog and (after a restart) the
+  ribbon buttons.
+- The library hint is translated in both apps (it never was).
+
 ## SketchUp 0.10.5 and Revit 0.1.10 (built, not released) — Quantifier and BoQ in Bahasa Indonesia
 
 - Everything in Quantifier and BoQ follows the language setting: labels, buttons,

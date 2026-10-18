@@ -1220,7 +1220,7 @@ function openSettings() {
 // it with its translations).
 window.diroryHostInfo = function (info) {
   const version = (info && info.version) || '';
-  byId('settingsVersion').textContent = `Dirory for ${HOST_NAME} ${version}`.trim();
+  byId('settingsVersion').textContent = tx('Dirory for {host} {version}', { host: HOST_NAME, version: version }).trim();
 };
 
 // The answer to Check for updates where the host cannot update itself in
@@ -1229,24 +1229,26 @@ window.diroryUpdateCheck = function (r) {
   const msg = byId('settingsUpdateMsg');
   msg.textContent = '';
   if (!r || !r.ok) {
-    msg.textContent = 'Could not reach dirory.com. Check your internet connection and try again.';
+    msg.textContent = tx('Could not reach dirory.com. Check your internet connection and try again.');
     return;
   }
   if (!r.newer) {
-    msg.textContent = `You have the latest version (${r.current}).`;
+    msg.textContent = tx('You have the latest version ({current}).', { current: r.current });
     return;
   }
-  msg.textContent = `Dirory ${r.latest} is available (you have ${r.current}). Download it, close ${HOST_NAME}, then run the installer.`;
-  const go = DiroryIcon.set(el('button', 'ghost-btn'), 'download', 'Open the download page');
+  msg.textContent = tx('Dirory {latest} is available (you have {current}). Download it, close {host}, then run the installer.',
+    { latest: r.latest, current: r.current, host: HOST_NAME });
+  const go = DiroryIcon.set(el('button', 'ghost-btn'), 'download', tx('Open the download page'));
   go.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: r.url || 'https://dirory.com/download' })));
   msg.appendChild(document.createElement('br'));
   msg.appendChild(go);
 };
 
-// Revit has no translations yet: no language choice there.
+// Revit paints with a click per face and loads families: its own hint.
 if (IS_REVIT) {
-  const languageRow = byId('languageSelect').closest('label');
-  if (languageRow) languageRow.hidden = true;
+  byId('hint').setAttribute('data-i18n', 'hint.revit');
+  byId('hint').textContent = 'Click a material card, then click faces in the model to paint it (Esc to finish). ' +
+    'Models load as Revit families where a .rfa is available.';
 }
 function closeSettings() {
   byId('settingsModal').hidden = true;
@@ -1876,7 +1878,7 @@ window.diroryTakeoff = function (data) {
   if (Array.isArray(data.notes) && data.floor_perimeter_m > 0) {
     notes.unshift(tx('Floor perimeter (for skirting): {m} m¹.', { m: fmt2(data.floor_perimeter_m) }));
   }
-  body.appendChild(el('p', 'usage-note', notes.join(' ')));
+  body.appendChild(el('p', 'usage-note', notes.map((n) => tx(n)).join(' ')));
 };
 
 let afterMeasure = null;   // what to do once the requested takeoff arrives
