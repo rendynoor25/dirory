@@ -977,7 +977,7 @@ function updateQuoteButton() {
   const btn = document.getElementById('quoteBtn');
   const n = quoteBrands.size;
   btn.disabled = n === 0;
-  DiroryIcon.set(btn, 'cart', n === 0 ? 'Ask for a Quote' : `Ask for a Quote (${n} brand${n > 1 ? 's' : ''})`);
+  DiroryIcon.set(btn, 'cart', n === 0 ? tx('Ask for a Quote') : tx(n > 1 ? 'Ask for a Quote ({n} brands)' : 'Ask for a Quote ({n} brand)', { n: n }));
 }
 
 // Brands shown in the Usage tab (unused brands are dropped when "Hide unused" is on).
@@ -989,7 +989,7 @@ function visibleGroups(data) {
 function updateToggleAll(groups) {
   const btn = document.getElementById('usageToggleAll');
   const allFolded = groups.length > 0 && groups.every((g) => collapsedBrands.has(g.brand));
-  DiroryIcon.set(btn, allFolded ? 'chevronDown' : 'chevronRight', allFolded ? 'Expand all' : 'Collapse all');
+  DiroryIcon.set(btn, allFolded ? 'chevronDown' : 'chevronRight', tx(allFolded ? 'Expand all' : 'Collapse all'));
   btn.disabled = groups.length === 0;
 }
 
@@ -1073,7 +1073,7 @@ window.diroryReport = function (data) {
     const models = hideUnused ? g.models.filter((r) => !r.zero) : g.models;
     const materials = hideUnused ? g.materials.filter((r) => !r.zero) : g.materials;
     if (models.length) {
-      body.appendChild(buildTable(['Models', 'Qty'], models, (r) => [String(r.count)]));
+      body.appendChild(buildTable(['Models', tx('Qty')], models, (r) => [String(r.count)]));
     }
     if (materials.length) {
       body.appendChild(
@@ -1131,7 +1131,49 @@ function t(key, vars) {
   return text;
 }
 
+// A phrase in the panel's language: i18n.rb holds 'phrase.<English>' for each
+// language other than English; anything missing stays English. {name} slots
+// are filled from vars.
+function tx(en, vars) {
+  let text = (typeof i18n !== 'undefined' && i18n['phrase.' + en]) || en;
+  if (vars) Object.keys(vars).forEach((k) => { text = text.split('{' + k + '}').join(String(vars[k])); });
+  return text;
+}
+
+// Static text marked data-tx in panel.html (the English is kept to translate
+// again after a language change); an icon in the element stays.
+function translateStatic() {
+  document.querySelectorAll('[data-tx]').forEach((node) => {
+    if (node.dataset.en == null) node.dataset.en = node.textContent.replace(/\s+/g, ' ').trim();
+    const text = tx(node.dataset.en);
+    const icon = node.getAttribute('data-icon');
+    if (icon) DiroryIcon.set(node, icon, text);
+    else node.textContent = text;
+  });
+  document.querySelectorAll('[data-tx-title]').forEach((node) => {
+    if (node.dataset.enTitle == null) node.dataset.enTitle = node.getAttribute('title') || '';
+    node.setAttribute('title', tx(node.dataset.enTitle));
+  });
+}
+
+// Texts the code sets, in the current language.
+function refreshDynamicTexts() {
+  if (!byId('takeoffRun').disabled) {
+    DiroryIcon.set(byId('takeoffRun'), lastTakeoff ? 'refresh' : 'ruler', tx(lastTakeoff ? 'Measure again' : 'Measure model'));
+  }
+  if (!lastTakeoff) byId('qtyStatus').textContent = tx('Not measured yet');
+  if (!byId('rabRun').disabled) resetRabRun();
+  const firstCity = byId('rabCity') && byId('rabCity').options[0];
+  if (firstCity && !firstCity.value) firstCity.textContent = tx('DKI Jakarta (official Jakarta prices)');
+  if (lastTakeoff) window.diroryTakeoff(lastTakeoff);
+  if (typeof renderRab === 'function') renderRab();
+  updateCostProject();
+  updateCostBar();
+  updateQuoteButton();
+}
+
 function applyTranslations() {
+  translateStatic();
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     el.textContent = t(el.getAttribute('data-i18n'));
   });
@@ -1142,6 +1184,7 @@ function applyTranslations() {
     el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
   });
   render();
+  refreshDynamicTexts();
 }
 
 window.diroryI18n = function (data) {
@@ -1297,15 +1340,15 @@ byId('updateBtn').addEventListener('click', () => {
 function saveName() {
   const name = byId('acctName').value.replace(/\s+/g, ' ').trim();
   if (!name || name.length > 80) {
-    byId('acctNameMsg').textContent = 'Enter a name of 1 to 80 characters.';
+    byId('acctNameMsg').textContent = tx('Enter a name of 1 to 80 characters.');
     return;
   }
   if (name === (account.name || '')) {
-    byId('acctNameMsg').textContent = 'That is already your name.';
+    byId('acctNameMsg').textContent = tx('That is already your name.');
     return;
   }
   byId('acctNameSave').disabled = true;
-  byId('acctNameMsg').textContent = 'Saving…';
+  byId('acctNameMsg').textContent = tx('Saving…');
   sketchup.setName(JSON.stringify({ name: name }));
 }
 byId('acctNameSave').addEventListener('click', saveName);
@@ -1320,7 +1363,7 @@ window.diroryNameSaved = function (r) {
   if (r && r.ok) {
     account.name = r.name;
     byId('acctName').value = r.name;
-    byId('acctNameMsg').textContent = 'Saved.';
+    byId('acctNameMsg').textContent = tx('Saved.');
     updateAccountButton();
   } else {
     byId('acctNameMsg').textContent = (r && r.error) || 'Could not save the name.';
@@ -1534,10 +1577,10 @@ const ELEMENT_LABELS = {
    and the architect's corrections (takeoff.rb, roles). */
 const ROLE_LABELS = {
   auto: 'Auto (by direction)',
-  wall: 'Wall',
-  floor: 'Floor',
+  wall: tx('Wall'),
+  floor: tx('Floor'),
   ceiling: 'Ceiling',
-  roof: 'Roof',
+  roof: tx('Roof'),
   landscape_hard: 'Hardscape (paving, gravel)',
   landscape_soft: 'Softscape (grass, soil)',
   glass: 'Glass (not a finish)',
@@ -1558,7 +1601,7 @@ const BUCKET_LABELS = {
 function roleSelect(roles, value, onChange) {
   const select = el('select', 'map-role');
   roles.forEach((r) => {
-    const o = el('option', '', ROLE_LABELS[r]);
+    const o = el('option', '', tx(ROLE_LABELS[r]));
     o.value = r;
     o.selected = r === value;
     select.appendChild(o);
@@ -1578,22 +1621,22 @@ function renderMapping(body, data) {
   };
   const box = el('details', 'map-box');
   const summary = el('summary', 'takeoff-element');
-  DiroryIcon.set(summary, 'help', 'What is this? Check what was measured');
+  DiroryIcon.set(summary, 'help', tx('What is this? Check what was measured'));
   box.appendChild(summary);
   box.appendChild(el('p', 'usage-note',
-    'Each material (and tag) and what it was counted as. Change the role where the guess is wrong: ' +
+    tx('Each material (and tag) and what it was counted as. Change the role where the guess is wrong: ' +
     'the model is measured again. Faces with no material ("Unpainted") are usually unfinished concrete or ' +
-    'construction lines: check them first.'));
+    'construction lines: check them first.')));
 
   // Mark the selection: for a group, component or face the material cannot tell.
   const bar = el('div', 'map-bar');
-  bar.appendChild(el('span', '', 'Mark selection as '));
+  bar.appendChild(el('span', '', tx('Mark selection as ')));
   let markRole = 'ignore';
   bar.appendChild(roleSelect(Object.keys(ROLE_LABELS), markRole, (r) => { markRole = r; }));
-  const mark = DiroryIcon.set(el('button', 'ghost-btn'), 'edit', 'Mark');
+  const mark = DiroryIcon.set(el('button', 'ghost-btn'), 'edit', tx('Mark'));
   mark.addEventListener('click', () => {
     byId('takeoffRun').disabled = true;
-    byId('takeoffRun').textContent = 'Measuring…';
+    byId('takeoffRun').textContent = tx('Measuring…');
     sketchup.markSelection({ role: markRole });
   });
   bar.appendChild(mark);
@@ -1601,7 +1644,7 @@ function renderMapping(body, data) {
 
   const save = () => {
     byId('takeoffRun').disabled = true;
-    byId('takeoffRun').textContent = 'Measuring…';
+    byId('takeoffRun').textContent = tx('Measuring…');
     sketchup.saveMapping(mapping);
   };
   const shown = classes.filter((c) => c.area_m2 >= 0.5 || c.source === 'user').slice(0, 60);
@@ -1609,7 +1652,7 @@ function renderMapping(body, data) {
     const list = c.kind === 'tag' ? mapping.tags : mapping.materials;
     const measured = Object.entries(c.by || {})
       .sort((a, b) => b[1] - a[1])
-      .map(([k, v]) => `${BUCKET_LABELS[k] || k} ${fmt2(v)}`)
+      .map(([k, v]) => `${tx(BUCKET_LABELS[k] || k)} ${fmt2(v)}`)
       .join(' · ');
     const select = roleSelect(MAP_ROLES, list[c.name] || (c.role === 'auto' ? 'auto' : c.role), (r) => {
       if (r === 'auto') delete list[c.name];
@@ -1622,26 +1665,29 @@ function renderMapping(body, data) {
     cell.appendChild(el('div', 'u-sub', measured + ' m²'));
     return [[cell, ''], [select, 'num']];
   });
-  box.appendChild(takeoffTable([['Material / tag · measured as'], ['Role', 'num']], rows));
+  box.appendChild(takeoffTable([[tx('Material / tag · measured as')], [tx('Role'), 'num']], rows));
 
   // What was left out, and why.
   const ex = data.excluded || {};
   const out = [];
   const names = (g) => ((g && g.names) || []).slice(0, 5).map((n) => n.name).join(', ');
-  if (ex.furniture && ex.furniture.count) out.push(`${ex.furniture.count} furniture / people (${names(ex.furniture)}…)`);
+  if (ex.furniture && ex.furniture.count) {
+    out.push(tx('{n} furniture / people ({names}…)', { n: ex.furniture.count, names: names(ex.furniture) }));
+  }
   if (ex.frame && (ex.frame.members || ex.frame.panels)) {
-    out.push(`timber/steel frame: ${ex.frame.members} members, ${fmt2(ex.frame.length_m)} m, ` +
-      `${fmt2(ex.frame.volume_m3)} m³` + (ex.frame.panels ? `, ${ex.frame.panels} truss panels` : '') +
-      ' (roof structure is priced per m² of roof)');
+    out.push(tx('timber/steel frame: {members} members, {length} m, {volume} m³', {
+      members: ex.frame.members, length: fmt2(ex.frame.length_m), volume: fmt2(ex.frame.volume_m3),
+    }) + (ex.frame.panels ? tx(', {n} truss panels', { n: ex.frame.panels }) : '') +
+      tx(' (roof structure is priced per m² of roof)'));
   }
   if (ex.other_components && ex.other_components.count) {
-    out.push(`${ex.other_components.count} other components (${names(ex.other_components)}…): ` +
-      'mark one as Door or Window if it is one');
+    out.push(tx('{n} other components ({names}…): mark one as Door or Window if it is one',
+      { n: ex.other_components.count, names: names(ex.other_components) }));
   }
-  if (ex.marked_ignore && ex.marked_ignore.count) out.push(`${ex.marked_ignore.count} marked Ignore`);
+  if (ex.marked_ignore && ex.marked_ignore.count) out.push(tx('{n} marked Ignore', { n: ex.marked_ignore.count }));
   const areas = ex.area_m2 || {};
-  Object.keys(areas).filter((k) => areas[k] >= 0.5).forEach((k) => out.push(`${BUCKET_LABELS[k] || k} ${fmt2(areas[k])} m²`));
-  if (out.length) box.appendChild(el('p', 'usage-note', 'Left out: ' + out.join('; ') + '.'));
+  Object.keys(areas).filter((k) => areas[k] >= 0.5).forEach((k) => out.push(`${tx(BUCKET_LABELS[k] || k)} ${fmt2(areas[k])} m²`));
+  if (out.length) box.appendChild(el('p', 'usage-note', tx('Left out: {list}.', { list: out.join('; ') })));
   body.appendChild(box);
 }
 
@@ -1680,10 +1726,11 @@ window.diroryTakeoff = function (data) {
   const body = byId('takeoffBody');
   body.innerHTML = '';
   byId('takeoffRun').disabled = false;
-  DiroryIcon.set(byId('takeoffRun'), 'refresh', 'Measure again');
+  DiroryIcon.set(byId('takeoffRun'), 'refresh', tx('Measure again'));
   byId('takeoffExport').disabled = false;
-  byId('qtyStatus').textContent = 'Measured at ' +
-    new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  byId('qtyStatus').textContent = tx('Measured at {time}', {
+    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+  });
   const rows = data.rows || [];
   const openings = data.openings || [];
   const structure = data.structure || [];
@@ -1697,8 +1744,9 @@ window.diroryTakeoff = function (data) {
   byId('rabPhaseField').hidden = phases.length < 2;
   phaseSelect.innerHTML = '';
   phases.forEach((p) => {
-    const option = el('option', '', `Phase: ${p.name}`);
+    const option = el('option', '', tx('Phase: {name}', { name: p.name }));
     option.value = p.id;
+    option.dataset.name = p.name;
     option.selected = p.id === data.phase;
     phaseSelect.appendChild(option);
   });
@@ -1714,7 +1762,7 @@ window.diroryTakeoff = function (data) {
   }
   if (!rows.length && !openings.length && !structure.length && !mep.length && !demolition.length && !landscape.length) {
     body.appendChild(el('p', 'usage-note',
-      'Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.'));
+      tx('Nothing to measure: draw walls and slabs as raw geometry or groups. Faces inside components are treated as furniture.')));
     return;
   }
 
@@ -1728,16 +1776,16 @@ window.diroryTakeoff = function (data) {
       ];
       return line;
     });
-    const total = [['Total', ''], [fmt2((data.totals || {})[element]) + ' m²', 'num']];
+    const total = [[tx('Total'), ''], [fmt2((data.totals || {})[element]) + ' m²', 'num']];
     total.className = 'total';
     lines.push(total);
-    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS[element]));
-    body.appendChild(takeoffTable([['Material'], ['Area', 'num']], lines));
+    body.appendChild(el('h4', 'takeoff-element', tx(ELEMENT_LABELS[element])));
+    body.appendChild(takeoffTable([[tx('Material')], [tx('Area'), 'num']], lines));
   });
 
   if (landscape.length) {
-    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.site));
-    body.appendChild(takeoffTable([['Material'], ['Area', 'num']], landscape.map((r) => [
+    body.appendChild(el('h4', 'takeoff-element', tx(ELEMENT_LABELS.site)));
+    body.appendChild(takeoffTable([[tx('Material')], [tx('Area'), 'num']], landscape.map((r) => [
       [`${r.role === 'landscape_hard' ? 'Hardscape' : 'Softscape'}: ${r.material}`, ''],
       [fmt2(r.area_m2) + ' m²', 'num'],
     ])));
@@ -1745,28 +1793,28 @@ window.diroryTakeoff = function (data) {
 
   // Revit only: concrete, formwork and rebar per member, then steel.
   if (structure.length) {
-    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.structure));
+    body.appendChild(el('h4', 'takeoff-element', tx(ELEMENT_LABELS.structure)));
     const labels = (window.DiroryRab && window.DiroryRab.MEMBER_LABELS) || {};
     const concrete = structure.filter((s) => s.concrete_m3 > 0).map((s) => [
       [`${labels[s.member] || s.member} · ${s.name} (${s.count})`, ''],
       [fmt2(s.concrete_m3) + ' m³', 'num'],
       [fmt2(s.formwork_m2) + ' m²', 'num'],
-      [s.rebar_kg > 0 ? fmt2(s.rebar_kg) + ' kg' : 'estimated', 'num'],
+      [s.rebar_kg > 0 ? fmt2(s.rebar_kg) + ' kg' : tx('estimated'), 'num'],
     ]);
     if (concrete.length) {
-      body.appendChild(takeoffTable([['Member'], ['Concrete', 'num'], ['Formwork', 'num'], ['Rebar', 'num']], concrete));
+      body.appendChild(takeoffTable([[tx('Member')], [tx('Concrete'), 'num'], [tx('Formwork'), 'num'], [tx('Rebar'), 'num']], concrete));
     }
     const steel = structure.filter((s) => s.steel_kg > 0).map((s) => [
       [`${s.name} (${s.count})`, ''],
       [fmt2(s.steel_kg) + ' kg', 'num'],
     ]);
-    if (steel.length) body.appendChild(takeoffTable([['Steel member'], ['Weight', 'num']], steel));
+    if (steel.length) body.appendChild(takeoffTable([[tx('Steel member')], [tx('Weight'), 'num']], steel));
   }
 
   // What the priced phase demolishes (Revit) or the "Bongkar" tag holds (SketchUp).
   if (demolition.length) {
-    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.demolition));
-    body.appendChild(takeoffTable([['Element'], ['Quantity', 'num']], demolition.map((d) => [
+    body.appendChild(el('h4', 'takeoff-element', tx(ELEMENT_LABELS.demolition)));
+    body.appendChild(takeoffTable([[tx('Element')], [tx('Quantity'), 'num']], demolition.map((d) => [
       [`${d.group.replace(/_/g, ' ')}: ${d.name}`, ''],
       [`${d.unit === 'unit' ? d.quantity : fmt2(d.quantity)} ${d.unit === 'unit' ? '' : d.unit}`.trim(), 'num'],
     ])));
@@ -1779,22 +1827,22 @@ window.diroryTakeoff = function (data) {
       switch: 'Switch', socket: 'Socket', panel: 'Panel', equipment: 'Equipment', air_terminal: 'Air terminal',
       sprinkler: 'Sprinkler', fire_alarm: 'Fire alarm',
     };
-    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.mep));
-    body.appendChild(takeoffTable([['Item'], ['Quantity', 'num']], mep.map((m) => {
+    body.appendChild(el('h4', 'takeoff-element', tx(ELEMENT_LABELS.mep)));
+    body.appendChild(takeoffTable([[tx('Item')], [tx('Quantity'), 'num']], mep.map((m) => {
       const detail = m.group === 'pipe'
         ? [m.system, m.material, m.size_mm ? `Ø${m.size_mm} mm` : ''].filter(Boolean).join(' · ')
         : '';
       return [
-        [`${GROUPS[m.group] || m.group}: ${m.name}${detail ? ` (${detail})` : ''}`, ''],
+        [`${tx(GROUPS[m.group] || m.group)}: ${m.name}${detail ? ` (${detail})` : ''}`, ''],
         [`${m.unit === 'unit' ? m.quantity : fmt2(m.quantity)} ${m.unit === 'unit' ? '' : m.unit}`.trim(), 'num'],
       ];
     })));
   }
 
   if (openings.length) {
-    body.appendChild(el('h4', 'takeoff-element', 'Doors & windows (kusen, pintu, jendela)'));
+    body.appendChild(el('h4', 'takeoff-element', tx('Doors & windows (kusen, pintu, jendela)')));
     body.appendChild(takeoffTable(
-      [['Item'], ['W × H', 'num'], ['Qty', 'num']],
+      [[tx('Item')], [tx('W × H'), 'num'], [tx('Qty'), 'num']],
       openings.map((o) => [
         [`${o.name} (${o.kind})`, ''],
         [`${fmt2(o.width_m)} × ${fmt2(o.height_m)} m`, 'num'],
@@ -1807,9 +1855,9 @@ window.diroryTakeoff = function (data) {
   const extras = data.extras || [];
   if (extras.length) {
     const GROUPS = { railing: 'Railing', stair: 'Stair', casework: 'Casework' };
-    body.appendChild(el('h4', 'takeoff-element', ELEMENT_LABELS.misc));
-    body.appendChild(takeoffTable([['Item'], ['Quantity', 'num']], extras.map((x) => [
-      [`${GROUPS[x.group] || x.group}: ${x.name}${x.on_stair ? ' (stair)' : ''}`, ''],
+    body.appendChild(el('h4', 'takeoff-element', tx(ELEMENT_LABELS.misc)));
+    body.appendChild(takeoffTable([[tx('Item')], [tx('Quantity'), 'num']], extras.map((x) => [
+      [`${tx(GROUPS[x.group] || x.group)}: ${x.name}${x.on_stair ? tx(' (stair)') : ''}`, ''],
       [`${x.unit === 'unit' ? x.quantity : fmt2(x.quantity)} ${x.unit === 'unit' ? '' : x.unit}`.trim(), 'num'],
     ])));
   }
@@ -1817,16 +1865,16 @@ window.diroryTakeoff = function (data) {
   // A host can describe its own measuring rules (the Revit add-in does).
   const notes = Array.isArray(data.notes) ? data.notes.slice() : [];
   if (!Array.isArray(data.notes) && data.floor_perimeter_m > 0) {
-    notes.push(`Floor perimeter (for skirting, approx.): ${fmt2(data.floor_perimeter_m)} m¹.`);
+    notes.push(tx('Floor perimeter (for skirting, approx.): {m} m¹.', { m: fmt2(data.floor_perimeter_m) }));
   }
-  if (!Array.isArray(data.notes)) notes.push('Wall areas are finish areas per side (paint, plaster, tiles); openings are already deducted.');
+  if (!Array.isArray(data.notes)) notes.push(tx('Wall areas are finish areas per side (paint, plaster, tiles); openings are already deducted.'));
   if (data.components_skipped && !data.excluded) {
-    notes.push(`${data.components_skipped} component(s) were not measured (furniture and products). ` +
-      'Draw walls, slabs and roofs as groups so they are counted.');
+    notes.push(tx('{n} component(s) were not measured (furniture and products). Draw walls, slabs and roofs as groups so they are counted.',
+      { n: data.components_skipped }));
   }
-  if (!Array.isArray(data.notes)) notes.push('An estimate from the model: check it before a tender.');
+  if (!Array.isArray(data.notes)) notes.push(tx('An estimate from the model: check it before a tender.'));
   if (Array.isArray(data.notes) && data.floor_perimeter_m > 0) {
-    notes.unshift(`Floor perimeter (for skirting): ${fmt2(data.floor_perimeter_m)} m¹.`);
+    notes.unshift(tx('Floor perimeter (for skirting): {m} m¹.', { m: fmt2(data.floor_perimeter_m) }));
   }
   body.appendChild(el('p', 'usage-note', notes.join(' ')));
 };
@@ -1836,7 +1884,7 @@ let afterMeasure = null;   // what to do once the requested takeoff arrives
 function measure(then) {
   afterMeasure = typeof then === 'function' ? then : null;
   byId('takeoffRun').disabled = true;
-  byId('takeoffRun').textContent = 'Measuring…';
+  byId('takeoffRun').textContent = tx('Measuring…');
   sketchup.requestTakeoff();
 }
 byId('takeoffRun').addEventListener('click', () => measure());
@@ -1868,7 +1916,7 @@ function forCity(book) {
 (function fillCities() {
   const select = byId('rabCity');
   if (!select) return;
-  const first = el('option', '', 'DKI Jakarta (official Jakarta prices)');
+  const first = el('option', '', tx('DKI Jakarta (official Jakarta prices)'));
   first.value = '';
   select.appendChild(first);
   if (IKK_DATA) {
@@ -1925,10 +1973,10 @@ function renderRab() {
   if (!lastTakeoff || !rabBook) {
     const intro = el('div', 'boq-intro');
     intro.appendChild(DiroryIcon.svg('boq', 40));
-    intro.appendChild(el('strong', '', 'Bill of quantities (RAB) of this model'));
-    intro.appendChild(el('p', '', 'Dirory measures the model, prices every work item with AHSP and the prices of the ' +
-      'location above, and gives you the RAB as an Excel workbook: REKAP, RAB, AHS, prices and volumes, linked by formulas.'));
-    intro.appendChild(el('p', 'boq-intro-note', 'A Dirory Pro feature. Your first 2 estimates are free.'));
+    intro.appendChild(el('strong', '', tx('Bill of quantities (RAB) of this model')));
+    intro.appendChild(el('p', '', tx('Dirory measures the model, prices every work item with AHSP and the prices of the ' +
+      'location above, and gives you the RAB as an Excel workbook: REKAP, RAB, AHS, prices and volumes, linked by formulas.')));
+    intro.appendChild(el('p', 'boq-intro-note', tx('A Dirory Pro feature. Your first 2 estimates are free.')));
     body.appendChild(intro);
     updateCostBar();
     return;
@@ -1936,7 +1984,7 @@ function renderRab() {
   lastRab = window.DiroryRab.computeRab(lastTakeoff, rabBook, rabOptions());
   if (!lastRab.unpriced) rabOnlyTodo = false;   // nothing left to price: show everything
   if (!lastRab.lines.length) {
-    body.appendChild(el('p', 'usage-note', 'Nothing to price yet: measure a model with walls, floors, ceilings, roofs or structure.'));
+    body.appendChild(el('p', 'usage-note', tx('Nothing to price yet: measure a model with walls, floors, ceilings, roofs or structure.')));
     updateCostBar();
     return;
   }
@@ -1954,7 +2002,7 @@ function renderRab() {
     });
     const head = el('summary', 'rab-sec-head');
     const name = el('span', 'rab-sec-name');
-    name.appendChild(document.createTextNode(RAB_ELEMENT_LABELS[element] || element));
+    name.appendChild(document.createTextNode(tx(RAB_ELEMENT_LABELS[element]) || element));
     if (todo) name.appendChild(DiroryIcon.svg('alert'));
     const bar = el('span', 'rab-sec-bar');
     const fill = el('span', 'rab-sec-fill');
@@ -1975,25 +2023,27 @@ function renderRab() {
       if (l.needs_price) row.className = 'needs-price';
       return row;
     });
-    sec.appendChild(takeoffTable([['Work item'], ['Volume', 'num'], ['Unit price', 'num'], ['Amount', 'num']], rows));
+    sec.appendChild(takeoffTable([[tx('Work item')], ['Volume', 'num'], [tx('Unit price'), 'num'], [tx('Amount'), 'num']], rows));
     body.appendChild(sec);
   });
   const summary = el('div', 'rab-summary');
-  summary.appendChild(el('span', '', 'Total, excluding PPN'));
+  summary.appendChild(el('span', '', tx('Total, excluding PPN')));
   summary.appendChild(el('strong', '', rupiah(lastRab.total)));
   body.appendChild(summary);
   if (lastRab.unpriced) {
     body.appendChild(el('p', 'rab-unpriced',
-      `${lastRab.unpriced} line(s) have no price yet and are not in the total: type the unit price from your quote in the highlighted rows.`));
+      tx('{n} line(s) have no price yet and are not in the total: type the unit price from your quote in the highlighted rows.',
+        { n: lastRab.unpriced })));
   }
   const note = [
-    `Unit prices: ${rabBook.name}, AHSP coefficients with regional basic prices, including ${rabBook.overhead_pct}% overhead and profit.`,
-    rabBook.source ? `Source: ${rabBook.source}` : '',
+    tx('Unit prices: {book}, AHSP coefficients with regional basic prices, including {pct}% overhead and profit.',
+      { book: rabBook.name, pct: rabBook.overhead_pct }),
+    rabBook.source ? tx('Source: {source}', { source: rabBook.source }) : '',
     rebarNote(),
     lastRab.lines.some((l) => !l.custom && /^Market estimate/.test(l.reference))
-      ? 'Split AC units have no AHSP analysis: they are market estimates (retail listings, mid-2026, unit plus installation). Type your quote over them.'
+      ? tx('Split AC units have no AHSP analysis: they are market estimates (retail listings, mid-2026, unit plus installation). Type your quote over them.')
       : '',
-    'An estimate from the model, not a tender document. Check volumes and specifications with your quantity surveyor.',
+    tx('An estimate from the model, not a tender document. Check volumes and specifications with your quantity surveyor.'),
   ].filter(Boolean).join(' ');
   body.appendChild(el('p', 'usage-note', note));
   updateCostBar();
@@ -2011,8 +2061,39 @@ window.diroryPrices = function (prices) {
   renderLive();
 };
 
+function isIndonesian() {
+  return String(document.documentElement.lang || '').toLowerCase().indexOf('id') === 0;
+}
+
+// "3.6.1.8 Pemasangan 1 m2 Dinding Bata Merah ..." -> "Pemasangan Dinding Bata Merah ...".
+function ahspTitle(title) {
+  const t = String(title || '')
+    .replace(/^(AHSP\s*-\s*)?[A-Z]?\.?[\d.]+[a-z]?\s+/, '')
+    .replace(/\b1\s*(m2|m3|m'|m|kg|unit|buah|titik|bh|ls)\b\s*/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return t ? t.charAt(0).toUpperCase() + t.slice(1) : '';
+}
+
+// A line's name in the panel's language. English names come from rab.js; in
+// Indonesian a priced line uses its AHSP title, and a line to price its
+// translated prefix ("Bongkar: ...").
+function localLineName(l) {
+  if (!isIndonesian()) return l.name;
+  const it = l.key && rabBook && (rabBook.items || []).find((i) => i.key === l.key);
+  if (it && it.title) {
+    const prefix = l.element === 'structure' && /\(([^)]+)\):\s/.exec(l.name);
+    const dot = l.name.indexOf(' · ');
+    const head = prefix ? prefix[1].charAt(0).toUpperCase() + prefix[1].slice(1) + ': ' : '';
+    return head + ahspTitle(it.title) + (dot >= 0 ? l.name.slice(dot) : '');
+  }
+  const colon = l.name.indexOf(': ');
+  if (colon > 0) return tx(l.name.slice(0, colon)) + l.name.slice(colon);
+  return tx(l.name);
+}
+
 function lineName(l) {
-  return (l.section ? `${l.section}: ` : '') + l.name + (l.custom ? ' (your price)' : '');
+  return (l.section ? `${tx(l.section)}: ` : '') + localLineName(l) + (l.custom ? tx(' (your price)') : '');
 }
 
 // The unit price as a box the architect can type over. Clearing it goes back
@@ -2022,7 +2103,7 @@ function priceInput(l) {
   input.type = 'text';
   input.inputMode = 'numeric';
   input.value = l.needs_price ? '' : String(l.unit_price);
-  input.placeholder = l.needs_price ? 'Enter price' : '';
+  input.placeholder = l.needs_price ? tx('Enter price') : '';
   input.title = l.needs_price ? 'No price in the book: type your unit price (Rp)' : 'Type your own unit price (Rp); clear it to use the book price';
   input.setAttribute('aria-label', `Unit price for ${l.name}`);
   input.addEventListener('change', () => {
@@ -2043,7 +2124,8 @@ function rebarNote() {
   if (!used.length) return '';
   const members = Array.from(new Set(used.map((s) => s.member)));
   const ratios = members.map((m) => `${(rab.MEMBER_LABELS[m] || m).toLowerCase()} ${rab.REBAR_RATIO[m]} kg/m³`).join(', ');
-  return `Rebar is not modelled in some members, so it is estimated per m³ of concrete: ${ratios}. Model the rebar in Revit for the real weight.`;
+  return tx('Rebar is not modelled in some members, so it is estimated per m³ of concrete: {ratios}. Model the rebar in Revit for the real weight.',
+    { ratios: ratios });
 }
 
 function escapeHtml(text) {
@@ -2058,7 +2140,7 @@ function printRab() {
     const rows = lines.map((l, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(lineName(l))}<div class="ref">${escapeHtml(l.custom ? 'Price entered by the architect' : l.reference)}</div></td>` +
       `<td class="num">${fmt2(l.quantity)}</td><td>${escapeHtml(l.unit)}</td>` +
       `<td class="num">${l.needs_price ? 'not priced' : rupiah(l.unit_price)}</td><td class="num">${l.needs_price ? '—' : rupiah(l.amount)}</td></tr>`).join('');
-    return `<h2>${escapeHtml(RAB_ELEMENT_LABELS[element] || element)}</h2><table><thead><tr><th>#</th><th>Uraian pekerjaan</th>` +
+    return `<h2>${escapeHtml(tx(RAB_ELEMENT_LABELS[element]) || element)}</h2><table><thead><tr><th>#</th><th>Uraian pekerjaan</th>` +
       `<th>Volume</th><th>Sat.</th><th>Harga satuan</th><th>Jumlah</th></tr></thead><tbody>${rows}` +
       `<tr class="sub"><td></td><td>Subtotal</td><td></td><td></td><td></td><td class="num">${rupiah(lastRab.subtotals[element])}</td></tr></tbody></table>`;
   }).join('');
@@ -2113,8 +2195,8 @@ function exportRabXlsx() {
 function exportRabCsv() {
   if (!lastRab) return;
   const cell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
-  const rows = [['Element', 'Work item', 'Volume', 'Unit', 'Unit price (IDR)', 'Amount (IDR)', 'Reference']];
-  lastRab.lines.forEach((l) => rows.push([RAB_ELEMENT_LABELS[l.element] || l.element, lineName(l), l.quantity, l.unit,
+  const rows = [[tx('Element'), tx('Work item'), 'Volume', 'Unit', 'Unit price (IDR)', 'Amount (IDR)', 'Reference']];
+  lastRab.lines.forEach((l) => rows.push([tx(RAB_ELEMENT_LABELS[l.element] || l.element), lineName(l), l.quantity, l.unit,
     l.needs_price ? '' : l.unit_price, l.needs_price ? '' : l.amount, l.custom ? 'Price entered by the architect' : l.reference]));
   rows.push(['', 'Estimated total', '', '', '', lastRab.total, '']);
   const content = rows.map((r) => r.map(cell).join(',')).join('\r\n') + '\r\n';
@@ -2128,7 +2210,7 @@ window.diroryRabBook = function (book) {
   // With Pro (or this project's free BoQ) the live strip can open the breakdown.
   if (liveBook && !liveBook.pro && rabAccess && rabAccess.pro) {
     liveBook.pro = true;
-    byId('liveCostDetails').textContent = 'Open cost';
+    byId('liveCostDetails').textContent = tx('Open cost');
     byId('liveCostDetails').title = 'Open the itemised RAB';
   }
   if (!customPricesLoaded) {
@@ -2151,9 +2233,9 @@ window.diroryRabUpgrade = function (url) {
   const body = byId('rabBody');
   body.innerHTML = '';
   const box = el('div', 'consent-needed');
-  box.appendChild(el('p', '', 'You have used your 2 free cost estimates (RAB / BoQ). More estimates are part of Dirory Pro: ' +
-    'Rp 99.000 a month, or Rp 49.000 for one project. Pay with QRIS, then click Export Excel again.'));
-  const go = DiroryIcon.set(el('button', 'primary-btn'), 'sparkle', 'Get Dirory Pro');
+  box.appendChild(el('p', '', tx('You have used your 2 free cost estimates (RAB / BoQ). More estimates are part of Dirory Pro: ' +
+    'Rp 99.000 a month, or Rp 49.000 for one project. Pay with QRIS, then click Export Excel again.')));
+  const go = DiroryIcon.set(el('button', 'primary-btn'), 'sparkle', tx('Get Dirory Pro'));
   go.addEventListener('click', () => sketchup.openURL(JSON.stringify({ url: url || 'https://dirory.com/pro' })));
   box.appendChild(go);
   body.appendChild(box);
@@ -2172,7 +2254,7 @@ window.diroryRabError = function (message) {
 function estimate() {
   if (!lastTakeoff) {
     byId('rabRun').disabled = true;
-    byId('rabRun').textContent = 'Measuring…';
+    byId('rabRun').textContent = tx('Measuring…');
     measure(estimate);
     return;
   }
@@ -2186,7 +2268,7 @@ function estimate() {
     return;
   }
   byId('rabRun').disabled = true;
-  byId('rabRun').textContent = 'Loading prices…';
+  byId('rabRun').textContent = tx('Loading prices…');
   sketchup.requestRab(JSON.stringify({ region: region }));
 }
 byId('rabRun').addEventListener('click', estimate);
@@ -2248,13 +2330,13 @@ window.diroryLiveBook = function (book) {
   liveBook = forCity(book);
   byId('liveCostRegion').textContent = `· ${liveBook.name}`;
   const freeLeft = !book.pro && (book.free_this_model || (book.free_used || 0) < (book.free_limit || 0));
-  byId('liveCostDetails').textContent = book.pro ? 'Open cost' : freeLeft ? 'Open cost (free)' : 'Open cost (Pro)';
+  byId('liveCostDetails').textContent = book.pro ? tx('Open cost') : freeLeft ? tx('Open cost (free)') : tx('Open cost (Pro)');
   byId('liveCostDetails').title = book.pro
     ? 'Open the itemised RAB'
     : freeLeft
       ? `Free estimates: ${book.free_used || 0} of ${book.free_limit} used. This project counts once.`
       : 'You have used your free estimates: the itemised RAB is part of Dirory Pro';
-  byId('liveCostTotal').textContent = 'Measuring…';
+  byId('liveCostTotal').textContent = tx('Measuring…');
   showLive(true);
   byId('liveCost').classList.add('updating');
   sketchup.setLive(JSON.stringify({ on: true }));
@@ -2354,8 +2436,9 @@ const PPN_RATE = 0.11;
 
 function resetRabRun() {
   byId('rabRun').disabled = false;
-  DiroryIcon.set(byId('rabRun'), 'calculator', 'Estimate');
+  DiroryIcon.set(byId('rabRun'), 'calculator', tx('Estimate'));
 }
+translateStatic();
 
 // The BoQ bar: the total (once priced), Estimate, and Export Excel, the main
 // action, which measures and prices first when needed.
@@ -2363,12 +2446,13 @@ function updateCostBar() {
   const priced = !!(lastRab && lastRab.lines && lastRab.lines.length && rabBook);
   byId('rabRun').hidden = priced;
   if (priced) {
-    byId('costBarLabel').textContent = `Incl. PPN 11% · ${rabBook.name}`;
+    byId('costBarLabel').textContent = tx('Incl. PPN 11% · {city}', { city: rabBook.name });
     byId('costBarTotal').textContent = rupiah(Math.round(lastRab.total * (1 + PPN_RATE)));
   } else {
-    byId('costBarLabel').textContent = lastTakeoff ? 'Quantities measured' : 'No estimate yet';
-    byId('costBarTotal').textContent = 'Not priced yet';
+    byId('costBarLabel').textContent = lastTakeoff ? tx('Quantities measured') : tx('No estimate yet');
+    byId('costBarTotal').textContent = tx('Not priced yet');
   }
+  byId('costBar').classList.toggle('unpriced', !priced);
   const free = rabAccess && !rabAccess.pro && rabAccess.free_limit
     ? Math.max(0, rabAccess.free_limit - (rabAccess.free_used || 0)) : null;
   byId('costExport').title = rabAccess && rabAccess.pro
@@ -2379,7 +2463,7 @@ function updateCostBar() {
   byId('costMenuMeasure').disabled = !lastTakeoff;
   const todo = priced ? lastRab.unpriced : 0;
   byId('rabFilters').hidden = !priced || !todo;
-  if (todo) DiroryIcon.set(byId('rabFilterTodo'), 'alert', `${todo} line${todo > 1 ? 's' : ''} need${todo > 1 ? '' : 's'} your price`);
+  if (todo) DiroryIcon.set(byId('rabFilterTodo'), 'alert', todo === 1 ? tx('1 line needs your price') : tx('{n} lines need your price', { n: todo }));
   if (!todo && rabOnlyTodo) rabOnlyTodo = false;
   byId('rabFilterAll').classList.toggle('active', !rabOnlyTodo);
   byId('rabFilterTodo').classList.toggle('active', rabOnlyTodo);
@@ -2392,12 +2476,12 @@ function updateCostBar() {
 
 // Project, where its prices come from, which phase, and the account's access.
 function updateCostProject() {
-  byId('costProject').textContent = (lastTakeoff && lastTakeoff.project) || 'This model';
+  byId('costProject').textContent = (lastTakeoff && lastTakeoff.project) || tx('This model');
   const city = selectedCity();
   const where = [city ? city.name.replace(/^Kota Administrasi /, 'Kota ') : 'DKI Jakarta'];
   const phase = byId('rabPhase');
   if (!byId('rabPhaseField').hidden && phase.selectedIndex >= 0) {
-    where.push(phase.options[phase.selectedIndex].textContent.replace(/^Phase: /, ''));
+    where.push(phase.options[phase.selectedIndex].dataset.name || '');
   }
   byId('costWhere').textContent = where.join(' · ');
   const badge = byId('costAccess');
@@ -2409,7 +2493,7 @@ function updateCostProject() {
     const left = Math.max(0, rabAccess.free_limit - (rabAccess.free_used || 0));
     badge.hidden = false;
     badge.className = 'cost-badge';
-    badge.textContent = `${left} free left`;
+    badge.textContent = tx('{n} free left', { n: left });
   } else {
     badge.hidden = true;
   }
@@ -2423,17 +2507,17 @@ function renderTakeoffSummary(data) {
   const count = (list) => (list || []).reduce((n, o) => n + (Number(o.count) || 0), 0);
   const concrete = (data.structure || []).reduce((n, s) => n + (Number(s.concrete_m3) || 0), 0);
   const cards = [
-    ['Walls', totals.wall, 'm²'],
-    ['Floors', totals.floor, 'm²'],
-    ['Ceilings', totals.ceiling, 'm²'],
-    ['Roof', totals.roof, 'm²'],
-    ['Doors and windows', count(data.openings), ''],
-    ['Concrete', concrete, 'm³'],
-    ['MEP items', (data.mep || []).length, ''],
-    ['To demolish', (data.demolition || []).length, 'items'],
+    [tx('Walls'), totals.wall, 'm²'],
+    [tx('Floors'), totals.floor, 'm²'],
+    [tx('Ceilings'), totals.ceiling, 'm²'],
+    [tx('Roof'), totals.roof, 'm²'],
+    [tx('Doors and windows'), count(data.openings), ''],
+    [tx('Concrete'), concrete, 'm³'],
+    [tx('MEP items'), (data.mep || []).length, ''],
+    [tx('To demolish'), (data.demolition || []).length, tx('items')],
   ].filter((c) => Number(c[1]) > 0);
   if (!cards.length) {
-    box.appendChild(el('p', 'usage-note', 'Nothing measured: draw walls and slabs as raw geometry or groups (SketchUp), or model walls, floors and roofs (Revit).'));
+    box.appendChild(el('p', 'usage-note', tx('Nothing measured: draw walls and slabs as raw geometry or groups (SketchUp), or model walls, floors and roofs (Revit).')));
     return;
   }
   cards.forEach(([label, value, unit]) => {
@@ -2450,26 +2534,26 @@ function renderTakeoffSummary(data) {
 function renderReadAs(box, data) {
   const rab = window.DiroryRab;
   if (!rab || !rab.floorKind) return;
-  const FLOOR = { tile: 'ceramic tile', granite: 'granite', homogeneous: 'homogeneous tile', parquet: 'timber / parquet', carpet: 'carpet', bare: 'bare concrete, no finish', other: 'your price' };
-  const ROOF = { tile: 'roof tile', metal: 'metal sheet', concrete: 'concrete deck (waterproofing)', other: 'your price' };
+  const FLOOR = { tile: tx('ceramic tile'), granite: tx('granite'), homogeneous: tx('homogeneous tile'), parquet: tx('timber / parquet'), carpet: tx('carpet'), bare: tx('bare concrete, no finish'), other: tx('your price') };
+  const ROOF = { tile: tx('roof tile'), metal: tx('metal sheet'), concrete: tx('concrete deck (waterproofing)'), other: tx('your price') };
   const items = [];
   const seen = new Set();
   (data.rows || []).forEach((r) => {
     const key = r.element + '|' + r.material;
     if (seen.has(key) || !(r.area_m2 > 0)) return;
     seen.add(key);
-    if (r.element === 'floor') items.push(['Floor', r.material, FLOOR[rab.floorKind(r)]]);
-    else if (r.element === 'roof') items.push(['Roof', r.material, ROOF[rab.roofKind(r)]]);
+    if (r.element === 'floor') items.push([tx('Floor'), r.material, FLOOR[rab.floorKind(r)]]);
+    else if (r.element === 'roof') items.push([tx('Roof'), r.material, ROOF[rab.roofKind(r)]]);
     else if (r.element === 'wall' && r.core !== 'concrete') {
       const named = rab.wallCoreNamed(r);
-      items.push(['Wall', r.material, named ? (named === 'aac' ? 'lightweight block (AAC)' : 'red brick') : 'per Assumptions']);
+      items.push([tx('Wall'), r.material, named ? (named === 'aac' ? tx('lightweight block (AAC)') : tx('red brick')) : tx('per Assumptions')]);
     }
   });
   if (!items.length) return;
   const wrap = el('details', 'read-as');
   wrap.open = true;
   const head = el('summary', 'takeoff-element');
-  DiroryIcon.set(head, 'info', 'How Dirory reads your model');
+  DiroryIcon.set(head, 'info', tx('How Dirory reads your model'));
   wrap.appendChild(head);
   const list = el('ul', 'read-as-list');
   items.slice(0, 40).forEach(([kind, name, as]) => {

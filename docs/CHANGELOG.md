@@ -1,5 +1,16 @@
 # Changelog
 
+## SketchUp 0.10.5 and Revit 0.1.10 (built, not released) — Quantifier and BoQ in Bahasa Indonesia
+
+- Everything in Quantifier and BoQ follows the language setting: labels, buttons,
+  the "What is this?" review, quantity tables, notes and the bottom bar.
+  i18n.rb holds the Indonesian as `phrase.<English>` keys; panel.js `tx()`.
+- In Indonesian, RAB lines show their AHSP job title ("Pemasangan Atap Metal
+  Lembaran") instead of the English name.
+- The library path no longer shows above Quantifier and BoQ, an empty
+  quantity summary uses the full width, and the BoQ bar shows only its
+  buttons until there is an estimate (labels were cut off).
+
 ## SketchUp 0.10.4 and Revit 0.1.9 (built, not released) — Settings and Account open again in SketchUp
 
 SketchUp 2021 draws the panel with Chrome 64, which ignores `inset` and flex

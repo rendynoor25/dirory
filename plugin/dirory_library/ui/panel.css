@@ -1027,6 +1027,8 @@ body.in-cost.has-live-cost { padding-bottom: 0; }
 .assumptions-body .usage-option { display: flex; margin-top: 10px; }
 .assumptions-body .usage-option[hidden] { display: none; }
 
+.takeoff-summary > p { grid-column: 1 / -1; margin: 0; }
+body.in-cost #path { display: none; }
 .takeoff-summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); grid-gap: 8px; gap: 8px; }
 .qty-card { display: flex; flex-direction: column; gap: 2px; padding: 9px 10px; border-radius: 8px; background: #fff; border: 1px solid #e4e4ef; }
 .qty-label { font-size: 10.5px; color: #6b6b70; }
@@ -1070,6 +1072,8 @@ body.in-cost.has-live-cost { padding-bottom: 0; }
 
 .cost-bar { position: sticky; bottom: 0; z-index: 16; display: flex; align-items: center; gap: 8px; padding: 10px 12px;
   background: #fff; border-top: 1px solid #d7d9e6; box-shadow: 0 -4px 10px -6px rgba(32, 43, 78, 0.25); }
+.cost-bar.unpriced { justify-content: flex-end; }
+.cost-bar.unpriced .cost-bar-figure { display: none; }
 .cost-bar-figure { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
 .cost-bar-label { font-size: 10.5px; color: #6b6b70; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cost-bar-figure strong { font-size: 15px; font-variant-numeric: tabular-nums; color: #1c1c1e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1158,4 +1162,6 @@ header { display: block; padding: 0; background: #fff; box-shadow: 0 1px 0 #e4e4
   .rab-sec-name > .ic { margin-left: 4px; }
   .usage-actions { flex-wrap: wrap; }
   .usage-actions > * { margin-bottom: 6px; }
+  .main-tab-label .pro-tag { margin-left: 4px; }
+  .usage-option input { margin-right: 6px; }
 }

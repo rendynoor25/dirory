@@ -26,10 +26,10 @@
          measures (Quantifier), and its priced bill of quantities (BoQ, Pro). -->
     <nav class="main-nav" role="tablist" aria-label="Section">
       <button class="main-tab active" role="tab" aria-selected="true" data-section="models">
-        <span class="main-tab-icon" data-icon="closet"></span><span class="main-tab-label">Models</span>
+        <span class="main-tab-icon" data-icon="closet"></span><span class="main-tab-label" data-i18n="tab.model">Models</span>
       </button>
       <button class="main-tab" role="tab" aria-selected="false" data-section="materials">
-        <span class="main-tab-icon" data-icon="paint"></span><span class="main-tab-label">Materials</span>
+        <span class="main-tab-icon" data-icon="paint"></span><span class="main-tab-label" data-i18n="tab.material">Materials</span>
       </button>
       <button class="main-tab" role="tab" aria-selected="false" data-section="quantifier">
         <span class="main-tab-icon" data-icon="calculator"></span><span class="main-tab-label">Quantifier</span>
@@ -85,7 +85,7 @@
   <section id="quantifier" class="qty" hidden>
     <div class="qty-head">
       <div class="qty-head-text">
-        <strong>Quantities of this model</strong>
+        <strong data-tx>Quantities of this model</strong>
         <span id="qtyStatus">Not measured yet</span>
       </div>
       <button id="takeoffRun" class="primary-btn" data-icon="ruler">Measure model</button>
@@ -94,32 +94,32 @@
       <div id="takeoffSummary" class="takeoff-summary"></div>
       <div id="takeoffChecks" class="takeoff-checks"></div>
       <details id="takeoffDetails" class="takeoff-details">
-        <summary><span data-icon="ruler">All quantities by material</span></summary>
+        <summary><span data-icon="ruler" data-tx>All quantities by material</span></summary>
         <div id="takeoffBody" class="takeoff-body">
-          <p class="usage-note">Measure the model first.</p>
+          <p class="usage-note" data-tx>Measure the model first.</p>
         </div>
       </details>
-      <button id="takeoffExport" class="ghost-btn" data-icon="csv" disabled>Export quantities (CSV)</button>
+      <button id="takeoffExport" class="ghost-btn" data-icon="csv" data-tx disabled>Export quantities (CSV)</button>
 
       <section id="usage" class="usage">
-        <h2 class="qty-sub" data-icon="box">Dirory products in this model</h2>
+        <h2 class="qty-sub" data-icon="box" data-tx>Dirory products in this model</h2>
         <div class="usage-toolbar">
           <div class="usage-actions">
-            <button id="usageRefresh" class="ghost-btn" data-icon="refresh">Refresh</button>
-            <button id="usageExport" class="ghost-btn" data-icon="csv">Export CSV</button>
-            <button id="usagePrint" class="ghost-btn" data-icon="printer" title="Finish and fixture schedule, to print or save as PDF">Print schedule</button>
-            <button id="usageSelectAll" class="ghost-btn" data-icon="check">Select all brands</button>
+            <button id="usageRefresh" class="ghost-btn" data-icon="refresh" data-tx>Refresh</button>
+            <button id="usageExport" class="ghost-btn" data-icon="csv" data-tx>Export CSV</button>
+            <button id="usagePrint" class="ghost-btn" data-icon="printer" title="Finish and fixture schedule, to print or save as PDF" data-tx>Print schedule</button>
+            <button id="usageSelectAll" class="ghost-btn" data-icon="check" data-tx>Select all brands</button>
             <button id="usageToggleAll" class="ghost-btn">Collapse all</button>
           </div>
           <label class="usage-option">
-            <input type="checkbox" id="hideUnused"> Hide unused materials / models
+            <input type="checkbox" id="hideUnused"> <span data-tx>Hide unused materials / models</span>
           </label>
         </div>
         <div id="usageTotals" class="usage-totals"></div>
 
         <div id="brandGroups"></div>
 
-        <p class="usage-note">
+        <p class="usage-note" data-tx>
           Grouped by brand and counted from the open model, so it stays correct after undo or delete.
           Only models and materials inserted with this version of Dirory are counted.
           Free Dirory samples are listed but can't be quoted.
@@ -147,47 +147,47 @@
 
     <div class="cost-panel">
       <details id="boqSettings" class="assumptions" open>
-        <summary><span data-icon="pin">Location and assumptions</span><span id="boqSettingsHint" class="assumptions-hint"></span></summary>
+        <summary><span data-icon="pin" data-tx>Location and assumptions</span><span id="boqSettingsHint" class="assumptions-hint"></span></summary>
         <div class="assumptions-body">
           <label class="field">
-            <span class="field-label">Project location (prices)</span>
+            <span class="field-label" data-tx>Project location (prices)</span>
             <select id="rabCity" aria-label="Project location for prices"></select>
           </label>
           <label class="field" id="rabPhaseField" hidden>
-            <span class="field-label">Revit phase to price</span>
+            <span class="field-label" data-tx>Revit phase to price</span>
             <select id="rabPhase" aria-label="Phase to price" title="New construction is counted, existing is not, demolished is priced as demolition"></select>
           </label>
           <select id="rabRegion" aria-label="Price book" hidden>
             <option value="jakarta">DKI Jakarta</option>
           </select>
           <label class="field">
-            <span class="field-label">Walls the model does not name</span>
+            <span class="field-label" data-tx>Walls the model does not name</span>
             <select id="rabWall" aria-label="Wall type">
-              <option value="brick">Red brick (walls named hebel / AAC stay AAC)</option>
-              <option value="aac">Lightweight block, AAC (walls named bata stay brick)</option>
+              <option value="brick" data-tx>Red brick (walls named hebel / AAC stay AAC)</option>
+              <option value="aac" data-tx>Lightweight block, AAC (walls named bata stay brick)</option>
             </select>
           </label>
           <label class="field" id="rabConcreteField" hidden>
-            <span class="field-label">Concrete</span>
+            <span class="field-label" data-tx>Concrete</span>
             <select id="rabConcrete" aria-label="Concrete">
-              <option value="readymix">Ready-mix</option>
-              <option value="site">Site-mixed</option>
+              <option value="readymix" data-tx>Ready-mix</option>
+              <option value="site" data-tx>Site-mixed</option>
             </select>
           </label>
           <label class="field" id="rabDemoField" hidden>
-            <span class="field-label">Demolishing concrete</span>
+            <span class="field-label" data-tx>Demolishing concrete</span>
             <select id="rabDemo" aria-label="Concrete demolition">
-              <option value="manual">By hand</option>
-              <option value="jackhammer">With a jack hammer</option>
+              <option value="manual" data-tx>By hand</option>
+              <option value="jackhammer" data-tx>With a jack hammer</option>
             </select>
           </label>
-          <label class="usage-option" id="rabBothSidesField"><input type="checkbox" id="rabBothSides" checked> Walls drawn with both faces</label>
-          <label class="usage-option"><input type="checkbox" id="rabLive" checked> Show live cost while modelling</label>
+          <label class="usage-option" id="rabBothSidesField"><input type="checkbox" id="rabBothSides" checked> <span data-tx>Walls drawn with both faces</span></label>
+          <label class="usage-option"><input type="checkbox" id="rabLive" checked> <span data-tx>Show live cost while modelling</span></label>
         </div>
       </details>
 
       <div id="rabFilters" class="rab-filters" hidden>
-        <button id="rabFilterAll" class="chip active">All sections</button>
+        <button id="rabFilterAll" class="chip active" data-tx>All sections</button>
         <button id="rabFilterTodo" class="chip chip-warn" data-icon="alert"></button>
       </div>
       <div id="rabBody" class="rab-body"></div>
@@ -199,12 +199,12 @@
         <strong id="costBarTotal"></strong>
       </div>
       <button id="rabRun" class="ghost-btn bar-ghost" data-icon="calculator">Estimate</button>
-      <button id="costExport" class="primary-btn" data-icon="sheet">Export Excel <span class="pro-tag on-primary">PRO</span></button>
-      <button id="costMore" class="icon-btn" aria-label="More" title="More" aria-haspopup="menu" data-icon="dots"></button>
+      <button id="costExport" class="primary-btn" data-icon="sheet"><span data-tx>Export Excel</span> <span class="pro-tag on-primary">PRO</span></button>
+      <button id="costMore" class="icon-btn" aria-label="More" title="More" data-tx-title aria-haspopup="menu" data-icon="dots"></button>
       <div id="costMenu" class="cost-menu" role="menu" hidden>
-        <button id="costMenuMeasure" role="menuitem" data-icon="refresh">Measure again</button>
-        <button id="costMenuCsv" role="menuitem" data-icon="csv">Export RAB (CSV)</button>
-        <button id="costMenuPrint" role="menuitem" data-icon="printer">Print or save as PDF</button>
+        <button id="costMenuMeasure" role="menuitem" data-icon="refresh" data-tx>Measure again</button>
+        <button id="costMenuCsv" role="menuitem" data-icon="csv" data-tx>Export RAB (CSV)</button>
+        <button id="costMenuPrint" role="menuitem" data-icon="printer" data-tx>Print or save as PDF</button>
       </div>
     </div>
   </section>
@@ -254,10 +254,10 @@
         <p id="acctWho" class="modal-lead"></p>
         <!-- The name Dirory shows (the plugin, the web app, quote requests). -->
         <label class="field acct-name">
-          <span class="field-label">Your name</span>
+          <span class="field-label" data-tx>Your name</span>
           <span class="acct-name-row">
             <input id="acctName" type="text" maxlength="80" autocomplete="name" placeholder="Budi Santoso">
-            <button id="acctNameSave" class="ghost-btn" data-icon="check">Save</button>
+            <button id="acctNameSave" class="ghost-btn" data-icon="check" data-tx>Save</button>
           </span>
           <span id="acctNameMsg" class="acct-name-msg" role="status"></span>
         </label>
