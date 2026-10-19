@@ -28,7 +28,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.10.7'.freeze
+      PLUGIN_VERSION = '0.10.8'.freeze
       # The privacy-policy edition the consent dialog asks about. Bump it to
       # ask every architect again (UU PDP A3/A12).
       CONSENT_VERSION = '2026-10'.freeze
@@ -1244,7 +1244,10 @@ module Dirory
           safely do
             code = response.status_code.to_i
             if code == 200
-              say.call(live ? 'diroryLiveBook' : 'diroryRabBook', (JSON.parse(response.body.to_s) rescue {}))
+              book = (JSON.parse(response.body.to_s) rescue {})
+              # Remember which project the book was granted for (Library.takeoff 'model').
+              book['model'] = model if book.is_a?(Hash) && !live
+              say.call(live ? 'diroryLiveBook' : 'diroryRabBook', book)
             elsif live
               say.call('diroryLiveBook', nil)
             elsif code == 402

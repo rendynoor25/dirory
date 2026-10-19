@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased — SketchUp 0.10.8 / Revit 0.1.13: a free estimate prices one project only
+
+A free account's price book stayed in the panel after its free estimate, so
+switching to (or opening) another model in the same SketchUp or Revit session
+re-priced that model without asking the `rab` function — unlimited BoQs per
+session. Both hosts now stamp the project hash the server already sees
+(SketchUp: sha256 of the model guid; Revit: of ProjectInformation.UniqueId) on
+the book they receive and on every takeoff, and the shared panel drops a book
+granted for another project; the next BoQ goes back to the server, which
+counts it or answers 402. Monthly Pro simply gets the book again.
+Checked in the browser: same project keeps the book, another project drops it
+and Export asks the server.
+
+Note: admin accounts (profiles.role = 'admin') still skip the paywall by design.
+
 ## SketchUp 0.10.7 and Revit 0.1.12 (built, not released) — type to find the project location
 
 - Project location (prices) is a search field: type a few letters and the
@@ -52,7 +67,8 @@ SketchUp 2021's own HtmlDialog: both windows open on screen.
   section with its subtotal, and **Export Excel** as the main button in the
   bottom bar: it measures and prices first when needed, then saves the
   workbook. Estimate, Print and RAB CSV are beside it.
-- Line icons (icons.js) replace the emoji everywhere in the panel. The
+- Line icons (icons.js) replace the emoji everywhere in the panel. The
+
   SketchUp panel opens at 400 x 640.
 - **Your name:** signed-in architects can change the name Dirory shows
   (Account > Your name). It is saved on the server (profiles.full_name, via

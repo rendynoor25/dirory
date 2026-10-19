@@ -417,7 +417,13 @@ namespace Dirory.Revit
             region = string.IsNullOrEmpty(region) ? "jakarta" : region;
             var (code, body) = await _cloud.Send(HttpMethod.Get, $"/rab?region={Uri.EscapeDataString(region)}&model={model}{(live ? "&live=1" : "")}");
             if (live) { _page.Call("diroryLiveBook", code == 200 ? body : "null"); return; }
-            if (code == 200) _page.Call("diroryRabBook", body);
+            if (code == 200)
+            {
+                // Remember which project the book was granted for (see Takeoff "model").
+                var book = Json.Read(body);
+                book["model"] = model;
+                _page.Call("diroryRabBook", Json.Write(book));
+            }
             else if (code == 402) _page.Call("diroryRabUpgrade", Json.Write(Json.Str(Json.Read(body), "upgrade_url")));
             else if (code == 401) { _cloud.Set("token", ""); PushAccount(); _page.Call("diroryRabError", Json.Write(Lang.T("Your session has expired. Please sign in again."))); }
             else _page.Call("diroryRabError", Json.Write(Lang.T("Could not load the {region} price book (HTTP {code}).", "region", region, "code", code)));

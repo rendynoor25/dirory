@@ -215,6 +215,10 @@ namespace Dirory.Revit
                     .OrderBy(x => (string)x["group"]).ThenBy(x => (string)x["name"]).ToList(),
                 // Names the exported RAB; stays in the panel, never sent.
                 ["project"] = doc.Title ?? "",
+                // The same project hash the rab function sees: the panel drops a
+                // price book granted for another project (a free estimate is one
+                // project; it must not price the next one).
+                ["model"] = Cloud.Sha256(doc.ProjectInformation?.UniqueId ?? doc.Title),
                 ["phase"] = ph.PhaseId == ElementId.InvalidElementId ? "" : ph.PhaseId.Value.ToString(),
                 ["phases"] = Phasing.List(doc),
                 ["components_skipped"] = 0,

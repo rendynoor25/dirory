@@ -1723,7 +1723,25 @@ function takeoffTable(head, rows) {
   return table;
 }
 
+// The full price book is granted per project (a free estimate, a project
+// pass). A takeoff from a different project drops it, so the next BoQ goes
+// back to the rab function, which decides, and counts it. Monthly Pro gets it
+// straight back.
+function dropBookFromOtherProject(data) {
+  if (!rabBookRaw || !data || !data.model || !rabBookRaw.model) return;
+  if (data.model === rabBookRaw.model) return;
+  rabBookRaw = null;
+  rabBook = null;
+  rabAccess = null;
+  lastRab = null;
+  if (liveBook) liveBook.pro = liveBookRaw ? !!liveBookRaw.pro : false;
+  byId('rabBody').innerHTML = '';
+  if (typeof resetRabRun === 'function') resetRabRun();
+  if (typeof updateCostBar === 'function') updateCostBar();
+}
+
 window.diroryTakeoff = function (data) {
+  dropBookFromOtherProject(data);
   lastTakeoff = data;
   if (typeof renderRab === 'function' && rabBook) renderRab();
   const body = byId('takeoffBody');
@@ -2493,6 +2511,7 @@ window.diroryLiveBook = function (book) {
 };
 
 window.diroryLiveTakeoff = function (data) {
+  dropBookFromOtherProject(data);
   liveTakeoff = data;
   renderLive();
   // Keep an open Quantities / RAB view in step with the model too.

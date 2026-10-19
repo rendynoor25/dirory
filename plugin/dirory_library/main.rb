@@ -1139,7 +1139,12 @@ module Dirory
     def self.takeoff
       model = Sketchup.active_model
       # The title stays in the panel (it names the exported RAB); it is not sent.
-      Takeoff.run(model, method(:dirory_info)).merge('project' => model.title.to_s)
+      # `model` is the project hash the rab function sees: the panel drops a
+      # price book granted for another project.
+      Takeoff.run(model, method(:dirory_info)).merge(
+        'project' => model.title.to_s,
+        'model' => model.guid.to_s.empty? ? '' : Digest::SHA256.hexdigest(model.guid.to_s)
+      )
     end
 
     def self.send_takeoff
