@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — Revit 0.1.18: the panel no longer goes deaf after placing a product
+## Revit 0.1.18 (published on /download): the panel no longer goes deaf after placing a product
 
 After a product was inserted, every later panel click (material cards,
 Measure, even F5) silently did nothing until Revit was restarted. Cause:
