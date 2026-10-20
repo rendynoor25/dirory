@@ -753,6 +753,8 @@ h1 {
 }
 .dl-badge.busy { background: rgba(150, 100, 20, 0.9); animation: dlpulse 1s ease-in-out infinite; }
 .dl-badge.done { background: rgba(31, 122, 79, 0.9); }
+.dl-badge.none { background: rgba(110, 116, 135, 0.85); font-weight: 600; padding: 0 7px; }
+.card.no-family .thumb img { opacity: 0.55; }
 @keyframes dlpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 
 .product-body { max-height: 60vh; overflow-y: auto; }

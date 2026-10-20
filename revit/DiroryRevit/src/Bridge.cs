@@ -382,10 +382,14 @@ namespace Dirory.Revit
             }
             if (!_cloud.SignedIn) { _page.Call("diroryNeedSignIn", Json.Write(new { action = "load" })); return; }
             Toast(Lang.T("Downloading {name}…", "name", Json.Str(d, "name")));
+            // The card's download badge: busy now, then a tick (or back to idle on failure).
+            string badge = Json.Write(new { asset_id = Json.Str(d, "asset_id") });
+            _page.Call("diroryDownloading", badge);
             string path;
             try { path = await _cloud.Download(Json.Str(d, "asset_id"), Json.Str(d, "version"), Json.Str(d, "rfa_path") != "" ? "rfa" : ""); }
-            catch (UnauthorizedAccessException e) { _cloud.Set("token", ""); PushAccount(); Toast(e.Message); return; }
-            catch (Exception e) { Toast(Lang.T("Could not download the family: {error}", "error", e.Message)); return; }
+            catch (UnauthorizedAccessException e) { _page.Call("diroryDownloadFailed", badge); _cloud.Set("token", ""); PushAccount(); Toast(e.Message); return; }
+            catch (Exception e) { _page.Call("diroryDownloadFailed", badge); Toast(Lang.T("Could not download the family: {error}", "error", e.Message)); return; }
+            _page.Call("diroryDownloaded", badge);
             App.Ops.Run(app =>
             {
                 var uidoc = app.ActiveUIDocument;

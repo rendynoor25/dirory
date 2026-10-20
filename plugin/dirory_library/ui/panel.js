@@ -729,7 +729,16 @@ function render() {
     // Download state: a cloud item shows a badge until it is cached, then a tick.
     // Local-folder items are always "downloaded".
     const isCloud = !!item.asset_id;
-    if (isCloud) {
+    // Revit can only load an .rfa: a model with none is marked instead of
+    // showing a download badge it can never complete.
+    const noFamily = IS_REVIT && item.type !== 'material' && !item.rfa_path &&
+      !/\.rfa$/i.test(item.model_path || '');
+    if (noFamily) {
+      card.classList.add('no-family');
+      const tag = el('span', 'dl-badge none', tx('SketchUp only'));
+      tag.title = tx('This product has no Revit family (.rfa) yet.');
+      thumb.appendChild(tag);
+    } else if (isCloud) {
       if (downloading.has(item.asset_id)) {
         thumb.appendChild(DiroryIcon.set(el('span', 'dl-badge busy'), 'download'));
       } else if (downloaded.has(item.asset_id)) {
@@ -1557,6 +1566,13 @@ window.diroryDownloading = function (data) {
   const id = String((data && data.asset_id) || '');
   if (!id) return;
   downloading.add(id);
+  render();
+};
+
+// The download failed: drop the busy badge so the card can be tried again.
+window.diroryDownloadFailed = function (data) {
+  const id = String((data && data.asset_id) || '');
+  if (!id || !downloading.delete(id)) return;
   render();
 };
 

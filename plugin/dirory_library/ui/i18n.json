@@ -407,6 +407,7 @@
    "phrase.This material is not available from the cloud.": "Material ini tidak tersedia di cloud.",
    "phrase.Downloading {name}…": "Mengunduh {name}…",
    "phrase.This product has no Revit family (.rfa) yet.": "Produk ini belum punya family Revit (.rfa).",
+   "phrase.SketchUp only": "Hanya SketchUp",
    "phrase.Could not download the family: {error}": "Family tidak dapat diunduh: {error}",
    "phrase.Sign in to estimate costs.": "Masuk untuk menghitung biaya.",
    "phrase.Could not load the {region} price book (HTTP {code}).": "Daftar harga {region} tidak dapat dimuat (HTTP {code}).",

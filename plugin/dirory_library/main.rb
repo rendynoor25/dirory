@@ -608,6 +608,7 @@ module Dirory
             notify_downloaded(data['asset_id'])
             yield(local, nil)
           else
+            notify_download_failed(data['asset_id'])
             yield(nil, error || 'The file could not be downloaded.')
           end
         end
@@ -628,6 +629,13 @@ module Dirory
     def self.notify_downloaded(asset_id)
       return if @dialog.nil? || asset_id.to_s.empty?
       @dialog.execute_script("window.diroryDownloaded(#{ { asset_id: asset_id }.to_json });")
+    rescue StandardError
+      nil
+    end
+
+    def self.notify_download_failed(asset_id)
+      return if @dialog.nil? || asset_id.to_s.empty?
+      @dialog.execute_script("window.diroryDownloadFailed && window.diroryDownloadFailed(#{ { asset_id: asset_id }.to_json });")
     rescue StandardError
       nil
     end
