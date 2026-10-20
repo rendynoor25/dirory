@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased — Revit 0.1.15: placing a product no longer looks like a freeze
+
+Placing a family is modal: Revit, and the Dirory panel with it, waits for a
+click in the view until the item is placed or Esc is pressed. Nothing said so
+(the panel still read "Downloading…", Revit stayed behind the panel), and most
+Toto families are wall-hosted or face-based, so a click in empty space placed
+nothing - it looked frozen.
+
+- Before placement the panel says where to click, from the family's placement
+  type: a wall (hosted), a face (face-based) or anywhere (level-based), and
+  Revit comes to the front.
+- Views that cannot take a family (schedules, sheets, drafting) are refused
+  with a message instead of entering placement.
+- Afterwards it reports how many were placed, or that the family is loaded in
+  the Project Browser but not placed.
+- Every insert is logged to %LOCALAPPDATA%\Dirory\revit.log with the load
+  time, the placement type and the result.
+
 ## Unreleased — Revit 0.1.14: material cards say what they did
 
 Clicking a material card worked, but looked like nothing happened: a material

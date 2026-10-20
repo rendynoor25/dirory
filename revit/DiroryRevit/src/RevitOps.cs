@@ -332,14 +332,28 @@ namespace Dirory.Revit
         // Families (.rfa)
         // ------------------------------------------------------------------
 
-        public static void LoadAndPlace(UIDocument uidoc, string rfaPath)
+        /// Load a family and let the architect place it. Placement is modal:
+        /// Revit (and the Dirory panel with it) waits for a click in the view
+        /// until the item is placed or Esc is pressed. So say first exactly
+        /// where to click - most product families are hosted on a wall or a
+        /// face - bring Revit to the front, and report what happened.
+        public static void LoadAndPlace(UIApplication app, UIDocument uidoc, string rfaPath, string label)
         {
             Document doc = uidoc.Document;
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+            if (!CanPaintIn(uidoc.ActiveView))
+            {
+                App.Panel.Bridge.Toast(Lang.T("Open a floor plan, 3D view, elevation or section to place {name}.", "name", label));
+                return;
+            }
+
             Family family;
+            bool fresh;
             using (var t = new Transaction(doc, "Dirory: load family"))
             {
                 t.Start();
-                if (!doc.LoadFamily(rfaPath, out family))
+                fresh = doc.LoadFamily(rfaPath, out family);
+                if (!fresh)
                 {
                     // Already loaded: find it by name.
                     string name = System.IO.Path.GetFileNameWithoutExtension(rfaPath);
@@ -349,13 +363,46 @@ namespace Dirory.Revit
                 if (family == null)
                 {
                     t.RollBack();
+                    Log($"insert \"{label}\" from \"{rfaPath}\": Revit could not load it ({clock.ElapsedMilliseconds} ms)");
                     throw new Exception(Lang.T("Revit could not load this family."));
                 }
-                var symbol = (FamilySymbol)doc.GetElement(family.GetFamilySymbolIds().First());
-                if (!symbol.IsActive) symbol.Activate();
+                var first = (FamilySymbol)doc.GetElement(family.GetFamilySymbolIds().First());
+                if (!first.IsActive) first.Activate();
                 t.Commit();
-                uidoc.PromptForFamilyInstancePlacement(symbol);
             }
+            var symbol = (FamilySymbol)doc.GetElement(family.GetFamilySymbolIds().First());
+            Log($"insert \"{label}\": family \"{family.Name}\" {(fresh ? "loaded" : "already in the project")}, " +
+                $"placement {family.FamilyPlacementType}, {clock.ElapsedMilliseconds} ms");
+
+            string where;
+            switch (family.FamilyPlacementType)
+            {
+                case FamilyPlacementType.OneLevelBasedHosted:
+                    where = Lang.T("Place {name}: click a wall (or its host) in the view. Esc to finish.", "name", label);
+                    break;
+                case FamilyPlacementType.WorkPlaneBased:
+                    where = Lang.T("Place {name}: click a face, such as a wall or floor surface, in the view. Esc to finish.", "name", label);
+                    break;
+                default:
+                    where = Lang.T("Place {name}: click in the view where it goes. Esc to finish.", "name", label);
+                    break;
+            }
+            App.Panel.Bridge.Toast(where);
+            FocusRevit(app);
+
+            int before = Count(doc, symbol.Id);
+            try { uidoc.PromptForFamilyInstancePlacement(symbol); }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException) { /* Esc: the normal way to finish */ }
+            int placed = Count(doc, symbol.Id) - before;
+            Log($"insert \"{label}\": placed {placed}");
+            App.Panel.Bridge.Toast(placed > 0
+                ? Lang.T("Placed {n} × {name}.", "n", placed, "name", label)
+                : Lang.T("{name} is loaded in the project (Project Browser > Families) but was not placed. " +
+                         "Wall-hosted items need a click on a wall.", "name", label));
         }
+
+        private static int Count(Document doc, ElementId symbolId) =>
+            new FilteredElementCollector(doc).OfClass(typeof(FamilyInstance))
+                .Cast<FamilyInstance>().Count(i => i.Symbol.Id == symbolId);
     }
 }

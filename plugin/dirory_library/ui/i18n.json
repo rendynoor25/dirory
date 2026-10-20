@@ -442,7 +442,13 @@
    "phrase.\"{material}\" is in the Material Browser. To paint it, open a 3D view, elevation, section or plan and click the card again.": "\"{material}\" sudah ada di Material Browser. Untuk mengecatnya, buka tampilan 3D, tampak, potongan, atau denah lalu klik kartunya lagi.",
    "phrase.\"{material}\" is loaded. Paint mode: click faces in the Revit view, press Esc to finish.": "\"{material}\" sudah dimuat. Mode cat: klik permukaan di tampilan Revit, tekan Esc untuk selesai.",
    "phrase.Painted {n} face(s) with {material}.": "{n} permukaan dicat dengan {material}.",
-   "phrase.Nothing painted. \"{material}\" stays in the Material Browser for Revit's own Paint tool.": "Belum ada yang dicat. \"{material}\" tetap ada di Material Browser untuk alat Paint Revit."
+   "phrase.Nothing painted. \"{material}\" stays in the Material Browser for Revit's own Paint tool.": "Belum ada yang dicat. \"{material}\" tetap ada di Material Browser untuk alat Paint Revit.",
+   "phrase.Open a floor plan, 3D view, elevation or section to place {name}.": "Buka denah, tampilan 3D, tampak, atau potongan untuk menempatkan {name}.",
+   "phrase.Place {name}: click a wall (or its host) in the view. Esc to finish.": "Tempatkan {name}: klik sebuah dinding (atau host-nya) di tampilan. Esc untuk selesai.",
+   "phrase.Place {name}: click a face, such as a wall or floor surface, in the view. Esc to finish.": "Tempatkan {name}: klik sebuah permukaan, misalnya dinding atau lantai, di tampilan. Esc untuk selesai.",
+   "phrase.Place {name}: click in the view where it goes. Esc to finish.": "Tempatkan {name}: klik di tampilan pada posisinya. Esc untuk selesai.",
+   "phrase.Placed {n} × {name}.": "{n} × {name} ditempatkan.",
+   "phrase.{name} is loaded in the project (Project Browser > Families) but was not placed. Wall-hosted items need a click on a wall.": "{name} sudah dimuat di proyek (Project Browser > Families) tetapi belum ditempatkan. Barang yang menempel di dinding perlu diklik pada dinding."
   }
  }
 }

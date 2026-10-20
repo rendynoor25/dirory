@@ -407,7 +407,7 @@ namespace Dirory.Revit
             {
                 var uidoc = app.ActiveUIDocument;
                 if (uidoc == null) { Toast(Lang.T("Open a Revit project first.")); return; }
-                RevitOps.LoadAndPlace(uidoc, path);
+                RevitOps.LoadAndPlace(app, uidoc, path, (Json.Str(d, "brand") + " " + Json.Str(d, "name")).Trim());
             });
         }
 
