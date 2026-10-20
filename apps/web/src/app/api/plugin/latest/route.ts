@@ -31,9 +31,9 @@ export async function GET(request: Request) {
       // The most recent user-visible changes, newest first. Keep this short —
       // it is shown inside the plugin's update prompt.
       notes: [
-        "New panel: Models, Materials, Quantifier and BoQ, with clear icons.",
-        "BoQ: one click on Export Excel measures, prices and saves the RAB.",
-        "Floors, roofs and walls priced by their material; stairs and railings in Revit.",
+        "Product cards show when a model is downloading and when it is ready.",
+        "Type to find your project location: 514 kabupaten/kota and well-known areas.",
+        "Quantifier and BoQ in Bahasa Indonesia.",
       ],
     },
     { headers: { "Cache-Control": "public, max-age=300" } },

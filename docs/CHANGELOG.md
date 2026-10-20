@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — Revit: download badge and "SketchUp only" cards
+## SketchUp 0.10.8 and Revit 0.1.13 — published on /download, 20 Oct 2026: download badge and "SketchUp only" cards
 
 Clicking a model in Revit gave no sign it was loading: the add-in never told the
 panel a download had started or finished, so the card badge stayed idle (only a
@@ -12,7 +12,7 @@ shows a grey "SketchUp only" tag and a faded thumbnail instead of a download
 badge it can never complete. Built for Revit 2024; checked the three card states
 in a Revit-mode panel page, not yet inside Revit.
 
-## Unreleased — SketchUp 0.10.8 / Revit 0.1.13: a free estimate prices one project only
+## SketchUp 0.10.8 / Revit 0.1.13 (published 20 Oct 2026): a free estimate prices one project only
 
 A free account's price book stayed in the panel after its free estimate, so
 switching to (or opening) another model in the same SketchUp or Revit session
