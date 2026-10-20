@@ -16,12 +16,6 @@
     {
       "action": "attach",
       "brand": "Toto",
-      "name": "LW952J",
-      "file": "vendor-sources/TOTO/TOTO/WASTAFEL/LW952J/LW952J.rfa"
-    },
-    {
-      "action": "attach",
-      "brand": "Toto",
       "name": "U104",
       "file": "vendor-sources/TOTO/TOTO/URINOIR/U104/U104.rfa"
     },
@@ -54,53 +48,6 @@
       "brand": "ALPHAMAX",
       "name": "MAX 2",
       "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450861227.rfa"
-    },
-    {
-      "action": "new",
-      "brand": "Toto",
-      "name": "TX109LRS",
-      "category": "Faucet",
-      "tags": [
-        "Kran",
-        "Keran",
-        "Faucet",
-        "Tap",
-        "Wastafel",
-        "Revit"
-      ],
-      "file": "vendor-sources/TOTO/TOTO/KRAN/TX109LRS/TX109LRS.rfa",
-      "thumbnail": "dirory/library-additions/Revit/thumbnails/TX109LRS.png"
-    },
-    {
-      "action": "new",
-      "brand": "Toto",
-      "name": "TX123LESN",
-      "category": "Faucet",
-      "tags": [
-        "Kran",
-        "Keran",
-        "Faucet",
-        "Tap",
-        "Wastafel",
-        "Revit"
-      ],
-      "file": "vendor-sources/TOTO/TOTO/KRAN/TX123LESN/TX 123 LESN.rfa",
-      "thumbnail": "dirory/library-additions/Revit/thumbnails/TX123LESN.png"
-    },
-    {
-      "action": "new",
-      "brand": "Toto",
-      "name": "AW115J",
-      "category": "Urinoir",
-      "tags": [
-        "Urinoir",
-        "Urinal",
-        "Sensor",
-        "Flush",
-        "Revit"
-      ],
-      "file": "vendor-sources/TOTO/TOTO/URINOIR/AW115J/AW115J.rfa",
-      "thumbnail": "dirory/library-additions/Revit/thumbnails/AW115J.png"
     },
     {
       "action": "new",
@@ -268,9 +215,4245 @@
       ],
       "file": "ARCHIVE/dirory-website-v2/public/upload/product_files/165450912810.rfa",
       "thumbnail": "ARCHIVE/dirory-website-v2/public/upload/product_thumbnails/165422068256.JPG"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Legion 80.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Legion",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Legion/Legion 80.01/Legion 80.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Legion/Legion 80.01/Legion 80.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Legion 80.02",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Legion",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Legion/Legion MultiType.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Legion/Legion 80.02/Legion 80.02.jpg",
+      "_note": "Shared Legion family with types LEGION 80.01-80.05; choose type LEGION 80.02 after loading."
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Legion 80.03",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Legion",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Legion/Legion 80.03/Legion 80.03.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Legion/Legion 80.03/Legion 80.03.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Legion 80.04",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Legion",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Legion/Legion MultiType.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Legion/Legion 80.04/Legion 80.04.jpg",
+      "_note": "Shared Legion family with types LEGION 80.01-80.05; choose type LEGION 80.04 after loading."
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Legion 80.05",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Legion",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Legion/Legion MultiType.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Legion/Legion 80.05/Legion 80.05.jpg",
+      "_note": "Shared Legion family with types LEGION 80.01-80.05; choose type LEGION 80.05 after loading."
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Urban 80.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Urban",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Urban/Urban 80.01/Urban 80.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Urban/Urban 80.01/Urban 80.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Fortress 90.10",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Fortress",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Fortress/Fortress 90.10/Fortress 90.10.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Fortress/Fortress 90.10/Fortress 90.10.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Fortress 90.11",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Fortress",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Fortress/Fortress 90.11/Fortress 90.11.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Fortress/Fortress 90.11/Fortress 90.11.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Fortress 90.13",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Fortress",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Fortress/Fortress 90.13/Fortress 90.13.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Fortress/Fortress 90.13/Fortress 90.13.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Fortress 150.10",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Fortress",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Fortress/Fortress 150.10/Fortress 150.10.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Fortress/Fortress 150.10/Fortress 150.10.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Fortress 150.11",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Fortress",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Fortress/Fortress 150.11/Fortress 150.11.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Fortress/Fortress 150.11/Fortress 150.11.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Fortress 150.13",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Fortress",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Fortress/Fortress 150.13/Fortress 150.13.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Fortress/Fortress 150.13/Fortress 150.13.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Prime 120.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Prime",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Prime/Prime 120.01/Prime 120.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Prime/Prime 120.01/Prime 120.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Prime 120.02",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Prime",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Prime/Prime 120.02/Prime 120.02.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Prime/Prime 120.02/Prime 120.02.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Prime 120.03",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Prime",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Prime/Prime 120.03/Prime 120.03.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Prime/Prime 120.03/Prime 120.03.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Prime 120.04",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Prime",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Prime/Prime 120.04/Prime 120.04.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Prime/Prime 120.04/Prime 120.04.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 90.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 90.01/Galaxy 90.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 90.01/Galaxy 90.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 90.02",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 90.02/Galaxy 90.02.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 90.02/Galaxy 90.02.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 90.03",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 90.03/Galaxy 90.03.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 90.03/Galaxy 90.03.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 120.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 120.01/Galaxy 120.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 120.01/Galaxy 120.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 120.02",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 120.02/Galaxy 120.02.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 120.02/Galaxy 120.02.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 120.03",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 120.03/Galaxy 120.03.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 120.03/Galaxy 120.03.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 150.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 150.01/Galaxy 150.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 150.01/Galaxy 150.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 150.02",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 150.02/Galaxy 150.02.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 150.02/Galaxy 150.02.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Galaxy 150.03",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Galaxy",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 150.03/Galaxy 150.03.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Galaxy/Galaxy 150.03/Galaxy 150.03.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Olympus 90.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Olympus",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Olympus/Olympus 90.01/Olympus 90.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Olympus/Olympus 90.01/Olympus 90.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Olympus 90.02",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Olympus",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Olympus/Olympus 90.02/Olympus 90.02.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Olympus/Olympus 90.02/Olympus 90.02.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Olympus 120.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Olympus",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Olympus/Olympus 120.01/Olympus 120.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Olympus/Olympus 120.01/Olympus 120.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Olympus 160.02",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Olympus",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Olympus/Olympus 160.02/Olympus 160.02.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Olympus/Olympus 160.02/Olympus 160.02.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Dynasty 90.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Dynasty",
+        "Pintu Single",
+        "Single door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Dynasty/Dynasty 90.01/Dynasty 90.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Dynasty/Dynasty 90.01/Dynasty 90.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Dynasty 130.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Dynasty",
+        "Pintu Kupu Tarung",
+        "Mom & Son",
+        "Unequal double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Dynasty/Dynasty 130.01/Dynasty 130.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Dynasty/Dynasty 130.01/Dynasty 130.01.jpg"
+    },
+    {
+      "action": "new",
+      "brand": "Fortress",
+      "name": "Dynasty 160.01",
+      "category": "Doors",
+      "tags": [
+        "Pintu",
+        "Door",
+        "Pintu Besi",
+        "Steel door",
+        "Pintu Utama",
+        "Fortress",
+        "Dynasty",
+        "Pintu Double",
+        "Double door",
+        "Revit"
+      ],
+      "file": "sample_library/Model/Doors/Fortress/Dynasty/Dynasty 160.01/Dynasty 160.01.rfa",
+      "thumbnail": "sample_library/Model/Doors/Fortress/Dynasty/Dynasty 160.01/Dynasty 160.01.jpg"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A0905",
+      "file": "vendor-sources/TOTO-website/RFA/A0905.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A90288",
+      "file": "vendor-sources/TOTO-website/RFA/A90288.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A90333",
+      "file": "vendor-sources/TOTO-website/RFA/A90333.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A90354",
+      "file": "vendor-sources/TOTO-website/RFA/A90354.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A90368",
+      "file": "vendor-sources/TOTO-website/RFA/A90368.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A90375",
+      "file": "vendor-sources/TOTO-website/RFA/A90375.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A90375-MB",
+      "file": "vendor-sources/TOTO-website/RFA/A90375-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A90375-MW",
+      "file": "vendor-sources/TOTO-website/RFA/A90375-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A9A076G",
+      "file": "vendor-sources/TOTO-website/RFA/A9A076G.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "A9A332Y",
+      "file": "vendor-sources/TOTO-website/RFA/A9A332Y.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "AW115J",
+      "file": "vendor-sources/TOTO-website/RFA/AW115J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "BS0305",
+      "file": "vendor-sources/TOTO-website/RFA/BS0305.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "BW274J",
+      "file": "vendor-sources/TOTO-website/RFA/BW274J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "BW275J",
+      "file": "vendor-sources/TOTO-website/RFA/BW275J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "BW812J",
+      "file": "vendor-sources/TOTO-website/RFA/BW812J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "BW813J",
+      "file": "vendor-sources/TOTO-website/RFA/BW813J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "BW860J",
+      "file": "vendor-sources/TOTO-website/RFA/BW860J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "BW875J",
+      "file": "vendor-sources/TOTO-website/RFA/BW875J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW252PJ-SW252JP-PTRAP",
+      "file": "vendor-sources/TOTO-website/RFA/CW252PJ-SW252JP-PTrap.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW252PJ-SW252JP-STRAP",
+      "file": "vendor-sources/TOTO-website/RFA/CW252PJ-SW252JP-STrap.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW253J",
+      "file": "vendor-sources/TOTO-website/RFA/CW253J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW254PJ",
+      "file": "vendor-sources/TOTO-website/RFA/CW254PJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW273PJ-SW273JP-PTRAP",
+      "file": "vendor-sources/TOTO-website/RFA/CW273PJ-SW273JP-PTrap.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW273PJ-SW273JP-STRAP",
+      "file": "vendor-sources/TOTO-website/RFA/CW273PJ-SW273JP-STrap.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW274J",
+      "file": "vendor-sources/TOTO-website/RFA/CW274J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW275PJ",
+      "file": "vendor-sources/TOTO-website/RFA/CW275PJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW421J-SW420JP",
+      "file": "vendor-sources/TOTO-website/RFA/CW421J-SW420JP.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW678RJT1",
+      "file": "vendor-sources/TOTO-website/RFA/CW678RJT1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW811NPJ-SW811NJP-PTRAP",
+      "file": "vendor-sources/TOTO-website/RFA/CW811NPJ-SW811NJP-PTrap.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW811NPJ-SW811NJP-STRAP",
+      "file": "vendor-sources/TOTO-website/RFA/CW811NPJ-SW811NJP-STrap.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW812J",
+      "file": "vendor-sources/TOTO-website/RFA/CW812J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW812REJT2",
+      "file": "vendor-sources/TOTO-website/RFA/CW812REJT2.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW812RJT2",
+      "file": "vendor-sources/TOTO-website/RFA/CW812RJT2.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW813PJ",
+      "file": "vendor-sources/TOTO-website/RFA/CW813PJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW823RJ",
+      "file": "vendor-sources/TOTO-website/RFA/CW823RJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW840J",
+      "file": "vendor-sources/TOTO-website/RFA/CW840J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW895J",
+      "file": "vendor-sources/TOTO-website/RFA/CW895J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "CW951J",
+      "file": "vendor-sources/TOTO-website/RFA/CW951J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "L546N",
+      "file": "vendor-sources/TOTO-website/RFA/L546N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW252J",
+      "file": "vendor-sources/TOTO-website/RFA/LW252J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW253J",
+      "file": "vendor-sources/TOTO-website/RFA/LW253J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW254J",
+      "file": "vendor-sources/TOTO-website/RFA/LW254J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW255J",
+      "file": "vendor-sources/TOTO-website/RFA/LW255J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW273CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW273CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW274J",
+      "file": "vendor-sources/TOTO-website/RFA/LW274J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW275J",
+      "file": "vendor-sources/TOTO-website/RFA/LW275J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW276J",
+      "file": "vendor-sources/TOTO-website/RFA/LW276J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW278JL",
+      "file": "vendor-sources/TOTO-website/RFA/LW278JL.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "LW278JR",
+      "category": "Lavatory",
+      "tags": [
+        "Wastafel",
+        "Lavatory",
+        "Basin",
+        "Under Counter Lavatory",
+        "Toto",
+        "Revit"
+      ],
+      "thumbnail": "vendor-sources/TOTO-website/Pictures/LW278JR.jpg",
+      "file": "vendor-sources/TOTO-website/RFA/LW278JR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW279J",
+      "file": "vendor-sources/TOTO-website/RFA/LW279J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW587J",
+      "file": "vendor-sources/TOTO-website/RFA/LW587J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW639CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW639CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW651J",
+      "file": "vendor-sources/TOTO-website/RFA/LW651J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW740J",
+      "file": "vendor-sources/TOTO-website/RFA/LW740J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW810CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW810CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW811CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW811CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW813CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW813CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW814CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW814CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW815CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW815CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW816J",
+      "file": "vendor-sources/TOTO-website/RFA/LW816J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW817J",
+      "file": "vendor-sources/TOTO-website/RFA/LW817J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW818J",
+      "file": "vendor-sources/TOTO-website/RFA/LW818J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW819J",
+      "file": "vendor-sources/TOTO-website/RFA/LW819J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW893CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW893CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW895J",
+      "file": "vendor-sources/TOTO-website/RFA/LW895J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW896J",
+      "file": "vendor-sources/TOTO-website/RFA/LW896J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW897CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW897CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW897J",
+      "file": "vendor-sources/TOTO-website/RFA/LW897J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW898CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW898CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW898J",
+      "file": "vendor-sources/TOTO-website/RFA/LW898J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW899CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW899CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW899J",
+      "file": "vendor-sources/TOTO-website/RFA/LW899J.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "LW930J",
+      "category": "Lavatory",
+      "tags": [
+        "Wastafel",
+        "Lavatory",
+        "Basin",
+        "Pedestal Lavatory",
+        "Toto",
+        "Revit"
+      ],
+      "file": "vendor-sources/TOTO-website/RFA/LW930J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW950CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW950CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW951CJ",
+      "file": "vendor-sources/TOTO-website/RFA/LW951CJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW952J",
+      "file": "vendor-sources/TOTO-website/RFA/LW952J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW953J",
+      "file": "vendor-sources/TOTO-website/RFA/LW953J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW954CJL",
+      "file": "vendor-sources/TOTO-website/RFA/LW954CJL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW954CJR",
+      "file": "vendor-sources/TOTO-website/RFA/LW954CJR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW956J",
+      "file": "vendor-sources/TOTO-website/RFA/LW956J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "LW957J",
+      "file": "vendor-sources/TOTO-website/RFA/LW957J.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "S0515",
+      "file": "vendor-sources/TOTO-website/RFA/S0515.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "S0521",
+      "file": "vendor-sources/TOTO-website/RFA/S0521.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "S81022M",
+      "file": "vendor-sources/TOTO-website/RFA/S81022M.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "S81038M",
+      "file": "vendor-sources/TOTO-website/RFA/S81038M.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "S81040FM",
+      "file": "vendor-sources/TOTO-website/RFA/S81040FM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "SK322E",
+      "file": "vendor-sources/TOTO-website/RFA/SK322E.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "SK33",
+      "file": "vendor-sources/TOTO-website/RFA/SK33.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "T23BQ13N",
+      "file": "vendor-sources/TOTO-website/RFA/T23BQ13N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "T30ARQ13N",
+      "file": "vendor-sources/TOTO-website/RFA/T30ARQ13N.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TCF47360GAA",
+      "category": "Closet",
+      "tags": [
+        "Kloset",
+        "Closet",
+        "Toilet",
+        "WC",
+        "Washlet",
+        "Toto",
+        "Revit"
+      ],
+      "thumbnail": "vendor-sources/TOTO-website/Pictures/TCF47360GAA.jpg",
+      "file": "vendor-sources/TOTO-website/RFA/TCF47360GAA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX113LE",
+      "file": "vendor-sources/TOTO-website/RFA/THX113LE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX113LEV1",
+      "file": "vendor-sources/TOTO-website/RFA/THX113LEV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118MMAN",
+      "file": "vendor-sources/TOTO-website/RFA/THX118MMAN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SEN",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SESMN",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SESMN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SGZ",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SGZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SJZ",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SJZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SRR",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118ST",
+      "file": "vendor-sources/TOTO-website/RFA/THX118ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SVN",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SVN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SX",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SY",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX118SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/THX118SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX20MCRB",
+      "file": "vendor-sources/TOTO-website/RFA/THX20MCRB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX20MMD",
+      "file": "vendor-sources/TOTO-website/RFA/THX20MMD.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX20MMD-MB",
+      "file": "vendor-sources/TOTO-website/RFA/THX20MMD-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX20MMD-PRG",
+      "file": "vendor-sources/TOTO-website/RFA/THX20MMD-PRG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "THX20NBW",
+      "file": "vendor-sources/TOTO-website/RFA/THX20NBW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TLS04101A",
+      "file": "vendor-sources/TOTO-website/RFA/TLS04101A.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TS118WSB",
+      "file": "vendor-sources/TOTO-website/RFA/TS118WSB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TV150NSJ",
+      "file": "vendor-sources/TOTO-website/RFA/TV150NSJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX103LCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX103LCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX103LCLBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX103LCLBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX103LG",
+      "file": "vendor-sources/TOTO-website/RFA/TX103LG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX103LGNCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX103LGNCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX108LDN",
+      "file": "vendor-sources/TOTO-website/RFA/TX108LDN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX108LEBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX108LEBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX108LEM",
+      "file": "vendor-sources/TOTO-website/RFA/TX108LEM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX108LG",
+      "file": "vendor-sources/TOTO-website/RFA/TX108LG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX108LJ",
+      "file": "vendor-sources/TOTO-website/RFA/TX108Lj.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LD",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LD.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LE",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LEM",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LEM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LJ",
+      "file": "vendor-sources/TOTO-website/RFA/TX109Lj.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LP",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LP.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LU",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LU.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX109LV",
+      "file": "vendor-sources/TOTO-website/RFA/TX109LV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX10AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX10AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX10AQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX10AQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX10AW",
+      "file": "vendor-sources/TOTO-website/RFA/TX10AW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX110LCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX110LCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LELBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LELBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LP",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LP.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LT",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LT.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LU",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LU.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LV",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LW",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LX",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LY",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115LY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX115LY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX115MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX115MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX115MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LEDN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LEDN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LESDN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LESDN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LESV4DN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LESV4DN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LESV4N",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LESV4N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LEV4DN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LEV4DN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LEV4N",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LEV4N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LQV4BR",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LQV4BR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LRRN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LRRN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LRRV4",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LRRV4.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LRSN",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LRSN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LRSV4N",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LRSV4N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LT",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LT.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LU",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LU.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LV",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LX",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LY",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116LY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX116LY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX116MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX116MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX116MMCV4",
+      "file": "vendor-sources/TOTO-website/RFA/TX116MMCV4.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LEBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LEBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LECBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LECBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LY",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX118LYC",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LYC.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TX118LYC-MB",
+      "category": "Faucet",
+      "tags": [
+        "Kran",
+        "Keran",
+        "Faucet",
+        "Tap",
+        "Lavatory Faucet",
+        "Toto",
+        "Revit"
+      ],
+      "thumbnail": "vendor-sources/TOTO-website/Pictures/TX118LYC-MB.jpg",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LYC-MB.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TX118LYC-MW",
+      "category": "Faucet",
+      "tags": [
+        "Kran",
+        "Keran",
+        "Faucet",
+        "Tap",
+        "Lavatory Faucet",
+        "Toto",
+        "Revit"
+      ],
+      "thumbnail": "vendor-sources/TOTO-website/Pictures/TX118LYC-MW.jpg",
+      "file": "vendor-sources/TOTO-website/RFA/TX118LYC-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LECBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LECBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LGNCV1BR",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LGNCV1BR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LGV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LGV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LT",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LT.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LV",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LW",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LWC",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LWC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LX",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LY",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LYC",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LYC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LYC-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LYC-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119LYC-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX119LYC-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX119MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX119MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX119MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX120LEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX120LEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX120LESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX120LESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX120LQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX120LQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX120LV",
+      "file": "vendor-sources/TOTO-website/RFA/TX120LV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX120LX",
+      "file": "vendor-sources/TOTO-website/RFA/TX120LX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX122LESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX122LESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX123LESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX123LESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX123LESV4N",
+      "file": "vendor-sources/TOTO-website/RFA/TX123LESV4N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX124LEC",
+      "file": "vendor-sources/TOTO-website/RFA/TX124LEC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX124LES",
+      "file": "vendor-sources/TOTO-website/RFA/TX124LES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX125LES",
+      "file": "vendor-sources/TOTO-website/RFA/TX125LES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX125LESV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX125LESV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX125LESV2",
+      "file": "vendor-sources/TOTO-website/RFA/TX125LESV2.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX126LE",
+      "file": "vendor-sources/TOTO-website/RFA/TX126LE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX128LELBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX128LELBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX128LQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX128LQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX1EB",
+      "file": "vendor-sources/TOTO-website/RFA/TX1EB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX301BG",
+      "file": "vendor-sources/TOTO-website/RFA/TX301BG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX301BJ",
+      "file": "vendor-sources/TOTO-website/RFA/TX301BJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX302BCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX302BCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX303BEBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX303BEBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX303BESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX303BESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX402SPN",
+      "file": "vendor-sources/TOTO-website/RFA/TX402SPN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403MMD",
+      "file": "vendor-sources/TOTO-website/RFA/TX403MMD.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403MMDV2",
+      "file": "vendor-sources/TOTO-website/RFA/TX403MMDV2.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403MMDV2-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX403MMDV2-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403MMDV2-PRG",
+      "file": "vendor-sources/TOTO-website/RFA/TX403MMDV2-PRG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403SECR",
+      "file": "vendor-sources/TOTO-website/RFA/TX403SECR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403SEV2CR",
+      "file": "vendor-sources/TOTO-website/RFA/TX403SEV2CR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403SEV2W",
+      "file": "vendor-sources/TOTO-website/RFA/TX403SEV2W.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403SEW",
+      "file": "vendor-sources/TOTO-website/RFA/TX403SEW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403SMCRB",
+      "file": "vendor-sources/TOTO-website/RFA/TX403SMCRB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX403SW",
+      "file": "vendor-sources/TOTO-website/RFA/TX403SW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX404SDZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX404SDZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX404SGZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX404SGZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX404SJZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX404SJZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX405SDN",
+      "file": "vendor-sources/TOTO-website/RFA/TX405SDN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX405SGN",
+      "file": "vendor-sources/TOTO-website/RFA/TX405SGN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX405SJN",
+      "file": "vendor-sources/TOTO-website/RFA/TX405SJN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SC",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SCL",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SCL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SCLV3",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SCLV3.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SCV3",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SCV3.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SGC",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SGC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SGCV3",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SGCV3.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SGV3",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SGV3.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX411SGZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX411SGZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX416SC",
+      "file": "vendor-sources/TOTO-website/RFA/TX416SC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX416SCL",
+      "file": "vendor-sources/TOTO-website/RFA/TX416SCL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX417SBCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX417SBCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX417SBCLBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX417SBCLBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX417SG",
+      "file": "vendor-sources/TOTO-website/RFA/TX417SG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX417SGNCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX417SGNCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX418S",
+      "file": "vendor-sources/TOTO-website/RFA/TX418S.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX418SG",
+      "file": "vendor-sources/TOTO-website/RFA/TX418SG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX418SGV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX418SGV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX418SV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX418SV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX419SCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX419SCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX419SCLBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX419SCLBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX419SG",
+      "file": "vendor-sources/TOTO-website/RFA/TX419SG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX419SGNCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX419SGNCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX421SC",
+      "file": "vendor-sources/TOTO-website/RFA/TX421SC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX421SCL",
+      "file": "vendor-sources/TOTO-website/RFA/TX421SCL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX421SG",
+      "file": "vendor-sources/TOTO-website/RFA/TX421SG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX421SGNC",
+      "file": "vendor-sources/TOTO-website/RFA/TX421SGNC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX422SC",
+      "file": "vendor-sources/TOTO-website/RFA/TX422SC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX423MEB",
+      "file": "vendor-sources/TOTO-website/RFA/TX423MEB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX426MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX426MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX426MMAV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX426MMAV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX430SCBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX430SCBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX430SCLBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX430SCLBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX432SDN",
+      "file": "vendor-sources/TOTO-website/RFA/TX432SDN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX432SDV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX432SDV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX432SGZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX432SGZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX432SJV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX432SJV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX432SJZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX432SJZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX433SDN",
+      "file": "vendor-sources/TOTO-website/RFA/TX433SDN.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TX433SDV1",
+      "category": "Shower",
+      "tags": [
+        "Shower",
+        "Pancuran",
+        "Mixer",
+        "Exposed Mixer",
+        "Toto",
+        "Revit"
+      ],
+      "thumbnail": "vendor-sources/TOTO-website/Pictures/TX433SDV1.jpg",
+      "file": "vendor-sources/TOTO-website/RFA/TX433SDV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX433SJV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX433SJV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX433SJZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX433SJZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX438SE",
+      "file": "vendor-sources/TOTO-website/RFA/TX438SE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX438SEM",
+      "file": "vendor-sources/TOTO-website/RFA/TX438SEM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX441MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX441MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX441SE",
+      "file": "vendor-sources/TOTO-website/RFA/TX441SE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX441SEV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX441SEV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX441SQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX441SQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX441SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX441SY.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TX441SY-MB",
+      "category": "Faucet",
+      "tags": [
+        "Kran",
+        "Keran",
+        "Faucet",
+        "Tap",
+        "Bath Spout",
+        "Toto",
+        "Revit"
+      ],
+      "thumbnail": "vendor-sources/TOTO-website/Pictures/TX441SY-MB.jpg",
+      "file": "vendor-sources/TOTO-website/RFA/TX441SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX441SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX441SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX442MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX442MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SPN",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SPN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SQN",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SQN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SRRN",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SRRN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SRSN",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SRSN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442STN",
+      "file": "vendor-sources/TOTO-website/RFA/TX442STN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SU",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SU.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SV",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SW",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SX",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX442SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX442SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX443MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX443MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SPN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SPN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SQN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SQN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SRRN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SRRN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SRSN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SRSN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX443ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SUN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SUN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SVN",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SVN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SX",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX443SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX443SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX445SECM",
+      "file": "vendor-sources/TOTO-website/RFA/TX445SECM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX445SECMV3",
+      "file": "vendor-sources/TOTO-website/RFA/TX445SECMV3.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX445SELMN",
+      "file": "vendor-sources/TOTO-website/RFA/TX445SELMN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX445SELMV3Z",
+      "file": "vendor-sources/TOTO-website/RFA/TX445SELMV3Z.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX445SEMV3",
+      "file": "vendor-sources/TOTO-website/RFA/TX445SEMV3.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX445SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX445SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX445SESM",
+      "file": "vendor-sources/TOTO-website/RFA/TX445SESM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX446SECM",
+      "file": "vendor-sources/TOTO-website/RFA/TX446SECM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX446SELMN",
+      "file": "vendor-sources/TOTO-website/RFA/TX446SELMN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX446SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX446SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX446SESM",
+      "file": "vendor-sources/TOTO-website/RFA/TX446SESM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX447MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SEC",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SEC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SELN",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SELN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SES",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SEZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SEZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SGCV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SGCV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SGV1N",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SGV1N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SRSN",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SRSN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX447ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SV",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SWCN",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SWCN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SWN",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SWN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX447SX",
+      "file": "vendor-sources/TOTO-website/RFA/TX447SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX449MMAN",
+      "file": "vendor-sources/TOTO-website/RFA/TX449MMAN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX449SEV2Z",
+      "file": "vendor-sources/TOTO-website/RFA/TX449SEV2Z.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX449SEZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX449SEZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX450MMAN",
+      "file": "vendor-sources/TOTO-website/RFA/TX450MMAN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX450SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX450SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX450SEV2N",
+      "file": "vendor-sources/TOTO-website/RFA/TX450SEV2N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX451MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX451SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451SESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX451SESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451SQN",
+      "file": "vendor-sources/TOTO-website/RFA/TX451SQN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451STN",
+      "file": "vendor-sources/TOTO-website/RFA/TX451STN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX451SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX451SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX451SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX451SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX452MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX452MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX452SE",
+      "file": "vendor-sources/TOTO-website/RFA/TX452SE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX452SEC",
+      "file": "vendor-sources/TOTO-website/RFA/TX452SEC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX452SES",
+      "file": "vendor-sources/TOTO-website/RFA/TX452SES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX452SQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX452SQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX452ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX452ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX452SW",
+      "file": "vendor-sources/TOTO-website/RFA/TX452SW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX453SCL",
+      "file": "vendor-sources/TOTO-website/RFA/TX453SCL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX453SE",
+      "file": "vendor-sources/TOTO-website/RFA/TX453SE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX453SEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX453SEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX453SES",
+      "file": "vendor-sources/TOTO-website/RFA/TX453SES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX453SQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX453SQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX453ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX453ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX453SW",
+      "file": "vendor-sources/TOTO-website/RFA/TX453SW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX454SES",
+      "file": "vendor-sources/TOTO-website/RFA/TX454SES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX465SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX465SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX467MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX467MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SEBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SEBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SECBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SECBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SGNCV1BR",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SGNCV1BR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SGV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SGV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX467ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SV",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SV.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX467SX",
+      "file": "vendor-sources/TOTO-website/RFA/TX467SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX468MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SBECBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SBECBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SBEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SBEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SBESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SBESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SEBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SEBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SECBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SECBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX468ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SYC",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SYC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SYC-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SYC-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX468SYC-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX468SYC-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX469MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SEBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SEBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX469ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SYC",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SYC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SYC-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SYC-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX469SYC-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX469SYC-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX470SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX470SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471MMAN",
+      "file": "vendor-sources/TOTO-website/RFA/TX471MMAN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SESM",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SESM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SPN",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SPN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SPV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SPV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SRSN",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SRSN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SUN",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SUN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SX",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX471SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX471SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SESMN",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SESMN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SESMV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SESMV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SJZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SJZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SQN",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SQN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SQV1N",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SQV1N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SW",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SY-MB.rfa"
+    },
+    {
+      "action": "new",
+      "brand": "Toto",
+      "name": "TX472SY-MW",
+      "category": "Shower",
+      "tags": [
+        "Shower",
+        "Pancuran",
+        "Mixer",
+        "Hand Shower Set",
+        "Toto",
+        "Revit"
+      ],
+      "thumbnail": "vendor-sources/TOTO-website/Pictures/TX472SY-MW.jpg",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SYV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SYV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SYV1-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SYV1-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX472SYV1-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX472SYV1-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX473MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SESN",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SESN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SGN",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SGN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SQN",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SQN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473STN",
+      "file": "vendor-sources/TOTO-website/RFA/TX473STN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SXN",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SXN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX473SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX473SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474MMAN",
+      "file": "vendor-sources/TOTO-website/RFA/TX474MMAN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SESM",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SESM.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SPN",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SPN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SPV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SPV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SRSN",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SRSN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX474ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SUN",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SUN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SX",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX474SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX474SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX475SEZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX475SEZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX484MMA",
+      "file": "vendor-sources/TOTO-website/RFA/TX484MMA.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX484SCL",
+      "file": "vendor-sources/TOTO-website/RFA/TX484SCL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX484SE",
+      "file": "vendor-sources/TOTO-website/RFA/TX484SE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX484SES",
+      "file": "vendor-sources/TOTO-website/RFA/TX484SES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX484SQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX484SQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX484ST",
+      "file": "vendor-sources/TOTO-website/RFA/TX484ST.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX488MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX488MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX488SCZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX488SCZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX488SQZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX488SQZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX488STN",
+      "file": "vendor-sources/TOTO-website/RFA/TX488STN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX488SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX488SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX488SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX488SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX488SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX488SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX489SW",
+      "file": "vendor-sources/TOTO-website/RFA/TX489SW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX491MMC",
+      "file": "vendor-sources/TOTO-website/RFA/TX491MMC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX491SCZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX491SCZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX491SQZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX491SQZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX491STN",
+      "file": "vendor-sources/TOTO-website/RFA/TX491STN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX491SY",
+      "file": "vendor-sources/TOTO-website/RFA/TX491SY.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX491SY-MB",
+      "file": "vendor-sources/TOTO-website/RFA/TX491SY-MB.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX491SY-MW",
+      "file": "vendor-sources/TOTO-website/RFA/TX491SY-MW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SCLZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SCLZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SCZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SCZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SEN",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SEN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SES",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SG",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SGC",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SGC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SRRZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SRRZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492STZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX492STZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX492SUN",
+      "file": "vendor-sources/TOTO-website/RFA/TX492SUN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX493SRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX493SRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX493SRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX493SRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX494SEL",
+      "file": "vendor-sources/TOTO-website/RFA/TX494SEL.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX494SELV1BR",
+      "file": "vendor-sources/TOTO-website/RFA/TX494SELV1BR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX494SQBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX494SQBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX494SX",
+      "file": "vendor-sources/TOTO-website/RFA/TX494SX.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX496SRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX496SRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX496SRSN",
+      "file": "vendor-sources/TOTO-website/RFA/TX496SRSN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX496SUN",
+      "file": "vendor-sources/TOTO-website/RFA/TX496SUN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX4A",
+      "file": "vendor-sources/TOTO-website/RFA/TX4A.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX4WAC",
+      "file": "vendor-sources/TOTO-website/RFA/TX4WAC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX5WAC",
+      "file": "vendor-sources/TOTO-website/RFA/TX5WAC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX603KCS",
+      "file": "vendor-sources/TOTO-website/RFA/TX603KCS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX604KDN",
+      "file": "vendor-sources/TOTO-website/RFA/TX604KDN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX605KESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX605KESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX605KRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX605KRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX605KRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX605KRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX606KES",
+      "file": "vendor-sources/TOTO-website/RFA/TX606KES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX606KRR",
+      "file": "vendor-sources/TOTO-website/RFA/TX606KRR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX606KRS",
+      "file": "vendor-sources/TOTO-website/RFA/TX606KRS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX607KESBR",
+      "file": "vendor-sources/TOTO-website/RFA/TX607KESBR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX701AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701AE",
+      "file": "vendor-sources/TOTO-website/RFA/TX701AE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX701AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701AG",
+      "file": "vendor-sources/TOTO-website/RFA/TX701AG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701AJ",
+      "file": "vendor-sources/TOTO-website/RFA/TX701AJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701AQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX701AQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701ARR",
+      "file": "vendor-sources/TOTO-website/RFA/TX701ARR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701ARS",
+      "file": "vendor-sources/TOTO-website/RFA/TX701ARS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX701AW",
+      "file": "vendor-sources/TOTO-website/RFA/TX701AW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX702AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702AE",
+      "file": "vendor-sources/TOTO-website/RFA/TX702AE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX702AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702AG",
+      "file": "vendor-sources/TOTO-website/RFA/TX702AG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702AJ",
+      "file": "vendor-sources/TOTO-website/RFA/TX702AJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702AQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX702AQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702ARR",
+      "file": "vendor-sources/TOTO-website/RFA/TX702ARR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702ARS",
+      "file": "vendor-sources/TOTO-website/RFA/TX702ARS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX702AW",
+      "file": "vendor-sources/TOTO-website/RFA/TX702AW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AE",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AESV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AESV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AG",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AJ",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AQV1",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AQV1.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703ARR",
+      "file": "vendor-sources/TOTO-website/RFA/TX703ARR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703ARS",
+      "file": "vendor-sources/TOTO-website/RFA/TX703ARS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX703AW",
+      "file": "vendor-sources/TOTO-website/RFA/TX703AW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704ACW",
+      "file": "vendor-sources/TOTO-website/RFA/TX704ACW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AE",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AG",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AJ",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AJ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AN",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AN.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AQ",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AQ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704ARR",
+      "file": "vendor-sources/TOTO-website/RFA/TX704ARR.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704ARS",
+      "file": "vendor-sources/TOTO-website/RFA/TX704ARS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX704AW",
+      "file": "vendor-sources/TOTO-website/RFA/TX704AW.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX721AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX721AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX721AEV1N",
+      "file": "vendor-sources/TOTO-website/RFA/TX721AEV1N.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX721AEZ",
+      "file": "vendor-sources/TOTO-website/RFA/TX721AEZ.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX721AS",
+      "file": "vendor-sources/TOTO-website/RFA/TX721AS.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX722AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX722AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX722AE",
+      "file": "vendor-sources/TOTO-website/RFA/TX722AE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX722AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX722AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX724AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX724AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX724AE",
+      "file": "vendor-sources/TOTO-website/RFA/TX724AE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX724AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX724AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX724AG",
+      "file": "vendor-sources/TOTO-website/RFA/TX724AG.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX725AC",
+      "file": "vendor-sources/TOTO-website/RFA/TX725AC.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX726AE",
+      "file": "vendor-sources/TOTO-website/RFA/TX726AE.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "TX726AES",
+      "file": "vendor-sources/TOTO-website/RFA/TX726AES.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "U57M",
+      "file": "vendor-sources/TOTO-website/RFA/U57M.rfa"
+    },
+    {
+      "action": "attach",
+      "brand": "Toto",
+      "name": "UW811HJ",
+      "file": "vendor-sources/TOTO-website/RFA/UW811HJ.rfa"
     }
   ],
   "waiting_for_brand": [
     "Dirory-branded until confirmed: Vessel Basin Tap (likely Trilliunware), the two Bobrick washroom accessories, Excel Dryer ThinAir and XLERATOR."
+  ],
+  "waiting_for_rfa": [
+    "Fortress (photos only, no .rfa in the 2026-10-19 drop): Urban 80.03, 80.04, 80.05, 80.06; Fortress 90.12, 90.14, 90.15, 120.10, 120.11, 120.12, 120.13, 150.12, 150.15; Prime 90.01-90.04, 150.01, 150.02, 150.04; Olympus 90.03, 120.02, 120.03, 160.01, 160.03."
   ]
 }
