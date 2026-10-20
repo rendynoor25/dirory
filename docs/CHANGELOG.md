@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased — Revit 0.1.14: material cards say what they did
+
+Clicking a material card worked, but looked like nothing happened: a material
+already in the project was reused silently, and Dirory's paint mode only
+showed a one-line prompt in Revit's status bar while the panel kept focus.
+Revit's own Paint (PT) tool cannot be opened with a material chosen through
+the API, so Dirory keeps its own paint mode (same clicks, Esc to finish) and
+now makes it obvious:
+
+- a toast names the material that was loaded into the Material Browser and
+  says paint mode is on; Revit comes to the front so the first click lands in
+  the view;
+- in a view where faces cannot be picked (schedule, sheet, drafting, legend)
+  it says to open a 3D view, elevation, section or plan instead of waiting;
+- after Esc it reports how many faces were painted, or that the material stays
+  in the Material Browser for Revit's own Paint tool.
+- Indonesian strings added to the shared ui/i18n.json.
+
 ## SketchUp 0.10.9 — published on /download, 20 Oct 2026: Extension Warehouse RuboCop fixes
 
 The Warehouse's RuboCop check rejected 0.10.8 for one requirement and flagged
@@ -31,6 +49,22 @@ download no longer leaves the badge pulsing). In Revit, a model with no .rfa
 shows a grey "SketchUp only" tag and a faded thumbnail instead of a download
 badge it can never complete. Built for Revit 2024; checked the three card states
 in a Revit-mode panel page, not yet inside Revit.
+
+## Library — Fortress doors (Revit only)
+
+32 Fortress steel doors are in the catalogue as Revit-only products (category
+Doors, new approved vendor Fortress): Legion 80.01–80.05, Urban 80.01,
+Fortress 90.10/90.11/90.13 and 150.10/150.11/150.13, Prime 120.01–120.04,
+Galaxy 90.01–90.03, 120.01–120.03 and 150.01–150.03, Olympus 90.01, 90.02,
+120.01 and 160.02, Dynasty 90.01, 130.01 and 160.01. The vendor's drop had no
+.skp, so SketchUp plugins do not list them; Revit and the website do.
+
+The raw drop (backups, nested leaves/panels, profiles, photos) is kept in
+`D:\Dirory\vendor-sources\Fortress`; the curated set — one family and one
+thumbnail per product — is `sample_library/Model/Doors/Fortress`. Entries are in
+`library-additions/Revit/families.json` (25 photographed models without an .rfa
+are listed under `waiting_for_rfa`). `upload-revit-families.mjs` now creates an
+approved vendor for a brand it has not seen, like `upload-library.mjs`.
 
 ## SketchUp 0.10.8 / Revit 0.1.13 (published 20 Oct 2026): a free estimate prices one project only
 

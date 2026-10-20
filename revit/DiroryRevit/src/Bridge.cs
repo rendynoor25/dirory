@@ -365,8 +365,21 @@ namespace Dirory.Revit
                 var uidoc = app.ActiveUIDocument;
                 if (uidoc == null) { Toast(Lang.T("Open a Revit project first.")); return; }
                 var id = RevitOps.EnsureMaterial(uidoc.Document, app.Application, label, path, w, h);
+                string matName = uidoc.Document.GetElement(id)?.Name ?? label;
+                // Revit's own Paint tool cannot be opened with a material chosen,
+                // so this is Dirory's paint mode: the same clicks, Esc to finish.
+                // Say so loudly; the status-bar prompt alone was easy to miss.
+                if (!RevitOps.CanPaintIn(uidoc.ActiveView))
+                {
+                    Toast(Lang.T("\"{material}\" is in the Material Browser. To paint it, open a 3D view, elevation, section or plan and click the card again.", "material", matName));
+                    return;
+                }
+                Toast(Lang.T("\"{material}\" is loaded. Paint mode: click faces in the Revit view, press Esc to finish.", "material", matName));
+                RevitOps.FocusRevit(app);
                 int n = RevitOps.PaintLoop(uidoc, id, label);
-                if (n > 0) Toast($"Painted {n} face(s) with {label}.");
+                Toast(n > 0
+                    ? Lang.T("Painted {n} face(s) with {material}.", "n", n, "material", matName)
+                    : Lang.T("Nothing painted. \"{material}\" stays in the Material Browser for Revit's own Paint tool.", "material", matName));
             });
         }
 

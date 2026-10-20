@@ -438,7 +438,11 @@
    "phrase.Dirory for {host} {version}": "Dirory untuk {host} {version}",
    "phrase.Type a city or regency…": "Ketik kota atau kabupaten…",
    "phrase.No match. Try the city or regency name.": "Tidak ditemukan. Coba nama kota atau kabupaten.",
-   "phrase.{area} is in {city}": "{area} ada di {city}"
+   "phrase.{area} is in {city}": "{area} ada di {city}",
+   "phrase.\"{material}\" is in the Material Browser. To paint it, open a 3D view, elevation, section or plan and click the card again.": "\"{material}\" sudah ada di Material Browser. Untuk mengecatnya, buka tampilan 3D, tampak, potongan, atau denah lalu klik kartunya lagi.",
+   "phrase.\"{material}\" is loaded. Paint mode: click faces in the Revit view, press Esc to finish.": "\"{material}\" sudah dimuat. Mode cat: klik permukaan di tampilan Revit, tekan Esc untuk selesai.",
+   "phrase.Painted {n} face(s) with {material}.": "{n} permukaan dicat dengan {material}.",
+   "phrase.Nothing painted. \"{material}\" stays in the Material Browser for Revit's own Paint tool.": "Belum ada yang dicat. \"{material}\" tetap ada di Material Browser untuk alat Paint Revit."
   }
  }
 }

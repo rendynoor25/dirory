@@ -264,6 +264,36 @@ namespace Dirory.Revit
             catch { return new Autodesk.Revit.DB.Color(200, 200, 200); }
         }
 
+        /// Views where a face can be picked and painted.
+        public static bool CanPaintIn(View view)
+        {
+            if (view == null || view.IsTemplate) return false;
+            switch (view.ViewType)
+            {
+                case ViewType.ThreeD:
+                case ViewType.Elevation:
+                case ViewType.Section:
+                case ViewType.Detail:
+                case ViewType.FloorPlan:
+                case ViewType.CeilingPlan:
+                case ViewType.EngineeringPlan:
+                case ViewType.AreaPlan:
+                    return true;
+                default:
+                    return false;  // schedules, sheets, drafting views, legends
+            }
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        /// Bring Revit to the front, so the first click after choosing a card
+        /// lands in the view instead of only taking focus from the panel.
+        public static void FocusRevit(UIApplication app)
+        {
+            try { SetForegroundWindow(app.MainWindowHandle); } catch { /* best effort */ }
+        }
+
         /// <summary>Paint faces one by one until Esc, like SketchUp's Paint Bucket.</summary>
         public static int PaintLoop(UIDocument uidoc, ElementId materialId, string label)
         {
