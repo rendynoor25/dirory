@@ -21,7 +21,9 @@ module Dirory
 
       # The strings live in ui/i18n.json, shared with the Revit add-in
       # (Lang.cs), so both plugins speak the same Indonesian.
-      FILE = File.join(__dir__, 'ui', 'i18n.json')
+      dir = __dir__.dup
+      dir.force_encoding('UTF-8') if dir.respond_to?(:force_encoding)
+      FILE = File.join(dir, 'ui', 'i18n.json')
 
       TRANSLATIONS = begin
         JSON.parse(File.read(FILE, encoding: 'UTF-8'))['strings'].freeze

@@ -1,5 +1,25 @@
 # Changelog
 
+## SketchUp 0.10.9 (built, not released) — Extension Warehouse RuboCop fixes
+
+The Warehouse's RuboCop check rejected 0.10.8 for one requirement and flagged
+16 suggestions. Fixed:
+- One root namespace: the Windows busy-cursor helper moved from the top-level
+  `DiroryBusyCursorApi` to `Dirory::Library::BusyCursorApi` (the requirement).
+- No OpenSSL: `SecureRandom` (which loads OpenSSL and can freeze SketchUp on
+  Windows) is replaced by `Cloud.new_uuid`, a v4 UUID from Ruby's `Random`.
+  Install and event ids only need to be unique, not secret.
+- `__FILE__` / `__dir__` are forced to UTF-8, so a non-English install path
+  (e.g. a Windows user name) cannot raise.
+- `Sketchup.focus` is only called where it exists (SketchUp 2021+).
+- The updater installs into the folder Dirory was loaded from instead of
+  SketchUp's default Plugins folder.
+- Paint tool: `suspend` invalidates the view and `getExtents` keeps the
+  highlighted face from being clipped.
+- Operation name "Dirory: RAB Mapping".
+Kept on purpose: Quantifier and BoQ read `model.entities` (the whole model, not
+the open group); the two lines carry a RuboCop disable comment saying why.
+
 ## SketchUp 0.10.8 and Revit 0.1.13 — published on /download, 20 Oct 2026: download badge and "SketchUp only" cards
 
 Clicking a model in Revit gave no sign it was loading: the add-in never told the

@@ -58,8 +58,12 @@ module Dirory
         false
       end
 
+      # The folder Dirory is installed in (the one holding dirory_library.rb),
+      # which is not always SketchUp's default Plugins folder.
       def self.plugins_dir
-        Sketchup.find_support_file('Plugins')
+        file = __FILE__.dup
+        file.force_encoding('UTF-8') if file.respond_to?(:force_encoding)
+        File.dirname(File.dirname(File.expand_path(file)))
       rescue StandardError
         nil
       end
@@ -129,10 +133,10 @@ module Dirory
             backup  = '<BACKUP_DIR>'
             ext_dir = '<EXTENSION_DIR>'
             loader  = '<LOADER_FILE>'
-            plugins = Sketchup.find_support_file('Plugins')
+            plugins = '<PLUGINS_DIR>'
             src_dir = File.join(extract, ext_dir)
             src_rb  = File.join(extract, loader)
-            if plugins && File.directory?(src_dir) && File.file?(src_rb)
+            if !plugins.empty? && File.directory?(plugins) && File.directory?(src_dir) && File.file?(src_rb)
               dest_dir = File.join(plugins, ext_dir)
               dest_rb  = File.join(plugins, loader)
 
@@ -168,7 +172,7 @@ module Dirory
         RUBY
         script = script.gsub('<EXTRACT_DIR>', EXTRACT_DIR).gsub('<PENDING_DIR>', PENDING_DIR)
                        .gsub('<BACKUP_DIR>', BACKUP_DIR).gsub('<EXTENSION_DIR>', EXTENSION_DIR)
-                       .gsub('<LOADER_FILE>', LOADER_FILE)
+                       .gsub('<LOADER_FILE>', LOADER_FILE).gsub('<PLUGINS_DIR>', plugins_dir.to_s)
         File.write(APPLY_SCRIPT, script, encoding: 'UTF-8')
       end
 

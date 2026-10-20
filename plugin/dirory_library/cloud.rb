@@ -2,7 +2,6 @@
 require 'json'
 require 'digest'
 require 'fileutils'
-require 'securerandom'
 
 # ----------------------------------------------------------------------
 # Dirory cloud layer (v0.5)
@@ -28,7 +27,7 @@ module Dirory
   module Library
     module Cloud
       SECTION = 'DiroryLibrary'.freeze
-      PLUGIN_VERSION = '0.10.8'.freeze
+      PLUGIN_VERSION = '0.10.9'.freeze
       # The privacy-policy edition the consent dialog asks about. Bump it to
       # ask every architect again (UU PDP A3/A12).
       CONSENT_VERSION = '2026-10'.freeze
@@ -108,10 +107,22 @@ module Dirory
         Sketchup.write_default(SECTION, key, value)
       end
 
+      # A random RFC 4122 version-4 UUID. Not SecureRandom: it loads OpenSSL,
+      # which can freeze SketchUp on Windows for minutes. These ids (install id,
+      # event ids) only need to be unique, not secret.
+      def self.new_uuid
+        rng = Random.new
+        b = Array.new(16) { rng.rand(256) }
+        b[6] = (b[6] & 0x0f) | 0x40
+        b[8] = (b[8] & 0x3f) | 0x80
+        h = b.map { |x| format('%02x', x) }.join
+        "#{h[0, 8]}-#{h[8, 4]}-#{h[12, 4]}-#{h[16, 4]}-#{h[20, 12]}"
+      end
+
       def self.install_id
         id = read('install_id', '').to_s
         if id.empty?
-          id = SecureRandom.uuid
+          id = new_uuid
           write('install_id', id)
         end
         id
@@ -779,7 +790,7 @@ module Dirory
           list.reject! { |e| e['kind'] == kind && e['key'] == replace_key }
         end
         entry = {
-          'id' => SecureRandom.uuid,
+          'id' => new_uuid,
           'kind' => kind,
           'ts' => Time.now.utc.strftime('%Y-%m-%dT%H:%M:%SZ'),
           't' => Time.now.to_i,

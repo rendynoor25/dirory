@@ -5,28 +5,36 @@ require 'digest'
 require 'uri'
 require 'fileutils'
 require 'tmpdir'
-require File.join(File.dirname(__FILE__), 'cloud')
-require File.join(File.dirname(__FILE__), 'i18n')
-require File.join(File.dirname(__FILE__), 'updater')
-require File.join(File.dirname(__FILE__), 'takeoff')
-
-if RUBY_PLATFORM =~ /mswin|mingw/i
-  begin
-    require 'fiddle/import'
-    module DiroryBusyCursorApi
-      extend Fiddle::Importer
-      dlload 'user32.dll'
-      extern 'void* LoadCursorA(void*, void*)'
-      extern 'void* SetCursor(void*)'
-    end
-  rescue StandardError
-    # Dirory still works if the host blocks optional native cursor access.
-  end
-end
+# Ruby on Windows does not tag __FILE__ as UTF-8, so a non-English folder name
+# (e.g. a Windows user name) would raise when the path is used.
+file = __FILE__.dup
+file.force_encoding('UTF-8') if file.respond_to?(:force_encoding)
+require File.join(File.dirname(file), 'cloud')
+require File.join(File.dirname(file), 'i18n')
+require File.join(File.dirname(file), 'updater')
+require File.join(File.dirname(file), 'takeoff')
 
 module Dirory
   module Library
-    PLUGIN_ROOT = File.dirname(__FILE__) unless defined?(PLUGIN_ROOT)
+    if RUBY_PLATFORM =~ /mswin|mingw/i
+      begin
+        require 'fiddle/import'
+        module BusyCursorApi
+          extend Fiddle::Importer
+          dlload 'user32.dll'
+          extern 'void* LoadCursorA(void*, void*)'
+          extern 'void* SetCursor(void*)'
+        end
+      rescue StandardError
+        # Dirory still works if the host blocks optional native cursor access.
+      end
+    end
+
+    unless defined?(PLUGIN_ROOT)
+      root = __FILE__.dup
+      root.force_encoding('UTF-8') if root.respond_to?(:force_encoding)
+      PLUGIN_ROOT = File.dirname(root)
+    end
 
     SETTINGS_SECTION = 'DiroryLibrary'.freeze
 
@@ -569,7 +577,7 @@ module Dirory
       UI.start_timer(0.1, false) do
         begin
           begin
-            Sketchup.focus
+            Sketchup.focus if Sketchup.respond_to?(:focus) # SketchUp 2021+
           rescue StandardError
             nil
           end
@@ -715,7 +723,7 @@ module Dirory
         # tool starts but the model never follows the cursor while the Dirory
         # panel still has focus.
         begin
-          Sketchup.focus
+          Sketchup.focus if Sketchup.respond_to?(:focus) # SketchUp 2021+
         rescue StandardError
           nil
         end
@@ -732,19 +740,19 @@ module Dirory
     # Use Windows' animated app-starting cursor while SketchUp synchronously
     # reads a potentially large SKP. The cursor is restored even on failure.
     def self.with_loading_cursor
-      return yield unless defined?(DiroryBusyCursorApi)
+      return yield unless defined?(BusyCursorApi)
       begin
-        busy = DiroryBusyCursorApi.LoadCursorA(
+        busy = BusyCursorApi.LoadCursorA(
           Fiddle::Pointer.new(0), Fiddle::Pointer.new(32650)) # IDC_APPSTARTING
         return yield unless busy
-        previous = DiroryBusyCursorApi.SetCursor(busy)
+        previous = BusyCursorApi.SetCursor(busy)
       rescue StandardError
         return yield
       end
       begin
         yield
       ensure
-        DiroryBusyCursorApi.SetCursor(previous) if previous
+        BusyCursorApi.SetCursor(previous) if previous
       end
     end
 
@@ -790,8 +798,23 @@ module Dirory
         view.invalidate
       end
 
+      def suspend(view)
+        view.invalidate
+      end
+
       def deactivate(view)
         view.invalidate
+      end
+
+      # The highlighted face, so SketchUp does not clip it at the view's edge.
+      def getExtents
+        bounds = Geom::BoundingBox.new
+        return bounds unless @face && @face.valid?
+        transform = @transform || Geom::Transformation.new
+        @face.vertices.each { |v| bounds.add(v.position.transform(transform)) }
+        bounds
+      rescue StandardError
+        Geom::BoundingBox.new
       end
 
       def update_status
@@ -1130,7 +1153,8 @@ module Dirory
         ctx[:materials][info['id']] ||= info.merge('faces' => 0, 'area_in2' => 0.0)
       end
 
-      walk_usage(model.entities, Geom::Transformation.new, nil, ctx)
+      # The whole model is counted, not just the group open for editing.
+      walk_usage(model.entities, Geom::Transformation.new, nil, ctx) # rubocop:disable SketchupSuggestions/ModelEntities
 
       sorter = ->(r) { [r['brand'].to_s.downcase, r['category'].to_s.downcase, r['name'].to_s.downcase] }
       models = ctx[:models].values.sort_by(&sorter)

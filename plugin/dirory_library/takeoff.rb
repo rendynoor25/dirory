@@ -181,7 +181,7 @@ module Dirory
     # Save the mapping (a Hash like parse_mapping's) on the model, undoable.
     def self.save_mapping(model, map)
       clean = parse_mapping(map.to_json)
-      model.start_operation('Dirory: RAB mapping', true)
+      model.start_operation('Dirory: RAB Mapping', true)
       model.set_attribute(ATTR, 'mapping', clean.to_json)
       model.commit_operation
       clean
@@ -233,7 +233,8 @@ module Dirory
         frame: { 'members' => 0, 'panels' => 0, 'length_m' => 0.0, 'volume_m3' => 0.0 },
         fill: {}
       }
-      walk(model.entities, Geom::Transformation.new, nil, [], ctx, nil)
+      # The whole model is measured, not just the group open for editing.
+      walk(model.entities, Geom::Transformation.new, nil, [], ctx, nil) # rubocop:disable SketchupSuggestions/ModelEntities
 
       rows = ctx[:rows].values.map do |r|
         r.merge('area_m2' => (r.delete('area_in2') * SQIN_TO_SQM).round(2))

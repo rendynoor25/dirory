@@ -10,9 +10,12 @@ module Dirory
     end
 
     unless file_loaded?(__FILE__)
-      ext = SketchupExtension.new('Dirory', File.join(File.dirname(__FILE__), 'dirory_library', 'main.rb'))
+      # Ruby on Windows does not tag __FILE__ as UTF-8; fix it for non-English paths.
+      file = __FILE__.dup
+      file.force_encoding('UTF-8') if file.respond_to?(:force_encoding)
+      ext = SketchupExtension.new('Dirory', File.join(File.dirname(file), 'dirory_library', 'main.rb'))
       ext.description = 'Browse the Dirory product library inside SketchUp: search, insert models and paint materials from real Indonesian brands.'
-      ext.version     = '0.10.8'
+      ext.version     = '0.10.9'
       ext.creator     = 'Dirory'
       ext.copyright   = '2026'
       self.extension  = ext
