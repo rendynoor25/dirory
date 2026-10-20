@@ -19,7 +19,7 @@ namespace Dirory.Revit
 {
     public class App : IExternalApplication
     {
-        public const string Version = "0.1.15";
+        public const string Version = "0.1.18";
         public static readonly DockablePaneId PaneId = new DockablePaneId(new Guid("6E3B2D3A-6A0E-4C55-9C8E-2B1F7A5D9E41"));
 
         public static PanelPage Panel { get; private set; }

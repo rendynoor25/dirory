@@ -30,8 +30,9 @@ namespace Dirory.Revit
         {
             _page = page;
             // Live cost: checked twice a second on the panel's (UI) thread.
+            // The same tick keeps the panel's message loop awake (see WakeWebView).
             _liveTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-            _liveTimer.Tick += (s, e) => LiveTick();
+            _liveTimer.Tick += (s, e) => { PanelPage.WakeWebView(); LiveTick(); };
             _liveTimer.Start();
         }
 
@@ -84,6 +85,7 @@ namespace Dirory.Revit
         {
             var msg = Json.Read(message);
             string name = Json.Str(msg, "name");
+            if (name != "liveTakeoff" && name != "ping") RevitOps.Log("panel: " + name);
             object raw = msg.TryGetValue("payload", out var p) ? p : null;
             var payload = raw is string s ? Json.Read(s) : (raw as Dictionary<string, object> ?? new Dictionary<string, object>());
             try { Dispatch(name, payload, raw as string); }

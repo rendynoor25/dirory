@@ -30,10 +30,12 @@ namespace Dirory.Revit
         {
             while (_queue.TryDequeue(out var action))
             {
+                Log("ops: run");
                 try { action(app); }
                 catch (Autodesk.Revit.Exceptions.OperationCanceledException) { /* Esc while picking */ }
                 catch (Exception e) { App.Panel.Bridge.Toast("Dirory: " + e.Message); }
             }
+            PanelPage.WakeWebView();
         }
 
         public string GetName() => "Dirory";
@@ -332,11 +334,10 @@ namespace Dirory.Revit
         // Families (.rfa)
         // ------------------------------------------------------------------
 
-        /// Load a family and let the architect place it. Placement is modal:
-        /// Revit (and the Dirory panel with it) waits for a click in the view
-        /// until the item is placed or Esc is pressed. So say first exactly
-        /// where to click - most product families are hosted on a wall or a
-        /// face - bring Revit to the front, and report what happened.
+        /// Load a family, then start Revit's own Place Component with it. Say
+        /// first exactly where to click - most product families are hosted on
+        /// a wall or a face - and bring Revit to the front. A family saved in
+        /// an older Revit is upgraded on first load, which can take ~20 s.
         public static void LoadAndPlace(UIApplication app, UIDocument uidoc, string rfaPath, string label)
         {
             Document doc = uidoc.Document;
@@ -389,20 +390,14 @@ namespace Dirory.Revit
             }
             App.Panel.Bridge.Toast(where);
             FocusRevit(app);
-
-            int before = Count(doc, symbol.Id);
-            try { uidoc.PromptForFamilyInstancePlacement(symbol); }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException) { /* Esc: the normal way to finish */ }
-            int placed = Count(doc, symbol.Id) - before;
-            Log($"insert \"{label}\": placed {placed}");
-            App.Panel.Bridge.Toast(placed > 0
-                ? Lang.T("Placed {n} × {name}.", "n", placed, "name", label)
-                : Lang.T("{name} is loaded in the project (Project Browser > Families) but was not placed. " +
-                         "Wall-hosted items need a click on a wall.", "name", label));
+            // Revit's own Place Component, posted to start once this handler
+            // returns, rather than a modal PromptForFamilyInstancePlacement
+            // here: the architect gets the full tool (rotate, level, Esc).
+            // The family upgrade above is what used to leave the panel deaf
+            // afterwards; Execute wakes it again (PanelPage.WakeWebView).
+            uidoc.PostRequestForElementTypePlacement(symbol);
+            Log($"insert \"{label}\": placement handed to Place Component");
         }
 
-        private static int Count(Document doc, ElementId symbolId) =>
-            new FilteredElementCollector(doc).OfClass(typeof(FamilyInstance))
-                .Cast<FamilyInstance>().Count(i => i.Symbol.Id == symbolId);
     }
 }

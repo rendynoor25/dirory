@@ -60,6 +60,35 @@ window.sketchup = new Proxy({}, {
             };
         }
 
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern IntPtr FindWindowEx(IntPtr parent, IntPtr after, string cls, string title);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint pid);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr w, IntPtr l);
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern uint GetCurrentThreadId();
+
+        /// Nudge WebView2's message loop on this (Revit's main) thread.
+        /// WebView2 wakes its queue with a single posted message and posts no
+        /// other until that one is handled. Revit's progress loops (loading a
+        /// family saved in an older Revit, for one) take that message without
+        /// passing it on, after which every panel click and Esc/F5 is silently
+        /// queued forever. Posting the wake-up again is harmless when nothing
+        /// was lost. Call it on the UI thread.
+        public static void WakeWebView()
+        {
+            try
+            {
+                const uint WM_USER = 0x0400;
+                uint me = GetCurrentThreadId();
+                IntPtr HWND_MESSAGE = new IntPtr(-3), h = IntPtr.Zero;
+                while ((h = FindWindowEx(HWND_MESSAGE, h, "Chrome_MessageWindow", null)) != IntPtr.Zero)
+                    if (GetWindowThreadProcessId(h, out _) == me) PostMessage(h, WM_USER + 1, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch { /* best effort */ }
+        }
+
         /// <summary>Call window.&lt;fn&gt;(json) in the panel, from any thread.</summary>
         public void Call(string fn, string json)
         {

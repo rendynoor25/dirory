@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased — Revit 0.1.18: the panel no longer goes deaf after placing a product
+
+After a product was inserted, every later panel click (material cards,
+Measure, even F5) silently did nothing until Revit was restarted. Cause:
+loading a family saved in an older Revit runs Revit's upgrade progress loop
+(~20 s), which takes WebView2's single "wake up" window message without
+passing it on; WebView2 posts no other until that one is handled, so every
+message from the panel queued forever. Confirmed live: posting the wake-up by
+hand delivered the queued click at once.
+
+- The add-in re-posts WebView2's wake-up after every Revit operation and on
+  its half-second timer (`PanelPage.WakeWebView`); a spare one is harmless.
+- Placement now uses Revit's own Place Component (posted, not modal), so the
+  architect gets its options (rotate, level) and Esc as usual.
+- revit.log also records each panel message and each queued Revit operation.
+
+Tested in Revit 2024 on the sukabumi project: insert Toto CW 630 PJ, Esc,
+material card (paint mode), Quantifier (measured) - all respond.
+
 ## Revit 0.1.15 (published on /download) — placing a product no longer looks like a freeze
 
 Placing a family is modal: Revit, and the Dirory panel with it, waits for a
