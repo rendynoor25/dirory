@@ -31,9 +31,9 @@ export async function GET(request: Request) {
       // The most recent user-visible changes, newest first. Keep this short —
       // it is shown inside the plugin's update prompt.
       notes: [
+        "Faster, more reliable start on Windows.",
+        "Works when SketchUp is installed in a folder with non-English characters.",
         "Product cards show when a model is downloading and when it is ready.",
-        "Type to find your project location: 514 kabupaten/kota and well-known areas.",
-        "Quantifier and BoQ in Bahasa Indonesia.",
       ],
     },
     { headers: { "Cache-Control": "public, max-age=300" } },

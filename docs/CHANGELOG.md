@@ -1,6 +1,6 @@
 # Changelog
 
-## SketchUp 0.10.9 (built, not released) — Extension Warehouse RuboCop fixes
+## SketchUp 0.10.9 — published on /download, 20 Oct 2026: Extension Warehouse RuboCop fixes
 
 The Warehouse's RuboCop check rejected 0.10.8 for one requirement and flagged
 16 suggestions. Fixed:
