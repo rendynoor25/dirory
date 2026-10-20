@@ -235,6 +235,8 @@ function scan(base) {
       if (override.category) item.category = String(override.category);
       if (override.sku) item.sku = String(override.sku);
       if (override.product_url) item.productUrl = String(override.product_url);
+      if (Array.isArray(override.tags)) item.tags = override.tags.map(String);
+      if (override.dimensions) item.dimensions = String(override.dimensions);
       // A thumbnail from outside the library — for a catalogue whose images
       // live on the brand's website rather than beside the .skp.
       if (override.thumbnail) {
@@ -484,6 +486,7 @@ async function main() {
           tags: item.tags,
           sku: item.sku ?? null,
           product_url: item.productUrl ?? null,
+          dimensions: item.dimensions ?? null,
           tile_w_cm: item.tile?.w ?? null,
           tile_h_cm: item.tile?.h ?? null,
           status: assetStatus,

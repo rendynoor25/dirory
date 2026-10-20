@@ -87,8 +87,18 @@ async function vendorId(brand) {
     .from("vendors").select("id").ilike("brand_name", brand).neq("status", "suspended")
     .order("is_platform", { ascending: false }).order("approved_at", { ascending: true, nullsFirst: false })
     .limit(1).maybeSingle();
-  if (error || !data) throw new Error(`no vendor "${brand}"`);
-  return data.id;
+  if (error) throw new Error(`vendor "${brand}": ${error.message}`);
+  if (data) return data.id;
+  // A brand seen for the first time becomes an approved vendor, as in
+  // upload-library.mjs (Fortress arrived Revit-only, with no SketchUp models).
+  const { data: created, error: createErr } = await supabase
+    .from("vendors")
+    .insert({ name: brand, brand_name: brand, is_platform: false, status: "approved", approved_at: new Date().toISOString() })
+    .select("id")
+    .single();
+  if (createErr) throw new Error(`vendor "${brand}": ${createErr.message}`);
+  console.log(`  + created vendor ${brand} (${created.id})`);
+  return created.id;
 }
 
 async function categoryId(name) {
