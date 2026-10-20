@@ -73,13 +73,19 @@ preferences and `~/.dirory`, never inside the extension folder.
 
 ## Revit add-in
 
-`scripts/build-revit.ps1` builds `dist/revit/DiroryRevit-2024-x.y.z.zip`; copy
-it to `apps/web/private/`, update `REVIT_FILENAME` in
-`apps/web/src/app/api/download/revit/route.ts`, then commit and deploy as above.
-Revit 2024 does not require signed add-ins.
+Two downloads on `/download`, same version (`REVIT_VERSION` in
+`apps/web/src/lib/pluginRelease.ts`):
 
-For Revit 2025+, `-Revit 2025` (or 2026, 2027) builds
-`DiroryRevit-<year>-x.y.z.zip`. Without that Revit installed, first run
-`scripts/fetch-revit-refs.ps1 -Revit <year>` (reference DLLs from nuget.org into
-`.cache/`). The download route serves one Revit zip today; publishing the other
-years needs a route/page change.
+- **Revit 2024** (.NET Framework 4.8): `scripts/build-revit.ps1` builds
+  `dist/revit/DiroryRevit-2024-x.y.z.zip`, served by `/api/download/revit`.
+- **Revit 2025-2027** (.NET 8 / .NET 10): `scripts/build-revit-multi.ps1` builds
+  each year and packs `dist/revit/DiroryRevit-2025-2027-x.y.z.zip`, with one
+  Install-Dirory.cmd that installs for every Revit 2025-2027 it finds. Served
+  by `/api/download/revit-2025`. Years not installed on the build PC need
+  `scripts/fetch-revit-refs.ps1 -Revit <year>` once (reference DLLs from
+  nuget.org into `.cache/`).
+
+Then copy both zips to `apps/web/private/`, set `REVIT_VERSION`, run
+`scripts/build-download-bundle.ps1` (the "Both" download carries both Revit
+folders), commit and deploy as above. Revit does not require signed add-ins;
+it asks once and the architect chooses Always Load.

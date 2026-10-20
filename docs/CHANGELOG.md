@@ -1,6 +1,11 @@
 # Changelog
 
-## Revit 0.1.19 (not published): builds for Revit 2025, 2026 and 2027
+## Revit 0.1.19 (published on /download): builds for Revit 2025, 2026 and 2027
+
+`/download` now offers "Revit 2024" and "Revit 2025–2027" separately. The
+2025–2027 zip holds one build per year and an installer that installs for each
+of those Revit versions it finds (all three if it finds none). "Both" carries
+both Revit folders. The install guide covers 2024–2027.
 
 Revit 2025 and later run add-ins on .NET 8 (2027 on .NET 10), where the
 .NET Framework 4.8 DLL does not load. One source tree now builds for both.

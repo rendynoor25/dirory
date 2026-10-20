@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export type Product = "sketchup" | "revit" | "both";
+export type Product = "sketchup" | "revit" | "revitNew" | "both";
 
 type Option = { id: Product; title: string; body: string; button: string; href: string };
 
@@ -10,7 +10,7 @@ type Option = { id: Product; title: string; body: string; button: string; href: 
 type Upcoming = { id: string; title: string; body: string; badge: string };
 
 /**
- * SketchUp only, Revit only, or both. The download button, its label and the
+ * SketchUp only, Revit 2024, Revit 2025-2027, or SketchUp and Revit. The download button, its label and the
  * file it serves follow the choice.
  *
  * In `form` mode (first download, inside the consent form) the choice travels
@@ -32,7 +32,7 @@ export function ProductPicker({
 
   return (
     <div>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2">
         {options.map((o) => (
           <label
             key={o.id}
