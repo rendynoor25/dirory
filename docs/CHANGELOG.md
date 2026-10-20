@@ -1,5 +1,33 @@
 # Changelog
 
+## Revit 0.1.19 (not published): builds for Revit 2025, 2026 and 2027
+
+Revit 2025 and later run add-ins on .NET 8 (2027 on .NET 10), where the
+.NET Framework 4.8 DLL does not load. One source tree now builds for both.
+
+- `Json` (src/Json.cs) is a small hand-written reader/writer instead of
+  System.Web's JavaScriptSerializer, which .NET 8 lacks. Same shapes as
+  before (objects as Dictionary, arrays as ArrayList, `< > & '` escaped);
+  `Json.Str` now formats numbers with the invariant culture.
+- `scripts/build-revit.ps1 -Revit 2025|2026|2027` compiles with the same
+  Roslyn csc against .NET 8 (2025-2026) or .NET 10 (2027) reference
+  assemblies and that year's RevitAPI/RevitAPIUI, defining
+  `REVIT2025_OR_GREATER`. Without the year installed, the references come
+  from `scripts/fetch-revit-refs.ps1` (Nice3point.Revit.Api and
+  Microsoft.*.App.Ref packages from nuget.org into git-ignored `.cache/`).
+  WebView2 is referenced from Revit 2024's copy (1.0.1343.22); later Revits
+  ship the same or newer.
+- Each year packages `DiroryRevit-<year>-<version>.zip`, whose
+  Install-Dirory.cmd and README name that year (`__REVIT__` in the templates
+  under revit/DiroryRevit/package).
+- No `ElementId.IntegerValue` (removed in 2026) was in use; the code already
+  uses `.Value`.
+
+Tested in Revit 2024 on the sukabumi project: panel opens with the
+catalogue, material card enters paint mode (Esc: "Nothing painted"),
+Quantifier measures. 2025, 2026 and 2027 compile with no warnings but are
+untested: none is installed here.
+
 ## Revit 0.1.18 (published on /download): the panel no longer goes deaf after placing a product
 
 After a product was inserted, every later panel click (material cards,

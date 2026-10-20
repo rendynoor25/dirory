@@ -10,23 +10,9 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 namespace Dirory.Revit
 {
-    public static class Json
-    {
-        private static readonly JavaScriptSerializer Serializer = new JavaScriptSerializer { MaxJsonLength = int.MaxValue, RecursionLimit = 256 };
-        public static string Write(object value) => Serializer.Serialize(value);
-        public static Dictionary<string, object> Read(string json)
-        {
-            try { return Serializer.Deserialize<Dictionary<string, object>>(json ?? "") ?? new Dictionary<string, object>(); }
-            catch { return new Dictionary<string, object>(); }
-        }
-        public static string Str(Dictionary<string, object> d, string key) =>
-            d != null && d.TryGetValue(key, out var v) && v != null ? v.ToString() : "";
-    }
-
     public class Cloud
     {
         public const string ApiBase = "https://ajlmncbzufagplbaaukv.supabase.co/functions/v1";

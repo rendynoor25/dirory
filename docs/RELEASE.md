@@ -77,3 +77,9 @@ preferences and `~/.dirory`, never inside the extension folder.
 it to `apps/web/private/`, update `REVIT_FILENAME` in
 `apps/web/src/app/api/download/revit/route.ts`, then commit and deploy as above.
 Revit 2024 does not require signed add-ins.
+
+For Revit 2025+, `-Revit 2025` (or 2026, 2027) builds
+`DiroryRevit-<year>-x.y.z.zip`. Without that Revit installed, first run
+`scripts/fetch-revit-refs.ps1 -Revit <year>` (reference DLLs from nuget.org into
+`.cache/`). The download route serves one Revit zip today; publishing the other
+years needs a route/page change.
