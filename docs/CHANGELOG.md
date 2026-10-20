@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — Revit 0.1.15: placing a product no longer looks like a freeze
+## Revit 0.1.15 (published on /download) — placing a product no longer looks like a freeze
 
 Placing a family is modal: Revit, and the Dirory panel with it, waits for a
 click in the view until the item is placed or Esc is pressed. Nothing said so
