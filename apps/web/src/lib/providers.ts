@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 /**
  * Ask Supabase which external providers are actually enabled, so the UI never
  * offers a button that would fail with "provider is not enabled".
@@ -18,4 +20,26 @@ export async function googleEnabled(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+const GoogleClientId = z
+  .string()
+  .trim()
+  .regex(/^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$/);
+
+/**
+ * The Google OAuth web client id for Google's own sign-in button (Google
+ * Identity Services), read at runtime so it can be set without a rebuild. It
+ * is public: it is in every Google sign-in URL. Null when unset or malformed;
+ * the sign-in forms then fall back to Supabase's redirect flow.
+ *
+ * With the button, Google signs in on dirory.com itself and its account
+ * chooser says "to continue to dirory.com" instead of the Supabase project's
+ * address. The same id must be in Supabase (Auth → Providers → Google →
+ * Client IDs) for signInWithIdToken, and dirory.com in the client's
+ * "Authorized JavaScript origins" in Google Cloud.
+ */
+export function googleClientId(): string | null {
+  const parsed = GoogleClientId.safeParse(process.env.GOOGLE_CLIENT_ID ?? "");
+  return parsed.success ? parsed.data : null;
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { publicOrigin } from "@/lib/site-url";
+import { landingPath, safeNext } from "@/lib/auth-landing";
 
 /**
  * Supabase sends the user back here after they click the email link.
@@ -19,8 +20,7 @@ export async function GET(request: Request) {
   const errorDescription = url.searchParams.get("error_description");
 
   // Only accept local paths, so this route cannot be used as an open redirect.
-  const candidate = url.searchParams.get("next") ?? "/vendor";
-  const next = candidate.startsWith("/") && !candidate.startsWith("//") ? candidate : "/vendor";
+  const next = safeNext(url.searchParams.get("next"));
 
   // NOT `url.origin`: behind Caddy, `request.url` is the container's bind address
   // (http://0.0.0.0:3000), so this used to redirect the browser to
@@ -56,21 +56,6 @@ export async function GET(request: Request) {
     return failure(error.message);
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   // Send admins straight to the back-office unless they were heading elsewhere.
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-    if (profile?.role === "admin" && next === "/vendor") {
-      return NextResponse.redirect(new URL("/admin", publicOrigin(request)));
-    }
-  }
-
-  return NextResponse.redirect(new URL(next, publicOrigin(request)));
+  return NextResponse.redirect(new URL(await landingPath(supabase, next), publicOrigin(request)));
 }

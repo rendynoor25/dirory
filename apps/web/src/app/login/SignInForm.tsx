@@ -3,13 +3,16 @@
 import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { t, type Locale } from "@/lib/i18n";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 /**
  * Passwordless sign-in and first-time architect registration.
  *
- * Two paths, both landing on `/auth/callback` with a `next` target:
- *   * Google OAuth — one click, no inbox round-trip (the easy path).
- *   * Email magic link — the fallback for people without Google.
+ * Two paths:
+ *   * Google — one click, no inbox round-trip (the easy path). With a Google
+ *     client id, Google's own button signs in on this site and goes on through
+ *     `/auth/continue`; without one, Supabase's redirect flow via `/auth/callback`.
+ *   * Email magic link — the fallback for people without Google, via `/auth/callback`.
  *
  * Split out of `page.tsx` deliberately: a Next.js *client* component cannot be
  * `async`, and awaiting `searchParams` inside one makes React call hooks out of
@@ -19,11 +22,14 @@ export function SignInForm({
   next,
   error,
   googleEnabled = true,
+  googleClientId = null,
   locale,
 }: {
   next: string;
   error?: string;
   googleEnabled?: boolean;
+  /** Google's own button when set (see lib/providers googleClientId). */
+  googleClientId?: string | null;
   locale: Locale;
 }) {
   const [email, setEmail] = useState("");
@@ -95,6 +101,20 @@ export function SignInForm({
 
       {googleEnabled ? (
         <>
+          {googleClientId ? (
+            <div className="mt-6">
+              <GoogleSignInButton
+                clientId={googleClientId}
+                locale={locale}
+                busyLabel={t(locale, "login.googleSigningIn")}
+                onSignedIn={() => window.location.assign(`/auth/continue?next=${encodeURIComponent(next)}`)}
+                onError={(m) => {
+                  setStatus("error");
+                  setMessage(t(locale, "login.googleError", { message: m }));
+                }}
+              />
+            </div>
+          ) : (
           <button
             type="button"
             onClick={onGoogle}
@@ -104,6 +124,7 @@ export function SignInForm({
             <GoogleMark />
             {status === "google" ? t(locale, "login.googleOpening") : t(locale, "login.google")}
           </button>
+          )}
 
           <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
             <span className="h-px flex-1 bg-slate-200" />

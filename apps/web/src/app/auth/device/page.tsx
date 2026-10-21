@@ -1,7 +1,7 @@
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { approveDevice, switchAccount } from "./actions";
 import { DeviceSignIn } from "./DeviceSignIn";
-import { googleEnabled } from "@/lib/providers";
+import { googleClientId, googleEnabled } from "@/lib/providers";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
 import { OccupationPicker } from "@/components/OccupationPicker";
@@ -69,7 +69,15 @@ export default async function DevicePage({
     const withGoogle = await googleEnabled();
     return (
       <Main code={code} app={app.name}>
-        <DeviceSignIn code={code} app={app.id} appName={app.name} googleEnabled={withGoogle} error={params.error} />
+        <DeviceSignIn
+          code={code}
+          app={app.id}
+          appName={app.name}
+          googleEnabled={withGoogle}
+          googleClientId={googleClientId()}
+          locale={locale}
+          error={params.error}
+        />
       </Main>
     );
   }
