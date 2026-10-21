@@ -85,6 +85,17 @@ Two downloads on `/download`, same version (`REVIT_VERSION` in
   `scripts/fetch-revit-refs.ps1 -Revit <year>` once (reference DLLs from
   nuget.org into `.cache/`).
 
+**Windows installer (all years in one .exe):**
+`scripts/build-revit-installer.ps1` builds 2024-2027 and compiles
+`revit/DiroryRevit/installer/Dirory.iss` with Inno Setup 6
+(`winget install JRSoftware.InnoSetup`) into
+`dist/revit/Dirory-Revit-Setup-x.y.z.exe`. It installs for the current user
+(no admin) into the same `%APPDATA%\Autodesk\Revit\Addins\<year>` folders as
+the zips, so it upgrades a zip install. It offers only the Revit years found,
+waits for Revit to close, and adds "Dirory for Revit" to Apps & features.
+Set `DIRORY_SIGN_CERT` / `DIRORY_SIGN_PASSWORD` to sign the DLLs and the .exe.
+The artwork comes from `D:\Dirory\brand` via `scripts/make-installer-art.ps1`.
+
 Then copy both zips to `apps/web/private/`, set `REVIT_VERSION`, run
 `scripts/build-download-bundle.ps1` (the "Both" download carries both Revit
 folders), commit and deploy as above. Revit does not require signed add-ins;
