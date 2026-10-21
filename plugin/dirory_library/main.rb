@@ -985,7 +985,7 @@ module Dirory
     # CURRENT material, then switch to SketchUp's own Paint Bucket tool — so
     # it behaves exactly like picking a material in the Materials window.
     # ------------------------------------------------------------------
-    def self.material_for(model, path, key = nil, size = nil)
+    def self.material_for(model, path, key = nil, size = nil, appearance = nil)
       key = relative_key(path) if key.to_s.empty?
       base = File.basename(path, File.extname(path))
 
@@ -1010,9 +1010,43 @@ module Dirory
       #    just happens to share the name.
       name = legacy ? model.materials.unique_name(base) : base
       material = model.materials.add(name)
-      material.texture = path
-      fit_tile_size(material, path, false, size)
+      if glass?(appearance)
+        apply_glass(material, appearance)
+      else
+        material.texture = path
+        fit_tile_size(material, path, false, size)
+      end
       material
+    end
+
+    # The catalogue's `appearance` (migration 0046) for glass: tint, opacity,
+    # reflectivity, roughness. Anything else is an ordinary image material.
+    def self.glass?(appearance)
+      appearance.is_a?(Hash) && appearance['kind'].to_s == 'glass'
+    end
+
+    # Glass is a colour with transparency, not the swatch image (the image is
+    # the card's picture; tiled on a window it would read as a painted pane).
+    # SketchUp 2025+ also gets the PBR values so reflective glass reads as a
+    # coating in the viewport.
+    def self.apply_glass(material, appearance)
+      rgb = Array(appearance['color']).first(3).map { |c| c.to_i.clamp(0, 255) }
+      material.color = Sketchup::Color.new(*rgb) if rgb.length == 3
+      opacity = appearance['opacity']
+      material.alpha = opacity.to_f.clamp(0.05, 1.0) unless opacity.nil?
+      if material.respond_to?(:roughness_enabled=)
+        roughness = appearance['roughness']
+        unless roughness.nil?
+          material.roughness_enabled = true
+          material.roughness_factor = roughness.to_f.clamp(0.0, 1.0)
+        end
+        if appearance['metallic']
+          material.metalness_enabled = true
+          material.metallic_factor = appearance['reflectivity'].to_f.clamp(0.0, 1.0)
+        end
+      end
+    rescue StandardError => e
+      puts "[Dirory] glass appearance not fully applied: #{e.message}"
     end
 
     # True when SketchUp's own Paint Bucket is the active tool.
@@ -1081,7 +1115,8 @@ module Dirory
         started = true
         key = data['asset_id'].to_s.empty? ? nil : data['asset_id'].to_s
         size = tile_size_for(data, path)
-        material = material_for(model, path, key, size)
+        appearance = data['appearance'].is_a?(Hash) ? data['appearance'] : nil
+        material = material_for(model, path, key, size, appearance)
         tag_entity(material, data, 'material')
         model.commit_operation
         started = false

@@ -1,0 +1,200 @@
+{
+  "_comment": "Per-item tags for library-additions, keyed by path relative to this folder. Pass with: node scripts/upload-library.mjs --root library-additions --overrides library-additions/overrides.json. The five Materials below are cut from the 'Material Texture Catalog Board' (sample_library/Materials) and are Dirory free samples (no brand folder).",
+  "Materials/Brick/Brick.jpg": {
+    "tags": [
+      "brick",
+      "bata",
+      "bata merah",
+      "red brick",
+      "exposed brick",
+      "bata ekspos",
+      "masonry",
+      "wall",
+      "dinding"
+    ]
+  },
+  "Materials/Roof/Clay Tile Roof.jpg": {
+    "tags": [
+      "roof",
+      "atap",
+      "genteng",
+      "genteng tanah liat",
+      "genteng keramik",
+      "clay tile",
+      "terracotta",
+      "roof tile"
+    ]
+  },
+  "Materials/Concrete/Concrete Lightweight Block.jpg": {
+    "tags": [
+      "bata ringan",
+      "hebel",
+      "AAC",
+      "lightweight block",
+      "concrete block",
+      "batako",
+      "masonry",
+      "wall",
+      "dinding"
+    ]
+  },
+  "Materials/Stone/River Stone.jpg": {
+    "tags": [
+      "batu kali",
+      "river stone",
+      "batu",
+      "pebble",
+      "stone wall",
+      "cobble",
+      "landscape",
+      "exterior",
+      "hardscape"
+    ]
+  },
+  "Materials/Stone/Kerikil.jpg": {
+    "tags": [
+      "kerikil",
+      "gravel",
+      "batu",
+      "split stone",
+      "small rocks",
+      "koral",
+      "landscape",
+      "exterior",
+      "hardscape"
+    ]
+  },
+  "_glass": "Glass materials: the PNG is only the card picture. The SketchUp plugin (0.10.10+) and the Revit add-in (0.1.21+) build the glass from `appearance` (migration 0046): tint, opacity (1 = opaque), reflectivity, roughness (frost), metallic coating.",
+  "Materials/Glass/Clear Glass.png": {
+    "tags": [
+      "glass",
+      "kaca",
+      "kaca bening",
+      "clear glass",
+      "float glass",
+      "window",
+      "jendela",
+      "transparent",
+      "transparan"
+    ],
+    "appearance": {
+      "kind": "glass",
+      "color": [
+        190,
+        215,
+        208
+      ],
+      "opacity": 0.2,
+      "reflectivity": 0.08,
+      "roughness": 0.0,
+      "metallic": false
+    }
+  },
+  "Materials/Glass/Car Windshield Glass.png": {
+    "tags": [
+      "glass",
+      "kaca",
+      "kaca mobil",
+      "kaca depan",
+      "windshield",
+      "windscreen",
+      "front glass",
+      "laminated glass",
+      "car",
+      "mobil",
+      "automotive"
+    ],
+    "appearance": {
+      "kind": "glass",
+      "color": [
+        150,
+        200,
+        180
+      ],
+      "opacity": 0.3,
+      "reflectivity": 0.08,
+      "roughness": 0.0,
+      "metallic": false
+    }
+  },
+  "Materials/Glass/Car Rear Glass (Tinted).png": {
+    "tags": [
+      "glass",
+      "kaca",
+      "kaca mobil",
+      "kaca belakang",
+      "kaca film",
+      "rear glass",
+      "privacy glass",
+      "tinted glass",
+      "car",
+      "mobil",
+      "automotive"
+    ],
+    "appearance": {
+      "kind": "glass",
+      "color": [
+        28,
+        34,
+        38
+      ],
+      "opacity": 0.75,
+      "reflectivity": 0.1,
+      "roughness": 0.0,
+      "metallic": false
+    }
+  },
+  "Materials/Glass/Frosted Glass.png": {
+    "tags": [
+      "glass",
+      "kaca",
+      "kaca buram",
+      "kaca es",
+      "kaca sandblast",
+      "frosted glass",
+      "obscure glass",
+      "privacy",
+      "bathroom",
+      "kamar mandi",
+      "partition"
+    ],
+    "appearance": {
+      "kind": "glass",
+      "color": [
+        232,
+        238,
+        238
+      ],
+      "opacity": 0.6,
+      "reflectivity": 0.04,
+      "roughness": 0.7,
+      "metallic": false
+    }
+  },
+  "Materials/Glass/Reflective Glass.png": {
+    "tags": [
+      "glass",
+      "kaca",
+      "kaca reflektif",
+      "kaca cermin",
+      "reflective glass",
+      "solar control",
+      "curtain wall",
+      "facade",
+      "fasad",
+      "tinted"
+    ],
+    "appearance": {
+      "kind": "glass",
+      "color": [
+        70,
+        105,
+        130
+      ],
+      "opacity": 0.7,
+      "reflectivity": 0.6,
+      "roughness": 0.05,
+      "metallic": true
+    }
+  }
+}

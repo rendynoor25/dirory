@@ -50,8 +50,11 @@ namespace Dirory.Revit
         // the real joints of a 60 x 120 tile.
         // ------------------------------------------------------------------
 
-        public static ElementId EnsureMaterial(Document doc, Autodesk.Revit.ApplicationServices.Application app, string name, string texturePath, double tileWcm, double tileHcm)
+        public static ElementId EnsureMaterial(Document doc, Autodesk.Revit.ApplicationServices.Application app, string name, string texturePath, double tileWcm, double tileHcm,
+            Glass glass = null)
         {
+            if (glass != null) return EnsureGlass(doc, app, name, glass);
+
             string matName = ("Dirory - " + name).Replace("{", "(").Replace("}", ")").Replace("[", "(").Replace("]", ")");
             var existing = new FilteredElementCollector(doc).OfClass(typeof(Material)).Cast<Material>()
                 .FirstOrDefault(m => m.Name == matName);
@@ -92,6 +95,144 @@ namespace Dirory.Revit
                 AttachAppearance(doc, app, mat, texturePath, tileWcm, tileHcm);
                 return id;
             }
+        }
+
+        // ------------------------------------------------------------------
+        // Glass (catalogue `appearance`, migration 0046)
+        //
+        // A glass material is a tint with transparency, not an image: the
+        // shaded view gets Revit's own material transparency, and the render
+        // appearance is a Generic asset with transparency, reflectivity and
+        // glossiness set, so it renders as glass rather than a painted pane.
+        // ------------------------------------------------------------------
+
+        public class Glass
+        {
+            public Autodesk.Revit.DB.Color Color = new Autodesk.Revit.DB.Color(200, 220, 215);
+            public double Opacity = 0.25;
+            public double Reflectivity = 0.08;
+            public double Roughness = 0.0;
+            public bool Metallic;
+
+            /// Null unless the catalogue's appearance says this is glass.
+            public static Glass From(object appearance)
+            {
+                if (!(appearance is System.Collections.Generic.Dictionary<string, object> d)) return null;
+                if (Json.Str(d, "kind") != "glass") return null;
+                var g = new Glass();
+                if (d.TryGetValue("color", out var c) && c is System.Collections.ArrayList rgb && rgb.Count >= 3)
+                    g.Color = new Autodesk.Revit.DB.Color(Byte(rgb[0]), Byte(rgb[1]), Byte(rgb[2]));
+                g.Opacity = Num(d, "opacity", g.Opacity);
+                g.Reflectivity = Num(d, "reflectivity", g.Reflectivity);
+                g.Roughness = Num(d, "roughness", g.Roughness);
+                g.Metallic = d.TryGetValue("metallic", out var m) && m is bool b && b;
+                return g;
+            }
+
+            private static double Num(System.Collections.Generic.Dictionary<string, object> d, string key, double fallback)
+            {
+                if (!d.TryGetValue(key, out var v) || v == null) return fallback;
+                return double.TryParse(Convert.ToString(v, System.Globalization.CultureInfo.InvariantCulture),
+                    System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var n)
+                    ? Math.Max(0, Math.Min(1, n)) : fallback;
+            }
+
+            private static byte Byte(object v)
+            {
+                double.TryParse(Convert.ToString(v, System.Globalization.CultureInfo.InvariantCulture),
+                    System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var n);
+                return (byte)Math.Max(0, Math.Min(255, Math.Round(n)));
+            }
+        }
+
+        private static ElementId EnsureGlass(Document doc, Autodesk.Revit.ApplicationServices.Application app, string name, Glass glass)
+        {
+            string matName = ("Dirory - " + name).Replace("{", "(").Replace("}", ")").Replace("[", "(").Replace("]", ")");
+            var existing = new FilteredElementCollector(doc).OfClass(typeof(Material)).Cast<Material>()
+                .FirstOrDefault(m => m.Name == matName);
+            if (existing != null) return existing.Id;
+
+            ElementId id;
+            using (var t = new Transaction(doc, "Dirory: create glass material"))
+            {
+                t.Start();
+                id = Material.Create(doc, matName);
+                var mat = (Material)doc.GetElement(id);
+                mat.MaterialClass = "Glass";
+                mat.Color = glass.Color;
+                mat.Transparency = (int)Math.Round((1 - glass.Opacity) * 100);
+                mat.Shininess = (int)Math.Round((1 - glass.Roughness) * 128);
+                mat.Smoothness = (int)Math.Round((1 - glass.Roughness) * 100);
+                mat.UseRenderAppearanceForShading = false;
+                t.Commit();
+            }
+
+            string problem;
+            try
+            {
+                using (var t = new Transaction(doc, "Dirory: glass appearance"))
+                {
+                    t.Start();
+                    var mat = (Material)doc.GetElement(id);
+                    var appearance = CreateAppearance(doc, app, mat.Name);
+                    if (appearance == null)
+                    {
+                        t.RollBack();
+                        problem = "no Generic appearance was found in the project or the material library";
+                    }
+                    else
+                    {
+                        mat.AppearanceAssetId = appearance.Id;
+                        t.Commit();
+                        problem = SetGlass(doc, appearance.Id, glass);
+                    }
+                }
+            }
+            catch (Exception e) { problem = e.Message; }
+
+            Log($"glass \"{matName}\": {problem ?? "ok"}");
+            if (problem != null)
+                App.Panel.Bridge.Toast(Lang.T("Dirory created \"{material}\" but could not set its render appearance ({problem}). " +
+                                              "It is transparent in shaded views. Details: %LOCALAPPDATA%\\Dirory\\revit.log",
+                                              "material", matName, "problem", problem));
+            return id;
+        }
+
+        private static string SetGlass(Document doc, ElementId appearanceId, Glass glass)
+        {
+            string problem = null;
+            using (var t = new Transaction(doc, "Dirory: glass properties"))
+            {
+                t.Start();
+                using (var scope = new AppearanceAssetEditScope(doc))
+                {
+                    Asset asset = scope.Start(appearanceId);
+                    var diffuse = asset.FindByName(Generic.GenericDiffuse) as AssetPropertyDoubleArray4d;
+                    if (diffuse == null) problem = "the appearance has no Generic colour slot";
+                    else
+                    {
+                        // A copied Generic may carry an image or procedural map: glass is a plain tint.
+                        if (diffuse.NumberOfConnectedProperties > 0) diffuse.RemoveConnectedAsset();
+                        try { diffuse.SetValueAsColor(glass.Color); } catch { /* keep the template's colour */ }
+                        SetDouble(asset, Generic.GenericTransparency, 1 - glass.Opacity);
+                        SetDouble(asset, Generic.GenericRefractionIndex, 1.52);
+                        SetDouble(asset, Generic.GenericReflectivityAt0deg, glass.Reflectivity);
+                        SetDouble(asset, Generic.GenericReflectivityAt90deg, Math.Max(glass.Reflectivity, glass.Metallic ? 0.9 : 0.5));
+                        SetDouble(asset, Generic.GenericGlossiness, 1 - glass.Roughness);
+                        if (asset.FindByName(Generic.GenericIsMetal) is AssetPropertyBoolean metal) metal.Value = glass.Metallic;
+                    }
+                    if (problem == null) scope.Commit(true);
+                    else scope.Cancel();
+                }
+                if (problem == null) t.Commit();
+                else t.RollBack();
+            }
+            return problem;
+        }
+
+        private static void SetDouble(Asset asset, string name, double value)
+        {
+            if (asset.FindByName(name) is AssetPropertyDouble d && d.IsValidValue(value)) d.Value = value;
         }
 
         /// Give the material its own Generic appearance with the Dirory texture

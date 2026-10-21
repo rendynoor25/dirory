@@ -361,12 +361,17 @@ namespace Dirory.Revit
                 double.TryParse(Convert.ToString(size[0], System.Globalization.CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out w);
                 double.TryParse(Convert.ToString(size[1], System.Globalization.CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out h);
             }
-            string label = (Json.Str(d, "brand") + " " + Json.Str(d, "name")).Trim();
+            // EnsureMaterial prefixes "Dirory - ", so a Dirory sample is named by
+            // its own name ("Dirory - Clear Glass", not "Dirory - Dirory Clear Glass").
+            string brand = Json.Str(d, "brand");
+            if (brand.Equals("Dirory", StringComparison.OrdinalIgnoreCase)) brand = "";
+            string label = (brand + " " + Json.Str(d, "name")).Trim();
             App.Ops.Run(app =>
             {
                 var uidoc = app.ActiveUIDocument;
                 if (uidoc == null) { Toast(Lang.T("Open a Revit project first.")); return; }
-                var id = RevitOps.EnsureMaterial(uidoc.Document, app.Application, label, path, w, h);
+                var id = RevitOps.EnsureMaterial(uidoc.Document, app.Application, label, path, w, h,
+                    RevitOps.Glass.From(d.TryGetValue("appearance", out var look) ? look : null));
                 string matName = uidoc.Document.GetElement(id)?.Name ?? label;
                 // Revit's own Paint tool cannot be opened with a material chosen,
                 // so this is Dirory's paint mode: the same clicks, Esc to finish.

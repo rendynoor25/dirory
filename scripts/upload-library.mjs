@@ -237,6 +237,8 @@ function scan(base) {
       if (override.product_url) item.productUrl = String(override.product_url);
       if (Array.isArray(override.tags)) item.tags = override.tags.map(String);
       if (override.dimensions) item.dimensions = String(override.dimensions);
+      // Glass and other non-image looks (migration 0046).
+      if (override.appearance && typeof override.appearance === "object") item.appearance = override.appearance;
       // A thumbnail from outside the library — for a catalogue whose images
       // live on the brand's website rather than beside the .skp.
       if (override.thumbnail) {
@@ -489,6 +491,7 @@ async function main() {
           dimensions: item.dimensions ?? null,
           tile_w_cm: item.tile?.w ?? null,
           tile_h_cm: item.tile?.h ?? null,
+          appearance: item.appearance ?? null,
           status: assetStatus,
           legacy_key: item.legacyKey,
         })

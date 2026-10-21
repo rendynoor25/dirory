@@ -810,6 +810,8 @@ function render() {
         asset_id: item.asset_id || '',
         version: item.version || 1,
         tile_size_cm: item.tile_size_cm || null,
+        // Glass: opacity, tint, reflectivity (null for an image material).
+        appearance: item.appearance || null,
         name: item.name,
         category: item.category || '',
         brand: item.brand || '',

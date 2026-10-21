@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
   for (let offset = 0; ; offset += PAGE) {
     const params = new URLSearchParams({
       select:
-        "id,name,type,tags,tile_w_cm,tile_h_cm,current_version_id,updated_at,legacy_key,sku,product_url,dimensions," +
+        "id,name,type,tags,tile_w_cm,tile_h_cm,appearance,current_version_id,updated_at,legacy_key,sku,product_url,dimensions," +
         "categories(name)," +
         "vendors!inner(id,brand_name,is_platform,status,logo_url,logo_path," +
         "subscriptions(status,current_period_end))," +
@@ -202,6 +202,9 @@ Deno.serve(async (req: Request) => {
       product_url: r.product_url ?? null,
       // A Revit family (.rfa) is available for this product.
       has_revit: Boolean(v?.revit_file_path),
+      // Glass and other non-image looks (migration 0046): opacity, tint,
+      // reflectivity. Null for an ordinary image material.
+      appearance: r.appearance ?? null,
     };
     if (browseMode) return browse;
 
