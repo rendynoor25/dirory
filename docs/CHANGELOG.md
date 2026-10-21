@@ -1,5 +1,19 @@
 # Changelog
 
+## Rhino 0.1.0: first Dirory for Rhino 8 plug-in
+
+New `rhino/` (RhinoCommon, C#) and `scripts/build-rhino.ps1`. The shared panel
+opens in a dockable Rhino panel (type `Dirory`) with the library, search,
+filters and device sign-in (`plugin_version` `rhino-0.1.0`). A model card
+imports the product's `.skp` once as a block and places it at picked points;
+a material card makes a render material with its texture at the real tile size
+and paints the selected objects. Blocks, instances and materials carry
+`Dirory.*` user text like the SketchUp plugin's "Dirory" attributes.
+
+Shared panel: `window.DIRORY_HOST = 'rhino'` hides Quantifier and BoQ (not in
+Rhino yet) and gives Rhino its own hint; new Indonesian strings for the
+plug-in's messages. SketchUp and Revit are unchanged.
+
 ## SketchUp 0.10.14: signed by the Extension Warehouse
 
 The /download package is now signed and encrypted (BEST, 2016 format) by the

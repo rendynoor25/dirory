@@ -97,7 +97,8 @@
    "update.downloading": "Downloading update… %{percent}%",
    "update.downloading_unknown": "Downloading update…",
    "update.restart_popup": "Dirory update downloaded. Restart SketchUp to apply it — your settings and sign-in are kept.",
-   "hint.revit": "Click a material card, then click faces in the model to paint it (Esc to finish). Models load as Revit families where a .rfa is available."
+   "hint.revit": "Click a material card, then click faces in the model to paint it (Esc to finish). Models load as Revit families where a .rfa is available.",
+   "hint.rhino": "Select objects, then click a material card to paint them. Click a model card, then click in the model to place it as a block (Enter to finish)."
   },
   "id": {
    "app.search_placeholder": "Cari nama, kategori, atau merek…",
@@ -448,7 +449,29 @@
    "phrase.Place {name}: click a face, such as a wall or floor surface, in the view. Esc to finish.": "Tempatkan {name}: klik sebuah permukaan, misalnya dinding atau lantai, di tampilan. Esc untuk selesai.",
    "phrase.Place {name}: click in the view where it goes. Esc to finish.": "Tempatkan {name}: klik di tampilan pada posisinya. Esc untuk selesai.",
    "phrase.Placed {n} × {name}.": "{n} × {name} ditempatkan.",
-   "phrase.{name} is loaded in the project (Project Browser > Families) but was not placed. Wall-hosted items need a click on a wall.": "{name} sudah dimuat di proyek (Project Browser > Families) tetapi belum ditempatkan. Barang yang menempel di dinding perlu diklik pada dinding."
+   "phrase.{name} is loaded in the project (Project Browser > Families) but was not placed. Wall-hosted items need a click on a wall.": "{name} sudah dimuat di proyek (Project Browser > Families) tetapi belum ditempatkan. Barang yang menempel di dinding perlu diklik pada dinding.",
+   "hint.rhino": "Pilih objek, lalu klik kartu material untuk mengecatnya. Klik kartu model, lalu klik di model untuk menempatkannya sebagai block (Enter untuk selesai).",
+   "phrase.Click in the model to place \"{name}\", Enter or Esc to finish.": "Klik di model untuk menempatkan \"{name}\", Enter atau Esc untuk selesai.",
+   "phrase.Could not download {name}: {error}": "Tidak dapat mengunduh {name}: {error}",
+   "phrase.Dirory: click a material card in the Dirory panel to paint it.": "Dirory: klik kartu material di panel Dirory untuk mengecat.",
+   "phrase.Dirory: click a model card in the Dirory panel to place it.": "Dirory: klik kartu model di panel Dirory untuk menempatkannya.",
+   "phrase.Finish or cancel the current Rhino command (Esc), then click the card again.": "Selesaikan atau batalkan perintah Rhino yang sedang berjalan (Esc), lalu klik kartu lagi.",
+   "phrase.Open a Rhino model first.": "Buka model Rhino terlebih dahulu.",
+   "phrase.Painted {n} object(s) with {material}.": "{n} objek dicat dengan {material}.",
+   "phrase.Place {name} (Enter to finish)": "Tempatkan {name} (Enter untuk selesai)",
+   "phrase.Placed {n} × {name}. It is in the Block Manager for more copies (Insert).": "{n} × {name} ditempatkan. Block ada di Block Manager untuk salinan lain (Insert).",
+   "phrase.Rhino could not create the material {name}.": "Rhino tidak dapat membuat material {name}.",
+   "phrase.Rhino could not import the SketchUp file for {name}.": "Rhino tidak dapat mengimpor file SketchUp untuk {name}.",
+   "phrase.Rhino could not import the SketchUp file: {error}": "Rhino tidak dapat mengimpor file SketchUp: {error}",
+   "phrase.Rhino could not make a block from {name}.": "Rhino tidak dapat membuat block dari {name}.",
+   "phrase.Select objects to paint with {name} (Enter: only add the material)": "Pilih objek untuk dicat dengan {name} (Enter: hanya tambahkan material)",
+   "phrase.This is not available in Dirory for Rhino yet ({name}).": "Fitur ini belum tersedia di Dirory untuk Rhino ({name}).",
+   "phrase.This item is not available from the cloud.": "Item ini tidak tersedia dari cloud.",
+   "phrase.This product has no SketchUp model Rhino can import.": "Produk ini tidak punya model SketchUp yang bisa diimpor Rhino.",
+   "phrase.You have Dirory for Rhino {version}. Newer versions are on dirory.com/download.": "Anda memakai Dirory untuk Rhino {version}. Versi yang lebih baru ada di dirory.com/download.",
+   "phrase.\"{name}\" is a block now. Click in the model to place it, Enter or Esc to finish.": "\"{name}\" sekarang menjadi block. Klik di model untuk menempatkannya, Enter atau Esc untuk selesai.",
+   "phrase.\"{name}\" is in the Materials panel. Select objects first, then click the card again to paint them.": "\"{name}\" ada di panel Materials. Pilih objek terlebih dahulu, lalu klik kartu lagi untuk mengecatnya.",
+   "phrase.\"{name}\" is ready. Select objects in the model to paint, then press Enter.": "\"{name}\" siap. Pilih objek di model yang akan dicat, lalu tekan Enter."
   }
  }
 }
