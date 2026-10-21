@@ -1,4 +1,4 @@
-// Dirory for Revit — application entry point.
+// Dirory for Revit â€” application entry point.
 //
 // The same idea as the SketchUp plugin, and the same panel: the add-in hosts
 // plugin/dirory_library/ui (panel.html, panel.js, rab.js) in a WebView2
@@ -19,7 +19,7 @@ namespace Dirory.Revit
 {
     public class App : IExternalApplication
     {
-        public const string Version = "0.1.19";
+        public const string Version = "0.1.20";
         public static readonly DockablePaneId PaneId = new DockablePaneId(new Guid("6E3B2D3A-6A0E-4C55-9C8E-2B1F7A5D9E41"));
 
         public static PanelPage Panel { get; private set; }

@@ -27,6 +27,6 @@ Get-ChildItem (Join-Path $root "revit\DiroryRevit\package-multi") -File | ForEac
   [IO.File]::WriteAllText((Join-Path $stage $_.Name), $text, (New-Object Text.UTF8Encoding $false))
 }
 $zip = Join-Path $root "dist\revit\DiroryRevit-$label-$version.zip"
-if (Test-Path $zip) { Remove-Item $zip -Force }
-Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $zip
+. (Join-Path $PSScriptRoot "zip-folder.ps1")
+New-ZipFromFolder -Folder $stage -Zip $zip
 Write-Host "Package: $zip"

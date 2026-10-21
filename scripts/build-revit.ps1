@@ -113,8 +113,8 @@ Get-ChildItem (Join-Path $root "revit\DiroryRevit\package") -File | ForEach-Obje
 }
 $version = (Select-String -Path (Join-Path $root "revit\DiroryRevit\src\App.cs") -Pattern 'Version = "([^"]+)"').Matches[0].Groups[1].Value
 $zip = Join-Path $root "dist\revit\DiroryRevit-$Revit-$version.zip"
-if (Test-Path $zip) { Remove-Item $zip -Force }
-Compress-Archive -Path (Join-Path $out "*") -DestinationPath $zip
+. (Join-Path $PSScriptRoot "zip-folder.ps1")
+New-ZipFromFolder -Folder $out -Zip $zip
 Write-Host "Built Dirory for Revit $Revit -> $out"
 Write-Host "Package: $zip"
 

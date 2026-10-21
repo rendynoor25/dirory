@@ -3,7 +3,10 @@ Dirory for Revit __YEARS__ (beta)
 
 Install
   1. Close Revit.
-  2. Double-click Install-Dirory.cmd (installs for your Windows user only).
+  2. Right-click the downloaded .zip, choose "Extract All...", open the
+     extracted folder and double-click Install-Dirory.cmd there (installs for
+     your Windows user only). Opened from inside the .zip it cannot find
+     Dirory's files and stops without changing anything.
      It finds each Revit __YEARS__ on this PC and installs the matching build.
   3. Start Revit, open the "Dirory" tab and click "Library".
      If Revit warns that "Dirory" is not signed by a known publisher, choose

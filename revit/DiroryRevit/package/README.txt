@@ -3,7 +3,10 @@ Dirory for Revit __REVIT__ (beta)
 
 Install
   1. Close Revit.
-  2. Double-click Install-Dirory.cmd (installs for your Windows user only).
+  2. Right-click the downloaded .zip, choose "Extract All...", open the
+     extracted folder and double-click Install-Dirory.cmd there (installs for
+     your Windows user only). Opened from inside the .zip it cannot find
+     Dirory's files and stops without changing anything.
   3. Start Revit __REVIT__, open the "Dirory" tab and click "Library".
   4. Sign in from the panel's account button (your browser opens).
 

@@ -37,7 +37,7 @@ Full guide: https://dirory.com/how-to-install
 "@ | Set-Content -Path (Join-Path $stage "README.txt") -Encoding UTF8
 
 $out = Join-Path $private "Dirory-SketchUp-$su-Revit-$rv.zip"
-if (Test-Path $out) { Remove-Item $out -Force }
-Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $out
+. (Join-Path $PSScriptRoot "zip-folder.ps1")
+New-ZipFromFolder -Folder $stage -Zip $out
 Remove-Item $stage -Recurse -Force
 Write-Host "Built $out"

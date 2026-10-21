@@ -1,5 +1,28 @@
 # Changelog
 
+## Revit 0.1.20: the installer no longer reports success when its files are missing
+
+A Revit 2025/2027 user ran Install-Dirory.cmd and got "File not found - Dirory"
+and Unblock-File errors, then "Dirory for Revit 2025 is installed" anyway.
+Neither Dirory.addin nor the Dirory folder was beside the installer: what
+happens when it is double-clicked inside the .zip (Windows extracts that one
+file to a temp folder). Worse, the installer deleted an existing Dirory folder
+before copying, so the same mistake could remove a working install.
+
+- Both installers (Revit 2024, Revit 2025-2027) first check that their files
+  are beside them. If not, they explain how to extract the .zip, change
+  nothing and exit with an error. A failed copy now reports the failure
+  instead of "installed".
+- The zips are written with standard "/" entry paths (scripts/zip-folder.ps1)
+  instead of Compress-Archive's "\", which some extractors turn into flat
+  files named "Revit 2025\Dirory.addin".
+- README step 2 says to Extract All first.
+
+Tested with a scratch %APPDATA%: the installer run alone stops and keeps an
+existing install; packages extracted with Expand-Archive and with Windows'
+tar (libarchive) install 2024, 2025, 2026 and 2027. The add-in code is
+unchanged from 0.1.19.
+
 ## Revit 0.1.19 (published on /download): builds for Revit 2025, 2026 and 2027
 
 `/download` now offers "Revit 2024" and "Revit 2025–2027" separately. The
