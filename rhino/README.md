@@ -45,9 +45,11 @@ powershell -ExecutionPolicy Bypass -File scripts/build-rhino.ps1 -Install
 ```
 
 Writes `dist/rhino/dirory-<version>-rh8_<sr>-win.yak` (Package Manager),
-`dist/rhino/DiroryRhino-<version>.zip` and `dist/rhino/build/`. `-Install` copies the
-build to `%APPDATA%\McNeel\Rhinoceros\packages\8.0\dirory\<version>` (removing older
-versions); restart Rhino, then type `Dirory`. Bump `App.Version` for every build.
+`dist/rhino/DiroryRhino-<version>.zip` and `dist/rhino/build/`. `-Install` installs the
+`.yak` with Rhino's `Yak.exe` into `%APPDATA%\McNeel\Rhinoceros\packages\8.0\dirory`
+(Rhino deletes a hand-copied package folder at start-up: it lacks yak's `manifest.txt`).
+Close Rhino first if it has Dirory loaded, then start Rhino and type `Dirory`.
+Bump `App.Version` for every build.
 
 The `.yak` is tagged with the Rhino 8 service release it was built against
 (`rh8_36` = Rhino 8.36 or newer).

@@ -14,10 +14,10 @@
 #
 #   powershell -ExecutionPolicy Bypass -File scripts/build-rhino.ps1 [-Install]
 #
-# -Install puts the build where the Package Manager installs packages
-# (%APPDATA%\McNeel\Rhinoceros\packages\8.0\dirory\<version>) and removes older
-# Dirory versions there. Restart Rhino to load it; a running Rhino keeps the
-# version it loaded.
+# -Install installs the .yak with Rhino's yak.exe, as the Package Manager would
+# (into %APPDATA%\McNeel\Rhinoceros\packages\8.0\dirory), replacing an older
+# Dirory. Close Rhino first if it has Dirory loaded (the .rhp is locked), then
+# start Rhino to load it.
 param([switch]$Install)
 $ErrorActionPreference = "Stop"
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
@@ -32,7 +32,7 @@ $csc = @(
 if (-not $csc) { throw "No Roslyn csc.exe found (install Visual Studio Build Tools)." }
 
 $src = Join-Path $root "rhino\DiroryRhino"
-$version = (Select-String -Path "$src\src\App.cs" -Pattern 'Version = "([^"]+)"').Matches[0].Groups[1].Value
+$version = (Select-String -Path "$src\src\App.cs" -Pattern 'const string Version = "([^"]+)"').Matches[0].Groups[1].Value
 $dist = Join-Path $root "dist\rhino"
 $out = Join-Path $dist "build"
 if (Test-Path $out) { Remove-Item $out -Recurse -Force }
@@ -87,15 +87,10 @@ Write-Host "Package: $($yak.FullName)"
 Write-Host "Zip:     $zip"
 
 if ($Install) {
-  $packages = Join-Path $env:APPDATA "McNeel\Rhinoceros\packages\8.0\dirory"
-  if (Test-Path $packages) {
-    Get-ChildItem $packages -Directory | Where-Object { $_.Name -ne $version } | ForEach-Object {
-      try { Remove-Item $_.FullName -Recurse -Force } catch { Write-Warning "Could not remove $($_.FullName) (is Rhino running?)" }
-    }
-  }
-  $target = Join-Path $packages $version
-  if (Test-Path $target) { Remove-Item $target -Recurse -Force }
-  New-Item -ItemType Directory -Force -Path $packages | Out-Null
-  Copy-Item $out $target -Recurse
-  Write-Host "Installed to $target (restart Rhino)."
+  # Through yak, as the Package Manager does: Rhino deletes a package folder
+  # copied by hand (it has no manifest.txt) at the next start.
+  & "$rhino\Yak.exe" uninstall dirory 2>$null | Out-Null
+  & "$rhino\Yak.exe" install $yak.FullName
+  if ($LASTEXITCODE -ne 0) { throw "yak install failed (close Rhino if it has Dirory loaded)." }
+  Write-Host "Installed $($yak.Name) (restart Rhino)."
 }

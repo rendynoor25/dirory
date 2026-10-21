@@ -273,7 +273,10 @@ namespace DiroryRhino
 
             // Real-world size: a WCS box projection repeats per metre of model,
             // whatever the model's units, so one tile of w cm repeats 100/w times.
-            var texture = material.GetTextureFromUsage(RenderMaterial.StandardChildSlots.Diffuse);
+            // A Custom material keeps its image in the "bitmap-texture" slot
+            // (GetTextureFromUsage(Diffuse) returns null for it in Rhino 8).
+            var texture = material.FindChild("bitmap-texture") as RenderTexture
+                          ?? material.GetTextureFromUsage(RenderMaterial.StandardChildSlots.Diffuse);
             if (texture != null && item.TileWidthCm > 0)
             {
                 double h = item.TileHeightCm > 0 ? item.TileHeightCm : item.TileWidthCm;

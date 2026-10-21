@@ -34,7 +34,7 @@ namespace DiroryRhino
 {
     public class App : PlugIn
     {
-        public const string Version = "0.1.0";
+        public new const string Version = "0.1.2";
 
         public static App Instance { get; private set; }
         public static string AddinFolder => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -67,7 +67,17 @@ namespace DiroryRhino
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            Panels.OpenPanel(typeof(PanelHost).GUID);
+            // Opened plainly the first time, Rhino floats a tiny panel: put it
+            // in the dock bar that holds Layers instead (OpenPanelAsSibling
+            // refuses a panel Rhino has not shown yet).
+            var id = typeof(PanelHost).GUID;
+            if (!Panels.IsPanelVisible(id))
+            {
+                Guid bar = Panels.PanelDockBar(PanelIds.Layers);
+                if (bar != Guid.Empty) Panels.OpenPanel(bar, id, true);
+                if (Panels.IsPanelVisible(id)) return Result.Success;
+            }
+            Panels.OpenPanel(id);
             return Result.Success;
         }
     }
