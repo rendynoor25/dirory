@@ -23,6 +23,12 @@ texture slot) and 0.1.1 opened no panel the first time; both were never
 handed out. `-Install` now installs through `Yak.exe`: Rhino deletes a
 hand-copied package folder at start-up.
 
+Sign-in page names Rhino (prepared, not deployed): `auth-device/start` sends
+`app=rhino` for a `plugin_version` starting with "rhino", and /auth/device
+says "Connect Rhino". Deploy order: the website first (it accepts `app=rhino`),
+then `supabase functions deploy auth-device --no-verify-jwt`. Until both are
+live the page says SketchUp for Rhino, which still signs in correctly.
+
 ## SketchUp 0.10.14: signed by the Extension Warehouse
 
 The /download package is now signed and encrypted (BEST, 2016 format) by the

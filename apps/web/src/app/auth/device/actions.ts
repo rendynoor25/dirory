@@ -10,7 +10,7 @@ const CodeSchema = z
   .toUpperCase()
   .regex(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/, "That code does not look right.");
 
-const AppSchema = z.enum(["sketchup", "revit"]).catch("sketchup");
+const AppSchema = z.enum(["sketchup", "revit", "rhino"]).catch("sketchup");
 
 function devicePath(code: string, app: string, status?: string) {
   const q = new URLSearchParams({ code, app });
@@ -19,7 +19,7 @@ function devicePath(code: string, app: string, status?: string) {
 }
 
 /**
- * FR-A4 (M6) — approve a plugin's device-code login (SketchUp or Revit).
+ * FR-A4 (M6) — approve a plugin's device-code login (SketchUp, Revit or Rhino).
  *
  * Only on the architect's click: a browser that is already signed in no
  * longer approves a code by itself, so a code is never bound to an account
