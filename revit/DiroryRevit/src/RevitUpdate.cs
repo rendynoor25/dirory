@@ -1,6 +1,7 @@
 // Updates for the Revit add-in. Revit cannot replace an add-in while it runs,
 // so this checks dirory.com for a newer version and points to the download;
-// the installer does the rest once Revit is closed.
+// the installer (Dirory-Revit-Setup-<version>.exe) does the rest once Revit
+// is closed.
 //
 //   GET https://dirory.com/api/plugin/latest -> { revit_version, revit_download_url, ... }
 
@@ -56,7 +57,7 @@ namespace Dirory.Revit
                 return;
             }
             dlg.MainInstruction = Lang.T("Dirory for Revit {version} is available", "version", Latest);
-            dlg.MainContent = Lang.T("You have {current}. To update: download it, close Revit, extract the .zip and run Install-Dirory.cmd. Your sign-in and settings are kept.", "current", App.Version);
+            dlg.MainContent = Lang.T("You have {current}. To update: download the installer, close Revit and run it. Your sign-in and settings are kept.", "current", App.Version);
             dlg.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, Lang.T("Open the download page"), Lang.T("dirory.com/download (choose Revit)"));
             dlg.CommonButtons = TaskDialogCommonButtons.Close;
             if (dlg.Show() == TaskDialogResult.CommandLink1) Cloud.Open(DownloadPage);

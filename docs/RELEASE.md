@@ -73,30 +73,35 @@ preferences and `~/.dirory`, never inside the extension folder.
 
 ## Revit add-in
 
-Two downloads on `/download`, same version (`REVIT_VERSION` in
-`apps/web/src/lib/pluginRelease.ts`):
+One download on `/download`: **Revit 2024-2027**, a Windows installer
+(`REVIT_VERSION` in `apps/web/src/lib/pluginRelease.ts`).
 
-- **Revit 2024** (.NET Framework 4.8): `scripts/build-revit.ps1` builds
-  `dist/revit/DiroryRevit-2024-x.y.z.zip`, served by `/api/download/revit`.
-- **Revit 2025-2027** (.NET 8 / .NET 10): `scripts/build-revit-multi.ps1` builds
-  each year and packs `dist/revit/DiroryRevit-2025-2027-x.y.z.zip`, with one
-  Install-Dirory.cmd that installs for every Revit 2025-2027 it finds. Served
-  by `/api/download/revit-2025`. Years not installed on the build PC need
-  `scripts/fetch-revit-refs.ps1 -Revit <year>` once (reference DLLs from
-  nuget.org into `.cache/`).
+1. Bump `Version` in `revit/DiroryRevit/src/App.cs`.
+2. Build:
 
-**Windows installer (all years in one .exe):**
-`scripts/build-revit-installer.ps1` builds 2024-2027 and compiles
-`revit/DiroryRevit/installer/Dirory.iss` with Inno Setup 6
-(`winget install JRSoftware.InnoSetup`) into
-`dist/revit/Dirory-Revit-Setup-x.y.z.exe`. It installs for the current user
-(no admin) into the same `%APPDATA%\Autodesk\Revit\Addins\<year>` folders as
-the zips, so it upgrades a zip install. It offers only the Revit years found,
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/build-revit-installer.ps1
+```
+
+   It builds each year with `scripts/build-revit.ps1` (2024 on .NET Framework
+   4.8, 2025-2026 on .NET 8, 2027 on .NET 10) and compiles
+   `revit/DiroryRevit/installer/Dirory.iss` with Inno Setup 6
+   (`winget install JRSoftware.InnoSetup`) into
+   `dist/revit/Dirory-Revit-Setup-x.y.z.exe`. Years not installed on the build
+   PC need `scripts/fetch-revit-refs.ps1 -Revit <year>` once (reference DLLs
+   from nuget.org into `.cache/`).
+3. Copy the .exe to `apps/web/private/`, set `REVIT_VERSION`, run
+   `scripts/build-download-bundle.ps1` (the "Both" download: the .rbz and the
+   .exe in one zip), commit and deploy as above.
+
+`/api/download/revit` serves the .exe; the old `/api/download/revit-2025` link
+serves the same file. The installer installs for the current user (no admin)
+into `%APPDATA%\Autodesk\Revit\Addins\<year>`, the same folders the old zips
+used, so it upgrades a zip install. It offers only the Revit years found,
 waits for Revit to close, and adds "Dirory for Revit" to Apps & features.
-Set `DIRORY_SIGN_CERT` / `DIRORY_SIGN_PASSWORD` to sign the DLLs and the .exe.
-The artwork comes from `D:\Dirory\brand` via `scripts/make-installer-art.ps1`.
 
-Then copy both zips to `apps/web/private/`, set `REVIT_VERSION`, run
-`scripts/build-download-bundle.ps1` (the "Both" download carries both Revit
-folders), commit and deploy as above. Revit does not require signed add-ins;
-it asks once and the architect chooses Always Load.
+Set `DIRORY_SIGN_CERT` / `DIRORY_SIGN_PASSWORD` to sign the DLLs and the .exe;
+until then Windows SmartScreen warns on the installer. Revit does not require
+signed add-ins; it asks once and the architect chooses Always Load. The
+installer artwork comes from `D:\Dirory\brand` via
+`scripts/make-installer-art.ps1`.

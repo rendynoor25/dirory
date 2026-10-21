@@ -69,13 +69,6 @@ export default async function DownloadPage({
       href: DOWNLOAD_ROUTES.revit,
     },
     {
-      id: "revitNew" as const,
-      title: t(locale, "download.optRevitNew"),
-      body: t(locale, "download.optRevitNewBody"),
-      button: `${t(locale, "download.btnRevitNew")} (v${REVIT_VERSION})`,
-      href: DOWNLOAD_ROUTES.revitNew,
-    },
-    {
       id: "both" as const,
       title: t(locale, "download.optBoth"),
       body: t(locale, "download.optBothBody"),

@@ -4,7 +4,7 @@ import { serveGatedDownload } from "@/lib/pluginDownload";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Dirory for Revit (scripts/build-revit.ps1), same gate as the SketchUp extension. */
+/** Dirory for Revit 2024-2027 (scripts/build-revit-installer.ps1), same gate as the SketchUp extension. */
 export function GET(request: Request) {
-  return serveGatedDownload(request, REVIT_FILENAME, "application/zip");
+  return serveGatedDownload(request, REVIT_FILENAME, "application/vnd.microsoft.portable-executable");
 }

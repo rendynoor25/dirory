@@ -7,18 +7,16 @@ $ErrorActionPreference = "Stop"
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $release = Get-Content (Join-Path $root "apps\web\src\lib\pluginRelease.ts") -Raw
 function Const($name) { ([regex]::Match($release, "export const $name = `"([^`"]+)`"")).Groups[1].Value }
-$su = Const "PLUGIN_VERSION"; $rv = Const "REVIT_VERSION"; $rfor = Const "REVIT_FOR"; $rnew = Const "REVIT_NEW_FOR"
+$su = Const "PLUGIN_VERSION"; $rv = Const "REVIT_VERSION"
 $private = Join-Path $root "apps\web\private"
 $rbz = Join-Path $private "DiroryLibrary-$su.rbz"
-$revitZip = Join-Path $private "DiroryRevit-$rfor-$rv.zip"
-$revitNewZip = Join-Path $private "DiroryRevit-$rnew-$rv.zip"
-foreach ($f in @($rbz, $revitZip, $revitNewZip)) { if (-not (Test-Path $f)) { throw "Missing $f" } }
+$setup = Join-Path $private "Dirory-Revit-Setup-$rv.exe"
+foreach ($f in @($rbz, $setup)) { if (-not (Test-Path $f)) { throw "Missing $f" } }
 
 $stage = Join-Path ([IO.Path]::GetTempPath()) ("dirory-bundle-" + [guid]::NewGuid())
-New-Item -ItemType Directory -Force -Path (Join-Path $stage "SketchUp") | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $stage "SketchUp"), (Join-Path $stage "Revit") | Out-Null
 Copy-Item $rbz (Join-Path $stage "SketchUp")
-Expand-Archive $revitZip -DestinationPath (Join-Path $stage "Revit $rfor")
-Expand-Archive $revitNewZip -DestinationPath (Join-Path $stage "Revit $rnew")
+Copy-Item $setup (Join-Path $stage "Revit")
 @"
 Dirory for SketchUp and Revit
 =============================
@@ -28,10 +26,11 @@ SketchUp (2019 or newer)
   SketchUp\DiroryLibrary-$su.rbz, restart SketchUp, then
   Extensions > Dirory > Open Library Panel.
 
-Revit (Windows)
-  Close Revit, open the folder for your Revit ("Revit $rfor" or
-  "Revit $rnew") and double-click Install-Dirory.cmd, then start Revit and
-  open the Dirory tab > Library.
+Revit 2024-2027 (Windows)
+  Close Revit and double-click Revit\Dirory-Revit-Setup-$rv.exe. It finds
+  each Revit 2024-2027 on this PC and installs for it. If Windows says
+  "Windows protected your PC", click More info, then Run anyway. Then start
+  Revit and open the Dirory tab > Library.
 
 Full guide: https://dirory.com/how-to-install
 "@ | Set-Content -Path (Join-Path $stage "README.txt") -Encoding UTF8

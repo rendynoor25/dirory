@@ -420,7 +420,7 @@
    "phrase.Could not reach dirory.com to check for updates. Check your internet connection and try again.": "Tidak dapat terhubung ke dirory.com untuk memeriksa pembaruan. Periksa koneksi internet Anda lalu coba lagi.",
    "phrase.You have the latest version ({version}).": "Anda sudah memakai versi terbaru ({version}).",
    "phrase.Dirory for Revit {version} is available": "Dirory untuk Revit {version} tersedia",
-   "phrase.You have {current}. To update: download it, close Revit, extract the .zip and run Install-Dirory.cmd. Your sign-in and settings are kept.": "Anda memakai {current}. Cara memperbarui: unduh, tutup Revit, ekstrak .zip lalu jalankan Install-Dirory.cmd. Status masuk dan pengaturan Anda tetap tersimpan.",
+   "phrase.You have {current}. To update: download the installer, close Revit and run it. Your sign-in and settings are kept.": "Anda memakai {current}. Cara memperbarui: unduh pemasangnya, tutup Revit, lalu jalankan. Status masuk dan pengaturan Anda tetap tersimpan.",
    "phrase.Open the download page": "Buka halaman unduhan",
    "phrase.dirory.com/download (choose Revit)": "dirory.com/download (pilih Revit)",
    "phrase.Measured from Revit elements: wall areas count both faces, openings are already deducted.": "Diukur dari elemen Revit: luas dinding dihitung dua muka, bukaan sudah dikurangkan.",
