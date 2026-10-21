@@ -6,8 +6,15 @@ runs in **SketchUp for Web** and **SketchUp for iPad**.
 The Ruby plugin in `../plugin/` is untouched and stays the desktop product. This
 directory is a new project that reuses the same backend.
 
-> **Status: M0 — spike.** Not a product. See `docs/SPIKE.md` for results and
-> `docs/GAPS.md` for what the JSA cannot do.
+> **Status: M1 — `extension/` is the first working extension** (library,
+> sign-in, place models, paint materials), for SketchUp Web JSA Labs: build it
+> with `scripts/build-web-extension.ps1` (from the repo root) and see
+> `extension/README.md`. `spike/` is the earlier M0 probe. See `docs/GAPS.md`
+> for what the JSA cannot do (texture size, interactive paint).
+>
+> **iPad:** SketchUp for iPad does not load extensions, so there is no iPad
+> version yet. The JSA docs list iOS as a future host; when SketchUp for iPad
+> loads extensions, this same extension is meant to run there.
 
 ---
 

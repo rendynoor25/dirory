@@ -76,12 +76,13 @@ export default async function DownloadPage({
       href: DOWNLOAD_ROUTES.both,
     },
   ];
-  // SketchUp for Web and iPad run a different kind of extension (the JavaScript
-  // API); it is being tested (jsa/) and installs from inside SketchUp, not as a
-  // downloaded file. Shown so architects know it is coming, not selectable.
+  // SketchUp for Web runs a different kind of extension (the JavaScript API,
+  // jsa/): in testing in SketchUp's JSA Labs preview, it will install from
+  // inside SketchUp, not as a download. SketchUp for iPad loads no extensions
+  // yet, so its card says so instead of promising an install.
   const upcoming = [
     { id: "web", title: t(locale, "download.optWeb"), body: t(locale, "download.optWebBody"), badge: t(locale, "download.soon") },
-    { id: "ipad", title: t(locale, "download.optIpad"), body: t(locale, "download.optIpadBody"), badge: t(locale, "download.soon") },
+    { id: "ipad", title: t(locale, "download.optIpad"), body: t(locale, "download.optIpadBody"), badge: t(locale, "download.notYet") },
   ];
 
   return (

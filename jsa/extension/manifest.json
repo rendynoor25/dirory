@@ -1,0 +1,36 @@
+{
+  "manifestFormatVersion": "1.0.0",
+  "id": "dirory",
+  "baseUrl": "/",
+  "mainFile": "index.html",
+  "name": "Dirory",
+  "icon": "dirory.svg",
+  "description": "Indonesian building products and materials: place real product models and paint with real materials, from the Dirory library.",
+  "version": "0.1.0",
+  "creator": "Dirory",
+  "copyright": "2026 Dirory",
+  "platforms": ["web"],
+  "window": {
+    "type": "sidebar",
+    "width": 380,
+    "height": 640
+  },
+  "commands": {
+    "open-dirory": {
+      "title": "Dirory Library",
+      "description": "Open the Dirory library: products to place and materials to paint.",
+      "icon": "dirory.svg"
+    }
+  },
+  "menuItems": [
+    { "type": "item", "commandId": "open-dirory" }
+  ],
+  "toolbars": [
+    {
+      "title": "Dirory",
+      "toolbarItems": [
+        { "type": "item", "commandId": "open-dirory" }
+      ]
+    }
+  ]
+}
