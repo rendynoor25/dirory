@@ -1,5 +1,32 @@
 # Changelog
 
+## SketchUp 0.10.11 and Revit 0.1.23 (published on /download): glass, seamless board materials
+
+New Dirory free samples: Brick, Clay Tile Roof, Concrete Lightweight Block,
+River Stone and Kerikil (cut from the Material Texture Catalog Board, replacing
+the generated Kerikil Sungai), and five glass materials: Clear, Car
+Windshield, Car Rear (Tinted), Frosted and Reflective.
+
+- Glass: migration 0046 adds `assets.appearance` (tint, opacity,
+  reflectivity, roughness, metallic); the catalog function returns it.
+  SketchUp paints glass as a tinted, transparent colour (PBR roughness and
+  metalness on SketchUp 2025+). Revit makes a Glass material with
+  transparency in shaded views and a Generic render appearance with
+  transparency, reflectivity and glossiness. Older plugins paint the card
+  picture as an opaque texture.
+- The board materials tile seamlessly at real sizes (bata merah, genteng
+  ~23 pcs/m2, hebel 60 x 20 cm, batu kali, kerikil 2-3 cm), published as
+  version 2 (`scripts/tile-board-materials.py`,
+  `scripts/publish-material-version.mjs`).
+- Both plugins replace the image of a material already in the model when the
+  catalogue has a newer version, so faces painted with it update.
+- Revit names Dirory's own materials "Dirory - Clear Glass", not
+  "Dirory - Dirory Clear Glass".
+
+Tested: glass in SketchUp 2021 (Ruby Console) and Revit 2024 (panel card,
+Material Browser); the version refresh in SketchUp 2021. Revit 2025-2027
+builds compile but are not run here.
+
 ## Revit 0.1.20: the installer no longer reports success when its files are missing
 
 A Revit 2025/2027 user ran Install-Dirory.cmd and got "File not found - Dirory"
