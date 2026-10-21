@@ -51,9 +51,10 @@ module Dirory
 
       # A release must carry the whole extension: the loader file and its
       # folder. Anything less would replace a working install with half of one.
+      # Signed releases from the Extension Warehouse ship main.rbe, not main.rb.
       def self.complete_archive?(dir)
         File.file?(File.join(dir, LOADER_FILE)) &&
-          File.file?(File.join(dir, EXTENSION_DIR, 'main.rb'))
+          %w[main.rb main.rbe].any? { |f| File.file?(File.join(dir, EXTENSION_DIR, f)) }
       rescue StandardError
         false
       end

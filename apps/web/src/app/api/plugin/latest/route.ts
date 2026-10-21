@@ -31,9 +31,9 @@ export async function GET(request: Request) {
       // The most recent user-visible changes, newest first. Keep this short —
       // it is shown inside the plugin's update prompt.
       notes: [
+        "Dirory is now signed by SketchUp's Extension Warehouse: no more unsigned-extension warning.",
         "Glass materials: clear, car windshield, car rear (tinted), frosted, reflective.",
         "Brick, clay roof tile, AAC block, river stone and kerikil tile seamlessly at real sizes.",
-        "Materials already in your model update when Dirory publishes a newer image.",
       ],
     },
     { headers: { "Cache-Control": "public, max-age=300" } },

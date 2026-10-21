@@ -9,10 +9,12 @@ require 'tmpdir'
 # (e.g. a Windows user name) would raise when the path is used.
 file = __FILE__.dup
 file.force_encoding('UTF-8') if file.respond_to?(:force_encoding)
-require File.join(File.dirname(file), 'cloud')
-require File.join(File.dirname(file), 'i18n')
-require File.join(File.dirname(file), 'updater')
-require File.join(File.dirname(file), 'takeoff')
+# Sketchup.require, not require: a signed release ships these as encrypted
+# .rbe files, which plain require cannot load.
+Sketchup.require File.join(File.dirname(file), 'cloud')
+Sketchup.require File.join(File.dirname(file), 'i18n')
+Sketchup.require File.join(File.dirname(file), 'updater')
+Sketchup.require File.join(File.dirname(file), 'takeoff')
 
 module Dirory
   module Library

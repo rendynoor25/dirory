@@ -1,5 +1,33 @@
 # Changelog
 
+## SketchUp 0.10.14: signed by the Extension Warehouse
+
+The /download package is now signed and encrypted (BEST, 2016 format) by the
+SketchUp Extension Warehouse signing tool, so SketchUp no longer warns about
+an unsigned extension. Same features as 0.10.11. (0.10.12 and 0.10.13 were
+signed test builds that did not load and were never published.)
+
+Encryption turns every file in `dirory_library/` into `.rbe`, which needed
+three code changes:
+
+- The loader registers `dirory_library/main` without `.rb`, so SketchUp finds
+  `main.rbe` ("Could not find included file ... main.rb" otherwise).
+- `main.rb` loads cloud, i18n, updater and takeoff with `Sketchup.require`;
+  plain `require` cannot load `.rbe` ("cannot load such file").
+- The updater's completeness check accepts `main.rbe` as well as `main.rb`.
+  0.10.11 and older only accept `main.rb`, so they reject a signed archive.
+
+Rollout bridge: /download serves the signed 0.10.14; the updater bucket gets
+the unsigned 0.10.14 build, the only kind 0.10.11 and older can install.
+From 0.10.15 on, the updater bucket gets the signed build too.
+
+Tested: the signed 0.10.14 in SketchUp 2021 shows as Signed in the Extension
+Manager, and the Library Panel opens, signs in and loads the catalogue.
+- Release flow from now on: build with `scripts/build-rbz.ps1`, sign at
+  https://extensions.sketchup.com/extension/sign, publish the signed file.
+  `dist/DiroryLibrary-<v>.rbz` is the signed release and
+  `dist/DiroryLibrary-<v>-unsigned.rbz` the build that went in.
+
 ## SketchUp 0.10.11 and Revit 0.1.23 (published on /download): glass, seamless board materials
 
 New Dirory free samples: Brick, Clay Tile Roof, Concrete Lightweight Block,
