@@ -190,6 +190,9 @@ export default async function DownloadPage({
                 {t(locale, "download.installHelp")} →
               </Link>
             </p>
+            <p className="mt-3 rounded-xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+              {t(locale, "download.chromeNote")}
+            </p>
           </>
         ) : (
           <>

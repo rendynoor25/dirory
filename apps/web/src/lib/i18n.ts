@@ -193,7 +193,7 @@ const en: Record<string, string> = {
   "install.revitS1Title": "Sign in to Dirory",
   "install.revitS1Body": "Create a free account or sign in on dirory.com. It is the same account as for SketchUp.",
   "install.revitS2Title": "Download the Revit add-in",
-  "install.revitS2Body": "On the download page choose \"Revit 2024\" or \"Revit 2025–2027\" to match your Revit (or \"Both\"), then click the download button. You get a .zip file. The 2025–2027 file holds a build for each of those years.",
+  "install.revitS2Body": "On the download page choose \"Revit 2024\" or \"Revit 2025–2027\" to match your Revit (or \"Both\"), then click the download button. You get a .zip file. The 2025–2027 file holds a build for each of those years. Chrome may warn that the file isn't commonly downloaded: Dirory for Revit is new and not yet signed. Open Chrome's downloads (the arrow or ⋮ next to the file) and choose Keep.",
   "install.revitS3Title": "Close Revit and extract the file",
   "install.revitS3Body": "Close Revit. Right-click the downloaded .zip and choose Extract All. If you downloaded \"Both\", open the Revit folder for your version inside it.",
   "install.revitS4Title": "Run the installer",
@@ -288,6 +288,7 @@ const en: Record<string, string> = {
   "download.signedInBody": "Pick your design software below, download, then follow the install steps.",
   "download.button": "Download RBZ",
   "download.requires": "Requires SketchUp 2019 or newer.",
+  "download.chromeNote": "Revit add-in: Chrome may say the file \"isn't commonly downloaded\" or is suspicious. Dirory for Revit is new and not yet signed, so few people have downloaded each version. Open Chrome's downloads (the arrow or ⋮ next to the file), choose Keep, then extract the .zip and run Install-Dirory.cmd.",
   "download.requiresBody":
     "Both plugins bring the Dirory cloud library into your design software: search models and materials, click to place or paint, and get the RAB cost estimate with Dirory Pro.",
   "download.step1": "In SketchUp, open Window → Extension Manager.",
@@ -693,7 +694,7 @@ const id: Record<string, string> = {
   "install.revitS1Title": "Masuk ke Dirory",
   "install.revitS1Body": "Buat akun gratis atau masuk di dirory.com. Akunnya sama dengan akun untuk SketchUp.",
   "install.revitS2Title": "Unduh add-in Revit",
-  "install.revitS2Body": "Di halaman unduh pilih \"Revit 2024\" atau \"Revit 2025–2027\" sesuai Revit Anda (atau \"Keduanya\"), lalu klik tombol unduh. Anda mendapat berkas .zip. Berkas 2025–2027 berisi build untuk masing-masing tahun tersebut.",
+  "install.revitS2Body": "Di halaman unduh pilih \"Revit 2024\" atau \"Revit 2025–2027\" sesuai Revit Anda (atau \"Keduanya\"), lalu klik tombol unduh. Anda mendapat berkas .zip. Berkas 2025–2027 berisi build untuk masing-masing tahun tersebut. Chrome mungkin memperingatkan bahwa berkas ini jarang diunduh: Dirory untuk Revit masih baru dan belum ditandatangani. Buka daftar unduhan Chrome (panah atau ⋮ di samping berkas) lalu pilih Keep (Simpan).",
   "install.revitS3Title": "Tutup Revit dan ekstrak berkasnya",
   "install.revitS3Body": "Tutup Revit. Klik kanan berkas .zip yang diunduh dan pilih Extract All. Jika Anda mengunduh \"Keduanya\", buka folder Revit di dalamnya.",
   "install.revitS4Title": "Jalankan pemasang",
@@ -788,6 +789,7 @@ const id: Record<string, string> = {
   "download.signedInBody": "Pilih perangkat lunak desain Anda di bawah, unduh, lalu ikuti langkah pemasangannya.",
   "download.button": "Unduh RBZ",
   "download.requires": "Memerlukan SketchUp 2019 atau lebih baru.",
+  "download.chromeNote": "Add-in Revit: Chrome mungkin menyebut berkas ini \"jarang diunduh\" atau mencurigakan. Dirory untuk Revit masih baru dan belum ditandatangani, sehingga tiap versinya baru diunduh sedikit orang. Buka daftar unduhan Chrome (panah atau ⋮ di samping berkas), pilih Keep (Simpan), lalu ekstrak .zip dan jalankan Install-Dirory.cmd.",
   "download.requiresBody":
     "Kedua plugin menghadirkan pustaka awan Dirory di perangkat lunak desain Anda: cari model dan material, klik untuk menempatkan atau mencat, dan dapatkan estimasi RAB dengan Dirory Pro.",
   "download.step1": "Di SketchUp, buka Window → Extension Manager.",

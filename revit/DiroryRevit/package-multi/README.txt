@@ -26,6 +26,11 @@ The folders "Revit 2025", "Revit 2026" and "Revit 2027" hold one build each.
 To install by hand, copy Dirory.addin and the Dirory folder from the folder for
 your Revit into %APPDATA%\Autodesk\Revit\Addins\<year>.
 
+If Chrome says the download "isn't commonly downloaded" or is suspicious:
+Dirory for Revit is new and not yet signed, so few people have downloaded
+each version. Open Chrome's downloads (the arrow or the three dots next to
+the file) and choose Keep.
+
 If Revit says "cannot run the external application Dirory" (FileLoadException,
 0x80131515), Windows has blocked the downloaded files. Run Install-Dirory.cmd
 again (it unblocks Dirory's files), or right-click the .zip, choose Properties,
