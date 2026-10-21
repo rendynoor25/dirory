@@ -441,6 +441,8 @@ module Dirory
       entity.set_attribute(ATTR_DICT, 'id', id)
       entity.set_attribute(ATTR_DICT, 'asset_id', asset_id) unless asset_id.empty?
       entity.set_attribute(ATTR_DICT, 'type', type)
+      # The catalogue version this came from, so a newer image can replace it.
+      entity.set_attribute(ATTR_DICT, 'version', data['version'].to_i) if data['version']
       entity.set_attribute(ATTR_DICT, 'name', (data['name'] || File.basename(path, '.*')).to_s)
       entity.set_attribute(ATTR_DICT, 'category', data['category'].to_s)
       entity.set_attribute(ATTR_DICT, 'brand', data['brand'].to_s)
@@ -985,7 +987,7 @@ module Dirory
     # CURRENT material, then switch to SketchUp's own Paint Bucket tool — so
     # it behaves exactly like picking a material in the Materials window.
     # ------------------------------------------------------------------
-    def self.material_for(model, path, key = nil, size = nil, appearance = nil)
+    def self.material_for(model, path, key = nil, size = nil, appearance = nil, version = nil)
       key = relative_key(path) if key.to_s.empty?
       base = File.basename(path, File.extname(path))
 
@@ -993,7 +995,15 @@ module Dirory
       model.materials.each do |m|
         dict = m.attribute_dictionary(ATTR_DICT)
         if dict && (dict['id'] == key || (dict['asset_id'] && dict['asset_id'] == key))
-          fit_tile_size(m, path, true, size)
+          if newer_version?(dict['version'], version) && !glass?(appearance)
+            # The catalogue has a new image for this material (e.g. made
+            # seamless, or a new size): swap it in, so faces already painted
+            # with it update too.
+            m.texture = path
+            fit_tile_size(m, path, false, size)
+          else
+            fit_tile_size(m, path, true, size)
+          end
           return m
         end
       end
@@ -1017,6 +1027,13 @@ module Dirory
         fit_tile_size(material, path, false, size)
       end
       material
+    end
+
+    # True when the catalogue's version is newer than the one a material was
+    # made from. Materials from before versions were recorded count as 1.
+    def self.newer_version?(stored, incoming)
+      return false if incoming.nil?
+      incoming.to_i > (stored.nil? ? 1 : stored.to_i)
     end
 
     # The catalogue's `appearance` (migration 0046) for glass: tint, opacity,
@@ -1116,7 +1133,7 @@ module Dirory
         key = data['asset_id'].to_s.empty? ? nil : data['asset_id'].to_s
         size = tile_size_for(data, path)
         appearance = data['appearance'].is_a?(Hash) ? data['appearance'] : nil
-        material = material_for(model, path, key, size, appearance)
+        material = material_for(model, path, key, size, appearance, data['version'])
         tag_entity(material, data, 'material')
         model.commit_operation
         started = false

@@ -64,6 +64,14 @@ namespace Dirory.Revit
                 // A material made by an earlier build may have no texture
                 // (0.1.0-0.1.2 could leave the Image empty): repair it in place.
                 if (!HasTexture(doc, existing)) AttachAppearance(doc, app, existing, texturePath, tileWcm, tileHcm);
+                // A newer catalogue version downloads to a new cache folder
+                // (cache/<asset>/v2): point the material at the new image and size.
+                else if (!string.Equals(TexturePath(doc, existing), texturePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    string problem = SetTexture(doc, existing.AppearanceAssetId, texturePath,
+                        tileWcm > 0 ? tileWcm : 100, tileHcm > 0 ? tileHcm : 100, existing.Color);
+                    Log($"material \"{existing.Name}\" updated to \"{texturePath}\": {problem ?? "ok"}");
+                }
                 return existing.Id;
             }
 
@@ -271,7 +279,10 @@ namespace Dirory.Revit
         }
 
         /// True when the material's appearance has an image in its Image slot.
-        private static bool HasTexture(Document doc, Material mat)
+        private static bool HasTexture(Document doc, Material mat) => !string.IsNullOrEmpty(TexturePath(doc, mat));
+
+        /// The image in the material's Image slot, or null.
+        private static string TexturePath(Document doc, Material mat)
         {
             try
             {
@@ -279,9 +290,9 @@ namespace Dirory.Revit
                 var diffuse = element?.GetRenderingAsset()?.FindByName(Generic.GenericDiffuse);
                 var bitmap = diffuse != null && diffuse.NumberOfConnectedProperties > 0 ? diffuse.GetSingleConnectedAsset() : null;
                 var file = bitmap?.FindByName(UnifiedBitmap.UnifiedbitmapBitmap) as AssetPropertyString;
-                return file != null && !string.IsNullOrEmpty(file.Value);
+                return file?.Value;
             }
-            catch { return false; }
+            catch { return null; }
         }
 
         // A Generic appearance to copy: a project asset of the Generic schema

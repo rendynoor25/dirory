@@ -15,7 +15,7 @@ module Dirory
       file.force_encoding('UTF-8') if file.respond_to?(:force_encoding)
       ext = SketchupExtension.new('Dirory', File.join(File.dirname(file), 'dirory_library', 'main.rb'))
       ext.description = 'Browse the Dirory product library inside SketchUp: search, insert models and paint materials from real Indonesian brands.'
-      ext.version     = '0.10.10'
+      ext.version     = '0.10.11'
       ext.creator     = 'Dirory'
       ext.copyright   = '2026'
       self.extension  = ext

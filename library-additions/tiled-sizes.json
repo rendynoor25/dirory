@@ -1,0 +1,8 @@
+{
+  "_comment": "Real-world size of each board texture, made seamless by scripts/tile-board-materials.py. Published with scripts/publish-material-version.mjs. Brick: 21.2 x 7 cm module (bata merah ~20 x 5.8 cm, 1.2 cm joints). Roof: 19.5 x 22.1 cm cover per genteng (~23 pcs/m2). AAC: 60 x 20 cm hebel blocks, 3 mm joints. River stone ~20 cm stones. Kerikil 2-3 cm.",
+  "Materials/Brick/Brick.jpg": { "size_cm": [42.4, 42] },
+  "Materials/Roof/Clay Tile Roof.jpg": { "size_cm": [97.5, 44.2] },
+  "Materials/Concrete/Concrete Lightweight Block.jpg": { "size_cm": [120, 80] },
+  "Materials/Stone/River Stone.jpg": { "size_cm": [135, 72.5] },
+  "Materials/Stone/Kerikil.jpg": { "size_cm": [100, 55.2] }
+}

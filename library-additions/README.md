@@ -24,6 +24,12 @@ so name the file the way it should appear (`Kerikil Sungai.png`, not
 
 ## Contents
 
+The five board materials are **seamless** and published at a real size (version 2):
+`scripts/tile-board-materials.py` crops brick and roof tile to whole pattern repeats, hides the wrap seam with a
+minimum-error cut, and rebuilds the AAC block as 60 x 20 cm blocks. Sizes are in `tiled-sizes.json`; publish a
+changed image with `node scripts/publish-material-version.mjs --root library-additions --spec library-additions/tiled-sizes.json`.
+
+
 | Item | Why |
 |---|---|
 | `Materials/Brick/Brick.jpg` | Bata merah. Cut from the *Material Texture Catalog Board* (`sample_library/Materials`), as are the four below. |
