@@ -1,6 +1,6 @@
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { approveDevice, switchAccount } from "./actions";
-import { DeviceSignIn } from "./DeviceSignIn";
+import { DeviceSignIn, type DeviceApp } from "./DeviceSignIn";
 import { googleClientId, googleEnabled } from "@/lib/providers";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
@@ -9,14 +9,16 @@ import { OccupationPicker } from "@/components/OccupationPicker";
 const DEVICE_CODE_RE = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 
 /** The app signing in, from `?app=` (set by the auth-device function). */
-function appOf(raw: string | string[] | undefined): { id: "sketchup" | "revit"; name: string } {
+function appOf(raw: string | string[] | undefined): { id: DeviceApp; name: string } {
   const v = (Array.isArray(raw) ? raw[0] : raw ?? "").toLowerCase();
-  return v === "revit" ? { id: "revit", name: "Revit" } : { id: "sketchup", name: "SketchUp" };
+  if (v === "revit") return { id: "revit", name: "Revit" };
+  if (v === "rhino") return { id: "rhino", name: "Rhino" };
+  return { id: "sketchup", name: "SketchUp" };
 }
 
 /**
  * FR-A4 (M6) — the browser half of the plugin device-code login, for the
- * SketchUp extension and the Revit add-in (`?app=`).
+ * SketchUp extension, the Revit add-in and the Rhino plug-in (`?app=`).
  *
  * The plugin opens this page with `?code=ABCD-EFGH&app=revit`.
  *

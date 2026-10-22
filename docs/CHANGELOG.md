@@ -18,6 +18,35 @@ if sign-in fails with an "audience" error, add the id under Supabase → Auth �
 Providers → Google → Client IDs. Not yet tried end to end: Google's popup only
 opens from a person's click, and localhost was not confirmed as an allowed origin.
 
+## Rhino 0.1.2: first Dirory for Rhino 8 plug-in
+
+New `rhino/` (RhinoCommon, C#) and `scripts/build-rhino.ps1`. The shared panel
+opens in a dockable Rhino panel (type `Dirory`) with the library, search,
+filters and device sign-in (`plugin_version` `rhino-0.1.0`). A model card
+imports the product's `.skp` once as a block and places it at picked points;
+a material card makes a render material with its texture at the real tile size
+and paints the selected objects. Blocks, instances and materials carry
+`Dirory.*` user text like the SketchUp plugin's "Dirory" attributes.
+
+Shared panel: `window.DIRORY_HOST = 'rhino'` hides Quantifier and BoQ (not in
+Rhino yet) and gives Rhino its own hint; new Indonesian strings for the
+plug-in's messages. SketchUp and Revit are unchanged.
+
+Tested in Rhino 8.36 (Windows, evaluation licence): the panel docks beside
+Layers, device sign-in, a MATERIUM model placed as one reused block (same
+real size in a millimetre and a centimetre file, tagged), a 60x60 cm NIRO
+GRANITE tile painted on a selected slab (WCS box, 1.667 repeats per metre)
+and reused on a second click. 0.1.0 did not set the real tile size (wrong
+texture slot) and 0.1.1 opened no panel the first time; both were never
+handed out. `-Install` now installs through `Yak.exe`: Rhino deletes a
+hand-copied package folder at start-up.
+
+Sign-in page names Rhino (prepared, not deployed): `auth-device/start` sends
+`app=rhino` for a `plugin_version` starting with "rhino", and /auth/device
+says "Connect Rhino". Deploy order: the website first (it accepts `app=rhino`),
+then `supabase functions deploy auth-device --no-verify-jwt`. Until both are
+live the page says SketchUp for Rhino, which still signs in correctly.
+
 ## SketchUp 0.10.14: signed by the Extension Warehouse
 
 The /download package is now signed and encrypted (BEST, 2016 format) by the

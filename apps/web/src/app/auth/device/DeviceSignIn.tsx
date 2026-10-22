@@ -4,6 +4,9 @@ import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
+/** The app signing in (the auth-device function's `?app=`). */
+export type DeviceApp = "sketchup" | "revit" | "rhino";
+
 /**
  * Inline sign-in for the device-approval page.
  *
@@ -23,7 +26,7 @@ export function DeviceSignIn({
   error,
 }: {
   code: string;
-  app: "sketchup" | "revit";
+  app: DeviceApp;
   appName: string;
   googleEnabled: boolean;
   /** Google's own button when set (see lib/providers googleClientId). */

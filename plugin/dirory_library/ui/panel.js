@@ -12,10 +12,14 @@ const collapsedBrands = new Set(); // brands whose lists are folded in the Usage
 let hideUnused = false;
 const NO_BRAND = 'No brand';
 const SAMPLE_BRAND = 'Dirory'; // Dirory's own free samples (no vendor, cannot be quoted)
-// The same panel runs in SketchUp and in the Revit add-in (window.DIRORY_HOST).
+// The same panel runs in SketchUp, the Revit add-in and the Rhino plug-in
+// (window.DIRORY_HOST). Rhino has the library only: no Quantifier or BoQ yet.
 const IS_REVIT = window.DIRORY_HOST === 'revit';
+const IS_RHINO = window.DIRORY_HOST === 'rhino';
 const DEFAULT_EMPTY_HTML = IS_REVIT
   ? 'No items found. Try another category or brand. In Revit, Models lists the products that have a Revit family (.rfa); more families are being added.'
+  : IS_RHINO
+  ? 'No items found. Try another category or brand.'
   : 'No items found. Try another category or brand, or drop a <code>.skp</code> file ' +
   'anywhere inside your library folder and click \u27F3 to rescan.';
 
@@ -102,7 +106,7 @@ function updateLoadingNote(text) {
 }
 
 // The same panel runs in SketchUp and in the Revit add-in; name the right app.
-const HOST_NAME = IS_REVIT ? 'Revit' : 'SketchUp';
+const HOST_NAME = IS_REVIT ? 'Revit' : IS_RHINO ? 'Rhino' : 'SketchUp';
 document.querySelectorAll('.host-name').forEach((n) => { n.textContent = HOST_NAME; });
 
 // The usage report (which products a model uses) and its export, print and
@@ -115,6 +119,13 @@ if (IS_REVIT) {
   });
   byId('usage').hidden = true;                // no product report in Revit yet
   byId('rabBothSidesField').hidden = true;   // Revit measures both faces itself
+}
+// Rhino: the library only. Quantifier and BoQ are not available there yet.
+if (IS_RHINO) {
+  document.querySelectorAll('.main-tab[data-section="quantifier"], .main-tab[data-section="boq"]').forEach((b) => {
+    b.hidden = true;
+  });
+  document.querySelector('.main-nav').style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
 }
 
 window.addEventListener('load', () => {
@@ -1261,6 +1272,12 @@ if (IS_REVIT) {
   byId('hint').setAttribute('data-i18n', 'hint.revit');
   byId('hint').textContent = 'Click a material card, then click faces in the model to paint it (Esc to finish). ' +
     'Models load as Revit families where a .rfa is available.';
+}
+// Rhino paints the selected objects and places models as blocks.
+if (IS_RHINO) {
+  byId('hint').setAttribute('data-i18n', 'hint.rhino');
+  byId('hint').textContent = 'Select objects, then click a material card to paint them. ' +
+    'Click a model card, then click in the model to place it as a block (Enter to finish).';
 }
 function closeSettings() {
   byId('settingsModal').hidden = true;
@@ -2484,6 +2501,7 @@ let liveRequested = false;
 const LIVE_PREF = 'dirory.liveCost';
 
 function liveWanted() {
+  if (IS_RHINO) return false; // no quantities in Rhino yet
   try { return localStorage.getItem(LIVE_PREF) !== 'off'; } catch (e) { return true; }
 }
 
