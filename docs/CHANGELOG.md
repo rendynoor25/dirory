@@ -1,5 +1,20 @@
 # Changelog
 
+## /library: Favourites filter for signed-in users
+
+/library gets a "★ Favourites" tab next to All products / Models / Materials.
+For a signed-in user it filters the catalogue to the products they starred in
+the Dirory panel, read from the `favourites` table with their own session
+(RLS `favourites_self_read`), and starred cards carry a ★ badge in every view.
+Only starred rows with an `asset_id` are shown; the plugin's "Used before"
+rows (`starred = false`) and legacy-path stars are left out. Signed out, the
+tab links to sign-in and comes back to `/library?favourites=1`, which opens
+with the filter on. Only the SketchUp plugin syncs stars today (Revit and
+Rhino ignore `toggleFavourite`), so the empty state names SketchUp. EN and ID
+copy. Tested with the signed-out view and a temporary fixed list of three
+favourites (filter on/off, badges, `?favourites=1`); at the time no user had a
+synced star (all 42 rows were "Used before").
+
 ## Landing page: live numbers and a product showcase
 
 dirory.com's landing page gets a strip under the hero with live counts and two

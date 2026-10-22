@@ -159,6 +159,11 @@ const en: Record<string, string> = {
   "library.searchLabel": "Search products",
   "library.filterBrand": "Filter by brand",
   "library.filterCategory": "Filter by category",
+  "library.favourites": "Favourites",
+  "library.favouritesSignIn": "Sign in to see the products you starred in the Dirory plugin",
+  "library.favouritesNone":
+    "No favourites yet. Star a product (☆) in the Dirory panel in SketchUp and it shows up here.",
+  "library.favouriteBadge": "In your favourites",
 
   // ---- product ------------------------------------------------------------
   "product.notFound": "Product not found",
@@ -709,6 +714,11 @@ const id: Record<string, string> = {
   "library.searchLabel": "Cari produk",
   "library.filterBrand": "Saring berdasarkan merek",
   "library.filterCategory": "Saring berdasarkan kategori",
+  "library.favourites": "Favorit",
+  "library.favouritesSignIn": "Masuk untuk melihat produk yang Anda tandai di plugin Dirory",
+  "library.favouritesNone":
+    "Belum ada favorit. Tandai produk dengan bintang (☆) di panel Dirory di SketchUp, dan produk itu muncul di sini.",
+  "library.favouriteBadge": "Ada di favorit Anda",
 
   // ---- product ------------------------------------------------------------
   "product.notFound": "Produk tidak ditemukan",

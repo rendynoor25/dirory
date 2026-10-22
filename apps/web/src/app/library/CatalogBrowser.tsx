@@ -16,9 +16,24 @@ type SortKey = "name" | "brand" | "newest";
  *
  * Filtering is client-side over the full catalogue (1,300+ items), which makes
  * it instant and needs no extra endpoints. `locale` comes from the server page.
+ *
+ * `favourites` is the signed-in user's starred asset ids from the plugins, or
+ * null when signed out; then the Favourites tab links to sign-in instead.
  */
-export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale: Locale }) {
+export function CatalogBrowser({
+  items,
+  locale,
+  favourites,
+  initialFavouritesOnly = false,
+}: {
+  items: CatalogItem[];
+  locale: Locale;
+  favourites: string[] | null;
+  initialFavouritesOnly?: boolean;
+}) {
   const [query, setQuery] = useState("");
+  const [favouritesOnly, setFavouritesOnly] = useState(initialFavouritesOnly);
+  const favouriteSet = useMemo(() => new Set(favourites ?? []), [favourites]);
   const [type, setType] = useState<"all" | "model" | "material">("all");
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
@@ -37,6 +52,7 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = items.filter((item) => {
+      if (favouritesOnly && !favouriteSet.has(item.asset_id)) return false;
       if (type !== "all" && item.type !== type) return false;
       if (brand && item.brand !== brand) return false;
       if (category && item.category !== category) return false;
@@ -52,7 +68,7 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
     else if (sort === "newest") list.reverse();
     else list.sort((a, b) => a.name.localeCompare(b.name));
     return list;
-  }, [items, query, type, brand, category, sort]);
+  }, [items, query, type, brand, category, sort, favouritesOnly, favouriteSet]);
 
   const shown = filtered.slice(0, visible);
   const hasMore = filtered.length > shown.length;
@@ -62,6 +78,7 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
     setType("all");
     setBrand("");
     setCategory("");
+    setFavouritesOnly(false);
     setVisible(60);
   };
 
@@ -117,6 +134,32 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
               </button>
             ))}
 
+            {favourites === null ? (
+              <Link
+                href="/login?next=%2Flibrary%3Ffavourites%3D1"
+                title={t(locale, "library.favouritesSignIn")}
+                className="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-600 transition hover:border-slate-400"
+              >
+                ★ {t(locale, "library.favourites")}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                aria-pressed={favouritesOnly}
+                onClick={() => {
+                  setFavouritesOnly((on) => !on);
+                  setVisible(60);
+                }}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  favouritesOnly
+                    ? "bg-amber-500 text-white"
+                    : "border border-slate-300 bg-white text-slate-600 hover:border-slate-400"
+                }`}
+              >
+                ★ {t(locale, "library.favourites")} ({favouriteSet.size.toLocaleString()})
+              </button>
+            )}
+
             <div className="ml-auto flex flex-wrap items-center gap-2">
               <select
                 value={brand}
@@ -150,7 +193,7 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
                   </option>
                 ))}
               </select>
-              {(query || type !== "all" || brand || category) && (
+              {(query || type !== "all" || brand || category || favouritesOnly) && (
                 <button
                   type="button"
                   onClick={resetFilters}
@@ -173,7 +216,9 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
 
       {filtered.length === 0 ? (
         <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center">
-          <p className="text-sm text-slate-600">{t(locale, "library.none")}</p>
+          <p className="text-sm text-slate-600">
+            {favouritesOnly && favouriteSet.size === 0 ? t(locale, "library.favouritesNone") : t(locale, "library.none")}
+          </p>
           <button type="button" onClick={resetFilters} className="mt-3 text-sm font-medium text-brand-700 hover:underline">
             {t(locale, "library.clear")}
           </button>
@@ -182,7 +227,7 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
         <>
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {shown.map((item) => (
-              <ProductCard key={item.asset_id} item={item} locale={locale} />
+              <ProductCard key={item.asset_id} item={item} locale={locale} starred={favouriteSet.has(item.asset_id)} />
             ))}
           </ul>
 
@@ -203,7 +248,7 @@ export function CatalogBrowser({ items, locale }: { items: CatalogItem[]; locale
   );
 }
 
-function ProductCard({ item, locale }: { item: CatalogItem; locale: Locale }) {
+function ProductCard({ item, locale, starred }: { item: CatalogItem; locale: Locale; starred: boolean }) {
   const kindLabel = item.type === "material" ? t(locale, "library.material") : t(locale, "library.model");
   return (
     <li>
@@ -232,6 +277,15 @@ function ProductCard({ item, locale }: { item: CatalogItem; locale: Locale }) {
           {item.sample ? (
             <span className="absolute right-2 top-2 rounded-md bg-emerald-600/90 px-1.5 py-0.5 text-[10px] font-semibold text-white">
               {t(locale, "common.freeSample")}
+            </span>
+          ) : null}
+          {starred ? (
+            <span
+              title={t(locale, "library.favouriteBadge")}
+              className="absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-sm text-amber-500 shadow-sm"
+            >
+              <span aria-hidden="true">★</span>
+              <span className="sr-only">{t(locale, "library.favouriteBadge")}</span>
             </span>
           ) : null}
         </div>
