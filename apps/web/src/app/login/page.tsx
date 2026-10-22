@@ -1,5 +1,5 @@
 import { SignInForm } from "./SignInForm";
-import { googleEnabled } from "@/lib/providers";
+import { googleClientId, googleEnabled } from "@/lib/providers";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -36,7 +36,13 @@ export default async function LoginPage({
           {withGoogle ? t(locale, "login.leadGoogle") : t(locale, "login.leadEmail")}
         </p>
 
-        <SignInForm next={next} error={params.error} googleEnabled={withGoogle} locale={locale} />
+        <SignInForm
+          next={next}
+          error={params.error}
+          googleEnabled={withGoogle}
+          googleClientId={googleClientId()}
+          locale={locale}
+        />
 
         <p className="mt-6 text-xs text-slate-500">{t(locale, "login.footer")}</p>
       </div>

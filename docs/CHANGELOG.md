@@ -1,5 +1,23 @@
 # Changelog
 
+## Google sign-in on dirory.com
+
+The login page and the plug-in sign-in page (/auth/device) use Google's own
+"Continue with Google" button (Google Identity Services) when the server has
+`GOOGLE_CLIENT_ID`. Google signs in on dirory.com, so its account chooser
+says "to continue to dirory.com" instead of the Supabase project's address;
+the site hands Google's ID token to Supabase (`signInWithIdToken`, with a
+hashed nonce), so accounts are unchanged. `/auth/continue` sends the user on
+like `/auth/callback` (admins to /admin). Without `GOOGLE_CLIENT_ID` the old
+redirect button stays.
+
+To switch it on: in Google Cloud, add `https://dirory.com` to the web client's
+Authorized JavaScript origins; set `GOOGLE_CLIENT_ID` on the server. It is the
+client Supabase already uses for Google, so Supabase should accept its tokens;
+if sign-in fails with an "audience" error, add the id under Supabase → Auth →
+Providers → Google → Client IDs. Not yet tried end to end: Google's popup only
+opens from a person's click, and localhost was not confirmed as an allowed origin.
+
 ## Rhino 0.1.2: first Dirory for Rhino 8 plug-in
 
 New `rhino/` (RhinoCommon, C#) and `scripts/build-rhino.ps1`. The shared panel

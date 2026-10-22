@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 /** The app signing in (the auth-device function's `?app=`). */
 export type DeviceApp = "sketchup" | "revit" | "rhino";
@@ -12,19 +13,25 @@ export type DeviceApp = "sketchup" | "revit" | "rhino";
  * Kept on the same page as the device code. `redirectTo` goes through
  * /auth/callback (to turn the OAuth code into a session) with `next` set to this
  * page and its device code, so after Google/email the user lands back here,
- * signed in, and the code is approved automatically.
+ * signed in, and the code is approved automatically. Google's own button
+ * (with a Google client id) signs in on this page and reloads it the same way.
  */
 export function DeviceSignIn({
   code,
   app,
   appName,
   googleEnabled,
+  googleClientId = null,
+  locale = "en",
   error,
 }: {
   code: string;
   app: DeviceApp;
   appName: string;
   googleEnabled: boolean;
+  /** Google's own button when set (see lib/providers googleClientId). */
+  googleClientId?: string | null;
+  locale?: "en" | "id";
   error?: string;
 }) {
   const [email, setEmail] = useState("");
@@ -100,6 +107,22 @@ export function DeviceSignIn({
 
       {googleEnabled ? (
         <>
+          {googleClientId ? (
+            <div className="mt-4">
+              <GoogleSignInButton
+                clientId={googleClientId}
+                locale={locale}
+                busyLabel="Signing in…"
+                onSignedIn={() =>
+                  window.location.assign(`/auth/device?code=${encodeURIComponent(code)}&app=${app}&signed_in=1`)
+                }
+                onError={(m) => {
+                  setStatus("error");
+                  setMessage(m);
+                }}
+              />
+            </div>
+          ) : (
           <button
             type="button"
             onClick={onGoogle}
@@ -109,6 +132,7 @@ export function DeviceSignIn({
             <GoogleMark />
             {status === "google" ? "Opening Google…" : "Continue with Google"}
           </button>
+          )}
           <div className="my-4 flex items-center gap-3 text-xs text-slate-400">
             <span className="h-px flex-1 bg-slate-200" />
             or use email
