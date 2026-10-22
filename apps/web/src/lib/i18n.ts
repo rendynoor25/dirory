@@ -328,7 +328,7 @@ const en: Record<string, string> = {
   "download.requires": "Requires SketchUp 2019 or newer.",
   "download.chromeNote": "Revit installer: Chrome may say the file \"isn't commonly downloaded\" or is suspicious. Open Chrome's downloads (the arrow or ⋮ next to the file) and choose Keep. When you open it, Windows may show \"Windows protected your PC\": click More info, then Run anyway. Dirory for Revit is new and not yet signed, so few people have downloaded each version.",
   "download.requiresBody":
-    "Both plugins bring the Dirory cloud library into your design software: search models and materials, click to place or paint, and get the RAB cost estimate with Dirory Pro.",
+    "Every Dirory plugin brings the Dirory cloud library into your design software: search models and materials, click to place or paint. SketchUp and Revit also give the RAB cost estimate with Dirory Pro; Rhino lists the Dirory products and materials a model uses (no RAB yet).",
   "download.step1": "In SketchUp, open Window → Extension Manager.",
   "download.step2": "Choose Install Extension and select the downloaded .rbz.",
   "download.step3": "Restart SketchUp, then open Extensions → Dirory → Open Library Panel.",
@@ -360,7 +360,7 @@ const en: Record<string, string> = {
   "download.btnRhino": "Download for Rhino",
   "download.btnBoth": "Download SketchUp + Revit",
   "download.consentButtonPick": "Save choices and download",
-  "download.installHelp": "Step-by-step installation for SketchUp and Revit",
+  "download.installHelp": "Step-by-step installation for SketchUp, Revit and Rhino",
   "download.revitTitle": "Dirory for Revit",
   "download.revitBody":
     "For Revit 2024–2027 on Windows. Paint Dirory materials onto walls, floors and ceilings with real tile sizes, and get the RAB from walls, floors, ceilings, roofs, doors and windows. Revit families (.rfa) for products are being added.",
@@ -869,7 +869,7 @@ const id: Record<string, string> = {
   "download.requires": "Memerlukan SketchUp 2019 atau lebih baru.",
   "download.chromeNote": "Pemasang Revit: Chrome mungkin menyebut berkas ini \"jarang diunduh\" atau mencurigakan. Buka daftar unduhan Chrome (panah atau ⋮ di samping berkas) lalu pilih Keep (Simpan). Saat dibuka, Windows mungkin menampilkan \"Windows protected your PC\": klik More info, lalu Run anyway. Dirory untuk Revit masih baru dan belum ditandatangani, sehingga tiap versinya baru diunduh sedikit orang.",
   "download.requiresBody":
-    "Kedua plugin menghadirkan pustaka awan Dirory di perangkat lunak desain Anda: cari model dan material, klik untuk menempatkan atau mencat, dan dapatkan estimasi RAB dengan Dirory Pro.",
+    "Setiap plugin Dirory menghadirkan pustaka awan Dirory di perangkat lunak desain Anda: cari model dan material, klik untuk menempatkan atau mencat. SketchUp dan Revit juga memberi estimasi RAB dengan Dirory Pro; Rhino menampilkan produk dan material Dirory yang dipakai di model (belum ada RAB).",
   "download.step1": "Di SketchUp, buka Window → Extension Manager.",
   "download.step2": "Pilih Install Extension dan pilih berkas .rbz yang sudah diunduh.",
   "download.step3": "Mulai ulang SketchUp, lalu buka Extensions → Dirory → Open Library Panel.",
@@ -901,7 +901,7 @@ const id: Record<string, string> = {
   "download.btnRhino": "Unduh untuk Rhino",
   "download.btnBoth": "Unduh SketchUp + Revit",
   "download.consentButtonPick": "Simpan pilihan dan unduh",
-  "download.installHelp": "Langkah pemasangan untuk SketchUp dan Revit",
+  "download.installHelp": "Langkah pemasangan untuk SketchUp, Revit dan Rhino",
   "download.revitTitle": "Dirory untuk Revit",
   "download.revitBody":
     "Untuk Revit 2024–2027 di Windows. Cat material Dirory ke dinding, lantai, dan plafon dengan ukuran ubin sebenarnya, dan dapatkan RAB dari dinding, lantai, plafon, atap, pintu, dan jendela. Family Revit (.rfa) untuk produk sedang ditambahkan.",
