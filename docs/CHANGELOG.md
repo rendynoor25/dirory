@@ -1,5 +1,22 @@
 # Changelog
 
+## Landing page: live numbers and a product showcase
+
+dirory.com's landing page gets a strip under the hero with live counts and two
+scrolling rows (`components/LandingShowcase.tsx`, `lib/landingStats.ts`).
+Products and brands are counted from the public catalogue, so they match what
+a visitor can browse: approved assets of visible vendors, with Dirory's own
+samples not counted as a brand. Registered users are the `profiles` rows (one
+per sign-up), counted with the service role. The catalogue is already cached
+for 5 minutes and the user count for an hour, so nothing runs per request; a
+number that cannot be read is left out rather than shown as zero. The product
+row shows 24 products spread round-robin across brands, mixing models and
+materials, with thumbnails from the stable `/api/thumb/<asset_id>` route and
+links to each product page; the second row scrolls the catalogue's brand
+logos the other way. Pure CSS, no client JavaScript: the rows pause on hover
+or keyboard focus and, with reduced motion, stop and scroll by hand. EN and ID
+copy in `lib/i18n.ts`.
+
 ## Rhino 0.1.4: card thumbnails load
 
 The Models and Materials cards in Dirory for Rhino showed the grey placeholder

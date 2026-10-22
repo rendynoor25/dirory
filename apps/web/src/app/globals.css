@@ -14,3 +14,39 @@ body {
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
+/* Landing page showcase (components/LandingShowcase.tsx): the track holds the
+   items twice, so sliding it by half its width loops without a jump. */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 96s linear infinite;
+}
+.marquee-track > * {
+  /* A margin, not a flex gap, so both halves are exactly the same width. */
+  margin-right: 1rem;
+}
+.marquee-reverse .marquee-track {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
