@@ -1,5 +1,14 @@
 # Changelog
 
+## Landing page shows Dirory in SketchUp, Revit and Rhino
+
+The "Inside" section on dirory.com now has SketchUp / Revit / Rhino tabs
+(`components/AppScreenshots.tsx`), each with its own screenshot, caption and
+alt text in EN and ID: a TOTO closet placed as a Revit family, and the Rhino 8
+Quantifier listing two MATERIUM products and 19.20 m² of NIRO GRANITE tile.
+The badge, step 1, feature card, CTA and page title name Rhino too; the lead
+and RAB copy stay "SketchUp and Revit" because Rhino has no RAB yet.
+
 ## Rhino 0.1.3: Quantifier usage list
 
 Dirory for Rhino gets the Quantifier tab: the Dirory products in the open

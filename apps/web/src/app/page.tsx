@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
+import { AppScreenshots, type AppShot } from "@/components/AppScreenshots";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
@@ -67,6 +68,12 @@ export default async function Home() {
   ];
 
   const insidePoints = [t(locale, "home.insideB1"), t(locale, "home.insideB2"), t(locale, "home.insideB3")];
+
+  const appShots: AppShot[] = [
+    { app: "SketchUp", src: "/dirory-in-sketchup.png", width: 1193, height: 680, alt: t(locale, "home.insideAlt"), caption: t(locale, "home.insideCaption") },
+    { app: "Revit", src: "/dirory-in-revit.jpg", width: 1341, height: 676, alt: t(locale, "home.insideAltRevit"), caption: t(locale, "home.insideCaptionRevit") },
+    { app: "Rhino", src: "/dirory-in-rhino.jpg", width: 1366, height: 676, alt: t(locale, "home.insideAltRhino"), caption: t(locale, "home.insideCaptionRhino") },
+  ];
 
   const mockTabs = [
     [t(locale, "home.mockAll"), true],
@@ -229,17 +236,7 @@ export default async function Home() {
                 ))}
               </ul>
             </div>
-            <figure className="relative">
-              <div className="absolute -inset-4 rounded-[2rem] bg-brand-50" aria-hidden="true" />
-              <Image
-                src="/dirory-in-sketchup.png"
-                alt={t(locale, "home.insideAlt")}
-                width={1193}
-                height={680}
-                className="relative w-full rounded-2xl border border-slate-200 shadow-[0_28px_80px_-40px_rgba(33,48,108,.5)]"
-              />
-              <figcaption className="relative mt-3 text-center text-xs text-slate-400">{t(locale, "home.insideCaption")}</figcaption>
-            </figure>
+            <AppScreenshots shots={appShots} tabsLabel={t(locale, "home.insideTabs")} />
           </div>
         </div>
       </section>
