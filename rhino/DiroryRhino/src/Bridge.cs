@@ -230,6 +230,13 @@ namespace DiroryRhino
                 Json.Str(i, "type") == "material"
                     ? Json.Str(i, "material_path") != ""
                     : Json.Str(i, "model_path").EndsWith(".skp", StringComparison.OrdinalIgnoreCase)).ToList();
+            // Thumbnails load through the plug-in (Thumbs.cs), not from the signed URLs.
+            foreach (var i in usable)
+            {
+                string id = Json.Str(i, "asset_id"), url = Json.Str(i, "thumbnail_url");
+                if (id != "" && (url != "" || Json.Str(i, "thumbnail") != ""))
+                    i["thumbnail_url"] = Thumbs.Remember(id, Json.Str(i, "thumbnail"), url);
+            }
             PanelHost.Call("diroryRender", Json.Write(new Dictionary<string, object>
             {
                 ["items"] = usable,

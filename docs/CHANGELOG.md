@@ -1,5 +1,27 @@
 # Changelog
 
+## Rhino 0.1.4: card thumbnails load
+
+The Models and Materials cards in Dirory for Rhino showed the grey placeholder
+icon instead of the product image. The panel loaded each card's signed storage
+URL directly: ~2,000 cards started ~2,000 requests at once and storage dropped
+many of them (`net::ERR_CONNECTION_CLOSED`), and once the catalogue was an hour
+old every signature had expired (HTTP 400), so a re-drawn card failed outright.
+Rhino now points each card at `https://dirory.thumbs/<asset_id>` and answers
+those requests itself (`rhino/DiroryRhino/src/Thumbs.cs`, WebView2
+`WebResourceRequested` in `PanelHost.cs`): 16 downloads at a time, retried,
+falling back to dirory.com's stable `/api/thumb/<asset_id>` when the signature
+has expired, and cached in `%LOCALAPPDATA%\Dirory\thumbs-rhino` by storage key.
+Rhino's bridge script also makes the panel's images `loading="lazy"`, so the
+cards on screen are fetched first: on an empty cache the TACO and NIRO GRANITE
+material cards show their images within seconds instead of after the whole
+catalogue. Also fixed: a panel left docked when Rhino closed reopened with
+"WebView2 was already initialized with a different CoreWebView2Environment"
+(WPF raised `Loaded` twice while docking, starting WebView2 twice). Tested in
+Rhino 8.36: Models and Materials cards show thumbnails, scrolled cards load,
+the docked panel starts at launch. /download now serves 0.1.4. The shared
+panel, SketchUp and Revit are unchanged.
+
 ## Rhino 0.1.3: Quantifier usage list
 
 Dirory for Rhino gets the Quantifier tab: the Dirory products in the open
