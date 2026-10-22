@@ -5,6 +5,7 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { fetchCatalog } from "@/lib/catalog";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
+import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { CatalogBrowser } from "./CatalogBrowser";
 
 export const metadata = {
@@ -15,8 +16,17 @@ export const metadata = {
  * Public catalogue (no sign-in needed to browse). Downloading/using a product
  * requires the plugin and an account.
  */
-export default async function LibraryPage() {
-  const [catalog, locale] = await Promise.all([fetchCatalog(), getLocale()]);
+export default async function LibraryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ favourites?: string }>;
+}) {
+  const [catalog, locale, favourites, params] = await Promise.all([
+    fetchCatalog(),
+    getLocale(),
+    loadFavourites(),
+    searchParams,
+  ]);
   const models = catalog.items.filter((i) => i.type === "model").length;
   const materials = catalog.items.filter((i) => i.type === "material").length;
 
@@ -58,7 +68,12 @@ export default async function LibraryPage() {
             <p className="text-sm text-slate-600">{t(locale, "library.loading")}</p>
           </div>
         ) : (
-          <CatalogBrowser items={catalog.items} locale={locale} />
+          <CatalogBrowser
+            items={catalog.items}
+            locale={locale}
+            favourites={favourites}
+            initialFavouritesOnly={favourites !== null && params.favourites === "1"}
+          />
         )}
       </div>
 
@@ -77,4 +92,29 @@ export default async function LibraryPage() {
       </footer>
     </main>
   );
+}
+
+/**
+ * The signed-in user's starred products, as asset ids, or null when signed out.
+ *
+ * The SketchUp plugin syncs stars to the `favourites` table via
+ * the favourites Edge Function; RLS lets a user read their own rows, so the
+ * cookie session is enough. Rows with only a `legacy_key` (stars from before
+ * the cloud catalogue) have no asset to show and are skipped, as are
+ * `starred = false` rows, which are the plugin's "Used before" list.
+ */
+async function loadFavourites(): Promise<string[] | null> {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data } = await supabase
+    .from("favourites")
+    .select("asset_id")
+    .eq("profile_id", user.id)
+    .eq("starred", true)
+    .not("asset_id", "is", null);
+  return (data ?? []).map((row) => row.asset_id as string);
 }
