@@ -19,8 +19,8 @@ catalogue. Also fixed: a panel left docked when Rhino closed reopened with
 "WebView2 was already initialized with a different CoreWebView2Environment"
 (WPF raised `Loaded` twice while docking, starting WebView2 twice). Tested in
 Rhino 8.36: Models and Materials cards show thumbnails, scrolled cards load,
-the docked panel starts at launch. The shared panel, SketchUp and Revit are
-unchanged.
+the docked panel starts at launch. /download now serves 0.1.4. The shared
+panel, SketchUp and Revit are unchanged.
 
 ## Rhino 0.1.3: Quantifier usage list
 

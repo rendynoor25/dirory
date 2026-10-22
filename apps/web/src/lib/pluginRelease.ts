@@ -22,7 +22,7 @@ export const REVIT_FILENAME = `Dirory-Revit-Setup-${REVIT_VERSION}.exe`;
  * scripts/build-rhino.ps1. Rhino installs a .yak dragged onto its window.
  * The rh8_36 tag means Rhino 8.36 or newer.
  */
-export const RHINO_VERSION = "0.1.3";
+export const RHINO_VERSION = "0.1.4";
 export const RHINO_FILENAME = `dirory-${RHINO_VERSION}-rh8_36-win.yak`;
 
 /** SketchUp + Revit (every year) in one archive. Build with scripts/build-download-bundle.ps1. */
