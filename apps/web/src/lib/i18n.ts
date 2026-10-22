@@ -568,6 +568,15 @@ const en: Record<string, string> = {
 
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Language",
+
+  // ---- landing page live stats (components/LandingShowcase.tsx) -----------
+  "home.statsTag": "Live from the library",
+  "home.statsHeading": "Real products from real brands, ready to drop into your model",
+  "home.statProducts": "Products",
+  "home.statBrands": "Brands",
+  "home.statUsers": "Registered users",
+  "home.showcaseLabel": "Products in the library",
+  "home.logosLabel": "Brands in the library",
 };
 
 const id: Record<string, string> = {
@@ -1112,6 +1121,15 @@ const id: Record<string, string> = {
 
   // ---- language toggle ----------------------------------------------------
   "lang.label": "Bahasa",
+
+  // ---- statistik langsung di halaman utama (components/LandingShowcase.tsx)
+  "home.statsTag": "Langsung dari pustaka",
+  "home.statsHeading": "Produk asli dari merek asli, siap dipakai di model Anda",
+  "home.statProducts": "Produk",
+  "home.statBrands": "Merek",
+  "home.statUsers": "Pengguna terdaftar",
+  "home.showcaseLabel": "Produk di dalam pustaka",
+  "home.logosLabel": "Merek di dalam pustaka",
 };
 
 const DICTIONARIES: Record<Locale, Record<string, string>> = { en, id };

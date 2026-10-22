@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
 import { AppScreenshots, type AppShot } from "@/components/AppScreenshots";
+import { LandingShowcase } from "@/components/LandingShowcase";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
+import { getLandingStats } from "@/lib/landingStats";
 
 /**
  * Public landing page (dirory.com).
@@ -16,12 +18,12 @@ import { t } from "@/lib/i18n";
  * All copy comes from lib/i18n.ts so the EN/ID toggle works. English is the
  * default and the fallback.
  *
- * NOTE: no community statistics are shown yet; the founder has not supplied
- * real numbers and inventing them would be misleading.
+ * The numbers under the hero are live counts from the catalogue and Supabase
+ * (lib/landingStats.ts), never hand-written figures.
  */
 
 export default async function Home() {
-  const locale = await getLocale();
+  const [locale, stats] = await Promise.all([getLocale(), getLandingStats()]);
 
   const steps = [
     { number: "01", title: t(locale, "home.step1Title"), text: t(locale, "home.step1Text") },
@@ -193,6 +195,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <LandingShowcase stats={stats} locale={locale} />
 
       <section id="how-it-works" className="border-y border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
