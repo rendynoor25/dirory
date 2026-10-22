@@ -1,5 +1,20 @@
 # Changelog
 
+## Landing page: hero mock matches /library, Rhino in the lead, one brand row
+
+The library window in the landing page hero was a made-up panel (sidebar with
+Favourite and Usage, placeholder tiles) that did not match the website's
+/library page. It is now a small copy of /library: the same search box, sort,
+All products / Models / Materials pills and brand filter, the live product
+count, and four real catalogue products (two models, two materials, from
+different brands) drawn like /library's cards, each linking to its product
+page. The hero lead and the "Browse real products" step now name Rhino next
+to SketchUp and Revit. The "Brands in the library" grid near the bottom is
+gone: the scrolling brand-logo row under the hero shows the same brands from
+the live catalogue, so its static logos in `public/brands` and the `brand.*`
+labels are removed. Built on the Rhino landing page branch
+(`landing-revit-rhino-shots`), which this includes.
+
 ## Landing page: live numbers and a product showcase
 
 dirory.com's landing page gets a strip under the hero with live counts and two

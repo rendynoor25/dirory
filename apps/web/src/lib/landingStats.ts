@@ -22,7 +22,7 @@ export type LandingStats = {
   logos: { brand: string; url: string }[];
 };
 
-export type ShowcaseItem = Pick<CatalogItem, "asset_id" | "name" | "brand" | "type"> & {
+export type ShowcaseItem = Pick<CatalogItem, "asset_id" | "name" | "brand" | "type" | "category"> & {
   thumbnail_url: string;
 };
 
@@ -76,7 +76,7 @@ function pickShowcase(items: CatalogItem[]): ShowcaseItem[] {
   for (const item of items) {
     if (!item.thumbnail_url || item.sample) continue;
     const list = byBrand.get(item.brand) ?? [];
-    list.push({ asset_id: item.asset_id, name: item.name, brand: item.brand, type: item.type, thumbnail_url: item.thumbnail_url });
+    list.push({ asset_id: item.asset_id, name: item.name, brand: item.brand, type: item.type, category: item.category, thumbnail_url: item.thumbnail_url });
     byBrand.set(item.brand, list);
   }
   const queues = [...byBrand.values()].map((list) => {

@@ -5,8 +5,9 @@ import { AppScreenshots, type AppShot } from "@/components/AppScreenshots";
 import { LandingShowcase } from "@/components/LandingShowcase";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { getLocale } from "@/lib/locale-server";
-import { t } from "@/lib/i18n";
-import { getLandingStats } from "@/lib/landingStats";
+import { productHref } from "@/lib/catalog";
+import { t, type Locale } from "@/lib/i18n";
+import { getLandingStats, type ShowcaseItem } from "@/lib/landingStats";
 
 /**
  * Public landing page (dirory.com).
@@ -24,6 +25,12 @@ import { getLandingStats } from "@/lib/landingStats";
 
 export default async function Home() {
   const [locale, stats] = await Promise.all([getLocale(), getLandingStats()]);
+  // The hero mock shows four real products from the showcase (already spread
+  // across brands): two models and two materials, so it is not all swatches.
+  // A grey card stands in if the catalogue could not be read.
+  const mockModels = stats.showcase.filter((i) => i.type === "model");
+  const mockMaterials = stats.showcase.filter((i) => i.type === "material");
+  const mockProducts = [mockModels[0], mockMaterials[0], mockMaterials[1], mockModels[1]].map((i) => i ?? null);
 
   const steps = [
     { number: "01", title: t(locale, "home.step1Title"), text: t(locale, "home.step1Text") },
@@ -57,21 +64,6 @@ export default async function Home() {
   const rabSubtotal = rabExample.reduce((sum, [, v]) => sum + v, 0);
   const rupiah = (n: number) => "Rp " + Math.round(n).toLocaleString("id-ID");
 
-  // Logos are copies of the vendors' uploads in Supabase storage (brands/<vendor id>/logo.*),
-  // served from /public so the landing page does not have to load the catalogue.
-  // A brand without an uploaded logo shows its name instead.
-  const brands: { name: string; note: string; logo?: string }[] = [
-    { name: "TOTO", note: t(locale, "brand.sanitaryware"), logo: "/brands/toto.svg" },
-    { name: "Trilliunware", note: t(locale, "brand.sanitaryware"), logo: "/brands/trilliunware.png" },
-    { name: "NIRO GRANITE", note: t(locale, "brand.tilesStone"), logo: "/brands/niro-granite.svg" },
-    { name: "ROMAN", note: t(locale, "brand.tiles"), logo: "/brands/roman.svg" },
-    { name: "TACO", note: t(locale, "brand.hpl"), logo: "/brands/taco.svg" },
-    { name: "Nippon Paint", note: t(locale, "brand.wallPaint"), logo: "/brands/nippon.svg" },
-    { name: "Propan", note: t(locale, "brand.wallPaint"), logo: "/brands/propan.png" },
-    { name: "MATERIUM", note: t(locale, "brand.furniture"), logo: "/brands/materium.png" },
-    { name: "ALPHAMAX", note: t(locale, "brand.doorsWindows") },
-  ];
-
   const insidePoints = [t(locale, "home.insideB1"), t(locale, "home.insideB2"), t(locale, "home.insideB3")];
 
   const appShots: AppShot[] = [
@@ -80,13 +72,6 @@ export default async function Home() {
     { app: "Rhino", src: "/dirory-in-rhino.jpg", width: 1366, height: 676, alt: t(locale, "home.insideAltRhino"), caption: t(locale, "home.insideCaptionRhino") },
   ];
 
-  const mockTabs = [
-    [t(locale, "home.mockAll"), true],
-    [t(locale, "home.mockModels"), false],
-    [t(locale, "home.mockMaterials"), false],
-    [t(locale, "home.mockFavourite"), false],
-    [t(locale, "home.mockUsage"), false],
-  ] as const;
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f9fc] text-slate-950">
@@ -151,42 +136,35 @@ export default async function Home() {
               <span className="h-2.5 w-2.5 rounded-full bg-rose-300" />
               <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
-              <span className="ml-3 text-xs font-medium text-slate-400">{t(locale, "home.mockTitle")}</span>
+              <span className="ml-3 truncate text-xs font-medium text-slate-400">dirory.com/library</span>
             </div>
-            <div className="grid grid-cols-[104px_1fr] gap-3 p-3 sm:grid-cols-[128px_1fr]">
-              <aside className="rounded-2xl bg-[#f5f6fb] p-3">
-                <div className="mb-4 flex items-center gap-2">
-                  <Image src="/dirory-mark.png" alt="Dirory" width={23} height={25} className="h-6 w-auto" />
-                  <span className="text-xs font-bold">Dirory</span>
+            {/* A small copy of /library (CatalogBrowser), with real products from the catalogue. */}
+            <div className="p-3 sm:p-4">
+              <div className="flex gap-2">
+                <div className="min-w-0 flex-1 truncate rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-400">
+                  {t(locale, "library.searchPlaceholder")}
                 </div>
-                {mockTabs.map(([label, active]) => (
-                  <div key={label} className={`mb-1 rounded-lg px-2 py-2 text-[10px] ${active ? "bg-brand-100 font-semibold text-brand-700" : "text-slate-500"}`}>
-                    {label}
-                  </div>
-                ))}
-                <div className="mt-5 border-t border-slate-200 pt-3 text-[9px] uppercase tracking-wider text-slate-400">
-                  {t(locale, "nav.brands")}
+                <div className="hidden rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-700 sm:block">
+                  {t(locale, "library.sortName")} ▾
                 </div>
-                <div className="mt-2 space-y-2 text-[10px] text-slate-600"><p>◉ TOTO</p><p>◉ ROMAN</p><p>◉ Dirory</p></div>
-              </aside>
-              <div>
-                <div className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-400">
-                  <span>⌕ {t(locale, "home.mockSearch")}</span><span>⌘ K</span>
-                </div>
-                <div className="mt-3 flex gap-2 overflow-hidden text-[10px]">
-                  <span className="rounded-full bg-brand-700 px-3 py-1.5 font-semibold text-white">{t(locale, "home.mockAll")}</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">{t(locale, "home.mockModels")}</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">{t(locale, "home.mockMaterials")}</span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-slate-600">{t(locale, "brand.tiles")}</span>
-                </div>
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
-                  <ProductTile name="Modern basin mixer" brand="TOTO" tone="blue" viewLabel={t(locale, "common.viewProduct")} />
-                  <ProductTile name="Stonewash · 60×120" brand="ROMAN" tone="sand" viewLabel={t(locale, "common.viewProduct")} />
-                  <ProductTile name="Minimal wall basin" brand="TOTO" tone="green" viewLabel={t(locale, "common.viewProduct")} />
-                  <ProductTile name="Warm oak texture" brand="DIRORY" tone="wood" viewLabel={t(locale, "common.viewProduct")} />
-                </div>
-                <div className="mt-3 rounded-xl bg-[#f7f8fc] px-3 py-2 text-[10px] text-slate-500">{t(locale, "home.mockBrowseNote")}</div>
               </div>
+              <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px]">
+                <span className="rounded-full bg-brand-700 px-3 py-1 font-medium text-white">{t(locale, "library.allProducts")}</span>
+                <span className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-600">{t(locale, "library.models")}</span>
+                <span className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-600">{t(locale, "library.materials")}</span>
+                <span className="ml-auto hidden rounded-lg border border-slate-300 bg-white px-2 py-1 text-slate-700 sm:inline">{t(locale, "library.allBrands")} ▾</span>
+              </div>
+              {stats.products !== null && (
+                <p className="mt-3 text-[11px] text-slate-500">
+                  {t(locale, "library.countMany", { count: stats.products.toLocaleString(locale === "id" ? "id-ID" : "en-US") })}
+                </p>
+              )}
+              <ul className="mt-2 grid grid-cols-2 gap-2 sm:gap-3">
+                {mockProducts.map((item, i) => (
+                  <MockCard key={item?.asset_id ?? i} item={item} locale={locale} />
+                ))}
+              </ul>
+              <div className="mt-3 rounded-xl bg-[#f7f8fc] px-3 py-2 text-[10px] text-slate-500">{t(locale, "home.mockBrowseNote")}</div>
             </div>
           </div>
           <div className="absolute -bottom-5 right-5 rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-xl shadow-slate-900/10 sm:right-0">
@@ -291,29 +269,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="brands" className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
-        <div className="max-w-2xl">
-          <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-500">{t(locale, "home.brandsTag")}</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t(locale, "home.brandsHeading")}</h2>
-          <p className="mt-4 text-sm leading-6 text-slate-600">{t(locale, "home.brandsBody")}</p>
-        </div>
-        <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {brands.map((brand) => (
-            <div key={brand.name} className="flex h-28 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 text-center transition hover:border-brand-200 hover:shadow-sm">
-              {brand.logo ? (
-                // Plain <img>: the uploads are SVGs and PNGs of very different shapes, sized by max box.
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={brand.logo} alt={brand.name} loading="lazy" className="h-10 max-w-[85%] object-contain sm:h-12 sm:max-w-[60%]" />
-              ) : (
-                <span className="flex h-10 items-center text-sm font-semibold tracking-tight text-slate-800 sm:h-12">{brand.name}</span>
-              )}
-              <span className="mt-2 text-[10px] uppercase tracking-wider text-slate-400">{brand.note}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* The "For vendors" section lives on /for-vendors now - one place, not two. */}
+      {/* The brand logos scroll in LandingShowcase under the hero. The "For vendors" section lives on /for-vendors now - one place, not two. */}
 
       <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-20">
         <div className="relative overflow-hidden rounded-[2rem] bg-brand-900 px-7 py-10 text-white sm:px-12 sm:py-14">
@@ -346,34 +302,32 @@ export default async function Home() {
   );
 }
 
-function ProductTile({
-  name,
-  brand,
-  tone,
-  viewLabel,
-}: {
-  name: string;
-  brand: string;
-  tone: "blue" | "sand" | "green" | "wood";
-  viewLabel: string;
-}) {
-  const tones = {
-    blue: "from-[#c7d3ec] to-[#eef1ff]",
-    sand: "from-[#e9d7bd] to-[#f8f0e5]",
-    green: "from-[#c9e3d4] to-[#edf6ef]",
-    wood: "from-[#d4b797] to-[#f2e4d2]",
-  };
+function MockCard({ item, locale }: { item: ShowcaseItem | null; locale: Locale }) {
+  if (!item) {
+    return (
+      <li className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="aspect-square bg-[#eceef7]" />
+        <div className="h-12" />
+      </li>
+    );
+  }
+  const kindLabel = item.type === "material" ? t(locale, "library.material") : t(locale, "library.model");
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-100 bg-white">
-      <div className={`relative flex h-20 items-center justify-center bg-gradient-to-br ${tones[tone]} sm:h-24`}>
-        <div className="h-10 w-10 rounded-[35%] border-[5px] border-white/80 shadow-sm sm:h-12 sm:w-12" />
-        <span className="absolute bottom-1.5 left-1.5 rounded-md bg-white/80 px-1.5 py-0.5 text-[8px] font-semibold text-slate-600">{brand}</span>
-        <span className="absolute right-2 top-1 text-white drop-shadow">☆</span>
-      </div>
-      <div className="px-2.5 py-2">
-        <div className="truncate text-[10px] font-semibold text-slate-800">{name}</div>
-        <div className="mt-1 text-[9px] text-slate-400">{viewLabel}&nbsp; →</div>
-      </div>
-    </div>
+    <li>
+      <Link href={productHref(item)} className="group block overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-brand-200">
+        <div className="relative aspect-[4/3] overflow-hidden bg-[#eceef7]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={item.thumbnail_url} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]" />
+          <span className="absolute left-1.5 top-1.5 rounded-md bg-white/90 px-1.5 py-0.5 text-[9px] font-semibold text-slate-700">{item.brand}</span>
+        </div>
+        <div className="px-2.5 py-2">
+          <p className="truncate text-[11px] font-semibold text-slate-800">{item.name}</p>
+          <p className="mt-0.5 truncate text-[10px] text-slate-500">
+            {kindLabel}
+            {item.category ? ` · ${item.category}` : ""}
+          </p>
+        </div>
+      </Link>
+    </li>
   );
 }
