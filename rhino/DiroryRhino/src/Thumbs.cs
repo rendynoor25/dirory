@@ -5,7 +5,7 @@
 // at once and storage drops many of them (net::ERR_CONNECTION_CLOSED), and any
 // card drawn after the hour gets HTTP 400; either way the panel shows its
 // placeholder icon. So Bridge points every card at https://dirory.thumbs/<asset_id>
-// and PanelHost answers those requests from here: a few downloads at a time,
+// and PanelHost answers those requests from here: 16 downloads at a time,
 // retried, then dirory.com's stable /api/thumb/<asset_id> once the signature
 // has expired, and kept on disk under the thumbnail's storage key (it names
 // the asset version, so a new upload gets a new file).
@@ -26,8 +26,10 @@ namespace DiroryRhino
         public const string Host = "dirory.thumbs";
         private const string StableBase = "https://dirory.com/api/thumb/";
 
-        private static readonly HttpClient Http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-        private static readonly SemaphoreSlim Gate = new SemaphoreSlim(6);
+        // .NET Framework allows 2 connections per server unless told otherwise.
+        private static readonly HttpClient Http = new HttpClient(new HttpClientHandler { MaxConnectionsPerServer = 16 })
+            { Timeout = TimeSpan.FromSeconds(30) };
+        private static readonly SemaphoreSlim Gate = new SemaphoreSlim(16);
         private static readonly ConcurrentDictionary<string, (string key, string url)> Known =
             new ConcurrentDictionary<string, (string key, string url)>(StringComparer.OrdinalIgnoreCase);
         private static readonly string CacheDir = Path.Combine(

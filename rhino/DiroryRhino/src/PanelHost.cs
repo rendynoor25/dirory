@@ -20,6 +20,7 @@ namespace DiroryRhino
         private static readonly List<PanelHost> Open = new List<PanelHost>();
 
         private readonly WebView2 _web = new WebView2();
+        private bool _starting;   // Loaded fires again while the panel docks
 
         // Defines `window.sketchup` for the shared panel: every call becomes a
         // message to the plug-in. DIRORY_HOST tells the panel which app it is in.
@@ -31,7 +32,17 @@ window.sketchup = new Proxy({}, {
       window.chrome.webview.postMessage(JSON.stringify({ name: String(name), payload: payload === undefined ? null : payload }));
     };
   }
-});";
+});
+// Card images load as they scroll into view, so the visible cards' thumbnails
+// are fetched first rather than after every card in the catalogue.
+(function () {
+  var create = document.createElement;
+  document.createElement = function (tag) {
+    var node = create.apply(document, arguments);
+    if (String(tag).toLowerCase() === 'img') node.loading = 'lazy';
+    return node;
+  };
+})();";
 
         public PanelHost()
         {
@@ -39,7 +50,8 @@ window.sketchup = new Proxy({}, {
             Content = Eto.Forms.WpfHelpers.ToEto(_web);
             _web.Loaded += async (s, e) =>
             {
-                if (_web.CoreWebView2 != null) return;
+                if (_starting || _web.CoreWebView2 != null) return;
+                _starting = true;
                 try
                 {
                     // The install folder may be read-only; WebView2 needs a writable profile.
