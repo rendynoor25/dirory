@@ -15,9 +15,12 @@ made offline or signed out is kept in the local settings (`favourites_pending`
 in `%APPDATA%\Dirory\revit.json` / `rhino.json`) and applied on top of the
 account's list at the next sync, so it neither gets lost nor wipes stars made
 elsewhere; network errors are silent. Signing out clears the local copy after
-sending anything not yet saved. Not yet tested by clicking the star inside
-Revit or Rhino; the sync itself was tested against the live endpoint with a
-console harness built from the same files.
+sending anything not yet saved. The panel loads the account's stars alongside
+the catalogue and draws the cards once both have arrived, so a star or unstar
+made elsewhere shows on the cards straight away. Tested in Revit 2024 and
+Rhino 8: a star made in one app shows in the other after a restart, including
+with Rhino's local copy wiped, and unstarring in either app clears it
+everywhere.
 
 ## Landing page: live numbers and a product showcase
 

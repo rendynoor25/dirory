@@ -220,6 +220,9 @@ namespace DiroryRhino
 
         private async Task LoadCatalog()
         {
+            // The account's stars (and those made in SketchUp or Revit), fetched
+            // alongside the catalogue so the cards are drawn with them.
+            var favourites = _favourites.Sync();
             int code; string body;
             try { (code, body) = await _cloud.Send(HttpMethod.Get, "/catalog"); }
             catch (Exception e) { PanelHost.Call("diroryError", Json.Write(Lang.T("Could not reach Dirory: {error}", "error", e.Message))); return; }
@@ -247,6 +250,7 @@ namespace DiroryRhino
                 if (id != "" && (url != "" || Json.Str(i, "thumbnail") != ""))
                     i["thumbnail_url"] = Thumbs.Remember(id, Json.Str(i, "thumbnail"), url);
             }
+            await favourites;
             PanelHost.Call("diroryRender", Json.Write(new Dictionary<string, object>
             {
                 ["items"] = usable,
@@ -256,8 +260,6 @@ namespace DiroryRhino
                 ["favourites"] = _favourites.Stars,
                 ["recent"] = _favourites.Recent,
             }));
-            // Stars from the account (and from SketchUp or Revit) arrive a moment later.
-            _ = _favourites.Sync();
         }
 
         // -------------------------------------------------- place and paint

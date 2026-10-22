@@ -321,6 +321,9 @@ namespace Dirory.Revit
 
         private async Task LoadCatalog()
         {
+            // The account's stars (and those made in SketchUp or Rhino), fetched
+            // alongside the catalogue so the cards are drawn with them.
+            var favourites = _favourites.Sync();
             var (code, body) = await _cloud.Send(HttpMethod.Get, "/catalog?app=revit");
             if (code == 401 && _cloud.SignedIn)
             {
@@ -339,6 +342,7 @@ namespace Dirory.Revit
                 Json.Str(i, "type") == "material" ||
                 Json.Str(i, "model_path").EndsWith(".rfa", StringComparison.OrdinalIgnoreCase) ||
                 Json.Str(i, "rfa_path") != "").ToList();
+            await favourites;
             _page.Call("diroryRender", Json.Write(new Dictionary<string, object>
             {
                 ["items"] = usable,
@@ -348,8 +352,6 @@ namespace Dirory.Revit
                 ["favourites"] = _favourites.Stars,
                 ["recent"] = _favourites.Recent,
             }));
-            // Stars from the account (and from SketchUp or Rhino) arrive a moment later.
-            _ = _favourites.Sync();
             int models = usable.Count(i => Json.Str(i, "type") != "material");
             if (models == 0) Toast(Lang.T("Materials are ready. Revit families (.rfa) for Dirory products are coming soon."));
         }
