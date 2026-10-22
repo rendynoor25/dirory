@@ -34,7 +34,7 @@ namespace DiroryRhino
 {
     public class App : PlugIn
     {
-        public new const string Version = "0.1.2";
+        public new const string Version = "0.1.3";
 
         public static App Instance { get; private set; }
         public static string AddinFolder => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

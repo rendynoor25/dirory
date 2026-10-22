@@ -120,12 +120,19 @@ if (IS_REVIT) {
   byId('usage').hidden = true;                // no product report in Revit yet
   byId('rabBothSidesField').hidden = true;   // Revit measures both faces itself
 }
-// Rhino: the library only. Quantifier and BoQ are not available there yet.
+// Rhino: the library and, in Quantifier, the usage list (which Dirory
+// products and materials the model uses). No measured quantities, BoQ,
+// quotes, export or print there yet.
 if (IS_RHINO) {
-  document.querySelectorAll('.main-tab[data-section="quantifier"], .main-tab[data-section="boq"]').forEach((b) => {
-    b.hidden = true;
+  document.querySelectorAll('.main-tab[data-section="boq"]').forEach((b) => { b.hidden = true; });
+  document.querySelector('.main-nav').style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+  const qtyHead = document.querySelector('#quantifier .qty-head');
+  if (qtyHead) qtyHead.hidden = true;
+  ['takeoffSummary', 'takeoffChecks', 'takeoffDetails', 'takeoffExport',
+    'usageExport', 'usagePrint', 'usageSelectAll'].forEach((id) => {
+    const node = document.getElementById(id);
+    if (node) node.hidden = true;
   });
-  document.querySelector('.main-nav').style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
 }
 
 window.addEventListener('load', () => {
@@ -1058,6 +1065,7 @@ window.diroryReport = function (data) {
     box.type = 'checkbox';
     box.checked = quoteBrands.has(g.brand);
     box.disabled = !g.used || g.sample;
+    box.hidden = IS_RHINO; // brand ticks pick brands for a quote; no quotes from Rhino yet
     box.addEventListener('change', () => {
       if (box.checked) quoteBrands.add(g.brand);
       else quoteBrands.delete(g.brand);
@@ -2610,7 +2618,7 @@ function showSection(name) {
   byId('quantifier').hidden = currentSection !== 'quantifier';
   byId('boq').hidden = currentSection !== 'boq';
   // Quote requests come from the product report (SketchUp only for now).
-  byId('quoteBar').hidden = currentSection !== 'quantifier' || IS_REVIT;
+  byId('quoteBar').hidden = currentSection !== 'quantifier' || IS_REVIT || IS_RHINO;
   if (library) {
     render();
   } else {
@@ -2618,7 +2626,7 @@ function showSection(name) {
   }
   if (currentSection === 'quantifier') {
     if (!IS_REVIT) requestReport(true);
-    if (!lastTakeoff) measure();
+    if (!lastTakeoff && !IS_RHINO) measure();
   }
   if (currentSection === 'boq') {
     updateCostProject();

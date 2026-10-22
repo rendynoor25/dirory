@@ -27,5 +27,8 @@ Use
              with its texture at the real tile size (WCS box projection).
   Commands   Dirory (open the panel), DiroryPlace, DiroryPaint (used by the panel).
 
-Not in Rhino yet: Quantifier (Usage) and BoQ (RAB) — use SketchUp or Revit.
+  Quantifier The Dirory products in the model with how many are placed, and the
+             Dirory materials with the area they cover.
+
+Not in Rhino yet: measured quantities by element and the BoQ (RAB) — use SketchUp or Revit.
 Needs the Microsoft Edge WebView2 Runtime (already on Windows 10/11).
