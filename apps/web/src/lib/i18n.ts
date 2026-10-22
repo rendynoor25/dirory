@@ -282,8 +282,8 @@ const en: Record<string, string> = {
   "install.readyBody": "Create your free account, then download the extension.",
 
   // ---- download -----------------------------------------------------------
-  "download.tag": "SketchUp and Revit",
-  "download.title": "Get Dirory for SketchUp and Revit",
+  "download.tag": "SketchUp, Revit and Rhino",
+  "download.title": "Get Dirory for SketchUp, Revit and Rhino",
   "download.signedInAs": "Signed in as",
   "download.signedInBody": "Pick your design software below, download, then follow the install steps.",
   "download.button": "Download RBZ",
@@ -785,8 +785,8 @@ const id: Record<string, string> = {
   "install.readyBody": "Buat akun gratis, lalu unduh ekstensinya.",
 
   // ---- download -----------------------------------------------------------
-  "download.tag": "SketchUp dan Revit",
-  "download.title": "Dapatkan Dirory untuk SketchUp dan Revit",
+  "download.tag": "SketchUp, Revit dan Rhino",
+  "download.title": "Dapatkan Dirory untuk SketchUp, Revit dan Rhino",
   "download.signedInAs": "Masuk sebagai",
   "download.signedInBody": "Pilih perangkat lunak desain Anda di bawah, unduh, lalu ikuti langkah pemasangannya.",
   "download.button": "Unduh RBZ",

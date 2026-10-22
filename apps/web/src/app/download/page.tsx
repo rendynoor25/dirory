@@ -1,4 +1,5 @@
-﻿import Image from "next/image";
+﻿import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { getLocale } from "@/lib/locale-server";
@@ -11,6 +12,8 @@ import { ShareChoices } from "./ShareChoices";
 import { ProductPicker } from "./ProductPicker";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { title: "Download for SketchUp, Revit and Rhino" };
 
 /**
  * Plugin download.
