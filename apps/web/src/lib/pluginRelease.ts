@@ -17,14 +17,23 @@ export const REVIT_VERSION = "0.1.24";
 export const REVIT_FOR = "2024-2027";
 export const REVIT_FILENAME = `Dirory-Revit-Setup-${REVIT_VERSION}.exe`;
 
+/**
+ * Dirory for Rhino 8 (Windows): the Package Manager file built by
+ * scripts/build-rhino.ps1. Rhino installs a .yak dragged onto its window.
+ * The rh8_36 tag means Rhino 8.36 or newer.
+ */
+export const RHINO_VERSION = "0.1.2";
+export const RHINO_FILENAME = `dirory-${RHINO_VERSION}-rh8_36-win.yak`;
+
 /** SketchUp + Revit (every year) in one archive. Build with scripts/build-download-bundle.ps1. */
 export const BUNDLE_FILENAME = `Dirory-SketchUp-${PLUGIN_VERSION}-Revit-${REVIT_VERSION}.zip`;
 
-export type DownloadProduct = "sketchup" | "revit" | "both";
+export type DownloadProduct = "sketchup" | "revit" | "rhino" | "both";
 
 /** Where each choice on /download is served from. */
 export const DOWNLOAD_ROUTES: Record<DownloadProduct, string> = {
   sketchup: "/api/download/rbz",
   revit: "/api/download/revit",
+  rhino: "/api/download/rhino",
   both: "/api/download/bundle",
 };

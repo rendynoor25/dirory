@@ -1,5 +1,14 @@
 # Changelog
 
+## /download offers Dirory for Rhino 0.1.2
+
+A fourth choice on /download, "Rhino 8", serves
+`dirory-0.1.2-rh8_36-win.yak` (Rhino 8.36+, Windows) through
+`/api/download/rhino`, behind the same sign-in and privacy-notice gate as
+SketchUp and Revit. The architect drags the .yak onto Rhino, restarts Rhino
+and types `Dirory`. The auth-device Edge Function is deployed, so Rhino's
+sign-in page now says "Connect Rhino".
+
 ## Google sign-in on dirory.com
 
 The login page and the plug-in sign-in page (/auth/device) use Google's own

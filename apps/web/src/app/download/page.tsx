@@ -4,7 +4,7 @@ import { getSession } from "@/lib/auth";
 import { getLocale } from "@/lib/locale-server";
 import { t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { DOWNLOAD_ROUTES, PLUGIN_VERSION, REVIT_VERSION } from "@/lib/pluginRelease";
+import { DOWNLOAD_ROUTES, PLUGIN_VERSION, REVIT_VERSION, RHINO_VERSION } from "@/lib/pluginRelease";
 import { PLUGIN_CONSENT_VERSION } from "@/lib/consent";
 import { acceptPluginConsent } from "./actions";
 import { ShareChoices } from "./ShareChoices";
@@ -67,6 +67,13 @@ export default async function DownloadPage({
       body: t(locale, "download.optRevitBody"),
       button: `${t(locale, "download.btnRevit")} (v${REVIT_VERSION})`,
       href: DOWNLOAD_ROUTES.revit,
+    },
+    {
+      id: "rhino" as const,
+      title: t(locale, "download.optRhino"),
+      body: t(locale, "download.optRhinoBody"),
+      button: `${t(locale, "download.btnRhino")} (v${RHINO_VERSION})`,
+      href: DOWNLOAD_ROUTES.rhino,
     },
     {
       id: "both" as const,
