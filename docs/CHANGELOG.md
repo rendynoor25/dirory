@@ -38,6 +38,20 @@ catalogue. Also fixed: a panel left docked when Rhino closed reopened with
 Rhino 8.36: Models and Materials cards show thumbnails, scrolled cards load,
 the docked panel starts at launch. /download now serves 0.1.4. The shared
 panel, SketchUp and Revit are unchanged.
+## Landing page shows Dirory in SketchUp, Revit and Rhino
+
+The "Inside" section on dirory.com now has SketchUp / Revit / Rhino tabs
+(`components/AppScreenshots.tsx`), each with its own screenshot, caption and
+alt text in EN and ID: a TOTO closet placed as a Revit family, and the Rhino 8
+Quantifier listing two MATERIUM products and 19.20 m² of NIRO GRANITE tile.
+The badge, step 1, feature card, CTA and page title name Rhino too; the lead
+and RAB copy stay "SketchUp and Revit" because Rhino has no RAB yet.
+
+The "Brands in the library" grid shows each brand's logo instead of its name,
+copied from the vendors' uploads in Supabase storage into `public/brands/`
+(TOTO's white logo recoloured black for the light card). MATERIUM replaces
+Malka, which has no products in the catalogue; ALPHAMAX has no logo yet and
+keeps its name.
 
 ## Rhino 0.1.3: Quantifier usage list
 
