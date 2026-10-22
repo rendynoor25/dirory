@@ -48,6 +48,22 @@ window.sketchup = new Proxy({}, {
                     await _web.EnsureCoreWebView2Async(env);
                     _web.CoreWebView2.SetVirtualHostNameToFolderMapping(
                         "dirory.panel", Path.Combine(App.AddinFolder, "ui"), CoreWebView2HostResourceAccessKind.Allow);
+                    // Card thumbnails come from the plug-in (Thumbs.cs).
+                    _web.CoreWebView2.AddWebResourceRequestedFilter("https://" + Thumbs.Host + "/*", CoreWebView2WebResourceContext.All);
+                    _web.CoreWebView2.WebResourceRequested += async (o, args) =>
+                    {
+                        var deferral = args.GetDeferral();
+                        try
+                        {
+                            var (data, type) = await Thumbs.Get(args.Request.Uri);
+                            args.Response = data == null
+                                ? env.CreateWebResourceResponse(null, 404, "Not Found", "Access-Control-Allow-Origin: *")
+                                : env.CreateWebResourceResponse(new MemoryStream(data), 200, "OK",
+                                    "Content-Type: " + type + "\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: max-age=86400");
+                        }
+                        catch { /* the panel shows its placeholder */ }
+                        finally { deferral.Complete(); }
+                    };
                     await _web.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(BridgeScript);
                     _web.CoreWebView2.WebMessageReceived += (o, args) => Bridge.Handle(args.TryGetWebMessageAsString());
                     // Links the panel opens go to the browser, never inside Rhino.
