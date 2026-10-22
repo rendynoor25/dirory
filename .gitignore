@@ -67,3 +67,6 @@ proposals/**/.chrome-profile/
 
 # Revit add-in build output; the packaged zip is served from apps/web/private.
 dist/revit/
+
+# Rhino plug-in build output (scripts/build-rhino.ps1): the .yak and zip stay local.
+dist/rhino/

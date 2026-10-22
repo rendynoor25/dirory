@@ -1,0 +1,16 @@
+---
+name: dirory
+version: __VERSION__
+authors:
+- Dirory
+description: >
+  Dirory for Rhino: the Dirory library of Indonesian building products and
+  materials in a Rhino panel. Place products as blocks and paint materials at
+  their real tile size. Type Dirory to open the panel.
+url: https://dirory.com
+icon: icon.png
+keywords:
+- dirory
+- materials
+- building products
+- indonesia
