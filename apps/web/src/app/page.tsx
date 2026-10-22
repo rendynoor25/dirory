@@ -55,15 +55,18 @@ export default async function Home() {
   const rabSubtotal = rabExample.reduce((sum, [, v]) => sum + v, 0);
   const rupiah = (n: number) => "Rp " + Math.round(n).toLocaleString("id-ID");
 
-  const brands = [
-    { name: "TOTO", note: t(locale, "brand.sanitaryware") },
-    { name: "Trilliunware", note: t(locale, "brand.sanitaryware") },
-    { name: "NIRO GRANITE", note: t(locale, "brand.tilesStone") },
-    { name: "ROMAN", note: t(locale, "brand.tiles") },
-    { name: "TACO", note: t(locale, "brand.hpl") },
-    { name: "Nippon Paint", note: t(locale, "brand.wallPaint") },
-    { name: "Propan", note: t(locale, "brand.wallPaint") },
-    { name: "Malka", note: t(locale, "brand.furniture") },
+  // Logos are copies of the vendors' uploads in Supabase storage (brands/<vendor id>/logo.*),
+  // served from /public so the landing page does not have to load the catalogue.
+  // A brand without an uploaded logo shows its name instead.
+  const brands: { name: string; note: string; logo?: string }[] = [
+    { name: "TOTO", note: t(locale, "brand.sanitaryware"), logo: "/brands/toto.svg" },
+    { name: "Trilliunware", note: t(locale, "brand.sanitaryware"), logo: "/brands/trilliunware.png" },
+    { name: "NIRO GRANITE", note: t(locale, "brand.tilesStone"), logo: "/brands/niro-granite.svg" },
+    { name: "ROMAN", note: t(locale, "brand.tiles"), logo: "/brands/roman.svg" },
+    { name: "TACO", note: t(locale, "brand.hpl"), logo: "/brands/taco.svg" },
+    { name: "Nippon Paint", note: t(locale, "brand.wallPaint"), logo: "/brands/nippon.svg" },
+    { name: "Propan", note: t(locale, "brand.wallPaint"), logo: "/brands/propan.png" },
+    { name: "MATERIUM", note: t(locale, "brand.furniture"), logo: "/brands/materium.png" },
     { name: "ALPHAMAX", note: t(locale, "brand.doorsWindows") },
   ];
 
@@ -292,9 +295,15 @@ export default async function Home() {
         </div>
         <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {brands.map((brand) => (
-            <div key={brand.name} className="flex h-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 text-center transition hover:border-brand-200 hover:shadow-sm">
-              <span className="text-sm font-semibold tracking-tight text-slate-800">{brand.name}</span>
-              <span className="mt-1 text-[10px] uppercase tracking-wider text-slate-400">{brand.note}</span>
+            <div key={brand.name} className="flex h-28 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 text-center transition hover:border-brand-200 hover:shadow-sm">
+              {brand.logo ? (
+                // Plain <img>: the uploads are SVGs and PNGs of very different shapes, sized by max box.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={brand.logo} alt={brand.name} loading="lazy" className="h-10 max-w-[85%] object-contain sm:h-12 sm:max-w-[60%]" />
+              ) : (
+                <span className="flex h-10 items-center text-sm font-semibold tracking-tight text-slate-800 sm:h-12">{brand.name}</span>
+              )}
+              <span className="mt-2 text-[10px] uppercase tracking-wider text-slate-400">{brand.note}</span>
             </div>
           ))}
         </div>

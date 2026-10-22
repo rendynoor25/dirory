@@ -9,6 +9,12 @@ Quantifier listing two MATERIUM products and 19.20 m² of NIRO GRANITE tile.
 The badge, step 1, feature card, CTA and page title name Rhino too; the lead
 and RAB copy stay "SketchUp and Revit" because Rhino has no RAB yet.
 
+The "Brands in the library" grid shows each brand's logo instead of its name,
+copied from the vendors' uploads in Supabase storage into `public/brands/`
+(TOTO's white logo recoloured black for the light card). MATERIUM replaces
+Malka, which has no products in the catalogue; ALPHAMAX has no logo yet and
+keeps its name.
+
 ## Rhino 0.1.3: Quantifier usage list
 
 Dirory for Rhino gets the Quantifier tab: the Dirory products in the open
