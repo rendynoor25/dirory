@@ -25,10 +25,12 @@ namespace Dirory.Revit
         private string _pollInfo = "";
         private Dictionary<string, object> _lastTakeoff;
         private string _phase = "";
+        private readonly Favourites _favourites;
 
         public Bridge(PanelPage page)
         {
             _page = page;
+            _favourites = new Favourites(_cloud, json => _page.Call("diroryFavourites", json));
             // Live cost: checked twice a second on the panel's (UI) thread.
             // The same tick keeps the panel's message loop awake (see WakeWebView).
             _liveTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
@@ -146,7 +148,8 @@ namespace Dirory.Revit
                 case "saveBinary": SaveBinary(Json.Str(data, "title"), Json.Str(data, "filename"), Json.Str(data, "base64")); break;
                 case "openURL": Cloud.Open(Json.Str(data, "url")); break;
                 case "openPrivacy": Cloud.Open("https://dirory.com/privacy"); break;
-                case "toggleFavourite": case "searchMiss":
+                case "toggleFavourite": _favourites.Toggle(rawString); break;
+                case "searchMiss":
                 case "setShareUsage": case "setShareProject": case "setShareSearchMiss": case "consentSave":
                     break; // nothing to do in Revit yet; no usage data is sent
                 default:
@@ -195,10 +198,13 @@ namespace Dirory.Revit
         /// working too), then forget it here even if the server is unreachable.
         private async Task SignOut()
         {
+            await _favourites.Sync();   // send stars not saved yet while the token still works
             try { if (_cloud.SignedIn) await _cloud.Send(HttpMethod.Post, "/auth-device/revoke", new { }); }
             catch (Exception) { /* offline: the token still expires after 90 idle days */ }
             _cloud.Set("token", ""); _cloud.Set("name", ""); _cloud.Set("email", "");
+            _favourites.Forget();
             PushAccount();
+            _page.Call("diroryFavourites", Json.Write(new { favourites = new string[0], recent = new string[0] }));
         }
 
         /// Rename the signed-in architect (profiles.full_name; the web app shows
@@ -315,6 +321,9 @@ namespace Dirory.Revit
 
         private async Task LoadCatalog()
         {
+            // The account's stars (and those made in SketchUp or Rhino), fetched
+            // alongside the catalogue so the cards are drawn with them.
+            var favourites = _favourites.Sync();
             var (code, body) = await _cloud.Send(HttpMethod.Get, "/catalog?app=revit");
             if (code == 401 && _cloud.SignedIn)
             {
@@ -333,14 +342,15 @@ namespace Dirory.Revit
                 Json.Str(i, "type") == "material" ||
                 Json.Str(i, "model_path").EndsWith(".rfa", StringComparison.OrdinalIgnoreCase) ||
                 Json.Str(i, "rfa_path") != "").ToList();
+            await favourites;
             _page.Call("diroryRender", Json.Write(new Dictionary<string, object>
             {
                 ["items"] = usable,
                 ["brand_logos"] = data.TryGetValue("brand_logos", out var bl) ? bl : new Dictionary<string, object>(),
                 ["path"] = "Dirory cloud · Revit",
                 ["account"] = AccountState(),
-                ["favourites"] = new string[0],
-                ["recent"] = new string[0],
+                ["favourites"] = _favourites.Stars,
+                ["recent"] = _favourites.Recent,
             }));
             int models = usable.Count(i => Json.Str(i, "type") != "material");
             if (models == 0) Toast(Lang.T("Materials are ready. Revit families (.rfa) for Dirory products are coming soon."));
