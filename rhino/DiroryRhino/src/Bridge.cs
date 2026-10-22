@@ -22,6 +22,12 @@ namespace DiroryRhino
         private readonly Cloud _cloud = new Cloud();
         private Dictionary<string, object> _pending;   // device sign-in in progress
         private string _pollInfo = "";
+        private readonly Favourites _favourites;
+
+        public Bridge()
+        {
+            _favourites = new Favourites(_cloud, json => PanelHost.Call("diroryFavourites", json));
+        }
 
         public void Toast(string text) => PanelHost.Call("diroryToast", Json.Write(new { text, ms = 7000 }));
 
@@ -31,11 +37,11 @@ namespace DiroryRhino
             string name = Json.Str(msg, "name");
             object raw = msg.TryGetValue("payload", out var p) ? p : null;
             var payload = raw is string s ? Json.Read(s) : (raw as Dictionary<string, object> ?? new Dictionary<string, object>());
-            try { Dispatch(name, payload); }
+            try { Dispatch(name, payload, raw as string); }
             catch (Exception e) { Toast("Dirory: " + e.Message); }
         }
 
-        private void Dispatch(string name, Dictionary<string, object> data)
+        private void Dispatch(string name, Dictionary<string, object> data, string rawString)
         {
             switch (name)
             {
@@ -72,8 +78,9 @@ namespace DiroryRhino
                     break;
                 case "openURL": Cloud.Open(Json.Str(data, "url")); break;
                 case "openPrivacy": Cloud.Open("https://dirory.com/privacy"); break;
+                case "toggleFavourite": _favourites.Toggle(rawString); break;
                 case "ping":
-                case "toggleFavourite": case "searchMiss":
+                case "searchMiss":
                 case "setShareUsage": case "setShareProject": case "setShareSearchMiss": case "consentSave":
                     break; // nothing to do in Rhino yet; no usage data is sent
                 default:
@@ -105,10 +112,13 @@ namespace DiroryRhino
         /// working too), then forget it here even if the server is unreachable.
         private async Task SignOut()
         {
+            await _favourites.Sync();   // send stars not saved yet while the token still works
             try { if (_cloud.SignedIn) await _cloud.Send(HttpMethod.Post, "/auth-device/revoke", new { }); }
             catch (Exception) { /* offline: the token still expires after 90 idle days */ }
             _cloud.Set("token", ""); _cloud.Set("name", ""); _cloud.Set("email", "");
+            _favourites.Forget();
             PushAccount();
+            PanelHost.Call("diroryFavourites", Json.Write(new { favourites = new string[0], recent = new string[0] }));
         }
 
         /// Rename the signed-in architect (profiles.full_name; the web app shows
@@ -243,9 +253,11 @@ namespace DiroryRhino
                 ["brand_logos"] = data.TryGetValue("brand_logos", out var bl) ? bl : new Dictionary<string, object>(),
                 ["path"] = "Dirory cloud · Rhino",
                 ["account"] = AccountState(),
-                ["favourites"] = new string[0],
-                ["recent"] = new string[0],
+                ["favourites"] = _favourites.Stars,
+                ["recent"] = _favourites.Recent,
             }));
+            // Stars from the account (and from SketchUp or Revit) arrive a moment later.
+            _ = _favourites.Sync();
         }
 
         // -------------------------------------------------- place and paint

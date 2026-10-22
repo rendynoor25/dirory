@@ -1,5 +1,24 @@
 # Changelog
 
+## Revit 0.1.25 and Rhino 0.1.5: stars follow the account
+
+The ☆ on a card in Dirory for Revit and Dirory for Rhino now saves to the
+signed-in architect's account, as it already did in SketchUp, so stars show in
+the Favourites tab on dirory.com/library and in the panel in every app and on
+every computer. Both hosts use the same `favourites` Edge Function as SketchUp
+(GET `{ favourites, recent }` when the panel loads, POST the full lists back on
+each star; keys are asset ids) through a new `Favourites.cs`
+(`revit/DiroryRevit/src`, copied to `rhino/DiroryRhino/src`). Revit and Rhino
+keep no "recent" list of their own: they send the account's back unchanged, so
+SketchUp's recently used items survive a star made in Revit or Rhino. A star
+made offline or signed out is kept in the local settings (`favourites_pending`
+in `%APPDATA%\Dirory\revit.json` / `rhino.json`) and applied on top of the
+account's list at the next sync, so it neither gets lost nor wipes stars made
+elsewhere; network errors are silent. Signing out clears the local copy after
+sending anything not yet saved. Not yet tested by clicking the star inside
+Revit or Rhino; the sync itself was tested against the live endpoint with a
+console harness built from the same files.
+
 ## Landing page: live numbers and a product showcase
 
 dirory.com's landing page gets a strip under the hero with live counts and two
