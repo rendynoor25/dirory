@@ -2,7 +2,7 @@
 // exactly those of plugin/dirory_library/main.rb (and the Revit add-in's
 // Bridge.cs), so panel.js is shared.
 //
-// Not in Rhino yet: quantities, the RAB, usage reports, search-miss reporting
+// Not in Rhino yet: measured quantities, the RAB, search-miss reporting
 // and quotes. The plug-in therefore sends no usage data and needs no consent
 // switches; it only downloads what the architect clicks.
 
@@ -61,7 +61,14 @@ namespace DiroryRhino
                 case "applyMaterial": _ = ApplyMaterial(data); break;
                 case "insertModel": _ = InsertModel(data); break;
                 case "requestReport":
-                    PanelHost.Call("diroryReport", Json.Write(new { models = new object[0], materials = new object[0] }));
+                    // The Quantifier's usage list (Report.cs), measured on Rhino's UI thread.
+                    RhinoApp.InvokeOnUiThread(new Action(() =>
+                    {
+                        var doc = RhinoDoc.ActiveDoc;
+                        PanelHost.Call("diroryReport", Json.Write(doc == null
+                            ? new Dictionary<string, object> { ["models"] = new object[0], ["materials"] = new object[0] }
+                            : Report.Build(doc)));
+                    }));
                     break;
                 case "openURL": Cloud.Open(Json.Str(data, "url")); break;
                 case "openPrivacy": Cloud.Open("https://dirory.com/privacy"); break;

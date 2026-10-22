@@ -1,5 +1,17 @@
 # Changelog
 
+## Rhino 0.1.3: Quantifier usage list
+
+Dirory for Rhino gets the Quantifier tab: the Dirory products in the open
+model with how many are placed, and the Dirory materials with the faces and
+m² they cover (`rhino/DiroryRhino/src/Report.cs`, the same report shape as the
+SketchUp plugin's usage report). Blocks are walked with their transforms, so
+nested copies count. The measured takeoff, BoQ, quotes, export and print stay
+hidden in Rhino. Tested in Rhino 8.36: two placed MATERIUM products and a
+3 x 3 x 0.1 m slab painted with a NIRO GRANITE tile read "2 models, 19.20 m²
+painted", the slab's exact surface. /download now serves 0.1.3, and the
+install guide describes the Quantifier.
+
 ## /download offers Dirory for Rhino 0.1.2
 
 A fourth choice on /download, "Rhino 8", serves

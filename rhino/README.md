@@ -22,7 +22,11 @@ and the Revit add-in do.
   `Dirory.*` tags are on the material (user text) and in its notes (with the marker that
   reuses it). It is assigned to the selected objects; with nothing selected, Rhino asks
   for objects (Enter adds only the material).
-- **Not yet**: Quantifier and BoQ (RAB) are hidden in Rhino (`DIRORY_HOST = 'rhino'`).
+- **Quantifier** (`Report.cs`): the usage list, in the shape of the SketchUp plugin's report: each
+  Dirory block with its placed count, each Dirory material with faces and m² painted (blocks walked
+  with their transforms).
+- **Not yet**: measured quantities by element, the BoQ (RAB), quotes, export and print are hidden in
+  Rhino (`DIRORY_HOST = 'rhino'`).
   No usage data, search misses or quotes are sent.
 
 ## Source
