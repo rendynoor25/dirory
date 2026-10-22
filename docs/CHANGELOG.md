@@ -20,7 +20,8 @@ the catalogue and draws the cards once both have arrived, so a star or unstar
 made elsewhere shows on the cards straight away. Tested in Revit 2024 and
 Rhino 8: a star made in one app shows in the other after a restart, including
 with Rhino's local copy wiped, and unstarring in either app clears it
-everywhere.
+everywhere. Published on /download: `Dirory-Revit-Setup-0.1.25.exe`,
+`dirory-0.1.5-rh8_36-win.yak` and the SketchUp + Revit bundle.
 
 ## Landing page: live numbers and a product showcase
 
