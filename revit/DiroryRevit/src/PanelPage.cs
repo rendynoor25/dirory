@@ -27,7 +27,17 @@ window.sketchup = new Proxy({}, {
       window.chrome.webview.postMessage(JSON.stringify({ name: String(name), payload: payload === undefined ? null : payload }));
     };
   }
-});";
+});
+// Card images load as they scroll into view, so the visible cards' thumbnails
+// are fetched first rather than after every card in the catalogue.
+(function () {
+  var create = document.createElement;
+  document.createElement = function (tag) {
+    var node = create.apply(document, arguments);
+    if (String(tag).toLowerCase() === 'img') node.loading = 'lazy';
+    return node;
+  };
+})();";
 
         public PanelPage()
         {
@@ -44,6 +54,22 @@ window.sketchup = new Proxy({}, {
                     await _web.EnsureCoreWebView2Async(env);
                     _web.CoreWebView2.SetVirtualHostNameToFolderMapping(
                         "dirory.panel", Path.Combine(App.AddinFolder, "ui"), CoreWebView2HostResourceAccessKind.Allow);
+                    // Card thumbnails come from the add-in (Thumbs.cs).
+                    _web.CoreWebView2.AddWebResourceRequestedFilter("https://" + Thumbs.Host + "/*", CoreWebView2WebResourceContext.All);
+                    _web.CoreWebView2.WebResourceRequested += async (o, args) =>
+                    {
+                        var deferral = args.GetDeferral();
+                        try
+                        {
+                            var (data, type) = await Thumbs.Get(args.Request.Uri);
+                            args.Response = data == null
+                                ? env.CreateWebResourceResponse(null, 404, "Not Found", "Access-Control-Allow-Origin: *")
+                                : env.CreateWebResourceResponse(new MemoryStream(data), 200, "OK",
+                                    "Content-Type: " + type + "\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: max-age=86400");
+                        }
+                        catch { /* the panel shows its placeholder */ }
+                        finally { deferral.Complete(); }
+                    };
                     await _web.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(BridgeScript);
                     _web.CoreWebView2.WebMessageReceived += (o, args) => Bridge.Handle(args.TryGetWebMessageAsString());
                     _web.CoreWebView2.Navigate("https://dirory.panel/panel.html");
