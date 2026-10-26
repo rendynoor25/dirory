@@ -1,5 +1,16 @@
 # Changelog
 
+## Revit 0.1.26: card thumbnails load
+
+The Models and Materials cards in Dirory for Revit showed the grey placeholder
+icon instead of the product image, the same fault Rhino 0.1.4 fixed: ~2,000
+signed storage URLs loaded at once (storage dropped many) and expired after an
+hour (HTTP 400). Revit now gets the Rhino fix: cards point at
+`https://dirory.thumbs/<asset_id>`, answered by `revit/DiroryRevit/src/Thumbs.cs`
+through WebView2 `WebResourceRequested` in `PanelPage.cs` (16 downloads at a
+time, retried, `/api/thumb/<asset_id>` fallback, cached in
+`%LOCALAPPDATA%\Dirory\thumbs-revit`), and card images load lazily.
+
 ## Landing page: hero mock matches /library, Rhino in the lead, one brand row
 
 The library window in the landing page hero was a made-up panel (sidebar with
