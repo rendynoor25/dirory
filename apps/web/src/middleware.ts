@@ -57,5 +57,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  // `/api/thumb/*` is deliberately excluded: a catalogue page loads dozens of
+  // images, and running the session refresh (`auth.getUser()`) once per image
+  // for a signed-in visitor is pure Supabase Auth egress for no benefit. The
+  // route has its own service-role access and returns only approved images.
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|api/thumb/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

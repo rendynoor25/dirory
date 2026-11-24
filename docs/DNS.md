@@ -25,7 +25,7 @@ cookie scope, and sign-in that works everywhere. (An earlier plan used
 sign-in on one host did not carry to the other.)
 
 ```
-dirory.com  ──A──▶  129.226.208.234  (Sumopod VPS)
+dirory.com  ──A──▶  43.173.40.88  (Sumopod VPS)
 www         ──CNAME──▶  dirory.com
 ```
 
@@ -58,7 +58,7 @@ Domainesia → **Domains** → `dirory.com` → **DNS Management**.
 
 | Type | Name | Value | TTL |
 |---|---|---|---|
-| `A` | `@` | `129.226.208.234` | 300 while setting up, then 3600 |
+| `A` | `@` | `43.173.40.88` | 300 while setting up, then 3600 |
 | `CNAME` | `www` | `dirory.com` | 3600 |
 
 Notes:
@@ -75,7 +75,7 @@ Notes:
 Propagation is usually 15–30 minutes. From your own machine:
 
 ```bash
-nslookup dirory.com          # must return 129.226.208.234
+nslookup dirory.com          # must return 43.173.40.88
 ```
 
 Do not continue until it does — Caddy cannot obtain a certificate before then.
@@ -148,9 +148,9 @@ If you keep it, note that its `NEXT_PUBLIC_SITE_URL` should stay
 
 ## 7. Checklist
 
-- [ ] Domainesia: `A @ → 129.226.208.234`; `CNAME www → dirory.com`
+- [ ] Domainesia: `A @ → 43.173.40.88`; `CNAME www → dirory.com`
 - [ ] Email records (`MX @`, `A mail`, SPF, DMARC, DKIM) untouched
-- [ ] `nslookup dirory.com` returns `129.226.208.234`
+- [ ] `nslookup dirory.com` returns `43.173.40.88`
 - [ ] `DEPLOY.md` steps 2–10 completed on the server
 - [ ] Supabase Site URL `https://dirory.com` + `/auth/callback` redirect
 - [ ] `https://dirory.com` loads the landing page

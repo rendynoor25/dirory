@@ -27,14 +27,19 @@ The steps below assume SSH keys.
 
 | Thing | Value |
 |---|---|
-| Public IP | `129.226.208.234` |
-| Private IP | `10.3.8.254` (Sumopod-internal; not a secret) |
+| Public IP | `43.173.40.88` |
+| Private IP | `10.11.33.246` (Sumopod-internal; not a secret) |
 | Username | `ubuntu` |
 | Domain | `dirory.com`, managed at Domainesia |
 | Staging | Netlify, at `cheerful-arithmetic-490036.netlify.app` (no longer used for production) |
 
-**The password you shared in chat must be considered compromised.** Change it on
-first login and switch to SSH keys (steps 2–3).
+> **The original VPS (`129.226.208.234`) expired and was deleted on 11 Nov 2026.**
+> The replacement is `43.173.40.88`. Sumopod deletes an expired VPS; it does not
+> pause it. Keep auto-renew enabled and the account balance funded, or the next
+> expiry repeats this outage. The runbook below targets the replacement.
+
+**The web-console password must be considered compromised if it was shared in
+chat.** Reset it on the VPS page, and keep SSH key-only (steps 2–3).
 
 ## 1. DNS — point `dirory.com` at this server
 
@@ -43,7 +48,7 @@ the VPS:
 
 | Type | Name | Value | TTL |
 |---|---|---|---|
-| A | `@` | `129.226.208.234` | 300 (lower it while setting up) |
+| A | `@` | `43.173.40.88` | 300 (lower it while setting up) |
 
 Also point `www` at the server (a `CNAME` to `dirory.com` is fine).
 
@@ -56,7 +61,7 @@ nothing uses it once everything is on `dirory.com`.
 Verify before continuing — Caddy cannot issue a certificate until this resolves:
 
 ```bash
-nslookup dirory.com              # must return 129.226.208.234
+nslookup dirory.com              # must return 43.173.40.88
 ```
 
 DNS can take 15–30 minutes; a 300 s TTL keeps that short.
@@ -64,7 +69,7 @@ DNS can take 15–30 minutes; a 300 s TTL keeps that short.
 ## 2. First login and SSH keys
 
 ```bash
-ssh ubuntu@129.226.208.234          # with the password, once
+ssh ubuntu@43.173.40.88          # with the password, once
 ```
 
 Change the password, then install your key:
@@ -78,7 +83,7 @@ chmod 600 ~/.ssh/authorized_keys
 Test **in a second terminal** before closing the first — never lock yourself out:
 
 ```bash
-ssh ubuntu@129.226.208.234          # should not ask for a password
+ssh ubuntu@43.173.40.88          # should not ask for a password
 ```
 
 ## 3. Harden the server
@@ -132,7 +137,7 @@ sudo fail2ban-client status sshd
 
 ```bash
 # in a NEW terminal — must connect without a password
-ssh -i ~/.ssh/yourkey ubuntu@129.226.208.234
+ssh -i ~/.ssh/yourkey ubuntu@43.173.40.88
 ```
 
 

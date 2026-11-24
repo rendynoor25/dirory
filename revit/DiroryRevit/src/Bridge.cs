@@ -343,6 +343,13 @@ namespace Dirory.Revit
                 Json.Str(i, "model_path").EndsWith(".rfa", StringComparison.OrdinalIgnoreCase) ||
                 Json.Str(i, "rfa_path") != "").ToList();
             await favourites;
+            // Thumbnails load through the add-in (Thumbs.cs), not from the signed URLs.
+            foreach (var i in usable)
+            {
+                string id = Json.Str(i, "asset_id"), url = Json.Str(i, "thumbnail_url");
+                if (id != "" && (url != "" || Json.Str(i, "thumbnail") != ""))
+                    i["thumbnail_url"] = Thumbs.Remember(id, Json.Str(i, "thumbnail"), url);
+            }
             _page.Call("diroryRender", Json.Write(new Dictionary<string, object>
             {
                 ["items"] = usable,

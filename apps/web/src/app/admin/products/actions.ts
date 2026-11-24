@@ -1,7 +1,7 @@
 "use server";
 
 import { normaliseWebUrl } from "@/lib/webUrl";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 
@@ -204,5 +204,8 @@ export async function registerProduct(input: RegisterProductInput) {
   revalidatePath("/admin/products");
   revalidatePath("/admin/samples");
   revalidatePath("/admin/reviews");
+  // A published admin upload is live immediately (FR-M12); do not wait for the
+  // hourly catalogue refresh.
+  if (d.publish) revalidateTag("catalog");
   return { ok: true as const, id: asset.id as string };
 }

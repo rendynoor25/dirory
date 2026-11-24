@@ -36,9 +36,10 @@ export type Catalog = {
 };
 
 /**
- * Fetch the catalogue server-side. Revalidated every 5 minutes so a newly
- * approved product shows up without a redeploy, while a burst of visitors does
- * not hammer the Edge Function.
+ * Fetch the catalogue server-side. Revalidated hourly, and immediately when an
+ * admin approves a product (`revalidateTag("catalog")`), so a burst of visitors
+ * does not hammer the Edge Function. Each revalidation is a ~300 KB response
+ * counted as Supabase egress; at five minutes that alone was a few GB a month.
  *
  * Two query flags, both needed for the cache to work at all:
  *
@@ -49,7 +50,7 @@ export type Catalog = {
  *
  * `fields=browse` drops the fields only the SketchUp plugin reads. Without it
  * the payload is ~1.9 MB, over Next's 2 MB per-entry cache limit, so Next
- * refuses to store the response, the 5-minute revalidation can never replace
+ * refuses to store the response, the hourly revalidation can never replace
  * the entry, and the page serves the last catalogue that fit.
  */
 export async function fetchCatalog(): Promise<Catalog> {
@@ -61,7 +62,7 @@ export async function fetchCatalog(): Promise<Catalog> {
   try {
     const res = await fetch(`${url}/functions/v1/catalog?thumbs=path&fields=browse`, {
       headers: { apikey: key },
-      next: { revalidate: 300 },
+      next: { revalidate: 3600, tags: ["catalog"] },
     });
     if (!res.ok) throw new Error(`catalog ${res.status}`);
     const data = (await res.json()) as Catalog;

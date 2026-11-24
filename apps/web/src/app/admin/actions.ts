@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { z } from "zod";
 
@@ -33,6 +33,8 @@ export async function setVendorStatus(formData: FormData) {
 
   revalidatePath("/admin/vendors");
   revalidatePath("/admin");
+  // Approving or suspending a vendor changes which products are visible.
+  revalidateTag("catalog");
 }
 
 // ---------------------------------------------------------------------------
@@ -121,6 +123,9 @@ export async function reviewAsset(formData: FormData) {
 
   revalidatePath("/admin/reviews");
   revalidatePath("/admin");
+  // Newly approved/rejected products must show on /library immediately, not
+  // after the hourly catalogue refresh.
+  revalidateTag("catalog");
 }
 
 const CategorySchema = z.object({
