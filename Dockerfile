@@ -68,6 +68,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 # standalone bundle, but copy it explicitly so the path is always present.
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/private ./apps/web/private
 
+# Local WebP thumbnail cache for /api/thumb. docker-compose mounts a named
+# volume here so a rebuild does not re-download every original image from
+# Supabase (that download is the egress this cache exists to avoid).
+RUN mkdir -p /app/.cache/thumbs && chown -R nextjs:nodejs /app/.cache
+
 USER nextjs
 EXPOSE 3000
 

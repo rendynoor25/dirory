@@ -1,5 +1,86 @@
 # Changelog
 
+## VPS expiry: site restored on a new Sumopod server (25 Nov 2026)
+
+The original VPS at `129.226.208.234` expired on **11 Nov 2026** because
+auto-renew was off (or the balance was insufficient). Sumopod deletes an
+expired VPS instead of pausing it, so `dirory.com` pointed at a dead IP until
+the replacement was online. Data was not affected: Postgres, Auth and Storage
+live in Supabase.
+
+- Recreated the VPS on Tencent: Ubuntu 24.04, 2 vCPU, 4 GB RAM, 60 GB disk,
+  public IP **`43.173.40.88`**. The old instance and its Docker volumes
+  (`thumb_cache`, Caddy certificates) are gone; both rebuild automatically.
+- Updated the Domainesia `A @` record to `43.173.40.88` and lowered the TTL to
+  300 s. `www` is still a CNAME to the bare domain.
+- Added a real `www.dirory.com` site block. Caddy now obtains a certificate for
+  both names and redirects `www` to `https://dirory.com` with a 301.
+- Hardened the replacement: SSH key-only, UFW allows only 22/80/443, Docker
+  enabled at boot, `fail2ban` installed.
+- Deployed the current tree, including the image cache and catalogue changes
+  from the entry below. The Supabase `catalog` function already returns
+  `/api/thumb/...` URLs, so the image proxy is in use.
+- `docs/DEPLOY.md` and `docs/DNS.md` now carry the new IP and a warning that an
+  expired Sumopod VPS is deleted, not paused.
+- Still to restore from the old server: `GOOGLE_CLIENT_ID` and
+  `RESEND_API_KEY` (security-alert email is disabled until the latter is set).
+  The web-console password was exposed in chat and should be reset.
+
+## Egress quota: images are shrunk and cached, the catalogue is reused
+
+The Supabase project was restricted with `exceed_egress_quota` (13.2 GB of
+5 GB) and `exceed_storage_size_quota` (1.68 GB of 1 GB). The cause was in the
+app, not in Supabase, so moving to another backend would not have fixed it.
+
+What generated the traffic:
+
+- `/api/thumb/<asset_id>` streamed the **full-size original** from storage on
+  every request, with only a one-day browser cache. The library grid, the
+  landing showcase and every product page loaded those originals. A material
+  texture is easily 1-3 MB, so 60 cards for one visitor is tens of MB.
+- The SketchUp panel downloaded the whole catalogue (~1.9 MB) **every time it
+  opened**, and the catalogue embedded ~700 KB of signed thumbnail URLs. The
+  panel then pulled those signed originals straight from storage.
+- The website used to revalidate the catalogue every 5 minutes (~300 KB each
+  time); it now refreshes once every 60 minutes.
+- `middleware.ts` ran `auth.getUser()` for every `/api/thumb` request, so a
+  signed-in visitor's image grid also produced Supabase Auth calls.
+
+Changes:
+
+- `/api/thumb` resizes to at most 800 px, encodes WebP (quality 72) — with a
+  JPEG fallback for clients that do not accept WebP — and keeps one file per
+  asset version and format under `THUMB_CACHE_DIR`. It answers with an `ETag`
+  and `Cache-Control: ... immutable` when `?v=` is present. A cache hit makes no
+  Supabase request at all. A `.skp` is never streamed as an image: an asset
+  without a preview shows its placeholder instead.
+- `catalog` returns `/api/thumb/<id>?v=<version>` for the native panels too
+  (absolute, from `SITE_URL`) and no longer signs thumbnail URLs, so the payload
+  drops by roughly 700 KB. Revit and Rhino already route cards through this
+  proxy, so their fallback URL is now the normal path.
+- The plugin reuses its cached catalogue for 24 hours (`cache_version` 2) and
+  the panel gains a ⟳ refresh button that forces a fresh copy. An old cache is
+  ignored because it held signed URLs that expire after an hour.
+- The website catalogue is revalidated hourly, and immediately on admin
+  approval/archival via `revalidateTag("catalog")`.
+- `middleware.ts` skips the session refresh for `/api/thumb` (the image route
+  has its own service-role access and only serves approved assets).
+- `docker-compose.yml` mounts a `thumb_cache` volume at `/app/.cache/thumbs`, so
+  a rebuild does not download every original again.
+- `scripts/storage-report.mjs` (`npm run storage:report`) audits the buckets
+  read-only: per-bucket totals, largest objects, current vs old versions,
+  unreferenced uploads. `scripts/prune-plugin-releases.mjs` (`npm run
+  rbz:prune`, dry-run by default) removes old RBZs; the update function only
+  serves the newest one.
+- Log ingestion falls with the request reduction: the catalogue no longer signs
+  ~1,300 thumbnail URLs per fetch, images are cached, and the catalogue is
+  hourly. `docs/EGRESS.md` explains the Free-plan limits and what is safe to
+  delete.
+
+The first request per asset version still downloads the original once; after
+that the bytes are local. Recovery steps and the cost comparison with Firebase
+and Cloudflare R2 are in `docs/EGRESS.md`.
+
 ## Revit 0.1.26: card thumbnails load
 
 The Models and Materials cards in Dirory for Revit showed the grey placeholder

@@ -6,7 +6,7 @@ import { fetchCatalog, type CatalogItem } from "@/lib/catalog";
  * Live numbers and a product showcase for the landing page.
  *
  * Products and brands come from the public catalogue (`fetchCatalog`, already
- * cached for 5 minutes), so they count exactly what a visitor can browse:
+ * cached for an hour), so they count exactly what a visitor can browse:
  * approved assets of visible vendors. Users are the `profiles` rows — one per
  * auth user, created by the sign-up trigger — counted with the service role and
  * cached for an hour. Nothing here runs per request.

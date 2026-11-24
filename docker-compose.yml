@@ -29,6 +29,9 @@ services:
       PORT: "3000"
       # Runtime-only secret (server-side; never sent to the browser).
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:?set in .env}
+      # /api/thumb keeps one small WebP per asset version here. The volume
+      # below makes it survive a rebuild, so Supabase serves each original once.
+      THUMB_CACHE_DIR: /app/.cache/thumbs
       # Payments (server-side, read at runtime). Empty is fine: the invoice page
       # then hides the online option and offers the manual transfer instead.
       MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY:-}
@@ -44,6 +47,8 @@ services:
       PRICING_ALLOWED_EMAILS: ${PRICING_ALLOWED_EMAILS:-}
     expose:
       - "3000"
+    volumes:
+      - thumb_cache:/app/.cache/thumbs
     healthcheck:
       test:
         - CMD
@@ -73,5 +78,6 @@ services:
       - caddy_config:/config
 
 volumes:
+  thumb_cache:
   caddy_data:
   caddy_config:

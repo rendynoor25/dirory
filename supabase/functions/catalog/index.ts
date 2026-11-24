@@ -1,4 +1,3 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders, json, serviceHeaders } from "../_shared/cors.ts";
 import { resolveServiceKey } from "../_shared/keys.ts";
 
@@ -14,9 +13,13 @@ import { resolveServiceKey } from "../_shared/keys.ts";
  * to this endpoint (PRD §6.1 "swap the source, not the shape").
  *
  * M6 addition: `models` / `materials` are private, so each item also carries a
- * short-lived `thumbnail_url` (signed) for the card grid. The raw storage key
- * stays in `thumbnail`. The asset file itself is not signed here — the plugin
- * asks /download/<asset_id> when the architect clicks (FR-A11).
+ * `thumbnail_url` for the card grid. It points at the website's image proxy
+ * (`/api/thumb/<asset_id>?v=<version>`), NOT at a signed storage URL: signed
+ * URLs are ~540 chars each (700 KB for the whole catalogue) and expire within
+ * the hour, and every panel then pulls the full-size original out of Supabase.
+ * The proxy shrinks and caches the image once. The raw storage key stays in
+ * `thumbnail`. The asset file itself is not signed here — the plugin asks
+ * /download/<asset_id> when the architect clicks (FR-A11).
  *
  * `fields=browse` trims every item to the fields the website renders. The full
  * payload outgrew Next's 2 MB per-entry data-cache limit, which silently froze
@@ -43,10 +46,11 @@ Deno.serve(async (req: Request) => {
 
   const url = new URL(req.url);
   const updatedSince = url.searchParams.get("updated_since");
-  // `thumbs=path` returns a stable, app-proxied thumbnail path instead of a
-  // signed storage URL. The website uses this: signed URLs are ~540 chars each
-  // (700 KB for 1,300 items) and expire within the hour, so a cached page would
-  // show broken images. The plugin keeps the signed URLs (it loads them live).
+  // `thumbs=path` returns a relative `/api/thumb/...` path. The website uses
+  // this (same origin). The native panels need an absolute URL, which they get
+  // by default below. Both point at the same caching proxy: signed storage URLs
+  // are ~540 chars each (700 KB for 1,300 items), expire within the hour, and
+  // make every panel fetch the full-size original from Supabase.
   const thumbsPathMode = url.searchParams.get("thumbs") === "path";
   // `fields=browse` returns only what the website's pages actually render, and
   // drops the fields the SketchUp plugin needs. Two reasons it exists:
@@ -71,6 +75,18 @@ Deno.serve(async (req: Request) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = resolveServiceKey();
   const headers = serviceHeaders(serviceKey);
+
+  // Where the website lives. The native panels receive absolute thumbnail URLs
+  // so they need no knowledge of the web host; the same `SITE_URL` is already
+  // used by /auth-device and /rab.
+  const siteOrigin = (
+    Deno.env.get("SITE_URL") ??
+    Deno.env.get("NEXT_PUBLIC_SITE_URL") ??
+    "https://dirory.com"
+  ).replace(/\/+$/, "");
+  const thumbUrl = (assetId: string, version: unknown): string =>
+    `${thumbsPathMode ? "" : siteOrigin}/api/thumb/${assetId}` +
+    (version == null ? "" : `?v=${encodeURIComponent(String(version))}`);
 
   // PostgREST caps a single response at `max_rows` (1,000 on Supabase), so a
   // bigger catalogue must be paged or the tail is silently dropped. Page until a
@@ -139,33 +155,6 @@ Deno.serve(async (req: Request) => {
     if (logo) brandLogos[key] = logo;
   }
 
-  // Sign every distinct thumbnail in batches. The buckets are private, so the
-  // card grid cannot load a bare storage key. Skipped entirely in path mode.
-  const signedThumbs = new Map<string, string>();
-  if (!thumbsPathMode) {
-    const thumbPaths: string[] = Array.from(
-      new Set(
-        visible
-          .map((r: any) => {
-            const v = Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions;
-            return v?.thumbnail_path ? String(v.thumbnail_path) : null;
-          })
-          .filter((p: string | null): p is string => Boolean(p)),
-      ),
-    );
-    if (thumbPaths.length) {
-      const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
-      const CHUNK = 100;
-      for (let i = 0; i < thumbPaths.length; i += CHUNK) {
-        const chunk = thumbPaths.slice(i, i + CHUNK);
-        const { data } = await admin.storage.from("materials").createSignedUrls(chunk, 3600);
-        for (const s of data ?? []) {
-          if (s?.path && s?.signedUrl) signedThumbs.set(s.path, s.signedUrl);
-        }
-      }
-    }
-  }
-
   const items = visible.map((r: any) => {
     const v = Array.isArray(r.asset_versions) ? r.asset_versions[0] : r.asset_versions;
     const brand = r.vendors?.brand_name ?? "Dirory";
@@ -181,13 +170,10 @@ Deno.serve(async (req: Request) => {
       brand,
       sample: Boolean(r.vendors?.is_platform),
       tags: r.tags ?? [],
-      // A displayable URL for the card grid. In path mode this is a stable
-      // app-proxied route; otherwise a short-lived signed storage URL.
-      thumbnail_url: thumbKey
-        ? thumbsPathMode
-          ? `/api/thumb/${r.id}`
-          : signedThumbs.get(thumbKey) ?? null
-        : null,
+      // A displayable URL for the card grid: the website's caching proxy. The
+      // website gets a relative path, the native panels an absolute URL. The
+      // version makes the response immutable, so a new upload is a new URL.
+      thumbnail_url: thumbKey ? thumbUrl(r.id, v?.version) : null,
       tile_size_cm: r.tile_w_cm
         ? [Number(r.tile_w_cm), Number(r.tile_h_cm ?? r.tile_w_cm)]
         : null,

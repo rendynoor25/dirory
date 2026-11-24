@@ -1,7 +1,7 @@
 "use server";
 
 import { normaliseWebUrl } from "@/lib/webUrl";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
@@ -252,6 +252,7 @@ export async function archiveAsset(formData: FormData) {
 
   await supabase.from("assets").update({ status: "archived" }).eq("id", assetId);
   revalidatePath("/vendor/assets");
+  revalidateTag("catalog");
 }
 
 /** FR-V5 — move a lead through the pipeline. */
